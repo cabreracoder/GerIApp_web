@@ -1,62 +1,78 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
-  RouterOutlet,
   RouterLink,
-  RouterLinkActive
+  RouterLinkActive,
+  RouterOutlet
 } from '@angular/router';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
+
   imports: [
     CommonModule,
-    RouterOutlet,
     RouterLink,
-    RouterLinkActive
+    RouterLinkActive,
+    RouterOutlet
   ],
+
   templateUrl: './layout.html',
   styleUrl: './layout.css'
 })
 export class Layout {
 
   menu = [
+
     {
-      icono: 'dashboard',
       nombre: 'Dashboard',
+      icono: 'dashboard',
       ruta: '/dashboard'
     },
+
     {
-      icono: 'elderly',
       nombre: 'Pacientes',
+      icono: 'elderly',
       ruta: '/pacientes'
     },
+
     {
-      icono: 'health_and_safety',
       nombre: 'Cuidadores',
+      icono: 'health_and_safety',
       ruta: '/cuidadores'
     },
+
     {
-      icono: 'supervisor_account',
       nombre: 'Encargados',
+      icono: 'supervisor_account',
       ruta: '/encargados'
     },
+
     {
+      nombre: 'Roles y Permisos',
       icono: 'admin_panel_settings',
-      nombre: 'Roles',
       ruta: '/roles'
     },
+
     {
-      icono: 'notifications',
       nombre: 'Notificaciones',
+      icono: 'notifications',
       ruta: '/notificaciones'
     }
+
   ];
 
   configuracion = {
-    icono: 'settings',
     nombre: 'Configuración',
+    icono: 'settings',
     ruta: '/configuracion'
   };
+
+
+  cerrarSesion(): void {
+
+    console.log('Cerrando sesión...');
+
+  }
 
 }

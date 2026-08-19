@@ -25,6 +25,12 @@ interface FormularioCuidador {
   institucion: string;
 }
 
+type TipoArchivo =
+  | 'cedula'
+  | 'tarjeta'
+  | 'antecedentes'
+  | 'hojaVida';
+
 @Component({
   selector: 'app-cuidador',
   standalone: true,
@@ -37,11 +43,11 @@ interface FormularioCuidador {
 })
 export class Cuidadores {
 
-  /* ─────────────────────────────
-     DATOS
-  ───────────────────────────── */
+  /* =====================================================
+     COLORES PARA AVATARES
+  ===================================================== */
 
-  avatarPalette = [
+  readonly avatarPalette: string[] = [
     '#3B5BDB',
     '#4DABF7',
     '#7950F2',
@@ -51,7 +57,13 @@ export class Cuidadores {
     '#C2255C'
   ];
 
+
+  /* =====================================================
+     DATOS DE CUIDADORES
+  ===================================================== */
+
   cuidadores: Cuidador[] = [
+
     {
       id: 1,
       nombre: 'Carlos Ruiz',
@@ -130,21 +142,22 @@ export class Cuidadores {
         'Viernes'
       ]
     }
+
   ];
 
   nextId = 6;
 
 
-  /* ─────────────────────────────
+  /* =====================================================
      DROPDOWN
-  ───────────────────────────── */
+  ===================================================== */
 
   activeDropdown: number | null = null;
 
 
-  /* ─────────────────────────────
+  /* =====================================================
      MODAL
-  ───────────────────────────── */
+  ===================================================== */
 
   modalAbierto = false;
 
@@ -153,18 +166,18 @@ export class Cuidadores {
   editId: number | null = null;
 
 
-  /* ─────────────────────────────
+  /* =====================================================
      CONFIRMACIÓN
-  ───────────────────────────── */
+  ===================================================== */
 
   confirmAbierto = false;
 
   pendingDeleteId: number | null = null;
 
 
-  /* ─────────────────────────────
+  /* =====================================================
      FORMULARIO
-  ───────────────────────────── */
+  ===================================================== */
 
   formulario: FormularioCuidador = this.formularioVacio();
 
@@ -174,19 +187,14 @@ export class Cuidadores {
 
   guardando = false;
 
-  errores: { [key: string]: boolean } = {};
+  errores: Record<string, boolean> = {};
 
 
-  /* ─────────────────────────────
+  /* =====================================================
      ARCHIVOS
-  ───────────────────────────── */
+  ===================================================== */
 
-  archivos: {
-    cedula: File | null;
-    tarjeta: File | null;
-    antecedentes: File | null;
-    hojaVida: File | null;
-  } = {
+  archivos: Record<TipoArchivo, File | null> = {
     cedula: null,
     tarjeta: null,
     antecedentes: null,
@@ -194,11 +202,11 @@ export class Cuidadores {
   };
 
 
-  /* ─────────────────────────────
-     OPCIONES
-  ───────────────────────────── */
+  /* =====================================================
+     DÍAS
+  ===================================================== */
 
-  readonly dias = [
+  readonly dias: string[] = [
     'Lunes',
     'Martes',
     'Miércoles',
@@ -207,6 +215,11 @@ export class Cuidadores {
     'Sábado',
     'Domingo'
   ];
+
+
+  /* =====================================================
+     TURNOS
+  ===================================================== */
 
   readonly turnos = [
     {
@@ -224,11 +237,12 @@ export class Cuidadores {
   ];
 
 
-  /* ─────────────────────────────
+  /* =====================================================
      FORMULARIO VACÍO
-  ───────────────────────────── */
+  ===================================================== */
 
   formularioVacio(): FormularioCuidador {
+
     return {
       nombre: '',
       nid: '',
@@ -240,56 +254,73 @@ export class Cuidadores {
       experiencia: null,
       institucion: ''
     };
+
   }
 
 
-  /* ─────────────────────────────
+  /* =====================================================
      ESTADÍSTICAS
-  ───────────────────────────── */
+  ===================================================== */
 
   get totalCuidadores(): number {
+
     return this.cuidadores.length;
+
   }
 
+
   get cuidadoresActivos(): number {
+
     return this.cuidadores.filter(
       cuidador => cuidador.estado === 'active'
     ).length;
+
   }
 
+
   get cuidadoresFueraTurno(): number {
+
     return this.cuidadores.filter(
       cuidador => cuidador.estado === 'off'
     ).length;
+
   }
 
 
-  /* ─────────────────────────────
-     HELPERS
-  ───────────────────────────── */
+  /* =====================================================
+     AVATARES
+  ===================================================== */
 
   iniciales(nombre: string): string {
+
+    if (!nombre?.trim()) {
+      return '??';
+    }
 
     return nombre
       .trim()
       .split(/\s+/)
-      .map(palabra => palabra[0])
+      .map(palabra => palabra.charAt(0))
       .join('')
       .toUpperCase()
       .slice(0, 2);
+
   }
+
 
   avatarColor(id: number): string {
 
-    return this.avatarPalette[
-      (id - 1) % this.avatarPalette.length
-    ];
+    const index =
+      Math.abs(id - 1) % this.avatarPalette.length;
+
+    return this.avatarPalette[index];
+
   }
 
 
-  /* ─────────────────────────────
+  /* =====================================================
      DROPDOWN
-  ───────────────────────────── */
+  ===================================================== */
 
   toggleDropdown(
     event: MouseEvent,
@@ -298,21 +329,24 @@ export class Cuidadores {
 
     event.stopPropagation();
 
-    if (this.activeDropdown === id) {
-      this.activeDropdown = null;
-    } else {
-      this.activeDropdown = id;
-    }
+    this.activeDropdown =
+      this.activeDropdown === id
+        ? null
+        : id;
+
   }
+
 
   closeDropdown(): void {
+
     this.activeDropdown = null;
+
   }
 
 
-  /* ─────────────────────────────
-     MODAL
-  ───────────────────────────── */
+  /* =====================================================
+     ABRIR MODAL
+  ===================================================== */
 
   openModal(
     mode: 'new' | 'edit',
@@ -327,9 +361,10 @@ export class Cuidadores {
 
     if (mode === 'edit' && id !== undefined) {
 
-      const cuidador = this.cuidadores.find(
-        item => item.id === id
-      );
+      const cuidador =
+        this.cuidadores.find(
+          item => item.id === id
+        );
 
       if (!cuidador) {
         return;
@@ -337,11 +372,15 @@ export class Cuidadores {
 
       this.editId = id;
 
-      this.formulario.nombre = cuidador.nombre;
-      this.formulario.licencia = cuidador.licencia;
-      this.formulario.especialidad = cuidador.especialidad;
+      this.formulario = {
+        ...this.formulario,
+        nombre: cuidador.nombre,
+        especialidad: cuidador.especialidad,
+        licencia: cuidador.licencia
+      };
 
-      this.turnoSeleccionado = cuidador.turno;
+      this.turnoSeleccionado =
+        cuidador.turno;
 
       this.diasSeleccionados = [
         ...cuidador.dias
@@ -354,14 +393,22 @@ export class Cuidadores {
     }
 
     this.modalAbierto = true;
+
   }
+
+
+  /* =====================================================
+     CERRAR MODAL
+  ===================================================== */
 
   closeModal(): void {
 
     this.modalAbierto = false;
 
     this.clearForm();
+
   }
+
 
   cerrarModalPorOverlay(
     event: MouseEvent
@@ -370,18 +417,22 @@ export class Cuidadores {
     if (
       event.target === event.currentTarget
     ) {
+
       this.closeModal();
+
     }
+
   }
 
 
-  /* ─────────────────────────────
+  /* =====================================================
      LIMPIAR FORMULARIO
-  ───────────────────────────── */
+  ===================================================== */
 
   clearForm(): void {
 
-    this.formulario = this.formularioVacio();
+    this.formulario =
+      this.formularioVacio();
 
     this.turnoSeleccionado = '';
 
@@ -397,12 +448,13 @@ export class Cuidadores {
       antecedentes: null,
       hojaVida: null
     };
+
   }
 
 
-  /* ─────────────────────────────
+  /* =====================================================
      VALIDACIÓN
-  ───────────────────────────── */
+  ===================================================== */
 
   validateForm(): boolean {
 
@@ -410,21 +462,20 @@ export class Cuidadores {
 
     let valido = true;
 
-    const camposRequeridos = [
-      'nombre',
-      'nid',
-      'telefono',
-      'email',
-      'especialidad',
-      'licencia'
-    ];
+    const camposRequeridos:
+      Array<keyof FormularioCuidador> = [
+        'nombre',
+        'nid',
+        'telefono',
+        'email',
+        'especialidad',
+        'licencia'
+      ];
 
     camposRequeridos.forEach(campo => {
 
       const valor =
-        this.formulario[
-          campo as keyof FormularioCuidador
-        ];
+        this.formulario[campo];
 
       if (
         typeof valor !== 'string' ||
@@ -434,23 +485,32 @@ export class Cuidadores {
         this.errores[campo] = true;
 
         valido = false;
+
       }
 
     });
 
     return valido;
+
   }
+
 
   tieneError(campo: string): boolean {
+
     return this.errores[campo] === true;
+
   }
 
 
-  /* ─────────────────────────────
-     GUARDAR
-  ───────────────────────────── */
+  /* =====================================================
+     GUARDAR CUIDADOR
+  ===================================================== */
 
   saveCaregiver(): void {
+
+    if (this.guardando) {
+      return;
+    }
 
     if (!this.validateForm()) {
       return;
@@ -467,7 +527,7 @@ export class Cuidadores {
         this.formulario.licencia.trim();
 
       const especialidad =
-        this.formulario.especialidad ||
+        this.formulario.especialidad.trim() ||
         'Sin especialidad';
 
       const turno =
@@ -477,6 +537,10 @@ export class Cuidadores {
       const dias = [
         ...this.diasSeleccionados
       ];
+
+      /* =========================
+         EDITAR
+      ========================= */
 
       if (this.editId !== null) {
 
@@ -496,11 +560,18 @@ export class Cuidadores {
             turno,
             dias
           };
+
         }
 
-      } else {
+      }
 
-        this.cuidadores.push({
+      /* =========================
+         NUEVO
+      ========================= */
+
+      else {
+
+        const nuevoCuidador: Cuidador = {
 
           id: this.nextId++,
 
@@ -518,34 +589,37 @@ export class Cuidadores {
 
           dias
 
-        });
+        };
+
+        this.cuidadores.push(
+          nuevoCuidador
+        );
+
       }
 
       this.guardando = false;
 
-      setTimeout(() => {
+      this.closeModal();
 
-        this.closeModal();
+    }, 700);
 
-      }, 1500);
-
-    }, 1200);
   }
 
 
-  /* ─────────────────────────────
-     TURNO
-  ───────────────────────────── */
+  /* =====================================================
+     TURNOS
+  ===================================================== */
 
   selectTurno(turno: string): void {
 
     this.turnoSeleccionado = turno;
+
   }
 
 
-  /* ─────────────────────────────
+  /* =====================================================
      DÍAS
-  ───────────────────────────── */
+  ===================================================== */
 
   toggleDay(dia: string): void {
 
@@ -561,28 +635,30 @@ export class Cuidadores {
     } else {
 
       this.diasSeleccionados.push(dia);
+
     }
+
   }
 
-  isDaySelected(dia: string): boolean {
+
+  isDaySelected(
+    dia: string
+  ): boolean {
 
     return this.diasSeleccionados.includes(
       dia
     );
+
   }
 
 
-  /* ─────────────────────────────
+  /* =====================================================
      ARCHIVOS
-  ───────────────────────────── */
+  ===================================================== */
 
   handleUpload(
     event: Event,
-    tipo:
-      | 'cedula'
-      | 'tarjeta'
-      | 'antecedentes'
-      | 'hojaVida'
+    tipo: TipoArchivo
   ): void {
 
     const input =
@@ -595,35 +671,33 @@ export class Cuidadores {
 
       this.archivos[tipo] =
         input.files[0];
+
     }
+
   }
 
+
   archivoSeleccionado(
-    tipo:
-      | 'cedula'
-      | 'tarjeta'
-      | 'antecedentes'
-      | 'hojaVida'
+    tipo: TipoArchivo
   ): boolean {
 
     return this.archivos[tipo] !== null;
+
   }
+
 
   nombreArchivo(
-    tipo:
-      | 'cedula'
-      | 'tarjeta'
-      | 'antecedentes'
-      | 'hojaVida'
+    tipo: TipoArchivo
   ): string {
 
-    return this.archivos[tipo]?.name || '';
+    return this.archivos[tipo]?.name ?? '';
+
   }
 
 
-  /* ─────────────────────────────
-     ESTADO
-  ───────────────────────────── */
+  /* =====================================================
+     CAMBIAR ESTADO
+  ===================================================== */
 
   toggleStatus(id: number): void {
 
@@ -642,12 +716,13 @@ export class Cuidadores {
         : 'active';
 
     this.closeDropdown();
+
   }
 
 
-  /* ─────────────────────────────
+  /* =====================================================
      ELIMINAR
-  ───────────────────────────── */
+  ===================================================== */
 
   confirmDelete(id: number): void {
 
@@ -656,49 +731,67 @@ export class Cuidadores {
     this.pendingDeleteId = id;
 
     this.confirmAbierto = true;
+
   }
+
 
   closeConfirm(): void {
 
     this.confirmAbierto = false;
 
     this.pendingDeleteId = null;
+
   }
+
 
   deleteCaregiver(): void {
 
-    if (this.pendingDeleteId === null) {
+    if (
+      this.pendingDeleteId === null
+    ) {
       return;
     }
 
     this.cuidadores =
       this.cuidadores.filter(
         cuidador =>
-          cuidador.id !== this.pendingDeleteId
+          cuidador.id !==
+          this.pendingDeleteId
       );
 
     this.closeConfirm();
+
   }
 
+
   nombrePendienteEliminar(): string {
+
+    if (
+      this.pendingDeleteId === null
+    ) {
+      return '';
+    }
 
     const cuidador =
       this.cuidadores.find(
         item =>
-          item.id === this.pendingDeleteId
+          item.id ===
+          this.pendingDeleteId
       );
 
-    return cuidador
-      ? cuidador.nombre
-      : '';
+    return cuidador?.nombre ?? '';
+
   }
 
 
-  /* ─────────────────────────────
+  /* =====================================================
      CANCELAR
-  ───────────────────────────── */
+  ===================================================== */
 
   cancelar(): void {
+
     this.closeModal();
+
   }
+
 }

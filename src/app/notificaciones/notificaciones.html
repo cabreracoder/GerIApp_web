@@ -1,46 +1,286 @@
-<!--
-  COMPONENTE NOTIFICACIONES
-  El header principal de tu aplicación puede estar
-  en otro componente. Aquí solamente está el contenido
-  propio de Notificaciones.
--->
+<!-- =========================================================
+     NOTIFICACIONES
+     Este componente vive DENTRO del Layout.
+     El Sidebar y Header pertenecen al Layout principal.
+     ========================================================= -->
 
-<div class="content">
+<main class="canvas">
 
-  <div class="canvas">
+  <!-- =======================================================
+       ENCABEZADO DE LA PÁGINA
+       ======================================================= -->
 
-    <!-- HEADER DE LA PÁGINA -->
-    <div class="page-header">
+  <section class="page-header">
 
-      <div class="page-title-block">
-        <h2>Notificaciones</h2>
+    <div class="page-title-block">
 
-        <p class="page-subtitle">
-          {{ subtitulo }}
-        </p>
+      <div class="title-row">
+
+        <div class="title-icon">
+
+          <span class="material-symbols-outlined">
+            notifications
+          </span>
+
+        </div>
+
+        <div>
+
+          <h1 class="page-title">
+            Notificaciones
+          </h1>
+
+          <p class="page-subtitle">
+            {{ subtitulo }}
+          </p>
+
+        </div>
+
       </div>
 
-      <button
-        class="btn-mark-all"
-        type="button"
-        (click)="marcarTodasLeidas()"
-        [disabled]="notificacionesNoLeidas === 0">
+    </div>
+
+
+    <!-- MARCAR TODAS COMO LEÍDAS -->
+
+    <button
+      class="btn-mark-all"
+      type="button"
+      (click)="marcarTodasLeidas()"
+      [disabled]="notificacionesNoLeidas === 0"
+    >
+
+      <span class="material-symbols-outlined">
+        done_all
+      </span>
+
+      Marcar todas leídas
+
+    </button>
+
+  </section>
+
+
+  <!-- =======================================================
+       RESUMEN
+       ======================================================= -->
+
+  <section class="summary-grid">
+
+    <div class="summary-card">
+
+      <div class="summary-icon total">
 
         <span class="material-symbols-outlined">
-          done_all
+          notifications
         </span>
 
-        Marcar todas leídas
+      </div>
+
+      <div>
+
+        <span class="summary-label">
+          Total
+        </span>
+
+        <strong class="summary-value">
+          {{ notificaciones.length }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon unread">
+
+        <span class="material-symbols-outlined">
+          mark_email_unread
+        </span>
+
+      </div>
+
+      <div>
+
+        <span class="summary-label">
+          No leídas
+        </span>
+
+        <strong class="summary-value">
+          {{ notificacionesNoLeidas }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon critical">
+
+        <span class="material-symbols-outlined">
+          error
+        </span>
+
+      </div>
+
+      <div>
+
+        <span class="summary-label">
+          Críticas
+        </span>
+
+        <strong class="summary-value">
+          {{ cantidadCriticas }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="summary-card">
+
+      <div class="summary-icon warning">
+
+        <span class="material-symbols-outlined">
+          warning
+        </span>
+
+      </div>
+
+      <div>
+
+        <span class="summary-label">
+          Advertencias
+        </span>
+
+        <strong class="summary-value">
+          {{ cantidadAdvertencias }}
+        </strong>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =======================================================
+       FILTROS
+       ======================================================= -->
+
+  <section class="filters-card">
+
+    <div class="search-box">
+
+      <span class="material-symbols-outlined">
+        search
+      </span>
+
+      <input
+        type="text"
+        placeholder="Buscar notificaciones..."
+        [(ngModel)]="textoBusqueda"
+        (input)="filtrarNotificaciones()"
+        aria-label="Buscar notificaciones"
+      >
+
+      <button
+        *ngIf="textoBusqueda"
+        type="button"
+        class="clear-search"
+        (click)="limpiarBusqueda()"
+        title="Limpiar búsqueda"
+      >
+
+        <span class="material-symbols-outlined">
+          close
+        </span>
 
       </button>
 
     </div>
 
 
-    <!-- LISTA DE NOTIFICACIONES -->
+    <div class="filter-buttons">
+
+      <button
+        type="button"
+        class="filter-btn"
+        [class.active]="filtroActivo === 'todas'"
+        (click)="cambiarFiltro('todas')"
+      >
+        Todas
+      </button>
+
+      <button
+        type="button"
+        class="filter-btn"
+        [class.active]="filtroActivo === 'no-leidas'"
+        (click)="cambiarFiltro('no-leidas')"
+      >
+        No leídas
+      </button>
+
+      <button
+        type="button"
+        class="filter-btn"
+        [class.active]="filtroActivo === 'critical'"
+        (click)="cambiarFiltro('critical')"
+      >
+        Críticas
+      </button>
+
+      <button
+        type="button"
+        class="filter-btn"
+        [class.active]="filtroActivo === 'warning'"
+        (click)="cambiarFiltro('warning')"
+      >
+        Advertencias
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- =======================================================
+       LISTA DE NOTIFICACIONES
+       ======================================================= -->
+
+  <section class="notifications-card">
+
+    <div class="section-header">
+
+      <div>
+
+        <h2>
+          Actividad reciente
+        </h2>
+
+        <p>
+          Alertas y avisos del sistema
+        </p>
+
+      </div>
+
+      <span class="count-pill">
+        {{ notificacionesFiltradas.length }}
+      </span>
+
+    </div>
+
+
+    <!-- LISTA -->
+
     <div class="notif-list">
 
-      <div
+      <article
         class="notif-item"
         *ngFor="let notificacion of notificacionesFiltradas"
         [class.type-critical]="notificacion.tipo === 'critical'"
@@ -50,6 +290,7 @@
       >
 
         <!-- ICONO -->
+
         <div class="notif-icon-wrap">
 
           <span class="material-symbols-outlined">
@@ -59,86 +300,139 @@
         </div>
 
 
-        <!-- INFORMACIÓN -->
+        <!-- CONTENIDO -->
+
         <div class="notif-body">
 
-          <div class="notif-title">
-            {{ notificacion.titulo }}
+          <div class="notif-top">
+
+            <div class="notif-title">
+
+              {{ notificacion.titulo }}
+
+              <span
+                *ngIf="!notificacion.leida"
+                class="unread-label"
+              >
+                Nueva
+              </span>
+
+            </div>
+
+            <span class="notif-type">
+
+              {{
+                notificacion.tipo === 'critical'
+                  ? 'Crítica'
+                  : notificacion.tipo === 'warning'
+                  ? 'Advertencia'
+                  : 'Información'
+              }}
+
+            </span>
+
           </div>
+
 
           <div class="notif-desc">
             {{ notificacion.descripcion }}
           </div>
 
+
           <div class="notif-time">
+
+            <span class="material-symbols-outlined">
+              schedule
+            </span>
+
             {{ notificacion.tiempo }}
+
           </div>
 
         </div>
 
 
-        <!-- MARCAR COMO LEÍDA -->
-        <button
-          *ngIf="!notificacion.leida"
-          class="notif-read"
-          type="button"
-          title="Marcar como leída"
-          aria-label="Marcar como leída"
-          (click)="marcarComoLeida(notificacion)"
-        >
+        <!-- ACCIONES -->
 
-          <span class="material-symbols-outlined">
-            done
-          </span>
+        <div class="notif-actions">
 
-        </button>
+          <!-- MARCAR LEÍDA -->
 
+          <button
+            *ngIf="!notificacion.leida"
+            class="notif-action read"
+            type="button"
+            title="Marcar como leída"
+            aria-label="Marcar como leída"
+            (click)="marcarComoLeida(notificacion)"
+          >
 
-        <!-- ELIMINAR -->
-        <button
-          class="notif-close"
-          type="button"
-          title="Eliminar notificación"
-          aria-label="Eliminar notificación"
-          (click)="eliminarNotificacion(notificacion.id)"
-        >
+            <span class="material-symbols-outlined">
+              done
+            </span>
 
-          <span class="material-symbols-outlined">
-            close
-          </span>
-
-        </button>
-
-      </div>
+          </button>
 
 
-      <!-- ESTADO VACÍO -->
+          <!-- ELIMINAR -->
+
+          <button
+            class="notif-action delete"
+            type="button"
+            title="Eliminar notificación"
+            aria-label="Eliminar notificación"
+            (click)="eliminarNotificacion(notificacion.id)"
+          >
+
+            <span class="material-symbols-outlined">
+              delete
+            </span>
+
+          </button>
+
+        </div>
+
+      </article>
+
+
+      <!-- ===================================================
+           ESTADO VACÍO
+           =================================================== -->
+
       <div
         class="empty-state"
         *ngIf="notificacionesFiltradas.length === 0"
       >
 
-        <span class="material-symbols-outlined">
-          notifications_off
-        </span>
+        <div class="empty-icon">
+
+          <span class="material-symbols-outlined">
+            notifications_off
+          </span>
+
+        </div>
+
+        <h3>
+          No hay notificaciones
+        </h3>
 
         <p>
-          No hay notificaciones para mostrar.
+          No encontramos notificaciones con los filtros actuales.
         </p>
 
         <button
-          *ngIf="textoBusqueda"
+          *ngIf="textoBusqueda || filtroActivo !== 'todas'"
           type="button"
           class="btn-clear-search"
-          (click)="limpiarBusqueda()"
+          (click)="limpiarFiltros()"
         >
-          Limpiar búsqueda
+          Limpiar filtros
         </button>
 
       </div>
 
     </div>
 
-  </div>
+  </section>
 
-</div>
+</main>

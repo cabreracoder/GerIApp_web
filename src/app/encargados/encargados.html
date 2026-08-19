@@ -1,258 +1,180 @@
-<!-- =========================================================
-     ENCARGADO - CONTENEDOR PRINCIPAL
-     ========================================================= -->
+<main class="canvas">
 
-<div class="layout">
+  <!-- =========================================================
+       ENCABEZADO DE LA PÁGINA
+       ========================================================= -->
 
-  <!-- ================= HEADER ================= -->
-  <header class="header">
+  <section class="page-header">
 
-    <div class="header-brand">
-      Gestión Administrativa
+    <div>
+      <h1 class="page-title">
+        Gestión Encargado
+      </h1>
+
+      <p class="page-sub">
+        Responsables de la dirección y administración
+        de la Fundación Geriátrica
+      </p>
     </div>
 
-    <div class="header-search">
-      <span class="material-symbols-outlined s-icon">search</span>
-
-      <input
-        type="text"
-        placeholder="Buscar encargados, cargos, áreas…"
-        aria-label="Buscar"
-        [(ngModel)]="busqueda"
-        (input)="filtrarEncargados()"
-      >
-    </div>
-
-    <div class="header-right">
-
-      <button
-        class="icon-btn"
-        title="Notificaciones"
-        aria-label="Notificaciones"
-        type="button"
-      >
-        <span class="material-symbols-outlined">
-          notifications
-        </span>
-      </button>
-
-      <button
-        class="icon-btn"
-        title="Calendario"
-        aria-label="Calendario"
-        type="button"
-      >
-        <span class="material-symbols-outlined">
-          calendar_month
-        </span>
-      </button>
-
-      <div class="h-divider"></div>
-
-      <button
-        class="btn-primary"
-        type="button"
-        (click)="openModal('new')"
-      >
-        <span class="material-symbols-outlined">
-          add
-        </span>
-
-        Nuevo Encargado
-      </button>
-
-      <div class="h-divider"></div>
-
-      <div class="header-user">
-
-        <div class="header-user-info">
-          <span class="hu-name">
-            Jose Cabrera
-          </span>
-
-          <span class="hu-role">
-            Administrador
-          </span>
-        </div>
-
-        <div
-          class="avatar-sm"
-          aria-label="Jose Cabrera"
-        >
-          JC
-        </div>
-
-      </div>
-
-    </div>
-
-  </header>
-
-
-  <!-- ================= CONTENIDO ================= -->
-
-  <main class="canvas">
-
-    <!-- Page header -->
-
-    <div class="page-header">
-
-      <div>
-
-        <h1 class="page-title">
-          Gestión Encargado
-        </h1>
-
-        <p class="page-sub">
-          Responsables de la dirección y administración
-          de la Fundación Geriátrica
-        </p>
-
-      </div>
-
-      <button
-        class="btn-primary"
-        type="button"
-        (click)="openModal('new')"
-      >
-
-        <span class="material-symbols-outlined">
-          add
-        </span>
-
-        Nuevo Encargado
-
-      </button>
-
-    </div>
-
-
-    <!-- =====================================================
-         HERO CARD - ENCARGADO PRINCIPAL
-         ===================================================== -->
-
-    <div
-      class="hero-card"
-      role="region"
-      aria-label="Encargado Principal"
+    <button
+      class="btn-primary"
+      type="button"
+      (click)="openModal('new')"
     >
-
-      <!-- Marca de agua -->
-
-      <span
-        class="material-symbols-outlined hero-watermark"
-        aria-hidden="true"
-      >
-        verified
+      <span class="material-symbols-outlined">
+        add
       </span>
 
+      Nuevo Encargado
+    </button>
 
-      <!-- Botón editar -->
-
-      <button
-        class="hero-edit-btn"
-        type="button"
-        (click)="openModal('editPrincipal')"
-        title="Editar encargado principal"
-      >
-
-        <span class="material-symbols-outlined">
-          edit
-        </span>
-
-        Editar
-
-      </button>
+  </section>
 
 
-      <div class="hero-content">
+  <!-- =========================================================
+       BUSCADOR
+       ========================================================= -->
 
-        <!-- Avatar -->
+  <section class="search-card">
 
-        <div class="hero-avatar">
-          {{ encargadoPrincipal.iniciales }}
+    <span class="material-symbols-outlined search-icon">
+      search
+    </span>
+
+    <input
+      type="text"
+      placeholder="Buscar encargados, cargos, áreas..."
+      aria-label="Buscar encargados"
+      [(ngModel)]="busqueda"
+      (input)="filtrarEncargados()"
+    >
+
+    <span
+      class="search-count"
+      *ngIf="busqueda"
+    >
+      {{ encargadosFiltrados.length }}
+      resultado{{ encargadosFiltrados.length === 1 ? '' : 's' }}
+    </span>
+
+  </section>
+
+
+  <!-- =========================================================
+       ENCARGADO PRINCIPAL
+       ========================================================= -->
+
+  <section
+    class="hero-card"
+    role="region"
+    aria-label="Encargado Principal"
+  >
+
+    <span
+      class="material-symbols-outlined hero-watermark"
+      aria-hidden="true"
+    >
+      verified
+    </span>
+
+
+    <!-- Botón editar -->
+
+    <button
+      class="hero-edit-btn"
+      type="button"
+      (click)="openModal('editPrincipal')"
+      title="Editar encargado principal"
+    >
+      <span class="material-symbols-outlined">
+        edit
+      </span>
+
+      Editar
+    </button>
+
+
+    <div class="hero-content">
+
+      <!-- Avatar -->
+
+      <div class="hero-avatar">
+        {{ encargadoPrincipal.iniciales }}
+      </div>
+
+
+      <!-- Información -->
+
+      <div class="hero-info">
+
+        <div class="hero-badge">
+
+          <span class="material-symbols-outlined">
+            workspace_premium
+          </span>
+
+          ENCARGADO PRINCIPAL
+
         </div>
 
 
-        <div class="hero-info">
+        <div class="hero-name">
+          {{ encargadoPrincipal.nombre }}
+        </div>
 
-          <!-- Badge -->
 
-          <div class="hero-badge">
+        <div class="hero-role">
+          {{ encargadoPrincipal.cargo }}
+          ·
+          {{ encargadoPrincipal.area }}
+        </div>
+
+
+        <div class="hero-desc">
+          {{ encargadoPrincipal.descripcion }}
+        </div>
+
+
+        <!-- Contactos -->
+
+        <div class="hero-contacts">
+
+          <div class="hero-contact">
 
             <span class="material-symbols-outlined">
-              workspace_premium
+              phone
             </span>
 
-            ENCARGADO PRINCIPAL
+            <span>
+              {{ encargadoPrincipal.telefono }}
+            </span>
 
           </div>
 
 
-          <!-- Nombre -->
+          <div class="hero-contact">
 
-          <div class="hero-name">
-            {{ encargadoPrincipal.nombre }}
+            <span class="material-symbols-outlined">
+              mail
+            </span>
+
+            <span>
+              {{ encargadoPrincipal.email }}
+            </span>
+
           </div>
 
 
-          <!-- Cargo -->
+          <div class="hero-contact">
 
-          <div class="hero-role">
-            {{ encargadoPrincipal.cargo }}
-            ·
-            {{ encargadoPrincipal.area }}
-          </div>
+            <span class="material-symbols-outlined">
+              calendar_month
+            </span>
 
-
-          <!-- Descripción -->
-
-          <div class="hero-desc">
-            {{ encargadoPrincipal.descripcion }}
-          </div>
-
-
-          <!-- Contactos -->
-
-          <div class="hero-contacts">
-
-            <div class="hero-contact">
-
-              <span class="material-symbols-outlined">
-                phone
-              </span>
-
-              <span>
-                {{ encargadoPrincipal.telefono }}
-              </span>
-
-            </div>
-
-
-            <div class="hero-contact">
-
-              <span class="material-symbols-outlined">
-                mail
-              </span>
-
-              <span>
-                {{ encargadoPrincipal.email }}
-              </span>
-
-            </div>
-
-
-            <div class="hero-contact">
-
-              <span class="material-symbols-outlined">
-                calendar_month
-              </span>
-
-              <span>
-                {{ encargadoPrincipal.ingresoTexto }}
-              </span>
-
-            </div>
+            <span>
+              {{ encargadoPrincipal.ingresoTexto }}
+            </span>
 
           </div>
 
@@ -262,58 +184,68 @@
 
     </div>
 
-
-    <!-- =====================================================
-         OTROS ENCARGADOS
-         ===================================================== -->
-
-    <div class="section-hdr">
-
-      <div class="section-title">
-
-        <span class="material-symbols-outlined">
-          group
-        </span>
-
-        Otros Encargados
-
-      </div>
-
-      <span class="count-pill">
-        {{ encargadosFiltrados.length }}
-      </span>
-
-    </div>
+  </section>
 
 
-    <!-- Estado vacío -->
+  <!-- =========================================================
+       OTROS ENCARGADOS
+       ========================================================= -->
 
-    <div
-      class="empty-state"
-      *ngIf="encargadosFiltrados.length === 0"
-    >
+  <section class="section-hdr">
+
+    <div class="section-title">
 
       <span class="material-symbols-outlined">
-        group_off
+        group
       </span>
 
-      <div class="empty-title">
-        No hay otros encargados
-      </div>
-
-      <div class="empty-sub">
-        Los encargados adicionales aparecerán aquí.
-      </div>
+      <span>
+        Otros Encargados
+      </span>
 
     </div>
 
+    <span class="count-pill">
+      {{ encargadosFiltrados.length }}
+    </span>
 
-    <!-- Tabla -->
+  </section>
 
-    <div
-      class="table-card"
-      *ngIf="encargadosFiltrados.length > 0"
-    >
+
+  <!-- =========================================================
+       ESTADO VACÍO
+       ========================================================= -->
+
+  <section
+    class="empty-state"
+    *ngIf="encargadosFiltrados.length === 0"
+  >
+
+    <span class="material-symbols-outlined">
+      group_off
+    </span>
+
+    <div class="empty-title">
+      No hay otros encargados
+    </div>
+
+    <div class="empty-sub">
+      Los encargados adicionales aparecerán aquí.
+    </div>
+
+  </section>
+
+
+  <!-- =========================================================
+       TABLA
+       ========================================================= -->
+
+  <section
+    class="table-card"
+    *ngIf="encargadosFiltrados.length > 0"
+  >
+
+    <div class="table-wrapper">
 
       <table>
 
@@ -366,7 +298,7 @@
                   {{ encargado.iniciales }}
                 </div>
 
-                <div>
+                <div class="tbl-info">
 
                   <div class="tbl-name">
                     {{ encargado.nombre }}
@@ -400,11 +332,9 @@
             <!-- Teléfono -->
 
             <td>
-
               <span class="tbl-phone">
                 {{ encargado.telefono }}
               </span>
-
             </td>
 
 
@@ -486,9 +416,9 @@
 
     </div>
 
-  </main>
+  </section>
 
-</div>
+</main>
 
 
 <!-- =========================================================
@@ -505,9 +435,10 @@
     class="modal"
     role="dialog"
     aria-modal="true"
+    aria-labelledby="modal-title"
   >
 
-    <!-- Modal header -->
+    <!-- Header -->
 
     <div class="modal-header">
 
@@ -520,12 +451,17 @@
       </div>
 
 
-      <div>
+      <div class="modal-hdr-content">
 
-        <div class="modal-hdr-title">
-
-          {{ modoEdicion ? 'Editar Encargado' : 'Nuevo Encargado' }}
-
+        <div
+          id="modal-title"
+          class="modal-hdr-title"
+        >
+          {{
+            modoEdicion
+              ? 'Editar Encargado'
+              : 'Nuevo Encargado'
+          }}
         </div>
 
         <div class="modal-hdr-sub">
@@ -557,16 +493,18 @@
     </div>
 
 
-    <!-- Modal body -->
+    <!-- =======================================================
+         BODY
+         ======================================================= -->
 
     <div class="modal-body">
 
 
-      <!-- ===================================================
-           SECCIÓN 1
-           =================================================== -->
+      <!-- =====================================================
+           DATOS PERSONALES
+           ===================================================== -->
 
-      <div class="form-section">
+      <section class="form-section">
 
         <div class="form-sec-title">
 
@@ -594,8 +532,8 @@
             </label>
 
             <input
-              type="text"
               id="f-nombre"
+              type="text"
               class="form-input"
               placeholder="Ej. Carlos Méndez"
               [(ngModel)]="formulario.nombre"
@@ -627,8 +565,8 @@
             </label>
 
             <input
-              type="date"
               id="f-fecha"
+              type="date"
               class="form-input"
               [(ngModel)]="formulario.fechaIngreso"
             >
@@ -653,10 +591,10 @@
             </label>
 
             <input
-              type="tel"
               id="f-telefono"
+              type="tel"
               class="form-input"
-              placeholder="+502 5555 0000"
+              placeholder="+57 300 000 0000"
               [(ngModel)]="formulario.telefono"
             >
 
@@ -687,8 +625,8 @@
             </label>
 
             <input
-              type="email"
               id="f-email"
+              type="email"
               class="form-input"
               placeholder="nombre@fundacion.org"
               [(ngModel)]="formulario.email"
@@ -711,14 +649,14 @@
 
         </div>
 
-      </div>
+      </section>
 
 
-      <!-- ===================================================
-           SECCIÓN 2
-           =================================================== -->
+      <!-- =====================================================
+           CARGO Y RESPONSABILIDADES
+           ===================================================== -->
 
-      <div class="form-section">
+      <section class="form-section">
 
         <div class="form-sec-title">
 
@@ -883,7 +821,7 @@
             <textarea
               id="f-desc"
               class="form-textarea"
-              placeholder="Describa las principales responsabilidades del cargo…"
+              placeholder="Describa las principales responsabilidades del cargo..."
               [(ngModel)]="formulario.descripcion"
             ></textarea>
 
@@ -891,12 +829,14 @@
 
         </div>
 
-      </div>
+      </section>
 
     </div>
 
 
-    <!-- Modal footer -->
+    <!-- =======================================================
+         FOOTER
+         ======================================================= -->
 
     <div class="modal-footer">
 
@@ -904,6 +844,7 @@
         class="btn-cancel"
         type="button"
         (click)="closeModal()"
+        [disabled]="guardando"
       >
         Cancelar
       </button>

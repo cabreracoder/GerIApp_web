@@ -1,21 +1,18 @@
 <div class="app-container">
 
-  <!-- SIDEBAR -->
+  <!-- =====================================================
+       SIDEBAR
+       ===================================================== -->
   <aside class="sidebar">
 
     <!-- LOGO -->
     <div class="logo-container">
-
       <div class="logo">
-
         <span class="material-symbols-outlined">
           health_and_safety
         </span>
-
       </div>
-
     </div>
-
 
     <!-- MENÚ PRINCIPAL -->
     <nav class="menu">
@@ -26,7 +23,7 @@
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
         class="menu-button"
-        [title]="item.nombre"
+        [attr.title]="item.nombre"
       >
 
         <span class="material-symbols-outlined">
@@ -41,7 +38,6 @@
 
     </nav>
 
-
     <!-- MENÚ INFERIOR -->
     <div class="sidebar-footer">
 
@@ -51,7 +47,7 @@
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
         class="menu-button"
-        [title]="configuracion.nombre"
+        [attr.title]="configuracion.nombre"
       >
 
         <span class="material-symbols-outlined">
@@ -64,12 +60,12 @@
 
       </a>
 
-
       <!-- CERRAR SESIÓN -->
       <button
         type="button"
         class="menu-button logout-button"
         title="Cerrar sesión"
+        (click)="cerrarSesion()"
       >
 
         <span class="material-symbols-outlined">
@@ -87,13 +83,13 @@
   </aside>
 
 
-  <!-- CONTENIDO PRINCIPAL -->
+  <!-- =====================================================
+       CONTENIDO PRINCIPAL
+       ===================================================== -->
   <div class="main-container">
-
 
     <!-- HEADER -->
     <header class="header">
-
 
       <!-- IZQUIERDA -->
       <div class="header-left">
@@ -101,7 +97,6 @@
         <h1>
           Fundación Geriátrica
         </h1>
-
 
         <!-- BUSCADOR -->
         <div class="search-container">
@@ -123,12 +118,12 @@
       <!-- DERECHA -->
       <div class="header-right">
 
-
         <!-- NOTIFICACIONES -->
         <button
           type="button"
           class="header-button"
           title="Notificaciones"
+          routerLink="/notificaciones"
         >
 
           <span class="material-symbols-outlined">
@@ -182,7 +177,6 @@
 
           </div>
 
-
           <div class="avatar">
             JC
           </div>
@@ -194,7 +188,9 @@
     </header>
 
 
-    <!-- CONTENIDO DE LAS PÁGINAS -->
+    <!-- =====================================================
+         CONTENIDO DE LAS PÁGINAS
+         ===================================================== -->
     <main class="content">
 
       <router-outlet></router-outlet>
@@ -204,11 +200,14 @@
   </div>
 
 
-  <!-- BOTÓN FLOTANTE -->
+  <!-- =====================================================
+       BOTÓN FLOTANTE
+       ===================================================== -->
   <button
     type="button"
     class="floating-button"
     title="Nuevo paciente"
+    routerLink="/pacientes"
   >
 
     <span class="material-symbols-outlined">

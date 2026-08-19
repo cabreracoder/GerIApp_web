@@ -1,245 +1,893 @@
 /* =========================================================
-   ROLES Y PERMISOS
-   ========================================================= */
+   RESET
+========================================================= */
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-button,
-input {
-  font-family: inherit;
-}
 
 /* =========================================================
-   CONTENEDOR PRINCIPAL
-   ========================================================= */
+   VARIABLES
+========================================================= */
 
 :host {
+  --primary: #3B5BDB;
+  --secondary: #4DABF7;
+  --bg: #F8FAFC;
+  --card: #E9ECEF;
+  --border: #CED4DA;
+  --text: #212529;
+  --muted: #6C757D;
+  --error: #DC3545;
+  --warn: #F59E0B;
+  --beige: #F5E8D5;
+  --white: #FFFFFF;
+
+  --sidebar-w: 72px;
+  --sidebar-gap: 16px;
+  --header-h: 64px;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 32px;
+
   display: block;
-  width: 100%;
-  min-height: 100%;
-  font-family: 'Inter', Arial, sans-serif;
-  color: #212529;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
 
-  --primary: #3b5bdb;
-  --text-main: #212529;
-  --text-secondary: #6c757d;
-  --border: #e9ecef;
-  --background: #f8f9fa;
-  --white: #ffffff;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
 }
+
 
 /* =========================================================
-   TÍTULO
-   ========================================================= */
+   SIDEBAR
+========================================================= */
 
-.page-title {
-  margin: 0 0 6px;
-  font-size: 30px;
-  font-weight: 700;
-  color: var(--text-main);
-}
+.sidebar {
+  position: fixed;
 
-.page-subtitle {
-  margin: 0 0 28px;
-  color: var(--text-secondary);
-  font-size: 15px;
-}
+  left: var(--sidebar-gap);
+  top: var(--sidebar-gap);
+  bottom: var(--sidebar-gap);
 
-/* =========================================================
-   TARJETAS DE ROLES
-   ========================================================= */
+  width: var(--sidebar-w);
 
-.role-cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-bottom: 28px;
-}
+  background: var(--primary);
 
-.role-card {
-  position: relative;
-  background: #ffffff;
-  border: 1px solid #e9ecef;
-  border-radius: 14px;
-  padding: 20px;
-  cursor: pointer;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    border-color 0.2s ease;
-  min-height: 210px;
-}
+  border-radius: var(--radius-xl);
 
-.role-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-}
-
-.role-card.selected {
-  border: 2px solid var(--role-color);
-  box-shadow: 0 6px 20px rgba(59, 91, 219, 0.12);
-}
-
-/* =========================================================
-   CABECERA DE TARJETA
-   ========================================================= */
-
-.role-card-header {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 18px;
+
+  padding: 16px 0;
+
+  z-index: 200;
+
+  box-shadow:
+    0 8px 32px rgba(59, 91, 219, 0.18);
 }
 
-.role-icon-wrap {
-  width: 48px;
-  height: 48px;
-  min-width: 48px;
+
+/* =========================================================
+   LOGO SIDEBAR
+========================================================= */
+
+.sidebar-logo {
+  width: 40px;
+  height: 40px;
+
+  background: rgba(255, 255, 255, 0.15);
+
   border-radius: 12px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  color: white;
+  margin-bottom: 24px;
+
+  flex-shrink: 0;
 }
+
+.sidebar-logo .material-symbols-outlined {
+  color: #fff;
+  font-size: 22px;
+}
+
+
+/* =========================================================
+   NAVEGACIÓN
+========================================================= */
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+
+  flex: 1;
+
+  width: 100%;
+
+  padding: 0 10px;
+}
+
+
+.sidebar-footer {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+
+  width: 100%;
+
+  padding: 0 10px 4px;
+}
+
+
+/* =========================================================
+   ITEMS SIDEBAR
+========================================================= */
+
+.nav-item {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 52px;
+  height: 52px;
+
+  border-radius: 16px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.18s,
+    color 0.18s;
+
+  border: none;
+
+  background: transparent;
+
+  color: rgba(255, 255, 255, 0.6);
+
+  text-decoration: none;
+}
+
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+
+.nav-item.active {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+
+.nav-item .material-symbols-outlined {
+  font-size: 24px;
+
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+
+.nav-item.active .material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+
+/* =========================================================
+   TOOLTIP SIDEBAR
+========================================================= */
+
+.nav-item::after {
+  content: attr(data-tooltip);
+
+  position: absolute;
+
+  left: calc(100% + 12px);
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  background: #1a1a2e;
+
+  color: #fff;
+
+  font-family: 'Inter', sans-serif;
+
+  font-size: 12px;
+  font-weight: 500;
+
+  white-space: nowrap;
+
+  padding: 5px 10px;
+
+  border-radius: 6px;
+
+  pointer-events: none;
+
+  opacity: 0;
+
+  transition: opacity 0.15s;
+
+  z-index: 300;
+}
+
+
+.nav-item::before {
+  content: '';
+
+  position: absolute;
+
+  left: calc(100% + 6px);
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  border: 5px solid transparent;
+
+  border-right-color: #1a1a2e;
+
+  pointer-events: none;
+
+  opacity: 0;
+
+  transition: opacity 0.15s;
+
+  z-index: 300;
+}
+
+
+.nav-item:hover::after,
+.nav-item:hover::before {
+  opacity: 1;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header {
+  position: fixed;
+
+  top: 0;
+
+  left: calc(
+    var(--sidebar-w) +
+    var(--sidebar-gap) * 2
+  );
+
+  right: 0;
+
+  height: var(--header-h);
+
+  background: var(--white);
+
+  border-bottom: 1px solid var(--border);
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 24px;
+
+  gap: 16px;
+
+  z-index: 100;
+}
+
+
+/* =========================================================
+   HEADER BRAND
+========================================================= */
+
+.header-brand {
+  font-family: 'Manrope', sans-serif;
+
+  font-weight: 800;
+
+  font-size: 17px;
+
+  color: var(--primary);
+
+  white-space: nowrap;
+
+  letter-spacing: -0.3px;
+}
+
+
+/* =========================================================
+   BUSCADOR
+========================================================= */
+
+.header-search {
+  flex: 1;
+
+  max-width: 320px;
+
+  position: relative;
+}
+
+
+.header-search input {
+  width: 100%;
+  height: 36px;
+
+  border: 1.5px solid var(--border);
+
+  border-radius: 20px;
+
+  padding: 0 12px 0 36px;
+
+  font-family: 'Inter', sans-serif;
+
+  font-size: 13px;
+
+  color: var(--text);
+
+  background: var(--bg);
+
+  outline: none;
+
+  transition: border-color 0.15s;
+}
+
+
+.header-search input:focus {
+  border-color: var(--primary);
+}
+
+
+.header-search input::placeholder {
+  color: var(--muted);
+}
+
+
+.header-search .search-icon {
+  position: absolute;
+
+  left: 10px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  font-size: 18px;
+
+  color: var(--muted);
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   HEADER ACTIONS
+========================================================= */
+
+.header-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin-left: auto;
+}
+
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+
+  border-radius: 10px;
+
+  border: 1.5px solid var(--border);
+
+  background: var(--white);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  color: var(--muted);
+
+  transition: all 0.15s;
+}
+
+
+.icon-btn:hover {
+  border-color: var(--primary);
+
+  color: var(--primary);
+
+  background: rgba(59, 91, 219, 0.04);
+}
+
+
+.icon-btn .material-symbols-outlined {
+  font-size: 20px;
+}
+
+
+.header-divider {
+  width: 1px;
+  height: 32px;
+
+  background: var(--border);
+
+  margin: 0 4px;
+}
+
+
+/* =========================================================
+   USUARIO HEADER
+========================================================= */
+
+.header-user {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  cursor: pointer;
+
+  border: none;
+
+  background: transparent;
+
+  padding: 0;
+}
+
+
+.header-user-info {
+  text-align: right;
+
+  line-height: 1.3;
+}
+
+
+.header-user-name {
+  font-family: 'Inter', sans-serif;
+
+  font-weight: 600;
+
+  font-size: 13px;
+
+  color: var(--text);
+}
+
+
+.header-user-role {
+  font-size: 11px;
+
+  color: var(--muted);
+
+  font-weight: 500;
+}
+
+
+.avatar {
+  width: 36px;
+  height: 36px;
+
+  border-radius: 50%;
+
+  background: var(--primary);
+
+  color: #fff;
+
+  font-family: 'Manrope', sans-serif;
+
+  font-weight: 700;
+
+  font-size: 13px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.main {
+  margin-left: calc(
+    var(--sidebar-w) +
+    var(--sidebar-gap) * 2
+  );
+
+  margin-top: var(--header-h);
+
+  padding: 32px 32px 48px;
+
+  min-height: calc(
+    100vh - var(--header-h)
+  );
+}
+
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.page-header {
+  margin-bottom: 28px;
+}
+
+
+.page-title {
+  font-family: 'Manrope', sans-serif;
+
+  font-weight: 800;
+
+  font-size: 32px;
+
+  color: var(--text);
+
+  letter-spacing: -0.5px;
+
+  line-height: 1.15;
+}
+
+
+.page-subtitle {
+  margin-top: 6px;
+
+  font-size: 14px;
+
+  color: var(--muted);
+
+  font-weight: 400;
+}
+
+
+/* =========================================================
+   SECTION LABEL
+========================================================= */
+
+.section-label {
+  font-family: 'Manrope', sans-serif;
+
+  font-weight: 700;
+
+  font-size: 13px;
+
+  color: var(--muted);
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.8px;
+
+  margin-bottom: 12px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+
+.section-label::after {
+  content: '';
+
+  flex: 1;
+
+  height: 1px;
+
+  background: var(--border);
+}
+
+
+/* =========================================================
+   ROLE CARDS
+========================================================= */
+
+.role-cards {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 16px;
+
+  margin-bottom: 28px;
+}
+
+
+.role-card {
+  background: var(--white);
+
+  border: 2px solid var(--border);
+
+  border-radius: var(--radius-lg);
+
+  padding: 20px;
+
+  cursor: pointer;
+
+  transition: all 0.18s;
+
+  position: relative;
+
+  overflow: hidden;
+}
+
+
+.role-card::before {
+  content: '';
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: 4px;
+
+  background:
+    var(--role-color, var(--primary));
+
+  border-radius: 4px 4px 0 0;
+}
+
+
+.role-card:hover {
+  border-color:
+    var(--role-color, var(--primary));
+
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.08);
+
+  transform: translateY(-2px);
+}
+
+
+.role-card.selected {
+  border-color:
+    var(--role-color, var(--primary));
+
+  box-shadow:
+    0 0 0 3px rgba(59, 91, 219, 0.12),
+    0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+
+/* =========================================================
+   ROLE CARD HEADER
+========================================================= */
+
+.role-card-header {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 12px;
+}
+
+
+.role-icon-wrap {
+  width: 44px;
+  height: 44px;
+
+  border-radius: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+}
+
 
 .role-icon-wrap .material-symbols-outlined {
-  font-size: 25px;
+  font-size: 24px;
+
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 24;
+
+  color: #fff;
 }
+
 
 .role-card-meta {
-  min-width: 0;
+  flex: 1;
 }
 
+
 .role-card-name {
-  font-size: 17px;
+  font-family: 'Manrope', sans-serif;
+
   font-weight: 700;
-  color: #212529;
-  margin-bottom: 5px;
+
+  font-size: 16px;
+
+  color: var(--text);
+
+  line-height: 1.2;
 }
+
 
 .role-user-count {
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-size: 13px;
-  color: #868e96;
+
+  gap: 4px;
+
+  margin-top: 3px;
+
+  font-size: 12px;
+
+  color: var(--muted);
+
+  font-weight: 500;
 }
+
 
 .role-user-count .material-symbols-outlined {
-  font-size: 17px;
+  font-size: 14px;
 }
 
+
 /* =========================================================
-   DESCRIPCIÓN
-   ========================================================= */
+   ROLE DESCRIPTION
+========================================================= */
 
 .role-card-desc {
-  min-height: 58px;
   font-size: 13px;
-  line-height: 1.55;
-  color: #6c757d;
-  margin-bottom: 18px;
+
+  color: var(--muted);
+
+  line-height: 1.5;
+
+  margin-bottom: 14px;
 }
 
+
 /* =========================================================
-   RESUMEN DE PERMISOS
-   ========================================================= */
+   PERMISSION BADGES
+========================================================= */
 
 .role-perm-summary {
   display: flex;
+
   gap: 8px;
+
   flex-wrap: wrap;
 }
 
+
 .perm-badge {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 5px;
 
-  padding: 6px 9px;
-  border-radius: 7px;
+  gap: 4px;
 
-  font-size: 12px;
+  font-size: 11px;
+
   font-weight: 600;
+
+  padding: 3px 8px;
+
+  border-radius: 20px;
 }
 
-.perm-badge .material-symbols-outlined {
-  font-size: 16px;
-}
 
 .perm-badge.allowed {
-  background: #e9f8f0;
-  color: #15966a;
+  background: rgba(59, 91, 219, 0.08);
+
+  color: var(--primary);
 }
+
 
 .perm-badge.restricted {
-  background: #fff0f0;
-  color: #e03131;
+  background: rgba(108, 117, 125, 0.1);
+
+  color: var(--muted);
 }
 
+
 /* =========================================================
-   CHECK DE TARJETA SELECCIONADA
-   ========================================================= */
+   CHECK SELECCIONADO
+========================================================= */
 
 .selected-check {
   position: absolute;
-  top: 12px;
-  right: 12px;
 
-  width: 27px;
-  height: 27px;
+  top: 14px;
+  right: 14px;
+
+  width: 22px;
+  height: 22px;
 
   border-radius: 50%;
 
   display: flex;
   align-items: center;
   justify-content: center;
-
-  color: white;
 }
+
 
 .selected-check .material-symbols-outlined {
   font-size: 18px;
+
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 600,
+    'GRAD' 0,
+    'opsz' 20;
+
+  color: #fff;
 }
 
+
 /* =========================================================
-   PANEL DE DETALLE
-   ========================================================= */
+   DETAIL PANEL
+========================================================= */
 
 .detail-panel {
   display: grid;
-  grid-template-columns: 300px 1fr;
+
+  grid-template-columns: 2fr 3fr;
+
   gap: 20px;
+
   margin-bottom: 28px;
 }
 
+
 /* =========================================================
-   INFORMACIÓN DEL ROL
-   ========================================================= */
+   DETAIL INFO CARD
+========================================================= */
 
 .detail-info-card {
-  position: relative;
+  background: var(--white);
 
-  background: #ffffff;
-  border: 1px solid #e9ecef;
-  border-radius: 14px;
+  border: 1.5px solid var(--border);
+
+  border-radius: var(--radius-lg);
 
   padding: 24px;
 
-  text-align: center;
-
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
 }
 
-.detail-icon-wrap {
-  width: 62px;
-  height: 62px;
 
-  margin: 0 auto 14px;
+.detail-icon-wrap {
+  width: 56px;
+  height: 56px;
 
   border-radius: 16px;
 
@@ -247,365 +895,507 @@ input {
   align-items: center;
   justify-content: center;
 
-  color: white;
+  margin-bottom: 16px;
 }
+
 
 .detail-icon-wrap .material-symbols-outlined {
-  font-size: 32px;
+  font-size: 30px;
+
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 30;
+
+  color: #fff;
 }
 
+
 .detail-role-name {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 7px;
+  font-family: 'Manrope', sans-serif;
+
+  font-weight: 800;
+
+  font-size: 22px;
+
+  color: var(--text);
+
+  margin-bottom: 4px;
+
+  letter-spacing: -0.3px;
 }
+
 
 .detail-user-count {
   display: flex;
   align-items: center;
-  justify-content: center;
+
   gap: 5px;
 
-  color: #868e96;
   font-size: 13px;
 
-  margin-bottom: 18px;
+  font-weight: 500;
+
+  margin-bottom: 14px;
 }
+
 
 .detail-user-count .material-symbols-outlined {
-  font-size: 17px;
+  font-size: 16px;
 }
+
 
 .detail-desc {
-  color: #6c757d;
   font-size: 13px;
-  line-height: 1.55;
+
+  color: var(--muted);
+
+  line-height: 1.6;
+
+  margin-bottom: 20px;
 
   padding-bottom: 20px;
-  border-bottom: 1px solid #f1f3f5;
+
+  border-bottom: 1px solid var(--border);
 }
 
+
 /* =========================================================
-   ESTADÍSTICAS
-   ========================================================= */
+   STATS
+========================================================= */
 
 .detail-stats {
   display: grid;
+
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 20px;
+
+  gap: 12px;
 }
+
 
 .stat-box {
-  padding: 12px 8px;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
+
+  padding: 14px;
+
+  text-align: center;
 }
+
 
 .stat-box.allowed {
-  background: #e9f8f0;
+  background: rgba(59, 91, 219, 0.06);
 }
+
 
 .stat-box.restricted {
-  background: #fff0f0;
+  background: rgba(108, 117, 125, 0.07);
 }
+
 
 .stat-box-num {
-  font-size: 22px;
-  font-weight: 700;
+  font-family: 'Manrope', sans-serif;
+
+  font-weight: 800;
+
+  font-size: 28px;
+
+  line-height: 1;
+
+  margin-bottom: 4px;
 }
 
-.stat-box.allowed .stat-box-num {
-  color: #15966a;
-}
-
-.stat-box.restricted .stat-box-num {
-  color: #e03131;
-}
 
 .stat-box-label {
-  margin-top: 3px;
   font-size: 11px;
-  color: #868e96;
+
+  font-weight: 600;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.5px;
 }
+
+
+.stat-box.restricted .stat-box-label {
+  color: var(--muted);
+}
+
 
 /* =========================================================
-   LISTA DE PERMISOS
-   ========================================================= */
+   PERMISSION LIST
+========================================================= */
 
 .perm-list-card {
-  background: #ffffff;
-  border: 1px solid #e9ecef;
-  border-radius: 14px;
+  background: var(--white);
+
+  border: 1.5px solid var(--border);
+
+  border-radius: var(--radius-lg);
 
   overflow: hidden;
-
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
+
 .perm-list-header {
+  padding: 18px 24px 14px;
+
+  border-bottom: 1px solid var(--border);
+
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  padding: 18px 20px;
-
-  border-bottom: 1px solid #edf0f2;
+  gap: 12px;
 }
+
 
 .perm-list-title {
-  font-size: 17px;
+  font-family: 'Manrope', sans-serif;
+
   font-weight: 700;
+
+  font-size: 15px;
+
+  color: var(--text);
 }
+
 
 .perm-list-hint {
+  font-size: 12px;
+
+  color: var(--muted);
+
   display: flex;
   align-items: center;
-  gap: 5px;
 
-  color: #868e96;
-  font-size: 12px;
+  gap: 4px;
 }
+
 
 .perm-list-hint .material-symbols-outlined {
-  font-size: 17px;
+  font-size: 14px;
 }
 
-/* =========================================================
-   FILAS DE PERMISOS
-   ========================================================= */
 
 .perm-rows {
-  width: 100%;
+  padding: 8px 0;
 }
 
+
 .perm-row {
-  display: grid;
-  grid-template-columns: 42px 1fr auto 42px;
+  display: flex;
   align-items: center;
-  gap: 12px;
 
-  min-height: 64px;
-  padding: 10px 20px;
+  gap: 14px;
 
-  border-bottom: 1px solid #f1f3f5;
+  padding: 12px 24px;
 
   cursor: pointer;
 
-  transition: background 0.2s ease;
+  transition: background 0.15s;
+
+  user-select: none;
 }
 
-.perm-row:last-child {
-  border-bottom: none;
-}
 
 .perm-row:hover {
-  background: #f8f9fa;
+  background: var(--bg);
 }
 
-/* =========================================================
-   ICONOS DE PERMISOS
-   ========================================================= */
-
-.perm-row-icon {
-  width: 38px;
-  height: 38px;
-
-  border-radius: 9px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.perm-row-icon.granted {
-  background: #e9f8f0;
-  color: #15966a;
-}
-
-.perm-row-icon.denied {
-  background: #f8f9fa;
-  color: #adb5bd;
-}
 
 .perm-row-icon .material-symbols-outlined {
   font-size: 20px;
+
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 20;
 }
 
-/* =========================================================
-   NOMBRE PERMISO
-   ========================================================= */
+
+.perm-row-icon.granted .material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 20;
+
+  color:
+    var(--role-color, var(--primary));
+}
+
+
+.perm-row-icon.denied .material-symbols-outlined {
+  color: var(--muted);
+
+  opacity: 0.5;
+}
+
 
 .perm-row-label {
+  flex: 1;
+
   font-size: 14px;
-  font-weight: 600;
-  color: #343a40;
+
+  font-weight: 500;
+
+  color: var(--text);
 }
 
+
 /* =========================================================
-   ESTADO
-   ========================================================= */
+   STATUS
+========================================================= */
 
 .perm-status-badge {
-  min-width: 80px;
-  text-align: center;
+  font-size: 11px;
 
-  padding: 6px 10px;
+  font-weight: 600;
+
+  padding: 3px 10px;
 
   border-radius: 20px;
 
-  font-size: 11px;
-  font-weight: 600;
+  text-transform: uppercase;
+
+  letter-spacing: 0.4px;
 }
+
 
 .perm-status-badge.granted {
-  background: #e9f8f0;
-  color: #15966a;
+  background: rgba(59, 91, 219, 0.09);
+
+  color: var(--primary);
 }
+
 
 .perm-status-badge.denied {
-  background: #f1f3f5;
-  color: #868e96;
+  background: rgba(108, 117, 125, 0.1);
+
+  color: var(--muted);
 }
+
 
 /* =========================================================
-   SWITCH
-   ========================================================= */
+   TOGGLE
+========================================================= */
 
 .toggle {
-  width: 38px;
-  height: 22px;
   position: relative;
-  pointer-events: none;
+
+  width: 40px;
+  height: 22px;
+
+  flex-shrink: 0;
 }
+
 
 .toggle-track {
-  width: 38px;
-  height: 22px;
+  position: absolute;
 
-  border-radius: 20px;
+  inset: 0;
 
-  background: #dee2e6;
+  border-radius: 11px;
 
-  position: relative;
+  background: var(--border);
 
-  transition: background 0.2s ease;
+  transition: background 0.2s;
+
+  cursor: pointer;
 }
+
 
 .toggle-track::after {
   content: '';
 
   position: absolute;
 
-  width: 16px;
-  height: 16px;
-
   top: 3px;
   left: 3px;
 
-  background: #ffffff;
+  width: 16px;
+  height: 16px;
 
   border-radius: 50%;
 
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  background: #fff;
 
-  transition: transform 0.2s ease;
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.15);
+
+  transition: transform 0.2s;
 }
+
 
 .toggle.on .toggle-track {
-  background: var(--role-color);
+  background:
+    var(--role-color, var(--primary));
 }
 
+
 .toggle.on .toggle-track::after {
-  transform: translateX(16px);
+  transform: translateX(18px);
 }
+
 
 /* =========================================================
    MATRIZ
-   ========================================================= */
+========================================================= */
+
+.matrix-section {
+  background: var(--white);
+
+  border: 1.5px solid var(--border);
+
+  border-radius: var(--radius-lg);
+
+  overflow: hidden;
+}
+
 
 .matrix-header {
+  padding: 18px 24px 14px;
+
+  border-bottom: 1px solid var(--border);
+
   display: flex;
   align-items: center;
-  gap: 9px;
 
-  margin-bottom: 14px;
+  gap: 10px;
 }
+
 
 .matrix-title {
-  font-size: 17px;
+  font-family: 'Manrope', sans-serif;
+
   font-weight: 700;
-  color: #212529;
+
+  font-size: 15px;
+
+  color: var(--text);
 }
+
 
 .matrix-subtitle {
   font-size: 12px;
-  color: #868e96;
+
+  color: var(--muted);
+
   margin-left: auto;
 }
 
+
+/* =========================================================
+   TABLA
+========================================================= */
+
 .matrix-table-wrap {
-  width: 100%;
   overflow-x: auto;
-
-  background: #ffffff;
-
-  border: 1px solid #e9ecef;
-  border-radius: 14px;
 }
+
 
 .matrix-table {
   width: 100%;
-  min-width: 700px;
 
   border-collapse: collapse;
 }
 
-.matrix-table th,
-.matrix-table td {
-  padding: 14px 18px;
 
-  border-bottom: 1px solid #f1f3f5;
+.matrix-table th {
+  padding: 14px 20px;
 
   text-align: center;
-}
 
-.matrix-table th:first-child,
-.matrix-table td:first-child {
-  text-align: left;
-}
+  font-family: 'Manrope', sans-serif;
 
-.matrix-table thead th {
-  background: #f8f9fa;
-
-  font-size: 12px;
   font-weight: 700;
 
-  color: #495057;
-}
-
-.matrix-table tbody td {
   font-size: 13px;
-  color: #495057;
+
+  background: var(--bg);
+
+  border-bottom: 1px solid var(--border);
+
+  white-space: nowrap;
 }
 
-.matrix-table tbody tr:last-child td {
+
+.matrix-table th:first-child {
+  text-align: left;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  color: var(--muted);
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.5px;
+}
+
+
+.matrix-table td {
+  padding: 13px 20px;
+
+  text-align: center;
+
+  border-bottom:
+    1px solid rgba(206, 212, 218, 0.5);
+
+  font-size: 13px;
+}
+
+
+.matrix-table td:first-child {
+  text-align: left;
+
+  font-weight: 500;
+
+  color: var(--text);
+}
+
+
+.matrix-table tr:last-child td {
   border-bottom: none;
 }
 
-.matrix-table tbody tr:hover {
-  background: #fafbfc;
+
+.matrix-table tr:hover td {
+  background: var(--bg);
 }
 
+
 /* =========================================================
-   NOMBRE DE LOS ROLES EN LA MATRIZ
-   ========================================================= */
+   ICONOS MATRIZ
+========================================================= */
+
+.matrix-icon .material-symbols-outlined {
+  font-size: 22px;
+
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 22;
+}
+
+
+.matrix-icon.denied .material-symbols-outlined {
+  color: #dee2e6;
+}
+
 
 .matrix-role-label {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+
+  gap: 6px;
 }
+
 
 .matrix-role-dot {
   width: 8px;
@@ -614,41 +1404,16 @@ input {
   border-radius: 50%;
 }
 
-/* =========================================================
-   ICONOS DE LA MATRIZ
-   ========================================================= */
-
-.matrix-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.matrix-icon .material-symbols-outlined {
-  font-size: 21px;
-}
-
-.matrix-icon.denied {
-  color: #dee2e6;
-}
-
-/* =========================================================
-   ACCESIBILIDAD
-   ========================================================= */
-
-.role-card:focus {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
 
 /* =========================================================
    RESPONSIVE
-   ========================================================= */
+========================================================= */
 
 @media (max-width: 1100px) {
 
   .role-cards {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns:
+      repeat(2, 1fr);
   }
 
   .detail-panel {
@@ -657,39 +1422,85 @@ input {
 
 }
 
-@media (max-width: 700px) {
+
+@media (max-width: 800px) {
+
+  .sidebar {
+    width: 60px;
+
+    left: 8px;
+    top: 8px;
+    bottom: 8px;
+  }
+
+  .sidebar-nav,
+  .sidebar-footer {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .nav-item {
+    width: 48px;
+    height: 48px;
+  }
+
+  .header {
+    left: 76px;
+
+    padding: 0 16px;
+  }
+
+  .header-brand {
+    display: none;
+  }
+
+  .header-search {
+    max-width: none;
+  }
+
+  .header-user-info {
+    display: none;
+  }
+
+  .main {
+    margin-left: 76px;
+
+    padding:
+      24px
+      20px
+      40px;
+  }
+
+  .page-title {
+    font-size: 27px;
+  }
+
+}
+
+
+@media (max-width: 600px) {
 
   .role-cards {
     grid-template-columns: 1fr;
   }
 
-  .perm-list-header {
-    flex-direction: column;
-    align-items: flex-start;
+  .header {
     gap: 8px;
   }
 
-  .perm-row {
-    grid-template-columns: 38px 1fr 38px;
-    gap: 9px;
+  .header-actions {
+    gap: 5px;
   }
 
-  .perm-status-badge {
-    display: none;
+  .icon-btn {
+    width: 34px;
+    height: 34px;
   }
 
-  .matrix-header {
-    flex-wrap: wrap;
+  .main {
+    padding-left: 14px;
+    padding-right: 14px;
   }
-
-  .matrix-subtitle {
-    width: 100%;
-    margin-left: 29px;
-  }
-
-}
-
-@media (max-width: 500px) {
 
   .page-title {
     font-size: 24px;
@@ -699,12 +1510,29 @@ input {
     font-size: 13px;
   }
 
-  .role-card {
-    padding: 16px;
+  .perm-row {
+    padding:
+      12px
+      14px;
+
+    gap: 9px;
   }
 
-  .detail-info-card {
-    padding: 18px;
+  .perm-status-badge {
+    display: none;
+  }
+
+  .perm-list-header {
+    padding:
+      16px;
+  }
+
+  .perm-list-hint {
+    display: none;
+  }
+
+  .matrix-subtitle {
+    display: none;
   }
 
 }

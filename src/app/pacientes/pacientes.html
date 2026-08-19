@@ -1,316 +1,144 @@
-<!-- SIDEBAR -->
+<!-- =========================================================
+     CONTENIDO DE PACIENTES
+     El Sidebar y Header pertenecen al Layout
+     ========================================================= -->
 
-<aside class="sidebar">
+<section class="page-content">
 
-  <div class="sidebar-logo">
-    <span class="ms health-icon">
-      health_and_safety
-    </span>
-  </div>
+  <!-- =======================================================
+       ENCABEZADO DE LA PÁGINA
+       ======================================================= -->
 
-  <nav class="snav">
+  <div class="page-hdr">
 
-    <button class="nb"
-            title="Dashboard">
+    <div>
 
-      <span class="ms">
-        dashboard
-      </span>
+      <h2>
+        Gestión de Pacientes
+      </h2>
 
-      <span class="tip">
-        Dashboard
-      </span>
+      <p>
+        Monitoreo y administración de residentes actuales
+      </p>
 
-    </button>
+    </div>
 
-
-    <button class="nb active"
-            title="Pacientes">
-
-      <span class="ms">
-        elderly
-      </span>
-
-      <span class="tip">
-        Pacientes
-      </span>
-
-    </button>
-
-
-    <button class="nb"
-            title="Cuidadores">
+    <button
+      class="btn-primary"
+      type="button"
+      (click)="openModal('new')">
 
       <span class="ms">
-        health_and_safety
+        add
       </span>
 
-      <span class="tip">
-        Gestión Cuidadores
-      </span>
-
-    </button>
-
-
-    <button class="nb"
-            title="Encargados">
-
-      <span class="ms">
-        supervisor_account
-      </span>
-
-      <span class="tip">
-        Gestión Encargados
-      </span>
-
-    </button>
-
-
-    <button class="nb"
-            title="Roles">
-
-      <span class="ms">
-        admin_panel_settings
-      </span>
-
-      <span class="tip">
-        Roles y Permisos
-      </span>
-
-    </button>
-
-
-    <button class="nb"
-            title="Notificaciones">
-
-      <span class="ms">
-        notifications
-      </span>
-
-      <span class="tip">
-        Notificaciones
-      </span>
-
-    </button>
-
-  </nav>
-
-
-  <div class="sfoot">
-
-    <button class="nb"
-            title="Configuración">
-
-      <span class="ms">
-        settings
-      </span>
-
-      <span class="tip">
-        Configuración
-      </span>
-
-    </button>
-
-
-    <button class="nb"
-            title="Salir">
-
-      <span class="ms">
-        logout
-      </span>
-
-      <span class="tip">
-        Cerrar Sesión
-      </span>
+      Nuevo Paciente
 
     </button>
 
   </div>
 
-</aside>
 
+  <!-- =======================================================
+       FILTROS
+       ======================================================= -->
 
-<!-- MAIN -->
+  <div class="filters">
 
-<div class="main">
+    <div class="filter-group">
 
-
-  <!-- HEADER -->
-
-  <header class="header">
-
-    <span class="header-title">
-      Fundación Geriátrica
-    </span>
-
-
-    <div class="search-wrap">
-
-      <span class="ms">
-        search
+      <span class="filter-label">
+        Pabellón
       </span>
 
-      <input
-        class="search-input"
-        type="text"
-        placeholder="Buscar por nombre o documento..."
-        [(ngModel)]="searchText"
-        (input)="filterTable()"
-      />
+      <select
+        [(ngModel)]="pavilionFilter"
+        (change)="filterTable()">
+
+        <option value="">
+          Todos los pabellones
+        </option>
+
+        <option value="Ala Norte">
+          Ala Norte
+        </option>
+
+        <option value="Ala Sur">
+          Ala Sur
+        </option>
+
+        <option value="Ala Este">
+          Ala Este
+        </option>
+
+      </select>
 
     </div>
 
 
-    <div class="hactions">
+    <div class="filter-group">
 
-      <div class="header-icons">
+      <span class="filter-label">
+        Estado
+      </span>
 
-        <button class="ib">
+      <select
+        [(ngModel)]="statusFilter"
+        (change)="filterTable()">
 
-          <span class="ms">
-            notifications
-          </span>
+        <option value="">
+          Todos
+        </option>
 
-        </button>
+        <option value="stable">
+          Estable
+        </option>
 
+        <option value="critical">
+          Crítico
+        </option>
 
-        <button class="ib">
+        <option value="observation">
+          Observación
+        </option>
 
-          <span class="ms">
-            calendar_today
-          </span>
-
-        </button>
-
-      </div>
-
-
-      <div class="sep"></div>
-
-
-      <button
-        class="btn-primary"
-        (click)="openModal('new')">
-
-        + Nuevo Paciente
-
-      </button>
-
-
-      <div class="user-block">
-
-        <div class="ui">
-
-          <p>
-            Jose Cabrera
-          </p>
-
-          <p>
-            Administrador
-          </p>
-
-        </div>
-
-
-        <div class="avatar">
-          JC
-        </div>
-
-      </div>
+      </select>
 
     </div>
 
-  </header>
+  </div>
 
 
-  <!-- CANVAS -->
+  <!-- =======================================================
+       TARJETAS DE ESTADÍSTICAS
+       ======================================================= -->
 
-  <main class="canvas">
+  <div class="stats">
 
+    <!-- TOTAL -->
 
-    <!-- PAGE HEADER -->
+    <div class="stat-card total-card">
 
-    <div class="page-hdr">
+      <div class="stat-card-top">
+
+        <span class="ms stat-icon">
+          groups
+        </span>
+
+        <span class="stat-badge total-badge">
+          Total
+        </span>
+
+      </div>
 
       <div>
 
-        <h2>
-          Gestión de Pacientes
-        </h2>
-
-        <p>
-          Monitoreo y administración de residentes actuales
-        </p>
-
-      </div>
-
-
-      <!-- FILTROS -->
-
-      <div class="filters">
-
-
-        <div class="filter-group">
-
-          <span class="filter-label">
-            Pabellón
-          </span>
-
-
-          <select
-            [(ngModel)]="pavilionFilter"
-            (change)="filterTable()">
-
-            <option value="">
-              Todos los pabellones
-            </option>
-
-            <option value="Ala Norte">
-              Ala Norte
-            </option>
-
-            <option value="Ala Sur">
-              Ala Sur
-            </option>
-
-            <option value="Ala Este">
-              Ala Este
-            </option>
-
-          </select>
-
+        <div class="stat-val white-text">
+          {{ totalActive }}
         </div>
 
-
-        <div class="filter-group">
-
-          <span class="filter-label">
-            Estado
-          </span>
-
-
-          <select
-            [(ngModel)]="statusFilter"
-            (change)="filterTable()">
-
-            <option value="">
-              Todos
-            </option>
-
-            <option value="stable">
-              Estable
-            </option>
-
-            <option value="critical">
-              Crítico
-            </option>
-
-            <option value="observation">
-              Observación
-            </option>
-
-          </select>
-
+        <div class="stat-lbl white-muted">
+          Residentes Activos
         </div>
 
       </div>
@@ -318,134 +146,30 @@
     </div>
 
 
-    <!-- STAT CARDS -->
+    <!-- CAPACIDAD -->
 
-    <div class="stats">
+    <div class="stat-card capacity-card">
 
+      <div class="stat-card-top">
 
-      <!-- TOTAL -->
+        <span class="ms stat-icon beige-icon">
+          bed
+        </span>
 
-      <div class="stat-card total-card">
-
-        <div class="stat-card-top">
-
-          <span class="ms stat-icon">
-            groups
-          </span>
-
-          <span class="stat-badge total-badge">
-            Total
-          </span>
-
-        </div>
-
-
-        <div>
-
-          <div class="stat-val white-text">
-            124
-          </div>
-
-          <div class="stat-lbl white-muted">
-            Residentes Activos
-          </div>
-
-        </div>
+        <span class="stat-badge capacity-badge">
+          Capacidad
+        </span>
 
       </div>
 
+      <div>
 
-      <!-- CAPACIDAD -->
-
-      <div class="stat-card capacity-card">
-
-        <div class="stat-card-top">
-
-          <span class="ms stat-icon beige-icon">
-            bed
-          </span>
-
-          <span class="stat-badge capacity-badge">
-            Capacidad
-          </span>
-
+        <div class="stat-val">
+          {{ occupancy }}%
         </div>
 
-
-        <div>
-
-          <div class="stat-val">
-            92%
-          </div>
-
-          <div class="stat-lbl">
-            Ocupación General
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <!-- SALUD -->
-
-      <div class="stat-card health-card">
-
-        <div class="stat-card-top">
-
-          <span class="ms stat-icon beige-icon">
-            check_circle
-          </span>
-
-          <span class="stat-badge health-badge">
-            Salud
-          </span>
-
-        </div>
-
-
-        <div>
-
-          <div class="stat-val beige-text">
-            112
-          </div>
-
-          <div class="stat-lbl beige-muted">
-            Pacientes Estables
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <!-- ALERTA -->
-
-      <div class="stat-card alert-card">
-
-        <div class="stat-card-top">
-
-          <span class="ms stat-icon error-icon">
-            warning
-          </span>
-
-          <span class="stat-badge alert-badge">
-            Alerta
-          </span>
-
-        </div>
-
-
-        <div>
-
-          <div class="stat-val critical-text">
-            12
-          </div>
-
-          <div class="stat-lbl critical-muted">
-            Estado Crítico
-          </div>
-
+        <div class="stat-lbl">
+          Ocupación General
         </div>
 
       </div>
@@ -453,365 +177,444 @@
     </div>
 
 
-    <!-- TABLE -->
+    <!-- SALUD -->
 
-    <div class="tbl-wrap">
+    <div class="stat-card health-card">
 
-      <div class="tbl-scroll">
+      <div class="stat-card-top">
 
-        <table>
+        <span class="ms stat-icon beige-icon">
+          check_circle
+        </span>
 
-          <thead>
+        <span class="stat-badge health-badge">
+          Salud
+        </span>
 
-            <tr>
+      </div>
 
-              <th>
-                Paciente
-              </th>
+      <div>
 
-              <th>
-                Documento
-              </th>
+        <div class="stat-val beige-text">
+          {{ stablePatients }}
+        </div>
 
-              <th>
-                Edad
-              </th>
+        <div class="stat-lbl beige-muted">
+          Pacientes Estables
+        </div>
 
-              <th>
-                Encargado
-              </th>
+      </div>
 
-              <th>
-                Cuidador
-              </th>
-
-              <th>
-                Estado
-              </th>
-
-              <th>
-                Acciones
-              </th>
-
-            </tr>
-
-          </thead>
+    </div>
 
 
-          <tbody>
+    <!-- ALERTA -->
 
-            <!-- SIN RESULTADOS -->
+    <div class="stat-card alert-card">
 
-            <tr
-              *ngIf="filteredPatients.length === 0">
+      <div class="stat-card-top">
 
-              <td
-                colspan="7"
-                class="empty">
+        <span class="ms stat-icon error-icon">
+          warning
+        </span>
 
-                No se encontraron pacientes
+        <span class="stat-badge alert-badge">
+          Alerta
+        </span>
 
-              </td>
+      </div>
 
-            </tr>
+      <div>
 
+        <div class="stat-val critical-text">
+          {{ criticalPatients }}
+        </div>
 
-            <!-- PACIENTES -->
+        <div class="stat-lbl critical-muted">
+          Estado Crítico
+        </div>
 
-            <tr
-              *ngFor="let patient of paginatedPatients">
+      </div>
 
+    </div>
 
-              <!-- PACIENTE -->
-
-              <td>
-
-                <div class="pat-cell">
-
-
-                  <div
-                    class="av-lg"
-                    [style.background]="getAvatarColor(patient.status)">
-
-                    {{ patient.id }}
-
-                  </div>
+  </div>
 
 
-                  <div class="pat-info">
+  <!-- =======================================================
+       TABLA
+       ======================================================= -->
 
-                    <p>
-                      {{ patient.name }}
-                    </p>
+  <div class="tbl-wrap">
 
-                    <p>
-                      Habitación {{ patient.room }}
-                    </p>
+    <div class="tbl-scroll">
 
-                  </div>
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>
+              Paciente
+            </th>
+
+            <th>
+              Documento
+            </th>
+
+            <th>
+              Edad
+            </th>
+
+            <th>
+              Encargado
+            </th>
+
+            <th>
+              Cuidador
+            </th>
+
+            <th>
+              Estado
+            </th>
+
+            <th>
+              Acciones
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          <!-- SIN RESULTADOS -->
+
+          <tr
+            *ngIf="filteredPatients.length === 0">
+
+            <td
+              colspan="7"
+              class="empty">
+
+              No se encontraron pacientes.
+
+            </td>
+
+          </tr>
+
+
+          <!-- PACIENTES -->
+
+          <tr
+            *ngFor="let patient of paginatedPatients">
+
+            <!-- PACIENTE -->
+
+            <td>
+
+              <div class="pat-cell">
+
+                <div
+                  class="av-lg"
+                  [style.background]="
+                    getAvatarColor(patient.status)
+                  ">
+
+                  {{ patient.name.charAt(0) }}
 
                 </div>
 
-              </td>
-
-
-              <!-- DOCUMENTO -->
-
-              <td class="document-cell">
-
-                {{ patient.doc }}
-
-              </td>
-
-
-              <!-- EDAD -->
-
-              <td>
-
-                {{ patient.age }} años
-
-              </td>
-
-
-              <!-- ENCARGADO -->
-
-              <td>
-
-                <div class="guardian-cell">
+                <div class="pat-info">
 
                   <p>
-                    {{ patient.guardian }}
+                    {{ patient.name }}
                   </p>
 
                   <p>
-                    {{ patient.guardianRel }}
+                    Habitación {{ patient.room }}
                   </p>
 
                 </div>
 
-              </td>
+              </div>
+
+            </td>
 
 
-              <!-- CUIDADOR -->
+            <!-- DOCUMENTO -->
 
-              <td>
+            <td class="document-cell">
 
-                <div class="care-cell">
+              {{ patient.doc }}
 
-                  <span class="care-dot"></span>
-
-                  {{ patient.caregiver }}
-
-                </div>
-
-              </td>
+            </td>
 
 
-              <!-- ESTADO -->
+            <!-- EDAD -->
 
-              <td>
+            <td>
+
+              {{ patient.age }} años
+
+            </td>
+
+
+            <!-- ENCARGADO -->
+
+            <td>
+
+              <div class="guardian-cell">
+
+                <p>
+                  {{ patient.guardian }}
+                </p>
+
+                <p>
+                  {{ patient.guardianRel }}
+                </p>
+
+              </div>
+
+            </td>
+
+
+            <!-- CUIDADOR -->
+
+            <td>
+
+              <div class="care-cell">
+
+                <span class="care-dot"></span>
+
+                {{ patient.caregiver }}
+
+              </div>
+
+            </td>
+
+
+            <!-- ESTADO -->
+
+            <td>
+
+              <span
+                *ngIf="patient.status === 'stable'"
+                class="badge-stable">
 
                 <span
-                  *ngIf="patient.status === 'stable'"
-                  class="badge-stable">
-
-                  <span
-                    class="badge-dot stable-dot">
-                  </span>
-
-                  ESTABLE
-
+                  class="badge-dot stable-dot">
                 </span>
 
+                ESTABLE
+
+              </span>
+
+
+              <span
+                *ngIf="patient.status === 'critical'"
+                class="badge-critical">
 
                 <span
-                  *ngIf="patient.status === 'critical'"
-                  class="badge-critical">
-
-                  <span
-                    class="badge-dot critical-dot ping">
-                  </span>
-
-                  CRÍTICO
-
+                  class="badge-dot critical-dot ping">
                 </span>
 
+                CRÍTICO
+
+              </span>
+
+
+              <span
+                *ngIf="patient.status === 'observation'"
+                class="badge-observation">
 
                 <span
-                  *ngIf="patient.status === 'observation'"
-                  class="badge-observation">
-
-                  <span
-                    class="badge-dot observation-dot">
-                  </span>
-
-                  OBSERVACIÓN
-
+                  class="badge-dot observation-dot">
                 </span>
 
-              </td>
+                OBSERVACIÓN
+
+              </span>
+
+            </td>
 
 
-              <!-- ACCIONES -->
+            <!-- ACCIONES -->
 
-              <td>
+            <td>
 
-                <div class="actions-wrap">
+              <div class="actions-wrap">
 
+                <button
+                  class="actions-btn"
+                  type="button"
+                  title="Acciones">
 
-                  <button
-                    class="actions-btn">
+                  <span class="ms">
+                    more_vert
+                  </span>
 
-                    <span class="ms">
-                      more_vert
-                    </span>
-
-                  </button>
-
-
-                  <div class="dropdown">
-
-                    <div class="dropdown-inner">
+                </button>
 
 
-                      <button
-                        class="drop-btn"
-                        (click)="openModal('edit', patient.id)">
+                <div class="dropdown">
 
-                        <span class="ms">
-                          edit
-                        </span>
+                  <div class="dropdown-inner">
 
-                        Editar
+                    <button
+                      class="drop-btn"
+                      type="button"
+                      (click)="openModal('edit', patient.id)">
 
-                      </button>
+                      <span class="ms">
+                        edit
+                      </span>
 
+                      Editar
 
-                      <button
-                        class="drop-btn"
-                        (click)="toggleStatus(patient.id)">
-
-                        <span class="ms">
-                          block
-                        </span>
-
-                        Suspender
-
-                      </button>
+                    </button>
 
 
-                      <div class="drop-sep"></div>
+                    <button
+                      class="drop-btn"
+                      type="button"
+                      (click)="toggleStatus(patient.id)">
+
+                      <span class="ms">
+                        block
+                      </span>
+
+                      Suspender
+
+                    </button>
 
 
-                      <button
-                        class="drop-btn danger"
-                        (click)="deletePatient(patient.id)">
+                    <div class="drop-sep"></div>
 
-                        <span class="ms">
-                          delete
-                        </span>
 
-                        Eliminar
+                    <button
+                      class="drop-btn danger"
+                      type="button"
+                      (click)="deletePatient(patient.id)">
 
-                      </button>
+                      <span class="ms">
+                        delete
+                      </span>
 
-                    </div>
+                      Eliminar
+
+                    </button>
 
                   </div>
 
                 </div>
 
-              </td>
+              </div>
 
-            </tr>
+            </td>
 
-          </tbody>
+          </tr>
 
-        </table>
+        </tbody>
 
-      </div>
+      </table>
 
-
-      <!-- FOOTER TABLE -->
-
-      <div class="tbl-footer">
+    </div>
 
 
-        <p>
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
 
-          Mostrando
-          {{ firstShown }}
-          -
-          {{ lastShown }}
-          de
-          {{ filteredPatients.length }}
-          pacientes registrados
+    <div class="tbl-footer">
 
-        </p>
+      <p>
 
+        Mostrando
 
-        <div class="pag">
+        {{ firstShown }}
 
+        -
 
-          <button
-            class="pag-btn"
-            (click)="changePage(currentPage - 1)"
-            [disabled]="currentPage === 1">
+        {{ lastShown }}
 
-            <span class="ms">
-              chevron_left
-            </span>
+        de
 
-          </button>
+        {{ filteredPatients.length }}
+
+        pacientes registrados
+
+      </p>
 
 
-          <button
-            *ngFor="let page of [].constructor(totalPages); let i = index"
-            class="pag-btn"
-            [class.active]="currentPage === i + 1"
-            (click)="changePage(i + 1)">
+      <div class="pag">
 
-            {{ i + 1 }}
+        <button
+          class="pag-btn"
+          type="button"
+          (click)="changePage(currentPage - 1)"
+          [disabled]="currentPage === 1">
 
-          </button>
+          <span class="ms">
+            chevron_left
+          </span>
+
+        </button>
 
 
-          <button
-            class="pag-btn"
-            (click)="changePage(currentPage + 1)"
-            [disabled]="currentPage === totalPages">
+        <button
+          *ngFor="
+            let page of [].constructor(totalPages);
+            let i = index
+          "
+          class="pag-btn"
+          type="button"
+          [class.active]="currentPage === i + 1"
+          (click)="changePage(i + 1)">
 
-            <span class="ms">
-              chevron_right
-            </span>
+          {{ i + 1 }}
 
-          </button>
+        </button>
 
-        </div>
+
+        <button
+          class="pag-btn"
+          type="button"
+          (click)="changePage(currentPage + 1)"
+          [disabled]="currentPage === totalPages">
+
+          <span class="ms">
+            chevron_right
+          </span>
+
+        </button>
 
       </div>
 
     </div>
 
-  </main>
+  </div>
 
-</div>
+</section>
 
 
-<!-- ============================== -->
-<!-- MODAL NUEVO / EDITAR PACIENTE -->
-<!-- ============================== -->
+<!-- =========================================================
+     MODAL NUEVO / EDITAR
+     ========================================================= -->
 
 <div
   class="overlay"
   [class.open]="modalOpen"
   (click)="closeOnBackdrop($event)">
 
+  <div
+    class="modal"
+    (click)="$event.stopPropagation()">
 
-  <div class="modal">
 
-
-    <!-- MODAL HEADER -->
+    <!-- HEADER MODAL -->
 
     <div class="modal-hdr">
 
@@ -822,6 +625,7 @@
 
       <button
         class="close-btn"
+        type="button"
         (click)="closeModal()">
 
         <span class="ms">
@@ -833,7 +637,7 @@
     </div>
 
 
-    <!-- MODAL BODY -->
+    <!-- BODY -->
 
     <div class="modal-body">
 
@@ -846,7 +650,6 @@
 
 
       <div class="form-grid">
-
 
         <div class="form-field">
 
@@ -920,7 +723,6 @@
 
       <div class="form-grid">
 
-
         <div class="form-field">
 
           <label class="form-label">
@@ -931,7 +733,7 @@
             class="form-input"
             type="text"
             [(ngModel)]="form.habitacion"
-            placeholder="Ej: 104 - Ala Norte">
+            placeholder="Ej: 104">
 
         </div>
 
@@ -973,23 +775,23 @@
             class="form-input"
             [(ngModel)]="form.cuidador">
 
-            <option>
+            <option value="Enf. Carlos Ruiz">
               Enf. Carlos Ruiz
             </option>
 
-            <option>
+            <option value="Dra. Martha Luz">
               Dra. Martha Luz
             </option>
 
-            <option>
+            <option value="Enf. Laura Paz">
               Enf. Laura Paz
             </option>
 
-            <option>
+            <option value="Enf. Ana Reyes">
               Enf. Ana Reyes
             </option>
 
-            <option>
+            <option value="Juan Vela">
               Juan Vela
             </option>
 
@@ -1008,16 +810,16 @@
             class="form-input"
             [(ngModel)]="form.pabellon">
 
-            <option>
-              Ala Norte - Cuidados Intensivos
+            <option value="Ala Norte">
+              Ala Norte
             </option>
 
-            <option>
-              Ala Sur - Rehabilitación
+            <option value="Ala Sur">
+              Ala Sur
             </option>
 
-            <option>
-              Ala Este - Residencial
+            <option value="Ala Este">
+              Ala Este
             </option>
 
           </select>
@@ -1035,7 +837,6 @@
 
 
       <div class="form-grid">
-
 
         <div class="form-field">
 
@@ -1128,12 +929,13 @@
     </div>
 
 
-    <!-- MODAL FOOTER -->
+    <!-- FOOTER -->
 
     <div class="modal-footer">
 
       <button
         class="btn-cancel"
+        type="button"
         (click)="closeModal()">
 
         Cancelar
@@ -1143,6 +945,7 @@
 
       <button
         class="btn-save"
+        type="button"
         (click)="savePatient()">
 
         {{ saveButtonText }}

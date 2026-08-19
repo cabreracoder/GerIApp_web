@@ -1,573 +1,263 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 
 interface Permiso {
-  nombre: string;
-  icono: string;
-  permitido: boolean;
+  label: string;
+  granted: boolean;
 }
 
 interface Rol {
-  id: string;
-  nombre: string;
-  descripcion: string;
-  usuarios: number;
-  icono: string;
+  name: string;
   color: string;
-  permisos: Permiso[];
+  icon: string;
+  userCount: number;
+  description: string;
+  perms: Permiso[];
 }
 
 @Component({
   selector: 'app-roles',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   templateUrl: './roles.html',
   styleUrl: './roles.css'
 })
 export class Roles {
 
-  // =====================================================
-  // BÚSQUEDA
-  // =====================================================
+  // =========================================================
+  // PERMISOS DISPONIBLES
+  // =========================================================
 
-  searchText = '';
-
-  // =====================================================
-  // ROLES DEL SISTEMA
-  // =====================================================
-
-  roles: Rol[] = [
-
-    {
-      id: 'administrador',
-      nombre: 'Administrador',
-      descripcion:
-        'Gestiona usuarios, pacientes, encargados, cuidadores y la configuración general del sistema.',
-      usuarios: 2,
-      icono: 'admin_panel_settings',
-      color: '#3B5BDB',
-
-      permisos: [
-        {
-          nombre: 'Gestionar usuarios',
-          icono: 'group',
-          permitido: true
-        },
-        {
-          nombre: 'Gestionar pacientes',
-          icono: 'elderly',
-          permitido: true
-        },
-        {
-          nombre: 'Gestionar encargados',
-          icono: 'supervisor_account',
-          permitido: true
-        },
-        {
-          nombre: 'Gestionar cuidadores',
-          icono: 'medical_services',
-          permitido: true
-        },
-        {
-          nombre: 'Gestionar roles y permisos',
-          icono: 'admin_panel_settings',
-          permitido: true
-        },
-        {
-          nombre: 'Gestionar notificaciones',
-          icono: 'notifications',
-          permitido: true
-        },
-        {
-          nombre: 'Consultar información de salud',
-          icono: 'health_and_safety',
-          permitido: true
-        },
-        {
-          nombre: 'Modificar configuración',
-          icono: 'settings',
-          permitido: true
-        }
-      ]
-    },
-
-    {
-      id: 'medico',
-      nombre: 'Médico',
-      descripcion:
-        'Consulta y administra información clínica de los pacientes bajo su responsabilidad.',
-      usuarios: 4,
-      icono: 'medical_services',
-      color: '#4DABF7',
-
-      permisos: [
-        {
-          nombre: 'Gestionar usuarios',
-          icono: 'group',
-          permitido: false
-        },
-        {
-          nombre: 'Gestionar pacientes',
-          icono: 'elderly',
-          permitido: true
-        },
-        {
-          nombre: 'Gestionar encargados',
-          icono: 'supervisor_account',
-          permitido: false
-        },
-        {
-          nombre: 'Gestionar cuidadores',
-          icono: 'medical_services',
-          permitido: false
-        },
-        {
-          nombre: 'Gestionar roles y permisos',
-          icono: 'admin_panel_settings',
-          permitido: false
-        },
-        {
-          nombre: 'Gestionar notificaciones',
-          icono: 'notifications',
-          permitido: true
-        },
-        {
-          nombre: 'Consultar información de salud',
-          icono: 'health_and_safety',
-          permitido: true
-        },
-        {
-          nombre: 'Modificar configuración',
-          icono: 'settings',
-          permitido: false
-        }
-      ]
-    },
-
-    {
-      id: 'cuidador',
-      nombre: 'Cuidador',
-      descripcion:
-        'Realiza seguimiento diario de los pacientes y registra novedades de cuidado.',
-      usuarios: 8,
-      icono: 'volunteer_activism',
-      color: '#20C997',
-
-      permisos: [
-        {
-          nombre: 'Gestionar usuarios',
-          icono: 'group',
-          permitido: false
-        },
-        {
-          nombre: 'Gestionar pacientes',
-          icono: 'elderly',
-          permitido: true
-        },
-        {
-          nombre: 'Gestionar encargados',
-          icono: 'supervisor_account',
-          permitido: false
-        },
-        {
-          nombre: 'Gestionar cuidadores',
-          icono: 'medical_services',
-          permitido: false
-        },
-        {
-          nombre: 'Gestionar roles y permisos',
-          icono: 'admin_panel_settings',
-          permitido: false
-        },
-        {
-          nombre: 'Gestionar notificaciones',
-          icono: 'notifications',
-          permitido: true
-        },
-        {
-          nombre: 'Consultar información de salud',
-          icono: 'health_and_safety',
-          permitido: true
-        },
-        {
-          nombre: 'Modificar configuración',
-          icono: 'settings',
-          permitido: false
-        }
-      ]
-    },
-
-    {
-      id: 'encargado',
-      nombre: 'Encargado',
-      descripcion:
-        'Consulta información del paciente asignado y recibe notificaciones relacionadas con su cuidado.',
-      usuarios: 12,
-      icono: 'supervisor_account',
-      color: '#F59E0B',
-
-      permisos: [
-        {
-          nombre: 'Gestionar usuarios',
-          icono: 'group',
-          permitido: false
-        },
-        {
-          nombre: 'Gestionar pacientes',
-          icono: 'elderly',
-          permitido: false
-        },
-        {
-          nombre: 'Gestionar encargados',
-          icono: 'supervisor_account',
-          permitido: false
-        },
-        {
-          nombre: 'Gestionar cuidadores',
-          icono: 'medical_services',
-          permitido: false
-        },
-        {
-          nombre: 'Gestionar roles y permisos',
-          icono: 'admin_panel_settings',
-          permitido: false
-        },
-        {
-          nombre: 'Gestionar notificaciones',
-          icono: 'notifications',
-          permitido: true
-        },
-        {
-          nombre: 'Consultar información de salud',
-          icono: 'health_and_safety',
-          permitido: true
-        },
-        {
-          nombre: 'Modificar configuración',
-          icono: 'settings',
-          permitido: false
-        }
-      ]
-    },
-
-    {
-      id: 'paciente',
-      nombre: 'Paciente',
-      descripcion:
-        'Accede únicamente a su información personal y a las funcionalidades autorizadas para su perfil.',
-      usuarios: 25,
-      icono: 'elderly',
-      color: '#845EF7',
-
-      permisos: [
-        {
-          nombre: 'Gestionar usuarios',
-          icono: 'group',
-          permitido: false
-        },
-        {
-          nombre: 'Gestionar pacientes',
-          icono: 'elderly',
-          permitido: false
-        },
-        {
-          nombre: 'Gestionar encargados',
-          icono: 'supervisor_account',
-          permitido: false
-        },
-        {
-          nombre: 'Gestionar cuidadores',
-          icono: 'medical_services',
-          permitido: false
-        },
-        {
-          nombre: 'Gestionar roles y permisos',
-          icono: 'admin_panel_settings',
-          permitido: false
-        },
-        {
-          nombre: 'Gestionar notificaciones',
-          icono: 'notifications',
-          permitido: true
-        },
-        {
-          nombre: 'Consultar información de salud',
-          icono: 'health_and_safety',
-          permitido: true
-        },
-        {
-          nombre: 'Modificar configuración',
-          icono: 'settings',
-          permitido: false
-        }
-      ]
-    }
-
+  readonly PERM_LABELS: string[] = [
+    'Ver Dashboard',
+    'Gestión de Pacientes',
+    'Gestión de Cuidadores',
+    'Gestión de Encargados',
+    'Roles y Permisos',
+    'Notificaciones',
+    'Descargar Reportes',
+    'Configuración del sistema'
   ];
 
-  // =====================================================
-  // ROL SELECCIONADO
-  // =====================================================
+  // =========================================================
+  // ROLES
+  // =========================================================
 
-  selectedRoleId = 'administrador';
+  roles: Rol[] = [
+    {
+      name: 'Administrador',
+      color: '#3B5BDB',
+      icon: 'admin_panel_settings',
+      userCount: 2,
+      description:
+        'Acceso total al sistema. Gestiona usuarios, configura la plataforma y supervisa todas las operaciones de la fundación.',
+      perms: this.PERM_LABELS.map(label => ({
+        label,
+        granted: true
+      }))
+    },
 
-  // =====================================================
-  // ROL ACTUAL
-  // =====================================================
+    {
+      name: 'Cuidador',
+      color: '#4DABF7',
+      icon: 'health_and_safety',
+      userCount: 8,
+      description:
+        'Personal de cuidado directo. Visualiza y actualiza información de los pacientes a su cargo durante su turno.',
+      perms: [
+        {
+          label: 'Ver Dashboard',
+          granted: false
+        },
+        {
+          label: 'Gestión de Pacientes',
+          granted: true
+        },
+        {
+          label: 'Gestión de Cuidadores',
+          granted: false
+        },
+        {
+          label: 'Gestión de Encargados',
+          granted: false
+        },
+        {
+          label: 'Roles y Permisos',
+          granted: false
+        },
+        {
+          label: 'Notificaciones',
+          granted: true
+        },
+        {
+          label: 'Descargar Reportes',
+          granted: false
+        },
+        {
+          label: 'Configuración del sistema',
+          granted: false
+        }
+      ]
+    },
 
-  get selectedRole(): Rol {
+    {
+      name: 'Encargado',
+      color: '#7D6E5E',
+      icon: 'supervisor_account',
+      userCount: 1,
+      description:
+        'Supervisa el funcionamiento general de la fundación y tiene acceso a reportes y estadísticas operativas.',
+      perms: [
+        {
+          label: 'Ver Dashboard',
+          granted: true
+        },
+        {
+          label: 'Gestión de Pacientes',
+          granted: true
+        },
+        {
+          label: 'Gestión de Cuidadores',
+          granted: true
+        },
+        {
+          label: 'Gestión de Encargados',
+          granted: true
+        },
+        {
+          label: 'Roles y Permisos',
+          granted: false
+        },
+        {
+          label: 'Notificaciones',
+          granted: true
+        },
+        {
+          label: 'Descargar Reportes',
+          granted: true
+        },
+        {
+          label: 'Configuración del sistema',
+          granted: false
+        }
+      ]
+    }
+  ];
+
+  // =========================================================
+  // VARIABLES
+  // =========================================================
+
+  selectedRole: string = 'Administrador';
+
+  searchTerm: string = '';
+
+  // =========================================================
+  // OBTENER ROL SELECCIONADO
+  // =========================================================
+
+  get selectedRoleObject(): Rol {
     return (
-      this.roles.find(
-        rol => rol.id === this.selectedRoleId
-      ) || this.roles[0]
+      this.roles.find(role => role.name === this.selectedRole)
+      ?? this.roles[0]
     );
   }
 
-  // =====================================================
-  // COMPATIBILIDAD CON roles.html
-  // =====================================================
-
-  /**
-   * Índice del rol actualmente seleccionado.
-   * El HTML utiliza:
-   * rolSeleccionado === i
-   */
-  get rolSeleccionado(): number {
-    return this.roles.findIndex(
-      rol => rol.id === this.selectedRoleId
-    );
-  }
-
-  /**
-   * Rol actualmente seleccionado.
-   * El HTML utiliza rolActual.
-   */
-  get rolActual(): Rol {
-    return this.selectedRole;
-  }
-
-  /**
-   * Selecciona un rol mediante su índice.
-   * El HTML utiliza seleccionarRol(i).
-   */
-  seleccionarRol(index: number): void {
-
-    if (this.roles[index]) {
-      this.selectedRoleId = this.roles[index].id;
-    }
-
-  }
-
-  // =====================================================
-  // SELECCIONAR ROL
-  // =====================================================
-
-  selectRole(id: string): void {
-    this.selectedRoleId = id;
-  }
-
-  // =====================================================
-  // CONTAR PERMISOS PERMITIDOS
-  // =====================================================
-
-  get allowedPermissions(): number {
-
-    return this.selectedRole.permisos.filter(
-      permiso => permiso.permitido
-    ).length;
-
-  }
-
-  /**
-   * Compatible con roles.html
-   */
-  permisosPermitidos(rol: Rol): number {
-
-    return rol.permisos.filter(
-      permiso => permiso.permitido
-    ).length;
-
-  }
-
-  // =====================================================
-  // CONTAR PERMISOS RESTRINGIDOS
-  // =====================================================
-
-  get restrictedPermissions(): number {
-
-    return this.selectedRole.permisos.filter(
-      permiso => !permiso.permitido
-    ).length;
-
-  }
-
-  /**
-   * Compatible con roles.html
-   */
-  permisosDenegados(rol: Rol): number {
-
-    return rol.permisos.filter(
-      permiso => !permiso.permitido
-    ).length;
-
-  }
-
-  // =====================================================
-  // CAMBIAR PERMISO
-  // =====================================================
-
-  togglePermission(
-    roleId: string,
-    permissionIndex: number
-  ): void {
-
-    const role = this.roles.find(
-      r => r.id === roleId
-    );
-
-    if (!role) {
-      return;
-    }
-
-    const permiso =
-      role.permisos[permissionIndex];
-
-    if (!permiso) {
-      return;
-    }
-
-    permiso.permitido =
-      !permiso.permitido;
-
-  }
-
-  /**
-   * Compatible con roles.html
-   */
-  cambiarPermiso(index: number): void {
-
-    this.togglePermission(
-      this.selectedRoleId,
-      index
-    );
-
-  }
-
-  // =====================================================
-  // VERIFICAR PERMISO
-  // =====================================================
-
-  tienePermiso(
-    rol: Rol,
-    nombrePermiso: string
-  ): boolean {
-
-    const permiso = rol.permisos.find(
-      p => p.nombre === nombrePermiso
-    );
-
-    return permiso?.permitido ?? false;
-
-  }
-
-  // =====================================================
-  // FILTRAR ROLES
-  // =====================================================
+  // =========================================================
+  // ROLES FILTRADOS POR BÚSQUEDA
+  // =========================================================
 
   get filteredRoles(): Rol[] {
-
-    const search =
-      this.searchText
-        .trim()
-        .toLowerCase();
+    const search = this.searchTerm.trim().toLowerCase();
 
     if (!search) {
       return this.roles;
     }
 
-    return this.roles.filter(rol =>
-      rol.nombre
-        .toLowerCase()
-        .includes(search)
-      ||
-      rol.descripcion
-        .toLowerCase()
-        .includes(search)
+    return this.roles.filter(role =>
+      role.name.toLowerCase().includes(search) ||
+      role.description.toLowerCase().includes(search)
+    );
+  }
+
+  // =========================================================
+  // SELECCIONAR ROL
+  // =========================================================
+
+  selectRole(name: string): void {
+    this.selectedRole = name;
+  }
+
+  // =========================================================
+  // CAMBIAR PERMISO
+  // =========================================================
+
+  togglePermiso(role: Rol, permiso: Permiso): void {
+    permiso.granted = !permiso.granted;
+  }
+
+  // =========================================================
+  // CONTAR PERMISOS PERMITIDOS
+  // =========================================================
+
+  getAllowedCount(role: Rol): number {
+    return role.perms.filter(permiso => permiso.granted).length;
+  }
+
+  // =========================================================
+  // CONTAR PERMISOS RESTRINGIDOS
+  // =========================================================
+
+  getRestrictedCount(role: Rol): number {
+    return role.perms.filter(permiso => !permiso.granted).length;
+  }
+
+  // =========================================================
+  // SABER SI UN PERMISO ESTÁ HABILITADO
+  // =========================================================
+
+  hasPermission(role: Rol, label: string): boolean {
+    const permiso = role.perms.find(
+      permiso => permiso.label === label
     );
 
+    return permiso?.granted ?? false;
   }
 
-  // =====================================================
-  // TEXTO DEL PERMISO
-  // =====================================================
+  // =========================================================
+  // BÚSQUEDA
+  // =========================================================
 
-  getPermissionStatus(
-    permiso: Permiso
-  ): string {
-
-    return permiso.permitido
-      ? 'PERMITIDO'
-      : 'RESTRINGIDO';
-
+  onSearch(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.searchTerm = input.value;
   }
 
-  // =====================================================
-  // TOTAL DE USUARIOS
-  // =====================================================
+  // =========================================================
+  // BOTONES DEL HEADER
+  // =========================================================
 
-  get totalUsers(): number {
-
-    return this.roles.reduce(
-      (total, rol) =>
-        total + rol.usuarios,
-      0
-    );
-
+  mostrarNotificaciones(): void {
+    console.log('Notificaciones');
   }
 
-  // =====================================================
-  // PERMISOS DEL ROL ACTUAL
-  // =====================================================
-
-  get selectedPermissions(): Permiso[] {
-
-    return this.selectedRole.permisos;
-
+  mostrarCalendario(): void {
+    console.log('Calendario');
   }
 
-  // =====================================================
-  // COLOR DEL ROL
-  // =====================================================
-
-  getRoleColor(role: Rol): string {
-
-    return role.color;
-
+  abrirPerfil(): void {
+    console.log('Perfil del usuario');
   }
 
-  // =====================================================
-  // ESTILO DEL ROL SELECCIONADO
-  // =====================================================
+  // =========================================================
+  // NAVEGACIÓN DEL SIDEBAR
+  // =========================================================
 
-  getRoleStyle(
-    role: Rol
-  ): { [key: string]: string } {
-
-    return {
-      '--role-color': role.color
-    };
-
+  navegar(nombre: string): void {
+    console.log(`Navegando a: ${nombre}`);
   }
 
-  // =====================================================
-  // VERIFICAR SI ESTÁ SELECCIONADO
-  // =====================================================
-
-  isSelected(role: Rol): boolean {
-
-    return role.id === this.selectedRoleId;
-
+  cerrarSesion(): void {
+    console.log('Cerrar sesión');
   }
-
 }

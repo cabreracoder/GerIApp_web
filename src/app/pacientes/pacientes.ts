@@ -2,201 +2,340 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-interface Paciente {
-  id: string;
+type PatientStatus = 'stable' | 'critical' | 'observation';
+
+interface Patient {
+  id: number;
   name: string;
-  room: string;
   doc: string;
   age: number;
+  birthDate: string;
+  room: string;
   guardian: string;
   guardianRel: string;
   caregiver: string;
-  status: 'stable' | 'critical' | 'observation';
+  pavilion: string;
+  status: PatientStatus;
+  phone: string;
+  email: string;
+  notes: string;
+}
+
+interface PatientForm {
+  nombre: string;
+  documento: string;
+  nacimiento: string;
+  edad: number | null;
+  habitacion: string;
+  estado: PatientStatus;
+  cuidador: string;
+  pabellon: string;
+  encargado: string;
+  relacion: string;
+  telefono: string;
+  email: string;
+  notas: string;
 }
 
 @Component({
   selector: 'app-pacientes',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule
+  ],
   templateUrl: './pacientes.html',
   styleUrl: './pacientes.css'
 })
 export class Pacientes {
 
-  // ==============================
-  // VARIABLES
-  // ==============================
-
-  patients: Paciente[] = [
-    {
-      id: 'RM',
-      name: 'Ricardo Mendoza S.',
-      room: '104 - Ala Norte',
-      doc: '10.455.672',
-      age: 82,
-      guardian: 'Elena Mendoza',
-      guardianRel: 'Hija | 312 456 7890',
-      caregiver: 'Enf. Carlos Ruiz',
-      status: 'stable'
-    },
-    {
-      id: 'BA',
-      name: 'Beatriz Arango',
-      room: '212 - Ala Este',
-      doc: '7.122.908',
-      age: 89,
-      guardian: 'David Arango',
-      guardianRel: 'Nieto | 300 112 2233',
-      caregiver: 'Dra. Martha Luz',
-      status: 'critical'
-    },
-    {
-      id: 'JG',
-      name: 'Jorge Eliécer G.',
-      room: '108 - Ala Norte',
-      doc: '1.990.233',
-      age: 76,
-      guardian: 'Sandra Gómez',
-      guardianRel: 'Esposa | 315 889 0012',
-      caregiver: 'Enf. Carlos Ruiz',
-      status: 'stable'
-    },
-    {
-      id: 'ER',
-      name: 'Elena Rodriguez',
-      room: '104-A',
-      doc: '8.234.111',
-      age: 74,
-      guardian: 'Pedro Rodriguez',
-      guardianRel: 'Hijo | 318 900 1122',
-      caregiver: 'Enf. Laura Paz',
-      status: 'observation'
-    },
-    {
-      id: 'MS',
-      name: 'Marta Soto',
-      room: '108-C',
-      doc: '5.678.900',
-      age: 81,
-      guardian: 'Camila Soto',
-      guardianRel: 'Hija | 310 445 6677',
-      caregiver: 'Enf. Ana Reyes',
-      status: 'stable'
-    },
-    {
-      id: 'RP',
-      name: 'Roberto Peña',
-      room: '106 - Ala Sur',
-      doc: '3.112.445',
-      age: 78,
-      guardian: 'Mario Peña',
-      guardianRel: 'Hijo | 317 884 2210',
-      caregiver: 'Juan Vela',
-      status: 'stable'
-    },
-    {
-      id: 'LG',
-      name: 'Lucía González',
-      room: '201 - Ala Este',
-      doc: '6.889.020',
-      age: 83,
-      guardian: 'Clara González',
-      guardianRel: 'Sobrina | 311 334 5599',
-      caregiver: 'Dra. Martha Luz',
-      status: 'observation'
-    },
-    {
-      id: 'HP',
-      name: 'Hernando Paredes',
-      room: '109 - Ala Norte',
-      doc: '2.774.831',
-      age: 91,
-      guardian: 'Nora Paredes',
-      guardianRel: 'Hija | 320 001 9988',
-      caregiver: 'Enf. Ana Reyes',
-      status: 'critical'
-    }
-  ];
+  // =========================================================
+  // BÚSQUEDA Y FILTROS
+  // =========================================================
 
   searchText = '';
-  statusFilter = '';
+
   pavilionFilter = '';
 
-  currentPage = 1;
-  pageSize = 5;
+  statusFilter: PatientStatus | '' = '';
 
-  editingId: string | null = null;
+  // =========================================================
+  // PAGINACIÓN
+  // =========================================================
+
+  currentPage = 1;
+
+  pageSize = 8;
+
+  // =========================================================
+  // MODAL
+  // =========================================================
+
   modalOpen = false;
 
-  modalTitle = 'Nuevo Paciente';
-  saveButtonText = 'Guardar paciente';
+  editingId: number | null = null;
 
-  // ==============================
+  // =========================================================
   // FORMULARIO
-  // ==============================
+  // =========================================================
 
-  form = {
-    nombre: '',
-    documento: '',
-    nacimiento: '',
-    edad: '',
-    habitacion: '',
-    estado: 'stable' as 'stable' | 'critical' | 'observation',
-    cuidador: 'Enf. Carlos Ruiz',
-    pabellon: 'Ala Norte - Cuidados Intensivos',
-    encargado: '',
-    relacion: '',
-    telefono: '',
-    email: '',
-    notas: ''
-  };
+  form: PatientForm = this.createEmptyForm();
 
-  // ==============================
-  // PACIENTES FILTRADOS
-  // ==============================
+  // =========================================================
+  // PACIENTES
+  // =========================================================
 
-  get filteredPatients(): Paciente[] {
+  patients: Patient[] = [
 
-    let data = [...this.patients];
+    {
+      id: 1,
+      name: 'Ricardo Mendoza',
+      doc: '10.455.672',
+      age: 82,
+      birthDate: '1944-03-12',
+      room: '104',
+      guardian: 'Elena Mendoza',
+      guardianRel: 'Hija',
+      caregiver: 'Enf. Carlos Ruiz',
+      pavilion: 'Ala Norte',
+      status: 'stable',
+      phone: '3124567890',
+      email: 'elena.mendoza@mail.com',
+      notes: 'Control médico periódico.'
+    },
 
-    const q = this.searchText.trim().toLowerCase();
+    {
+      id: 2,
+      name: 'Carmen Torres',
+      doc: '31.225.891',
+      age: 78,
+      birthDate: '1948-06-20',
+      room: '108',
+      guardian: 'Luis Torres',
+      guardianRel: 'Hijo',
+      caregiver: 'Dra. Martha Luz',
+      pavilion: 'Ala Norte',
+      status: 'observation',
+      phone: '3105551122',
+      email: 'luis.torres@mail.com',
+      notes: 'En observación por control de presión.'
+    },
 
-    if (q.length >= 2) {
-      data = data.filter(p =>
-        p.name.toLowerCase().includes(q) ||
-        p.doc.toLowerCase().includes(q)
-      );
+    {
+      id: 3,
+      name: 'Jorge Ramírez',
+      doc: '12.889.456',
+      age: 86,
+      birthDate: '1940-01-15',
+      room: '203',
+      guardian: 'María Ramírez',
+      guardianRel: 'Hija',
+      caregiver: 'Enf. Laura Paz',
+      pavilion: 'Ala Sur',
+      status: 'critical',
+      phone: '3158882233',
+      email: 'maria.ramirez@mail.com',
+      notes: 'Requiere monitoreo constante.'
+    },
+
+    {
+      id: 4,
+      name: 'Ana Martínez',
+      doc: '28.334.781',
+      age: 74,
+      birthDate: '1952-09-05',
+      room: '210',
+      guardian: 'Carlos Martínez',
+      guardianRel: 'Hijo',
+      caregiver: 'Enf. Ana Reyes',
+      pavilion: 'Ala Sur',
+      status: 'stable',
+      phone: '3001112233',
+      email: 'carlos.martinez@mail.com',
+      notes: 'Paciente estable.'
+    },
+
+    {
+      id: 5,
+      name: 'Pedro Gómez',
+      doc: '15.672.334',
+      age: 90,
+      birthDate: '1936-04-11',
+      room: '302',
+      guardian: 'Laura Gómez',
+      guardianRel: 'Hija',
+      caregiver: 'Juan Vela',
+      pavilion: 'Ala Este',
+      status: 'stable',
+      phone: '3184567891',
+      email: 'laura.gomez@mail.com',
+      notes: 'Seguimiento nutricional.'
+    },
+
+    {
+      id: 6,
+      name: 'Marta López',
+      doc: '26.784.551',
+      age: 81,
+      birthDate: '1945-07-23',
+      room: '305',
+      guardian: 'Diego López',
+      guardianRel: 'Hijo',
+      caregiver: 'Enf. Carlos Ruiz',
+      pavilion: 'Ala Este',
+      status: 'observation',
+      phone: '3167891122',
+      email: 'diego.lopez@mail.com',
+      notes: 'Observación médica.'
+    },
+
+    {
+      id: 7,
+      name: 'Alberto Castro',
+      doc: '11.224.998',
+      age: 88,
+      birthDate: '1938-02-17',
+      room: '109',
+      guardian: 'Sofía Castro',
+      guardianRel: 'Hija',
+      caregiver: 'Dra. Martha Luz',
+      pavilion: 'Ala Norte',
+      status: 'critical',
+      phone: '3012223344',
+      email: 'sofia.castro@mail.com',
+      notes: 'Requiere atención especial.'
+    },
+
+    {
+      id: 8,
+      name: 'Rosa Fernández',
+      doc: '35.781.223',
+      age: 76,
+      birthDate: '1950-11-30',
+      room: '215',
+      guardian: 'Miguel Fernández',
+      guardianRel: 'Hijo',
+      caregiver: 'Enf. Laura Paz',
+      pavilion: 'Ala Sur',
+      status: 'stable',
+      phone: '3134455667',
+      email: 'miguel.fernandez@mail.com',
+      notes: 'Paciente estable.'
+    },
+
+    {
+      id: 9,
+      name: 'Manuel Vargas',
+      doc: '19.672.882',
+      age: 84,
+      birthDate: '1942-05-18',
+      room: '307',
+      guardian: 'Patricia Vargas',
+      guardianRel: 'Hija',
+      caregiver: 'Juan Vela',
+      pavilion: 'Ala Este',
+      status: 'stable',
+      phone: '3204455667',
+      email: 'patricia.vargas@mail.com',
+      notes: 'Control general.'
+    },
+
+    {
+      id: 10,
+      name: 'Gloria Herrera',
+      doc: '27.882.331',
+      age: 79,
+      birthDate: '1947-12-04',
+      room: '112',
+      guardian: 'Andrés Herrera',
+      guardianRel: 'Hijo',
+      caregiver: 'Enf. Ana Reyes',
+      pavilion: 'Ala Norte',
+      status: 'observation',
+      phone: '3147788990',
+      email: 'andres.herrera@mail.com',
+      notes: 'Control y observación.'
     }
 
-    if (this.statusFilter) {
-      data = data.filter(
-        p => p.status === this.statusFilter
-      );
-    }
+  ];
 
-    if (this.pavilionFilter) {
-      data = data.filter(
-        p => p.room.toLowerCase().includes(
-          this.pavilionFilter.toLowerCase()
-        )
-      );
-    }
+  // =========================================================
+  // FORMULARIO VACÍO
+  // =========================================================
 
-    return data;
+  createEmptyForm(): PatientForm {
+
+    return {
+      nombre: '',
+      documento: '',
+      nacimiento: '',
+      edad: null,
+      habitacion: '',
+      estado: 'stable',
+      cuidador: 'Enf. Carlos Ruiz',
+      pabellon: 'Ala Norte',
+      encargado: '',
+      relacion: '',
+      telefono: '',
+      email: '',
+      notas: ''
+    };
+
   }
 
-  // ==============================
+  // =========================================================
+  // PACIENTES FILTRADOS
+  // =========================================================
+
+  get filteredPatients(): Patient[] {
+
+    const search = this.searchText
+      .trim()
+      .toLowerCase();
+
+    return this.patients.filter(patient => {
+
+      const matchesSearch =
+        !search ||
+        patient.name.toLowerCase().includes(search) ||
+        patient.doc.toLowerCase().includes(search) ||
+        patient.guardian.toLowerCase().includes(search) ||
+        patient.caregiver.toLowerCase().includes(search);
+
+      const matchesPavilion =
+        !this.pavilionFilter ||
+        patient.pavilion === this.pavilionFilter;
+
+      const matchesStatus =
+        !this.statusFilter ||
+        patient.status === this.statusFilter;
+
+      return (
+        matchesSearch &&
+        matchesPavilion &&
+        matchesStatus
+      );
+
+    });
+
+  }
+
+  // =========================================================
   // PAGINACIÓN
-  // ==============================
+  // =========================================================
 
   get totalPages(): number {
+
     return Math.max(
       1,
-      Math.ceil(this.filteredPatients.length / this.pageSize)
+      Math.ceil(
+        this.filteredPatients.length / this.pageSize
+      )
     );
+
   }
 
-  get paginatedPatients(): Paciente[] {
+  get paginatedPatients(): Patient[] {
 
     const start =
       (this.currentPage - 1) * this.pageSize;
@@ -205,6 +344,7 @@ export class Pacientes {
       start,
       start + this.pageSize
     );
+
   }
 
   get firstShown(): number {
@@ -213,7 +353,11 @@ export class Pacientes {
       return 0;
     }
 
-    return ((this.currentPage - 1) * this.pageSize) + 1;
+    return (
+      (this.currentPage - 1) *
+      this.pageSize
+    ) + 1;
+
   }
 
   get lastShown(): number {
@@ -222,6 +366,7 @@ export class Pacientes {
       this.currentPage * this.pageSize,
       this.filteredPatients.length
     );
+
   }
 
   changePage(page: number): void {
@@ -231,317 +376,429 @@ export class Pacientes {
     }
 
     this.currentPage = page;
+
   }
 
-  // ==============================
-  // FILTROS
-  // ==============================
+  // =========================================================
+  // FILTRAR
+  // =========================================================
 
   filterTable(): void {
+
     this.currentPage = 1;
+
   }
 
-  // ==============================
+  // =========================================================
+  // ESTADÍSTICAS
+  // =========================================================
+
+  get totalActive(): number {
+
+    return this.patients.length;
+
+  }
+
+  get stablePatients(): number {
+
+    return this.patients.filter(
+      patient => patient.status === 'stable'
+    ).length;
+
+  }
+
+  get criticalPatients(): number {
+
+    return this.patients.filter(
+      patient => patient.status === 'critical'
+    ).length;
+
+  }
+
+  get observationPatients(): number {
+
+    return this.patients.filter(
+      patient => patient.status === 'observation'
+    ).length;
+
+  }
+
+  get occupancy(): number {
+
+    const capacity = 135;
+
+    return Math.round(
+      (this.totalActive / capacity) * 100
+    );
+
+  }
+
+  // =========================================================
   // MODAL
-  // ==============================
+  // =========================================================
+
+  get modalTitle(): string {
+
+    return this.editingId === null
+      ? 'Nuevo paciente'
+      : 'Editar paciente';
+
+  }
+
+  get saveButtonText(): string {
+
+    return this.editingId === null
+      ? 'Guardar paciente'
+      : 'Guardar cambios';
+
+  }
 
   openModal(
     mode: 'new' | 'edit',
-    id?: string
+    patientId?: number
   ): void {
 
-    this.editingId = id || null;
+    this.modalOpen = true;
 
-    this.clearForm();
+    this.editingId = null;
 
-    if (mode === 'edit' && id) {
+    if (mode === 'new') {
+
+      this.form = this.createEmptyForm();
+
+      return;
+
+    }
+
+    if (patientId !== undefined) {
 
       const patient =
-        this.patients.find(p => p.id === id);
+        this.patients.find(
+          item => item.id === patientId
+        );
 
       if (!patient) {
         return;
       }
 
-      this.modalTitle = 'Editar Paciente';
-      this.saveButtonText = 'Guardar cambios';
+      this.editingId = patient.id;
 
-      this.form.nombre = patient.name;
-      this.form.documento = patient.doc;
-      this.form.edad = patient.age.toString();
-      this.form.habitacion = patient.room;
-      this.form.estado = patient.status;
-      this.form.cuidador = patient.caregiver;
-      this.form.encargado = patient.guardian;
+      this.form = {
 
-      const relation =
-        patient.guardianRel.split('|');
+        nombre: patient.name,
 
-      this.form.relacion =
-        relation[0]?.trim() || '';
+        documento: patient.doc,
 
-      this.form.telefono =
-        relation[1]?.trim() || '';
+        nacimiento: patient.birthDate,
 
-    } else {
+        edad: patient.age,
 
-      this.modalTitle = 'Nuevo Paciente';
-      this.saveButtonText = 'Guardar paciente';
+        habitacion: patient.room,
+
+        estado: patient.status,
+
+        cuidador: patient.caregiver,
+
+        pabellon: patient.pavilion,
+
+        encargado: patient.guardian,
+
+        relacion: patient.guardianRel,
+
+        telefono: patient.phone,
+
+        email: patient.email,
+
+        notas: patient.notes
+
+      };
+
     }
 
-    this.modalOpen = true;
   }
 
   closeModal(): void {
 
     this.modalOpen = false;
+
     this.editingId = null;
+
+    this.form = this.createEmptyForm();
+
   }
 
   closeOnBackdrop(event: MouseEvent): void {
 
-    if (event.target === event.currentTarget) {
+    if (
+      event.target ===
+      event.currentTarget
+    ) {
+
       this.closeModal();
+
     }
+
   }
 
-  // ==============================
-  // LIMPIAR FORMULARIO
-  // ==============================
-
-  clearForm(): void {
-
-    this.form = {
-      nombre: '',
-      documento: '',
-      nacimiento: '',
-      edad: '',
-      habitacion: '',
-      estado: 'stable',
-      cuidador: 'Enf. Carlos Ruiz',
-      pabellon: 'Ala Norte - Cuidados Intensivos',
-      encargado: '',
-      relacion: '',
-      telefono: '',
-      email: '',
-      notas: ''
-    };
-  }
-
-  // ==============================
-  // GUARDAR PACIENTE
-  // ==============================
+  // =========================================================
+  // GUARDAR
+  // =========================================================
 
   savePatient(): void {
 
-    const nombre =
-      this.form.nombre.trim();
-
-    const documento =
-      this.form.documento.trim();
-
-    if (!nombre || !documento) {
-
-      alert(
-        'El nombre y documento son obligatorios.'
-      );
-
+    if (!this.validarFormulario()) {
       return;
     }
 
-    const initials =
-      nombre
-        .split(' ')
-        .slice(0, 2)
-        .map(word => word[0])
-        .join('')
-        .toUpperCase();
+    if (this.editingId === null) {
 
-    if (this.editingId) {
+      const newId =
+        this.patients.length > 0
+          ? Math.max(
+              ...this.patients.map(
+                patient => patient.id
+              )
+            ) + 1
+          : 1;
 
-      this.patients =
-        this.patients.map(p => {
+      const newPatient: Patient = {
 
-          if (p.id !== this.editingId) {
-            return p;
-          }
+        id: newId,
 
-          return {
-            ...p,
-            name: nombre,
-            doc: documento,
-            age:
-              parseInt(this.form.edad) ||
-              p.age,
+        name: this.form.nombre.trim(),
 
-            room:
-              this.form.habitacion ||
-              p.room,
+        doc: this.form.documento.trim(),
 
-            status:
-              this.form.estado,
+        age: this.form.edad ?? 0,
 
-            caregiver:
-              this.form.cuidador,
+        birthDate: this.form.nacimiento,
 
-            guardian:
-              this.form.encargado ||
-              p.guardian,
+        room: this.form.habitacion.trim(),
 
-            guardianRel:
-              `${this.form.relacion} | ${this.form.telefono}`
-          };
-        });
+        guardian: this.form.encargado.trim(),
 
-    } else {
+        guardianRel: this.form.relacion.trim(),
 
-      const newPatient: Paciente = {
+        caregiver: this.form.cuidador,
 
-        id: initials,
+        pavilion: this.form.pabellon,
 
-        name: nombre,
+        status: this.form.estado,
 
-        doc: documento,
+        phone: this.form.telefono.trim(),
 
-        age:
-          parseInt(this.form.edad) || 0,
+        email: this.form.email.trim(),
 
-        room:
-          this.form.habitacion || '—',
+        notes: this.form.notas.trim()
 
-        status:
-          this.form.estado,
-
-        caregiver:
-          this.form.cuidador,
-
-        guardian:
-          this.form.encargado || '—',
-
-        guardianRel:
-          `${this.form.relacion} | ${this.form.telefono}`
       };
 
-      this.patients.push(newPatient);
+      this.patients = [
+        ...this.patients,
+        newPatient
+      ];
+
+      this.closeModal();
+
+      return;
+
     }
 
-    this.closeModal();
-    this.filterTable();
-  }
-
-  // ==============================
-  // ELIMINAR
-  // ==============================
-
-  deletePatient(id: string): void {
-
-    const confirmed =
-      confirm(
-        '¿Eliminar este paciente del sistema?'
+    const index =
+      this.patients.findIndex(
+        patient =>
+          patient.id === this.editingId
       );
 
-    if (!confirmed) {
+    if (index === -1) {
+      return;
+    }
+
+    this.patients[index] = {
+
+      ...this.patients[index],
+
+      name: this.form.nombre.trim(),
+
+      doc: this.form.documento.trim(),
+
+      age: this.form.edad ?? 0,
+
+      birthDate: this.form.nacimiento,
+
+      room: this.form.habitacion.trim(),
+
+      guardian: this.form.encargado.trim(),
+
+      guardianRel: this.form.relacion.trim(),
+
+      caregiver: this.form.cuidador,
+
+      pavilion: this.form.pabellon,
+
+      status: this.form.estado,
+
+      phone: this.form.telefono.trim(),
+
+      email: this.form.email.trim(),
+
+      notes: this.form.notas.trim()
+
+    };
+
+    this.patients = [
+      ...this.patients
+    ];
+
+    this.closeModal();
+
+  }
+
+  // =========================================================
+  // VALIDACIÓN
+  // =========================================================
+
+  validarFormulario(): boolean {
+
+    if (!this.form.nombre.trim()) {
+      alert('Ingrese el nombre completo.');
+      return false;
+    }
+
+    if (!this.form.documento.trim()) {
+      alert('Ingrese el documento.');
+      return false;
+    }
+
+    if (!this.form.nacimiento) {
+      alert('Ingrese la fecha de nacimiento.');
+      return false;
+    }
+
+    if (
+      this.form.edad === null ||
+      this.form.edad < 50 ||
+      this.form.edad > 120
+    ) {
+
+      alert(
+        'La edad debe estar entre 50 y 120 años.'
+      );
+
+      return false;
+
+    }
+
+    if (!this.form.habitacion.trim()) {
+      alert('Ingrese la habitación.');
+      return false;
+    }
+
+    if (!this.form.encargado.trim()) {
+      alert('Ingrese el encargado familiar.');
+      return false;
+    }
+
+    if (!this.form.telefono.trim()) {
+      alert('Ingrese el teléfono.');
+      return false;
+    }
+
+    return true;
+
+  }
+
+  // =========================================================
+  // ESTADO
+  // =========================================================
+
+  toggleStatus(id: number): void {
+
+    const index =
+      this.patients.findIndex(
+        patient => patient.id === id
+      );
+
+    if (index === -1) {
+      return;
+    }
+
+    const patient =
+      this.patients[index];
+
+    patient.status =
+      patient.status === 'stable'
+        ? 'observation'
+        : 'stable';
+
+    this.patients = [
+      ...this.patients
+    ];
+
+  }
+
+  // =========================================================
+  // ELIMINAR
+  // =========================================================
+
+  deletePatient(id: number): void {
+
+    const patient =
+      this.patients.find(
+        item => item.id === id
+      );
+
+    if (!patient) {
+      return;
+    }
+
+    const confirmDelete =
+      window.confirm(
+        `¿Está seguro de eliminar a ${patient.name}?`
+      );
+
+    if (!confirmDelete) {
       return;
     }
 
     this.patients =
       this.patients.filter(
-        p => p.id !== id
+        item => item.id !== id
       );
 
     if (
       this.currentPage >
       this.totalPages
     ) {
+
       this.currentPage =
         this.totalPages;
+
     }
+
   }
 
-  // ==============================
-  // SUSPENDER / ACTIVAR
-  // ==============================
-
-  toggleStatus(id: string): void {
-
-    this.patients =
-      this.patients.map(p => {
-
-        if (p.id !== id) {
-          return p;
-        }
-
-        return {
-          ...p,
-          status:
-            p.status === 'stable'
-              ? 'observation'
-              : 'stable'
-        };
-      });
-  }
-
-  // ==============================
-  // ESTADO
-  // ==============================
-
-  getStatusText(
-    status: Paciente['status']
-  ): string {
-
-    switch (status) {
-
-      case 'stable':
-        return 'ESTABLE';
-
-      case 'critical':
-        return 'CRÍTICO';
-
-      case 'observation':
-        return 'OBSERVACIÓN';
-
-      default:
-        return '';
-    }
-  }
+  // =========================================================
+  // COLOR AVATAR
+  // =========================================================
 
   getAvatarColor(
-    status: Paciente['status']
+    status: PatientStatus
   ): string {
 
     switch (status) {
 
       case 'critical':
-        return '#DC3545';
+        return '#fee2e2';
 
       case 'observation':
-        return '#4DABF7';
+        return '#fef3c7';
 
       default:
-        return '#3B5BDB';
+        return '#dbeafe';
+
     }
+
   }
 
-  // ==============================
-  // NÚMERO DE PACIENTES
-  // ==============================
-
-  get activePatients(): number {
-
-    return this.patients.length;
-  }
-
-  get stablePatients(): number {
-
-    return this.patients.filter(
-      p => p.status === 'stable'
-    ).length;
-  }
-
-  get criticalPatients(): number {
-
-    return this.patients.filter(
-      p => p.status === 'critical'
-    ).length;
-  }
 }
