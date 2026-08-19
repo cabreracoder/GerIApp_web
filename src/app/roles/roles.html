@@ -1,0 +1,668 @@
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<nav class="sidebar-nav">
+
+<a class="nav-item"
+  href="#"
+  data-tooltip="Dashboard">
+
+```
+<span class="material-symbols-outlined">
+  dashboard
+</span>
+```
+
+  </a>
+
+<a class="nav-item"
+  href="#"
+  data-tooltip="Pacientes">
+
+```
+<span class="material-symbols-outlined">
+  elderly
+</span>
+```
+
+  </a>
+
+<a class="nav-item"
+  href="#"
+  data-tooltip="Salud y Seguridad">
+
+```
+<span class="material-symbols-outlined">
+  health_and_safety
+</span>
+```
+
+  </a>
+
+<a class="nav-item"
+  href="#"
+  data-tooltip="Encargados">
+
+```
+<span class="material-symbols-outlined">
+  supervisor_account
+</span>
+```
+
+  </a>
+
+<a class="nav-item active"
+  href="#"
+  data-tooltip="Roles y Permisos"
+  aria-current="page">
+
+```
+<span class="material-symbols-outlined">
+  admin_panel_settings
+</span>
+```
+
+  </a>
+
+<a class="nav-item"
+  href="#"
+  data-tooltip="Notificaciones">
+
+```
+<span class="material-symbols-outlined">
+  notifications
+</span>
+```
+
+  </a>
+
+</nav>
+
+<div class="sidebar-footer">
+
+<a class="nav-item"
+  href="#"
+  data-tooltip="Configuración">
+
+```
+<span class="material-symbols-outlined">
+  settings
+</span>
+```
+
+  </a>
+
+<a class="nav-item"
+  href="#"
+  data-tooltip="Cerrar sesión">
+
+```
+<span class="material-symbols-outlined">
+  logout
+</span>
+```
+
+  </a>
+
+</div>
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<div class="header">
+
+  <div class="header-brand">
+    Fundación Geriátrica
+  </div>
+
+  <div class="header-search">
+
+```
+<span class="material-symbols-outlined search-icon">
+  search
+</span>
+
+<input
+  type="text"
+  placeholder="Buscar..."
+  aria-label="Buscar">
+```
+
+  </div>
+
+  <div class="header-actions">
+
+```
+<button
+  class="icon-btn"
+  aria-label="Notificaciones">
+
+  <span class="material-symbols-outlined">
+    notifications
+  </span>
+
+</button>
+
+
+<button
+  class="icon-btn"
+  aria-label="Calendario">
+
+  <span class="material-symbols-outlined">
+    calendar_month
+  </span>
+
+</button>
+
+
+<div
+  class="header-divider"
+  role="separator">
+</div>
+
+
+<div
+  class="header-user"
+  role="button"
+  tabindex="0"
+  aria-label="Perfil de usuario">
+
+  <div class="header-user-info">
+
+    <div class="header-user-name">
+      Jose Cabrera
+    </div>
+
+    <div class="header-user-role">
+      Administrador
+    </div>
+
+  </div>
+
+
+  <div
+    class="avatar"
+    aria-hidden="true">
+
+    JC
+
+  </div>
+
+</div>
+```
+
+  </div>
+
+</div>
+
+<!-- =====================================================
+     CONTENIDO PRINCIPAL
+===================================================== -->
+
+<main class="main">
+
+  <!-- PAGE HEADER -->
+
+  <div class="page-header">
+
+```
+<h2 class="page-title">
+  Roles y Permisos
+</h2>
+
+<p class="page-subtitle">
+  Accesos y niveles de autorización por rol en la Fundación Geriátrica
+</p>
+```
+
+  </div>
+
+  <!-- ===================================================
+       SELECCIONAR ROL
+  ==================================================== -->
+
+  <div class="section-label">
+    Seleccionar rol
+  </div>
+
+  <div
+    class="role-cards"
+    role="radiogroup"
+    aria-label="Selección de rol">
+
+```
+<!-- TARJETAS DE ROLES -->
+
+<div
+  class="role-card"
+  *ngFor="let rol of roles; let i = index"
+  [class.selected]="rolSeleccionado=== i"
+  [style.--role-color]="rol.color"
+  (click)="seleccionarRol(i)"
+  tabindex="0"
+  role="radio"
+  [attr.aria-checked]="rolSeleccionado === i">
+
+
+  <!-- CABECERA -->
+
+  <div class="role-card-header">
+
+    <div
+      class="role-icon-wrap"
+      [style.background]="rol.color">
+
+      <span class="material-symbols-outlined">
+        {{ rol.icono }}
+      </span>
+
+    </div>
+
+
+    <div class="role-card-meta">
+
+      <div class="role-card-name">
+        {{ rol.nombre }}
+      </div>
+
+
+      <div class="role-user-count">
+
+        <span class="material-symbols-outlined">
+          group
+        </span>
+
+        {{ rol.usuarios }} usuarios
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- DESCRIPCIÓN -->
+
+  <div class="role-card-desc">
+    {{ rol.descripcion }}
+  </div>
+
+
+  <!-- RESUMEN PERMISOS -->
+
+  <div class="role-perm-summary">
+
+
+    <div class="perm-badge allowed">
+
+      <span class="material-symbols-outlined">
+        check_circle
+      </span>
+
+      {{ permisosPermitidos(rol) }}
+      permitidos
+
+    </div>
+
+
+    <div class="perm-badge restricted">
+
+      <span class="material-symbols-outlined">
+        block
+      </span>
+
+      {{ permisosDenegados(rol) }}
+      restringidos
+
+    </div>
+
+  </div>
+
+
+  <!-- CHECK DE SELECCIÓN -->
+
+  <div
+    class="selected-check"
+    *ngIf="rolSeleccionado === i"
+    [style.background]="rol.color">
+
+    <span class="material-symbols-outlined">
+      check
+    </span>
+
+  </div>
+
+</div>
+```
+
+  </div>
+
+  <!-- ===================================================
+       DETALLE DEL ROL
+  ==================================================== -->
+
+  <div class="section-label">
+    Detalle del rol
+  </div>
+
+  <div class="detail-panel">
+
+```
+<!-- INFORMACIÓN DEL ROL -->
+
+<div
+  class="detail-info-card"
+  [style.--role-color]="rolActual.color">
+
+
+  <div
+    class="detail-icon-wrap"
+    [style.background]="rolActual.color">
+
+    <span class="material-symbols-outlined">
+      {{ rolActual.icono }}
+    </span>
+
+  </div>
+
+
+  <div class="detail-role-name">
+    {{ rolActual.nombre }}
+  </div>
+
+
+  <div class="detail-user-count">
+
+    <span class="material-symbols-outlined">
+      group
+    </span>
+
+    {{ rolActual.usuarios }}
+    usuarios asignados
+
+  </div>
+
+
+  <div class="detail-desc">
+    {{ rolActual.descripcion }}
+  </div>
+
+
+  <!-- ESTADÍSTICAS -->
+
+  <div class="detail-stats">
+
+
+    <div class="stat-box allowed">
+
+      <div class="stat-box-num">
+        {{ permisosPermitidos(rolActual) }}
+      </div>
+
+      <div class="stat-box-label">
+        Permitidos
+      </div>
+
+    </div>
+
+
+    <div class="stat-box restricted">
+
+      <div class="stat-box-num">
+        {{ permisosDenegados(rolActual) }}
+      </div>
+
+      <div class="stat-box-label">
+        Restringidos
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- LISTA DE PERMISOS -->
+
+<div
+  class="perm-list-card"
+  [style.--role-color]="rolActual.color">
+
+
+  <div class="perm-list-header">
+
+    <div class="perm-list-title">
+      Permisos del rol
+    </div>
+
+
+    <div class="perm-list-hint">
+
+      <span class="material-symbols-outlined">
+        touch_app
+      </span>
+
+      Haz clic para modificar
+
+    </div>
+
+  </div>
+
+
+  <div class="perm-rows">
+
+
+    <!-- PERMISOS -->
+
+    <div
+      class="perm-row"
+      *ngFor="let permiso of rolActual.permisos; let i = index"
+      (click)="cambiarPermiso(i)">
+
+
+      <!-- ICONO -->
+
+      <div
+        class="perm-row-icon"
+        [class.granted]="permiso.permitido"
+        [class.denied]="!permiso.permitido">
+
+        <span class="material-symbols-outlined">
+          {{ permiso.icono }}
+        </span>
+
+      </div>
+
+
+      <!-- NOMBRE -->
+
+      <div class="perm-row-label">
+        {{ permiso.nombre }}
+      </div>
+
+
+      <!-- ESTADO -->
+
+      <span
+        class="perm-status-badge"
+        [class.granted]="permiso.permitido"
+        [class.denied]="!permiso.permitido">
+
+        {{ permiso.permitido ? 'Permitido' : 'Denegado' }}
+
+      </span>
+
+
+      <!-- SWITCH -->
+
+      <div
+        class="toggle"
+        [class.on]="permiso.permitido">
+
+        <div class="toggle-track"></div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+```
+
+  </div>
+
+  <!-- ===================================================
+       MATRIZ DE PERMISOS
+  ==================================================== -->
+
+  <div class="section-label">
+    Matriz de permisos
+  </div>
+
+  <div
+    class="matrix-section"
+    role="region"
+    aria-label="Matriz de permisos">
+
+```
+<!-- CABECERA -->
+
+<div class="matrix-header">
+
+
+  <span
+    class="material-symbols-outlined"
+    style="
+      color:var(--primary);
+      font-size:20px;
+      font-variation-settings:
+      'FILL' 1,
+      'wght' 500,
+      'GRAD' 0,
+      'opsz' 20;
+    ">
+
+    grid_view
+
+  </span>
+
+
+  <span class="matrix-title">
+    Comparativa de accesos por rol
+  </span>
+
+
+  <span class="matrix-subtitle">
+    Haz clic en una fila del panel de detalle para modificar permisos
+  </span>
+
+</div>
+
+
+<!-- TABLA -->
+
+<div class="matrix-table-wrap">
+
+
+  <table
+    class="matrix-table"
+    aria-label="Tabla de permisos por rol">
+
+
+    <!-- HEADER -->
+
+    <thead>
+
+      <tr>
+
+        <th>
+          Permiso
+        </th>
+
+
+        <th
+          *ngFor="let rol of roles">
+
+          <div class="matrix-role-label">
+
+
+            <span
+              class="matrix-role-dot"
+              [style.background]="rol.color">
+            </span>
+
+
+            {{ rol.nombre }}
+
+          </div>
+
+        </th>
+
+      </tr>
+
+    </thead>
+
+
+    <!-- BODY -->
+
+    <tbody>
+
+
+      <tr
+        *ngFor="let permiso of roles[0].permisos">
+
+
+        <!-- PERMISO -->
+
+        <td>
+          {{ permiso.nombre }}
+        </td>
+
+
+        <!-- CADA ROL -->
+
+        <td
+          *ngFor="let rol of roles">
+
+
+          <div
+            class="matrix-icon"
+            [class.granted]="tienePermiso(rol, permiso.nombre)"
+            [class.denied]="!tienePermiso(rol, permiso.nombre)"
+            [style.color]="
+              tienePermiso(rol, permiso.nombre)
+                ? rol.color
+                : '#dee2e6'
+            ">
+
+
+            <span class="material-symbols-outlined">
+
+              {{
+                tienePermiso(rol, permiso.nombre)
+                  ? 'check_circle'
+                  : 'cancel'
+              }}
+
+            </span>
+
+          </div>
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>
+```
+
+  </div>
+
+</main>

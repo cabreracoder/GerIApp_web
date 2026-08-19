@@ -1,0 +1,224 @@
+<div class="app-container">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <!-- LOGO -->
+    <div class="logo-container">
+
+      <div class="logo">
+
+        <span class="material-symbols-outlined">
+          health_and_safety
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- MENÚ PRINCIPAL -->
+    <nav class="menu">
+
+      <a
+        *ngFor="let item of menu"
+        [routerLink]="item.ruta"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="menu-button"
+        [title]="item.nombre"
+      >
+
+        <span class="material-symbols-outlined">
+          {{ item.icono }}
+        </span>
+
+        <span class="menu-tooltip">
+          {{ item.nombre }}
+        </span>
+
+      </a>
+
+    </nav>
+
+
+    <!-- MENÚ INFERIOR -->
+    <div class="sidebar-footer">
+
+      <!-- CONFIGURACIÓN -->
+      <a
+        [routerLink]="configuracion.ruta"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="menu-button"
+        [title]="configuracion.nombre"
+      >
+
+        <span class="material-symbols-outlined">
+          {{ configuracion.icono }}
+        </span>
+
+        <span class="menu-tooltip">
+          {{ configuracion.nombre }}
+        </span>
+
+      </a>
+
+
+      <!-- CERRAR SESIÓN -->
+      <button
+        type="button"
+        class="menu-button logout-button"
+        title="Cerrar sesión"
+      >
+
+        <span class="material-symbols-outlined">
+          logout
+        </span>
+
+        <span class="menu-tooltip">
+          Cerrar sesión
+        </span>
+
+      </button>
+
+    </div>
+
+  </aside>
+
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="main-container">
+
+
+    <!-- HEADER -->
+    <header class="header">
+
+
+      <!-- IZQUIERDA -->
+      <div class="header-left">
+
+        <h1>
+          Fundación Geriátrica
+        </h1>
+
+
+        <!-- BUSCADOR -->
+        <div class="search-container">
+
+          <span class="material-symbols-outlined search-icon">
+            search
+          </span>
+
+          <input
+            type="text"
+            placeholder="Buscar por nombre o documento..."
+          >
+
+        </div>
+
+      </div>
+
+
+      <!-- DERECHA -->
+      <div class="header-right">
+
+
+        <!-- NOTIFICACIONES -->
+        <button
+          type="button"
+          class="header-button"
+          title="Notificaciones"
+        >
+
+          <span class="material-symbols-outlined">
+            notifications
+          </span>
+
+          <span class="notification-dot"></span>
+
+        </button>
+
+
+        <!-- CALENDARIO -->
+        <button
+          type="button"
+          class="header-button"
+          title="Calendario"
+        >
+
+          <span class="material-symbols-outlined">
+            calendar_today
+          </span>
+
+        </button>
+
+
+        <!-- DIVISOR -->
+        <div class="header-divider"></div>
+
+
+        <!-- NUEVO REGISTRO -->
+        <button
+          type="button"
+          class="new-register"
+        >
+          Nuevo Registro
+        </button>
+
+
+        <!-- USUARIO -->
+        <div class="user">
+
+          <div class="user-info">
+
+            <strong>
+              Jose Cabrera
+            </strong>
+
+            <span>
+              ADMINISTRADOR
+            </span>
+
+          </div>
+
+
+          <div class="avatar">
+            JC
+          </div>
+
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <!-- CONTENIDO DE LAS PÁGINAS -->
+    <main class="content">
+
+      <router-outlet></router-outlet>
+
+    </main>
+
+  </div>
+
+
+  <!-- BOTÓN FLOTANTE -->
+  <button
+    type="button"
+    class="floating-button"
+    title="Nuevo paciente"
+  >
+
+    <span class="material-symbols-outlined">
+      add
+    </span>
+
+    <span class="floating-tooltip">
+      Nuevo paciente
+    </span>
+
+  </button>
+
+</div>

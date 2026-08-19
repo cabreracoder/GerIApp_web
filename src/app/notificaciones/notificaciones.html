@@ -1,0 +1,144 @@
+<!--
+  COMPONENTE NOTIFICACIONES
+  El header principal de tu aplicación puede estar
+  en otro componente. Aquí solamente está el contenido
+  propio de Notificaciones.
+-->
+
+<div class="content">
+
+  <div class="canvas">
+
+    <!-- HEADER DE LA PÁGINA -->
+    <div class="page-header">
+
+      <div class="page-title-block">
+        <h2>Notificaciones</h2>
+
+        <p class="page-subtitle">
+          {{ subtitulo }}
+        </p>
+      </div>
+
+      <button
+        class="btn-mark-all"
+        type="button"
+        (click)="marcarTodasLeidas()"
+        [disabled]="notificacionesNoLeidas === 0">
+
+        <span class="material-symbols-outlined">
+          done_all
+        </span>
+
+        Marcar todas leídas
+
+      </button>
+
+    </div>
+
+
+    <!-- LISTA DE NOTIFICACIONES -->
+    <div class="notif-list">
+
+      <div
+        class="notif-item"
+        *ngFor="let notificacion of notificacionesFiltradas"
+        [class.type-critical]="notificacion.tipo === 'critical'"
+        [class.type-warning]="notificacion.tipo === 'warning'"
+        [class.type-info]="notificacion.tipo === 'info'"
+        [class.is-read]="notificacion.leida"
+      >
+
+        <!-- ICONO -->
+        <div class="notif-icon-wrap">
+
+          <span class="material-symbols-outlined">
+            {{ notificacion.icono }}
+          </span>
+
+        </div>
+
+
+        <!-- INFORMACIÓN -->
+        <div class="notif-body">
+
+          <div class="notif-title">
+            {{ notificacion.titulo }}
+          </div>
+
+          <div class="notif-desc">
+            {{ notificacion.descripcion }}
+          </div>
+
+          <div class="notif-time">
+            {{ notificacion.tiempo }}
+          </div>
+
+        </div>
+
+
+        <!-- MARCAR COMO LEÍDA -->
+        <button
+          *ngIf="!notificacion.leida"
+          class="notif-read"
+          type="button"
+          title="Marcar como leída"
+          aria-label="Marcar como leída"
+          (click)="marcarComoLeida(notificacion)"
+        >
+
+          <span class="material-symbols-outlined">
+            done
+          </span>
+
+        </button>
+
+
+        <!-- ELIMINAR -->
+        <button
+          class="notif-close"
+          type="button"
+          title="Eliminar notificación"
+          aria-label="Eliminar notificación"
+          (click)="eliminarNotificacion(notificacion.id)"
+        >
+
+          <span class="material-symbols-outlined">
+            close
+          </span>
+
+        </button>
+
+      </div>
+
+
+      <!-- ESTADO VACÍO -->
+      <div
+        class="empty-state"
+        *ngIf="notificacionesFiltradas.length === 0"
+      >
+
+        <span class="material-symbols-outlined">
+          notifications_off
+        </span>
+
+        <p>
+          No hay notificaciones para mostrar.
+        </p>
+
+        <button
+          *ngIf="textoBusqueda"
+          type="button"
+          class="btn-clear-search"
+          (click)="limpiarBusqueda()"
+        >
+          Limpiar búsqueda
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

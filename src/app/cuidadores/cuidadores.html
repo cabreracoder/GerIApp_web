@@ -1,0 +1,1278 @@
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+  <div class="sidebar-logo">
+    <span class="material-symbols-outlined">
+      health_and_safety
+    </span>
+  </div>
+
+  <nav class="nav-items">
+
+    <div class="nav-item">
+      <span class="material-symbols-outlined">
+        dashboard
+      </span>
+
+      <div class="tooltip">
+        Dashboard
+      </div>
+    </div>
+
+    <div class="nav-item">
+      <span class="material-symbols-outlined">
+        elderly
+      </span>
+
+      <div class="tooltip">
+        Residentes
+      </div>
+    </div>
+
+    <div class="nav-item active">
+      <span class="material-symbols-outlined">
+        health_and_safety
+      </span>
+
+      <div class="tooltip">
+        Cuidadores
+      </div>
+    </div>
+
+    <div class="nav-item">
+      <span class="material-symbols-outlined">
+        supervisor_account
+      </span>
+
+      <div class="tooltip">
+        Personal
+      </div>
+    </div>
+
+    <div class="nav-item">
+      <span class="material-symbols-outlined">
+        admin_panel_settings
+      </span>
+
+      <div class="tooltip">
+        Administración
+      </div>
+    </div>
+
+    <div class="nav-item">
+      <span class="material-symbols-outlined">
+        notifications
+      </span>
+
+      <div class="tooltip">
+        Notificaciones
+      </div>
+    </div>
+
+  </nav>
+
+  <div class="sidebar-footer">
+
+    <div class="nav-item">
+      <span class="material-symbols-outlined">
+        settings
+      </span>
+
+      <div class="tooltip">
+        Configuración
+      </div>
+    </div>
+
+    <div class="nav-item">
+      <span class="material-symbols-outlined">
+        logout
+      </span>
+
+      <div class="tooltip">
+        Cerrar sesión
+      </div>
+    </div>
+
+  </div>
+
+</aside>
+
+
+<!-- HEADER -->
+<header class="header">
+
+  <div class="header-brand">
+    Fundación Geriátrica
+  </div>
+
+  <div class="header-search">
+
+    <span class="material-symbols-outlined search-icon">
+      search
+    </span>
+
+    <input
+      type="text"
+      placeholder="Buscar cuidadores...">
+
+  </div>
+
+  <div class="header-actions">
+
+    <button
+      class="icon-btn"
+      title="Notificaciones">
+
+      <span class="material-symbols-outlined">
+        notifications
+      </span>
+
+    </button>
+
+    <button
+      class="icon-btn"
+      title="Calendario">
+
+      <span class="material-symbols-outlined">
+        calendar_month
+      </span>
+
+    </button>
+
+    <div class="h-divider"></div>
+
+    <button
+      class="btn-primary"
+      (click)="openModal('new')">
+
+      <span class="material-symbols-outlined">
+        add
+      </span>
+
+      Nuevo Cuidador
+
+    </button>
+
+    <div class="h-divider"></div>
+
+    <div class="user-info">
+
+      <div class="user-details">
+
+        <div class="user-name">
+          Jose Cabrera
+        </div>
+
+        <div class="user-role">
+          Administrador
+        </div>
+
+      </div>
+
+      <div class="user-avatar">
+        JC
+      </div>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+<!-- CANVAS -->
+<main class="canvas">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+
+    <div>
+
+      <h2 class="page-title">
+        Gestión Cuidadores
+      </h2>
+
+      <p class="page-subtitle">
+        Personal de atención y cuidado de residentes
+      </p>
+
+    </div>
+
+    <button
+      class="btn-primary"
+      (click)="openModal('new')">
+
+      <span class="material-symbols-outlined">
+        add
+      </span>
+
+      Nuevo Cuidador
+
+    </button>
+
+  </div>
+
+
+  <!-- STAT CARDS -->
+  <div class="stat-cards">
+
+    <!-- TOTAL -->
+    <div class="stat-card">
+
+      <div
+        class="stat-icon"
+        style="background: var(--card)">
+
+        <span
+          class="material-symbols-outlined"
+          style="color:var(--text)">
+
+          groups
+
+        </span>
+
+      </div>
+
+      <div>
+
+        <div class="stat-label">
+          Total Cuidadores
+        </div>
+
+        <div class="stat-value">
+          {{ totalCuidadores }}
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ACTIVOS -->
+    <div class="stat-card">
+
+      <div
+        class="stat-icon"
+        style="background:#e0f4ff">
+
+        <span
+          class="material-symbols-outlined"
+          style="color:var(--secondary)">
+
+          how_to_reg
+
+        </span>
+
+      </div>
+
+      <div>
+
+        <div class="stat-label">
+          En Turno Activo
+        </div>
+
+        <div
+          class="stat-value"
+          style="color:var(--secondary)">
+
+          {{ cuidadoresActivos }}
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- FUERA DE TURNO -->
+    <div class="stat-card">
+
+      <div
+        class="stat-icon"
+        style="background:#f1f3f5">
+
+        <span
+          class="material-symbols-outlined"
+          style="color:var(--muted)">
+
+          person_off
+
+        </span>
+
+      </div>
+
+      <div>
+
+        <div class="stat-label">
+          Fuera de Turno
+        </div>
+
+        <div
+          class="stat-value"
+          style="color:var(--muted)">
+
+          {{ cuidadoresFueraTurno }}
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- TABLE -->
+  <div class="table-card">
+
+    <div class="table-card-header">
+
+      <span class="table-card-title">
+        Personal de Cuidadores
+      </span>
+
+    </div>
+
+    <div class="table-responsive">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>
+              Cuidador
+            </th>
+
+            <th>
+              Especialidad
+            </th>
+
+            <th>
+              Licencia
+            </th>
+
+            <th>
+              Turno
+            </th>
+
+            <th>
+              Pacientes
+            </th>
+
+            <th>
+              Estado
+            </th>
+
+            <th class="actions-header">
+              Acciones
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <!-- SIN CUIDADORES -->
+          <tr
+            *ngIf="cuidadores.length === 0">
+
+            <td
+              colspan="7"
+              class="empty-state">
+
+              No hay cuidadores registrados.
+
+            </td>
+
+          </tr>
+
+
+          <!-- CUIDADORES -->
+          <tr
+            *ngFor="let cuidador of cuidadores">
+
+            <!-- NOMBRE -->
+            <td>
+
+              <div class="caregiver-info">
+
+                <div
+                  class="caregiver-avatar"
+                  [style.background]="avatarColor(cuidador.id) + '22'"
+                  [style.color]="avatarColor(cuidador.id)">
+
+                  {{ iniciales(cuidador.nombre) }}
+
+                </div>
+
+                <div class="caregiver-name">
+
+                  {{ cuidador.nombre }}
+
+                </div>
+
+              </div>
+
+            </td>
+
+
+            <!-- ESPECIALIDAD -->
+            <td class="specialty-cell">
+
+              {{ cuidador.especialidad }}
+
+            </td>
+
+
+            <!-- LICENCIA -->
+            <td>
+
+              <span class="license-mono">
+
+                {{ cuidador.licencia }}
+
+              </span>
+
+            </td>
+
+
+            <!-- TURNO -->
+            <td>
+
+              <span class="badge badge-turno">
+
+                {{ cuidador.turno }}
+
+              </span>
+
+            </td>
+
+
+            <!-- PACIENTES -->
+            <td>
+
+              <span class="patients-val">
+
+                {{ cuidador.pacientes }}
+
+              </span>
+
+            </td>
+
+
+            <!-- ESTADO -->
+            <td>
+
+              <span
+                *ngIf="cuidador.estado === 'active'"
+                class="badge badge-active">
+
+                Activo
+
+              </span>
+
+              <span
+                *ngIf="cuidador.estado === 'off'"
+                class="badge badge-off">
+
+                Libre
+
+              </span>
+
+            </td>
+
+
+            <!-- ACCIONES -->
+            <td class="actions-cell">
+
+              <button
+                class="actions-btn"
+                (click)="toggleDropdown($event, cuidador.id)">
+
+                ⋮
+
+              </button>
+
+
+              <div
+                class="dropdown"
+                [class.open]="activeDropdown === cuidador.id">
+
+                <!-- EDITAR -->
+                <div
+                  class="dropdown-item"
+                  (click)="openModal('edit', cuidador.id)">
+
+                  <span class="material-symbols-outlined">
+                    edit
+                  </span>
+
+                  Editar
+
+                </div>
+
+
+                <!-- SUSPENDER / REACTIVAR -->
+                <div
+                  class="dropdown-item"
+                  (click)="toggleStatus(cuidador.id)">
+
+                  <span
+                    class="material-symbols-outlined">
+
+                    {{
+                      cuidador.estado === 'active'
+                        ? 'person_off'
+                        : 'how_to_reg'
+                    }}
+
+                  </span>
+
+                  {{
+                    cuidador.estado === 'active'
+                      ? 'Suspender'
+                      : 'Reactivar'
+                  }}
+
+                </div>
+
+
+                <div class="dropdown-divider"></div>
+
+
+                <!-- ELIMINAR -->
+                <div
+                  class="dropdown-item danger"
+                  (click)="confirmDelete(cuidador.id)">
+
+                  <span class="material-symbols-outlined">
+                    delete
+                  </span>
+
+                  Eliminar
+
+                </div>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</main>
+
+
+<!-- MODAL NUEVO / EDITAR -->
+<div
+  class="modal-overlay"
+  [class.open]="modalAbierto"
+  (click)="cerrarModalPorOverlay($event)">
+
+  <div
+    class="modal"
+    (click)="$event.stopPropagation()">
+
+
+    <!-- MODAL HEADER -->
+    <div class="modal-header">
+
+      <div class="modal-hdr-icon">
+
+        <span class="material-symbols-outlined">
+          person_add
+        </span>
+
+      </div>
+
+      <div class="modal-hdr-title">
+
+        {{
+          modoModal === 'edit'
+            ? 'Editar Cuidador'
+            : 'Nuevo Cuidador'
+        }}
+
+      </div>
+
+      <button
+        class="modal-close"
+        (click)="closeModal()">
+
+        <span class="material-symbols-outlined">
+          close
+        </span>
+
+      </button>
+
+    </div>
+
+
+    <!-- MODAL BODY -->
+    <div class="modal-body">
+
+
+      <!-- INFORMACIÓN PERSONAL -->
+      <section>
+
+        <div class="section-heading">
+
+          <span class="material-symbols-outlined">
+            person
+          </span>
+
+          Información Personal
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+          <!-- NOMBRE -->
+          <div class="form-group">
+
+            <label class="form-label">
+
+              Nombre
+
+              <span class="req">*</span>
+
+            </label>
+
+            <input
+              class="form-input"
+              [class.err]="tieneError('nombre')"
+              type="text"
+              placeholder="Nombre completo"
+              [(ngModel)]="formulario.nombre">
+
+            <span
+              class="field-error"
+              [class.show]="tieneError('nombre')">
+
+              Este campo es requerido
+
+            </span>
+
+          </div>
+
+
+          <!-- ID -->
+          <div class="form-group">
+
+            <label class="form-label">
+
+              Número ID
+
+              <span class="req">*</span>
+
+            </label>
+
+            <input
+              class="form-input"
+              [class.err]="tieneError('nid')"
+              type="text"
+              placeholder="Número de identificación"
+              [(ngModel)]="formulario.nid">
+
+            <span
+              class="field-error"
+              [class.show]="tieneError('nid')">
+
+              Este campo es requerido
+
+            </span>
+
+          </div>
+
+
+          <!-- TELÉFONO -->
+          <div class="form-group">
+
+            <label class="form-label">
+
+              Teléfono
+
+              <span class="req">*</span>
+
+            </label>
+
+            <input
+              class="form-input"
+              [class.err]="tieneError('telefono')"
+              type="text"
+              placeholder="+57 300 000 0000"
+              [(ngModel)]="formulario.telefono">
+
+            <span
+              class="field-error"
+              [class.show]="tieneError('telefono')">
+
+              Este campo es requerido
+
+            </span>
+
+          </div>
+
+
+          <!-- EMAIL -->
+          <div class="form-group">
+
+            <label class="form-label">
+
+              Email
+
+              <span class="req">*</span>
+
+            </label>
+
+            <input
+              class="form-input"
+              [class.err]="tieneError('email')"
+              type="email"
+              placeholder="correo@ejemplo.com"
+              [(ngModel)]="formulario.email">
+
+            <span
+              class="field-error"
+              [class.show]="tieneError('email')">
+
+              Este campo es requerido
+
+            </span>
+
+          </div>
+
+
+          <!-- NACIMIENTO -->
+          <div class="form-group span2">
+
+            <label class="form-label">
+              Fecha de Nacimiento
+            </label>
+
+            <input
+              class="form-input date-input"
+              type="date"
+              [(ngModel)]="formulario.nacimiento">
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- INFORMACIÓN PROFESIONAL -->
+      <section>
+
+        <div class="section-heading">
+
+          <span class="material-symbols-outlined">
+            work
+          </span>
+
+          Información Profesional
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+          <!-- ESPECIALIDAD -->
+          <div class="form-group">
+
+            <label class="form-label">
+
+              Especialidad
+
+              <span class="req">*</span>
+
+            </label>
+
+            <select
+              class="form-select"
+              [class.err]="tieneError('especialidad')"
+              [(ngModel)]="formulario.especialidad">
+
+              <option value="">
+                Seleccionar especialidad
+              </option>
+
+              <option value="Aux. Enfermería">
+                Auxiliar de Enfermería
+              </option>
+
+              <option value="Geriatría Especializada">
+                Geriatría Especializada
+              </option>
+
+              <option value="Fisioterapia">
+                Fisioterapia
+              </option>
+
+              <option value="Cuidados Intensivos">
+                Cuidados Intensivos
+              </option>
+
+            </select>
+
+            <span
+              class="field-error"
+              [class.show]="tieneError('especialidad')">
+
+              Este campo es requerido
+
+            </span>
+
+          </div>
+
+
+          <!-- LICENCIA -->
+          <div class="form-group">
+
+            <label class="form-label">
+
+              Licencia
+
+              <span class="req">*</span>
+
+            </label>
+
+            <input
+              class="form-input"
+              [class.err]="tieneError('licencia')"
+              type="text"
+              placeholder="L-XXXXX"
+              [(ngModel)]="formulario.licencia">
+
+            <span
+              class="field-error"
+              [class.show]="tieneError('licencia')">
+
+              Este campo es requerido
+
+            </span>
+
+          </div>
+
+
+          <!-- EXPERIENCIA -->
+          <div class="form-group">
+
+            <label class="form-label">
+              Años de Experiencia
+            </label>
+
+            <input
+              class="form-input"
+              type="number"
+              min="0"
+              placeholder="0"
+              [(ngModel)]="formulario.experiencia">
+
+          </div>
+
+
+          <!-- INSTITUCIÓN -->
+          <div class="form-group">
+
+            <label class="form-label">
+              Institución
+            </label>
+
+            <input
+              class="form-input"
+              type="text"
+              placeholder="Universidad / Centro de formación"
+              [(ngModel)]="formulario.institucion">
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- DISPONIBILIDAD -->
+      <section>
+
+        <div class="section-heading">
+
+          <span class="material-symbols-outlined">
+            schedule
+          </span>
+
+          Disponibilidad y Turnos
+
+        </div>
+
+
+        <!-- TURNOS -->
+        <div class="turno-grid">
+
+          <label
+            class="turno-card"
+            *ngFor="let turno of turnos"
+            [class.sel]="turnoSeleccionado === turno.nombre"
+            (click)="selectTurno(turno.nombre)">
+
+            <input
+              type="radio"
+              name="turno"
+              [value]="turno.nombre"
+              [(ngModel)]="turnoSeleccionado">
+
+            <div class="turno-name">
+
+              {{ turno.nombre }}
+
+            </div>
+
+            <div class="turno-hrs">
+
+              {{ turno.horario }}
+
+            </div>
+
+          </label>
+
+        </div>
+
+
+        <div class="days-label-container">
+
+          <label class="form-label">
+            Días disponibles
+          </label>
+
+        </div>
+
+
+        <!-- DÍAS -->
+        <div class="day-chips">
+
+          <div
+            class="day-chip"
+            *ngFor="let dia of dias"
+            [class.sel]="isDaySelected(dia)"
+            (click)="toggleDay(dia)">
+
+            {{ dia }}
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- DOCUMENTACIÓN -->
+      <section>
+
+        <div class="section-heading">
+
+          <span class="material-symbols-outlined">
+            folder_open
+          </span>
+
+          Documentación
+
+        </div>
+
+
+        <div class="upload-grid">
+
+
+          <!-- CÉDULA -->
+          <label
+            class="upload-zone"
+            [class.done]="archivoSeleccionado('cedula')">
+
+            <div class="upload-icon">
+
+              <span class="material-symbols-outlined">
+                badge
+              </span>
+
+            </div>
+
+            <div class="upload-lbl">
+
+              {{
+                archivoSeleccionado('cedula')
+                  ? nombreArchivo('cedula')
+                  : 'Cédula'
+              }}
+
+            </div>
+
+            <div class="upload-hint">
+
+              {{
+                archivoSeleccionado('cedula')
+                  ? 'Archivo cargado'
+                  : 'PDF, JPG o PNG'
+              }}
+
+            </div>
+
+            <input
+              type="file"
+              class="upload-input"
+              accept=".pdf,.jpg,.jpeg,.png"
+              (change)="handleUpload($event, 'cedula')">
+
+          </label>
+
+
+          <!-- TARJETA -->
+          <label
+            class="upload-zone"
+            [class.done]="archivoSeleccionado('tarjeta')">
+
+            <div class="upload-icon">
+
+              <span class="material-symbols-outlined">
+                local_hospital
+              </span>
+
+            </div>
+
+            <div class="upload-lbl">
+
+              {{
+                archivoSeleccionado('tarjeta')
+                  ? nombreArchivo('tarjeta')
+                  : 'Tarjeta Profesional'
+              }}
+
+            </div>
+
+            <div class="upload-hint">
+
+              {{
+                archivoSeleccionado('tarjeta')
+                  ? 'Archivo cargado'
+                  : 'PDF, JPG o PNG'
+              }}
+
+            </div>
+
+            <input
+              type="file"
+              class="upload-input"
+              accept=".pdf,.jpg,.jpeg,.png"
+              (change)="handleUpload($event, 'tarjeta')">
+
+          </label>
+
+
+          <!-- ANTECEDENTES -->
+          <label
+            class="upload-zone"
+            [class.done]="archivoSeleccionado('antecedentes')">
+
+            <div class="upload-icon">
+
+              <span class="material-symbols-outlined">
+                verified
+              </span>
+
+            </div>
+
+            <div class="upload-lbl">
+
+              {{
+                archivoSeleccionado('antecedentes')
+                  ? nombreArchivo('antecedentes')
+                  : 'Cert. Antecedentes'
+              }}
+
+            </div>
+
+            <div class="upload-hint">
+
+              {{
+                archivoSeleccionado('antecedentes')
+                  ? 'Archivo cargado'
+                  : 'PDF, JPG o PNG'
+              }}
+
+            </div>
+
+            <input
+              type="file"
+              class="upload-input"
+              accept=".pdf,.jpg,.jpeg,.png"
+              (change)="handleUpload($event, 'antecedentes')">
+
+          </label>
+
+
+          <!-- HOJA DE VIDA -->
+          <label
+            class="upload-zone"
+            [class.done]="archivoSeleccionado('hojaVida')">
+
+            <div class="upload-icon">
+
+              <span class="material-symbols-outlined">
+                description
+              </span>
+
+            </div>
+
+            <div class="upload-lbl">
+
+              {{
+                archivoSeleccionado('hojaVida')
+                  ? nombreArchivo('hojaVida')
+                  : 'Hoja de Vida'
+              }}
+
+            </div>
+
+            <div class="upload-hint">
+
+              {{
+                archivoSeleccionado('hojaVida')
+                  ? 'Archivo cargado'
+                  : 'PDF o DOCX'
+              }}
+
+            </div>
+
+            <input
+              type="file"
+              class="upload-input"
+              accept=".pdf,.docx"
+              (change)="handleUpload($event, 'hojaVida')">
+
+          </label>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- MODAL FOOTER -->
+    <div class="modal-footer">
+
+      <button
+        class="btn-secondary"
+        (click)="closeModal()">
+
+        Cancelar
+
+      </button>
+
+
+      <button
+        class="btn-save"
+        [disabled]="guardando"
+        (click)="saveCaregiver()">
+
+        <span
+          *ngIf="guardando"
+          class="spinner">
+        </span>
+
+        <span *ngIf="!guardando">
+
+          {{
+            modoModal === 'edit'
+              ? 'Actualizar'
+              : 'Guardar'
+          }}
+
+        </span>
+
+        <span *ngIf="guardando">
+          Guardando...
+        </span>
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- CONFIRM DELETE -->
+<div
+  class="confirm-overlay"
+  [class.open]="confirmAbierto"
+  (click)="
+    $event.target === $event.currentTarget
+      ? closeConfirm()
+      : null
+  ">
+
+  <div class="confirm-dialog">
+
+    <div class="confirm-icon">
+
+      <span class="material-symbols-outlined">
+        delete_forever
+      </span>
+
+    </div>
+
+    <div class="confirm-title">
+
+      ¿Eliminar cuidador?
+
+    </div>
+
+    <div class="confirm-text">
+
+      ¿Estás seguro de que deseas eliminar a
+
+      <strong>
+        {{ nombrePendienteEliminar() }}
+      </strong>?
+
+      Esta acción no se puede deshacer.
+
+    </div>
+
+    <div class="confirm-actions">
+
+      <button
+        class="btn-secondary"
+        (click)="closeConfirm()">
+
+        Cancelar
+
+      </button>
+
+      <button
+        class="btn-danger"
+        (click)="deleteCaregiver()">
+
+        Eliminar
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,26 @@
+.page {
+  padding: 10px;
+}
+
+h2 {
+  margin: 0;
+  color: #212529;
+}
+
+p {
+  color: #6c757d;
+}
+
+.card {
+  margin-top: 20px;
+  padding: 50px;
+  text-align: center;
+  background: white;
+  border: 1px solid #ced4da;
+  border-radius: 16px;
+}
+
+.card .material-symbols-outlined {
+  font-size: 50px;
+  color: #3b5bdb;
+}
