@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 
 interface Encargado {
   id: number;
+  // se agrga el campo donde se pide el documento
+  documento: string;
   nombre: string;
   email: string;
   telefono: string;
@@ -17,6 +19,7 @@ interface Encargado {
 }
 
 interface FormularioEncargado {
+  documento: string; // se agraga campo del documento
   nombre: string;
   fechaIngreso: string;
   telefono: string;
@@ -27,6 +30,7 @@ interface FormularioEncargado {
 }
 
 interface ErroresFormulario {
+  documento: boolean;
   nombre: boolean;
   telefono: boolean;
   email: boolean;
@@ -54,6 +58,7 @@ export class Encargados {
 
   encargadoPrincipal: Encargado = {
     id: 1,
+    documento: '12334443', // se agrag su documento
     nombre: 'María Rodríguez',
     email: 'm.rodriguez@fundacion.org',
     telefono: '+57 300 555 0001',
@@ -74,6 +79,7 @@ export class Encargados {
   encargados: Encargado[] = [
     {
       id: 2,
+      documento: '443443',
       nombre: 'Carlos Méndez',
       email: 'c.mendez@fundacion.org',
       telefono: '+57 300 555 0002',
@@ -88,6 +94,7 @@ export class Encargados {
     },
     {
       id: 3,
+      documento: '3222334',
       nombre: 'Laura Gómez',
       email: 'l.gomez@fundacion.org',
       telefono: '+57 300 555 0003',
@@ -102,6 +109,7 @@ export class Encargados {
     },
     {
       id: 4,
+      documento: '2343534534',
       nombre: 'Ana López',
       email: 'a.lopez@fundacion.org',
       telefono: '+57 300 555 0004',
@@ -154,6 +162,7 @@ export class Encargados {
   // =========================================================
 
   errores: ErroresFormulario = {
+    documento: false,
     nombre: false,
     telefono: false,
     email: false,
@@ -181,6 +190,7 @@ export class Encargados {
 
   formularioInicial(): FormularioEncargado {
     return {
+      documento: '',
       nombre: '',
       fechaIngreso: '',
       telefono: '',
@@ -213,6 +223,7 @@ export class Encargados {
 
     if (modo === 'editPrincipal') {
       this.formulario = {
+        documento: this.encargadoPrincipal.documento,
         nombre: this.encargadoPrincipal.nombre,
         fechaIngreso: this.encargadoPrincipal.fechaIngreso,
         telefono: this.encargadoPrincipal.telefono,
@@ -227,6 +238,7 @@ export class Encargados {
     if (modo === 'edit' && encargado) {
       this.idEditando = encargado.id;
       this.formulario = {
+        documento: encargado.documento,
         nombre: encargado.nombre,
         fechaIngreso: encargado.fechaIngreso,
         telefono: encargado.telefono,
@@ -266,12 +278,39 @@ export class Encargados {
   }
 
   // =========================================================
+  // VERIFICACION DE DOCUMENTO
+  // =========================================================
+  DocumentoDuplicado(doc: string): boolean {
+    const docLimpio = doc.trim();
+    if (!docLimpio) return false;
+
+    // Verifica contra el Encargado Principal si no lo estamos editando a él mismo
+    if (!this.editarPrincipal && this.encargadoPrincipal.documento === docLimpio) {
+      return true;
+    }
+
+    // Verificar en la lista de encargados excluyendo el registro actual si es edición
+    return this.encargados.some(e => {
+      if (this.idEditando !== null && e.id === this.idEditando) {
+        return false; // Ignorar el propio objeto durante edición
+      }
+      return e.documento === docLimpio;
+    });
+  }
+
+  // =========================================================
   // VALIDAR
   // =========================================================
 
   validarFormulario(): boolean {
     this.limpiarErrores();
     let valido = true;
+
+    //validacion del campo vacio del documento
+    if (!this.formulario.documento.trim()){
+      this.errores.documento = true;
+      valido = false;
+    }
 
     if (!this.formulario.nombre.trim()) {
       this.errores.nombre = true;
@@ -307,6 +346,7 @@ export class Encargados {
 
   limpiarErrores(): void {
     this.errores = {
+      documento: false,
       nombre: false,
       telefono: false,
       email: false,
@@ -332,6 +372,16 @@ export class Encargados {
       return;
     }
 
+    // validacion de duplicados para antes de guardar
+    if (this.DocumentoDuplicado(this.formulario.documento)) {
+      this.errores.documento = true;
+      this.mostrarToast (
+        'El numero de documento ya se encuentra registrado',
+        'info'
+      );
+      return;
+    }
+
     this.guardando = true;
 
     setTimeout(() => {
@@ -339,6 +389,7 @@ export class Encargados {
       if (this.editarPrincipal) {
         this.encargadoPrincipal = {
           ...this.encargadoPrincipal,
+          documento: this.formulario.documento.trim(),
           nombre: this.formulario.nombre.trim(),
           fechaIngreso: this.formulario.fechaIngreso,
           telefono: this.formulario.telefono.trim(),
@@ -371,6 +422,7 @@ export class Encargados {
 
           this.encargados[indice] = {
             ...anterior,
+            documento: this.formulario.documento.trim(),
             nombre: this.formulario.nombre.trim(),
             fechaIngreso: this.formulario.fechaIngreso,
             telefono: this.formulario.telefono.trim(),
@@ -399,6 +451,7 @@ export class Encargados {
       // NUEVO ENCARGADO
       const nuevoEncargado: Encargado = {
         id: this.obtenerNuevoId(),
+        documento: this.formulario.documento.trim(),
         nombre: this.formulario.nombre.trim(),
         email: this.formulario.email.trim(),
         telefono: this.formulario.telefono.trim(),
@@ -553,6 +606,7 @@ export class Encargados {
 
     this.encargadosFiltrados = this.encargados.filter(
       encargado =>
+        encargado.documento.toLowerCase().includes(termino) ||
         encargado.nombre.toLowerCase().includes(termino) ||
         encargado.email.toLowerCase().includes(termino) ||
         encargado.cargo.toLowerCase().includes(termino) ||
