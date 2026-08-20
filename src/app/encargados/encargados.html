@@ -555,6 +555,44 @@
           </div>
 
 
+        <!--se agrega el apartado de numero de identificacion-->
+
+          <div class="form-group">
+
+            <label
+              class="form-label"
+              for="f-documento"
+            >
+              Número de documento
+              <span class="req">*</span>
+            </label>
+
+            <input
+              id="f-documento"
+              type="text"
+              class="form-input"
+              placeholder="Ej. 42343534"
+              [(ngModel)]="formulario.documento"
+            >
+
+            <div
+              class="form-err-msg"
+              [class.show]="errores.documento"
+            >
+
+              <span class="material-symbols-outlined">
+                error
+              </span>
+
+              El número de documento es requerido o ya se encuentra registrado.
+
+            </div>
+
+          </div>
+
+        
+
+
           <div class="form-group">
 
             <label
