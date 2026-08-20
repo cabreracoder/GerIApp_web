@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
 
 interface Encargado {
   id: number;
@@ -17,7 +16,6 @@ interface Encargado {
   iniciales: string;
 }
 
-
 interface FormularioEncargado {
   nombre: string;
   fechaIngreso: string;
@@ -28,7 +26,6 @@ interface FormularioEncargado {
   descripcion: string;
 }
 
-
 interface ErroresFormulario {
   nombre: boolean;
   telefono: boolean;
@@ -36,7 +33,6 @@ interface ErroresFormulario {
   cargo: boolean;
   area: boolean;
 }
-
 
 @Component({
   selector: 'app-encargados',
@@ -49,6 +45,8 @@ interface ErroresFormulario {
   styleUrl: './encargados.css'
 })
 export class Encargados {
+
+  private cdr = inject(ChangeDetectorRef);
 
   // =========================================================
   // ENCARGADO PRINCIPAL
@@ -69,13 +67,11 @@ export class Encargados {
     iniciales: 'MR'
   };
 
-
   // =========================================================
   // OTROS ENCARGADOS
   // =========================================================
 
   encargados: Encargado[] = [
-
     {
       id: 2,
       nombre: 'Carlos Méndez',
@@ -90,7 +86,6 @@ export class Encargados {
       estado: 'Activo',
       iniciales: 'CM'
     },
-
     {
       id: 3,
       nombre: 'Laura Gómez',
@@ -105,7 +100,6 @@ export class Encargados {
       estado: 'Activo',
       iniciales: 'LG'
     },
-
     {
       id: 4,
       nombre: 'Ana López',
@@ -120,9 +114,7 @@ export class Encargados {
       estado: 'Activo',
       iniciales: 'AL'
     }
-
   ];
-
 
   // =========================================================
   // LISTA FILTRADA
@@ -130,26 +122,20 @@ export class Encargados {
 
   encargadosFiltrados: Encargado[] = [...this.encargados];
 
-
   // =========================================================
   // BÚSQUEDA
   // =========================================================
 
   busqueda = '';
 
-
   // =========================================================
   // MODAL
   // =========================================================
 
   modalAbierto = false;
-
   modoEdicion = false;
-
   editarPrincipal = false;
-
   idEditando: number | null = null;
-
 
   // =========================================================
   // ESTADO
@@ -157,13 +143,11 @@ export class Encargados {
 
   guardando = false;
 
-
   // =========================================================
   // FORMULARIO
   // =========================================================
 
   formulario: FormularioEncargado = this.formularioInicial();
-
 
   // =========================================================
   // ERRORES
@@ -176,7 +160,6 @@ export class Encargados {
     cargo: false,
     area: false
   };
-
 
   // =========================================================
   // TOAST
@@ -192,13 +175,11 @@ export class Encargados {
     tipo: 'ok'
   };
 
-
   // =========================================================
   // FORMULARIO INICIAL
   // =========================================================
 
   formularioInicial(): FormularioEncargado {
-
     return {
       nombre: '',
       fechaIngreso: '',
@@ -208,9 +189,7 @@ export class Encargados {
       area: '',
       descripcion: ''
     };
-
   }
-
 
   // =========================================================
   // ABRIR MODAL
@@ -220,33 +199,19 @@ export class Encargados {
     modo: 'new' | 'editPrincipal' | 'edit',
     encargado?: Encargado
   ): void {
-
     this.modalAbierto = true;
-
     this.modoEdicion = modo !== 'new';
-
     this.editarPrincipal = modo === 'editPrincipal';
-
     this.idEditando = null;
 
     this.limpiarErrores();
 
-
-    // NUEVO
-
     if (modo === 'new') {
-
       this.formulario = this.formularioInicial();
-
       return;
-
     }
 
-
-    // EDITAR PRINCIPAL
-
     if (modo === 'editPrincipal') {
-
       this.formulario = {
         nombre: this.encargadoPrincipal.nombre,
         fechaIngreso: this.encargadoPrincipal.fechaIngreso,
@@ -256,18 +221,11 @@ export class Encargados {
         area: this.encargadoPrincipal.area,
         descripcion: this.encargadoPrincipal.descripcion
       };
-
       return;
-
     }
 
-
-    // EDITAR OTRO
-
     if (modo === 'edit' && encargado) {
-
       this.idEditando = encargado.id;
-
       this.formulario = {
         nombre: encargado.nombre,
         fechaIngreso: encargado.fechaIngreso,
@@ -277,114 +235,77 @@ export class Encargados {
         area: encargado.area,
         descripcion: encargado.descripcion
       };
-
     }
-
   }
-
 
   // =========================================================
   // CERRAR MODAL
   // =========================================================
 
   closeModal(): void {
-
     if (this.guardando) {
       return;
     }
 
     this.modalAbierto = false;
-
     this.limpiarErrores();
-
     this.formulario = this.formularioInicial();
-
     this.modoEdicion = false;
-
     this.editarPrincipal = false;
-
     this.idEditando = null;
-
   }
-
 
   // =========================================================
   // CERRAR AL HACER CLICK EN FONDO
   // =========================================================
 
   cerrarAlClickarFondo(event: MouseEvent): void {
-
     if (event.target === event.currentTarget) {
-
       this.closeModal();
-
     }
-
   }
-
 
   // =========================================================
   // VALIDAR
   // =========================================================
 
   validarFormulario(): boolean {
-
     this.limpiarErrores();
-
     let valido = true;
 
-
     if (!this.formulario.nombre.trim()) {
-
       this.errores.nombre = true;
       valido = false;
-
     }
-
 
     if (!this.formulario.telefono.trim()) {
-
       this.errores.telefono = true;
       valido = false;
-
     }
-
 
     if (!this.formulario.email.trim()) {
-
       this.errores.email = true;
       valido = false;
-
     }
-
 
     if (!this.formulario.cargo) {
-
       this.errores.cargo = true;
       valido = false;
-
     }
-
 
     if (!this.formulario.area) {
-
       this.errores.area = true;
       valido = false;
-
     }
 
-
     return valido;
-
   }
-
 
   // =========================================================
   // LIMPIAR ERRORES
   // =========================================================
 
   limpiarErrores(): void {
-
     this.errores = {
       nombre: false,
       telefono: false,
@@ -392,246 +313,123 @@ export class Encargados {
       cargo: false,
       area: false
     };
-
   }
-
 
   // =========================================================
   // GUARDAR
   // =========================================================
 
   saveEncargado(): void {
-
     if (this.guardando) {
       return;
     }
 
-
     if (!this.validarFormulario()) {
-
       this.mostrarToast(
         'Completa los campos obligatorios.',
         'info'
       );
-
       return;
-
     }
-
 
     this.guardando = true;
 
-
     setTimeout(() => {
-
-      // =====================================================
       // EDITAR PRINCIPAL
-      // =====================================================
-
       if (this.editarPrincipal) {
-
         this.encargadoPrincipal = {
           ...this.encargadoPrincipal,
-
           nombre: this.formulario.nombre.trim(),
-
-          fechaIngreso:
-            this.formulario.fechaIngreso,
-
-          telefono:
-            this.formulario.telefono.trim(),
-
-          email:
-            this.formulario.email.trim(),
-
-          cargo:
-            this.formulario.cargo,
-
-          area:
-            this.formulario.area,
-
-          descripcion:
-            this.formulario.descripcion.trim(),
-
-          iniciales:
-            this.generarIniciales(
-              this.formulario.nombre
-            ),
-
-          ingresoTexto:
-            this.formatearFechaIngreso(
-              this.formulario.fechaIngreso
-            )
+          fechaIngreso: this.formulario.fechaIngreso,
+          telefono: this.formulario.telefono.trim(),
+          email: this.formulario.email.trim(),
+          cargo: this.formulario.cargo,
+          area: this.formulario.area,
+          descripcion: this.formulario.descripcion.trim(),
+          iniciales: this.generarIniciales(this.formulario.nombre),
+          ingresoTexto: this.formatearFechaIngreso(this.formulario.fechaIngreso)
         };
 
-
         this.guardando = false;
-
         this.closeModal();
-
         this.mostrarToast(
           'Encargado principal actualizado correctamente.',
           'ok'
         );
-
+        this.cdr.detectChanges();
         return;
-
       }
 
-
-      // =====================================================
       // EDITAR OTRO
-      // =====================================================
-
       if (this.idEditando !== null) {
-
-        const indice =
-          this.encargados.findIndex(
-            item => item.id === this.idEditando
-          );
-
+        const indice = this.encargados.findIndex(
+          item => item.id === this.idEditando
+        );
 
         if (indice !== -1) {
-
-          const anterior =
-            this.encargados[indice];
+          const anterior = this.encargados[indice];
 
           this.encargados[indice] = {
-
             ...anterior,
-
-            nombre:
-              this.formulario.nombre.trim(),
-
-            fechaIngreso:
-              this.formulario.fechaIngreso,
-
-            telefono:
-              this.formulario.telefono.trim(),
-
-            email:
-              this.formulario.email.trim(),
-
-            cargo:
-              this.formulario.cargo,
-
-            area:
-              this.formulario.area,
-
-            descripcion:
-              this.formulario.descripcion.trim(),
-
-            iniciales:
-              this.generarIniciales(
-                this.formulario.nombre
-              ),
-
-            ingresoTexto:
-              this.formatearFechaIngreso(
-                this.formulario.fechaIngreso
-              )
-
+            nombre: this.formulario.nombre.trim(),
+            fechaIngreso: this.formulario.fechaIngreso,
+            telefono: this.formulario.telefono.trim(),
+            email: this.formulario.email.trim(),
+            cargo: this.formulario.cargo,
+            area: this.formulario.area,
+            descripcion: this.formulario.descripcion.trim(),
+            iniciales: this.generarIniciales(this.formulario.nombre),
+            ingresoTexto: this.formatearFechaIngreso(this.formulario.fechaIngreso)
           };
 
-
-          this.encargados = [
-            ...this.encargados
-          ];
-
+          this.encargados = [...this.encargados];
           this.filtrarEncargados();
-
         }
 
-
         this.guardando = false;
-
         this.closeModal();
-
         this.mostrarToast(
           'Encargado actualizado correctamente.',
           'ok'
         );
-
+        this.cdr.detectChanges();
         return;
-
       }
 
-
-      // =====================================================
       // NUEVO ENCARGADO
-      // =====================================================
-
       const nuevoEncargado: Encargado = {
-
-        id:
-          this.obtenerNuevoId(),
-
-        nombre:
-          this.formulario.nombre.trim(),
-
-        email:
-          this.formulario.email.trim(),
-
-        telefono:
-          this.formulario.telefono.trim(),
-
-        fechaIngreso:
-          this.formulario.fechaIngreso,
-
-        ingresoTexto:
-          this.formatearFechaIngreso(
-            this.formulario.fechaIngreso
-          ),
-
-        cargo:
-          this.formulario.cargo,
-
-        area:
-          this.formulario.area,
-
-        descripcion:
-          this.formulario.descripcion.trim(),
-
-        estado:
-          'Activo',
-
-        iniciales:
-          this.generarIniciales(
-            this.formulario.nombre
-          )
-
+        id: this.obtenerNuevoId(),
+        nombre: this.formulario.nombre.trim(),
+        email: this.formulario.email.trim(),
+        telefono: this.formulario.telefono.trim(),
+        fechaIngreso: this.formulario.fechaIngreso,
+        ingresoTexto: this.formatearFechaIngreso(this.formulario.fechaIngreso),
+        cargo: this.formulario.cargo,
+        area: this.formulario.area,
+        descripcion: this.formulario.descripcion.trim(),
+        estado: 'Activo',
+        iniciales: this.generarIniciales(this.formulario.nombre)
       };
 
-
-      this.encargados = [
-        ...this.encargados,
-        nuevoEncargado
-      ];
-
-
+      this.encargados = [...this.encargados, nuevoEncargado];
       this.filtrarEncargados();
 
-
       this.guardando = false;
-
       this.closeModal();
-
       this.mostrarToast(
         'Encargado creado correctamente.',
         'ok'
       );
+      this.cdr.detectChanges();
 
     }, 700);
-
   }
-
 
   // =========================================================
   // NUEVO ID
   // =========================================================
 
   obtenerNuevoId(): number {
-
     if (this.encargados.length === 0) {
       return 1;
     }
@@ -641,213 +439,127 @@ export class Encargados {
         item => item.id
       )
     ) + 1;
-
   }
-
 
   // =========================================================
   // INICIALES
   // =========================================================
 
   generarIniciales(nombre: string): string {
-
-    const partes =
-      nombre
-        .trim()
-        .split(/\s+/)
-        .filter(Boolean);
-
+    const partes = nombre
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
 
     if (partes.length === 0) {
       return 'NA';
     }
 
-
     if (partes.length === 1) {
-
       return partes[0]
         .substring(0, 2)
         .toUpperCase();
-
     }
-
 
     return (
       partes[0][0] +
       partes[partes.length - 1][0]
     ).toUpperCase();
-
   }
-
 
   // =========================================================
   // FECHA
   // =========================================================
 
   formatearFechaIngreso(fecha: string): string {
-
     if (!fecha) {
       return 'Fecha no registrada';
     }
 
-
-    const fechaObj =
-      new Date(`${fecha}T00:00:00`);
-
+    const fechaObj = new Date(`${fecha}T00:00:00`);
 
     if (Number.isNaN(fechaObj.getTime())) {
       return 'Fecha no registrada';
     }
 
-
     const meses = [
-      'enero',
-      'febrero',
-      'marzo',
-      'abril',
-      'mayo',
-      'junio',
-      'julio',
-      'agosto',
-      'septiembre',
-      'octubre',
-      'noviembre',
-      'diciembre'
+      'enero', 'febrero', 'marzo', 'abril',
+      'mayo', 'junio', 'julio', 'agosto',
+      'septiembre', 'octubre', 'noviembre', 'diciembre'
     ];
 
-
-    return `Desde ${
-      meses[fechaObj.getMonth()]
-    } ${fechaObj.getFullYear()}`;
-
+    return `Desde ${meses[fechaObj.getMonth()]} ${fechaObj.getFullYear()}`;
   }
-
 
   // =========================================================
   // CAMBIAR ESTADO
   // =========================================================
 
   cambiarEstado(encargado: Encargado): void {
-
     encargado.estado =
       encargado.estado === 'Activo'
         ? 'Inactivo'
         : 'Activo';
 
-
-    this.encargados = [
-      ...this.encargados
-    ];
-
+    this.encargados = [...this.encargados];
     this.filtrarEncargados();
 
-
     this.mostrarToast(
-
       encargado.estado === 'Activo'
         ? 'Encargado activado.'
         : 'Encargado desactivado.',
-
       'info'
-
     );
-
   }
-
 
   // =========================================================
   // ELIMINAR
   // =========================================================
 
   eliminarEncargado(id: number): void {
-
-    const confirmar =
-      window.confirm(
-        '¿Está seguro de eliminar este encargado?'
-      );
-
+    const confirmar = window.confirm(
+      '¿Está seguro de eliminar este encargado?'
+    );
 
     if (!confirmar) {
       return;
     }
 
-
-    this.encargados =
-      this.encargados.filter(
-        item => item.id !== id
-      );
-
+    this.encargados = this.encargados.filter(
+      item => item.id !== id
+    );
 
     this.filtrarEncargados();
-
 
     this.mostrarToast(
       'Encargado eliminado correctamente.',
       'del'
     );
-
   }
-
 
   // =========================================================
   // FILTRAR
   // =========================================================
 
   filtrarEncargados(): void {
-
-    const termino =
-      this.busqueda
-        .trim()
-        .toLowerCase();
-
+    const termino = this.busqueda
+      .trim()
+      .toLowerCase();
 
     if (!termino) {
-
-      this.encargadosFiltrados = [
-        ...this.encargados
-      ];
-
+      this.encargadosFiltrados = [...this.encargados];
       return;
-
     }
 
-
-    this.encargadosFiltrados =
-      this.encargados.filter(
-        encargado =>
-
-          encargado.nombre
-            .toLowerCase()
-            .includes(termino)
-
-          ||
-
-          encargado.email
-            .toLowerCase()
-            .includes(termino)
-
-          ||
-
-          encargado.cargo
-            .toLowerCase()
-            .includes(termino)
-
-          ||
-
-          encargado.area
-            .toLowerCase()
-            .includes(termino)
-
-          ||
-
-          encargado.telefono
-            .toLowerCase()
-            .includes(termino)
-
-      );
-
+    this.encargadosFiltrados = this.encargados.filter(
+      encargado =>
+        encargado.nombre.toLowerCase().includes(termino) ||
+        encargado.email.toLowerCase().includes(termino) ||
+        encargado.cargo.toLowerCase().includes(termino) ||
+        encargado.area.toLowerCase().includes(termino) ||
+        encargado.telefono.toLowerCase().includes(termino)
+    );
   }
-
 
   // =========================================================
   // TOAST
@@ -857,20 +569,17 @@ export class Encargados {
     mensaje: string,
     tipo: 'ok' | 'del' | 'info'
   ): void {
-
     this.toast = {
       mostrar: true,
       mensaje,
       tipo
     };
 
+    this.cdr.detectChanges();
 
     setTimeout(() => {
-
       this.toast.mostrar = false;
-
+      this.cdr.detectChanges();
     }, 3000);
-
   }
-
 }
