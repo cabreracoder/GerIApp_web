@@ -23,12 +23,9 @@
 
     </div>
 
-    <button
-      class="btn-primary"
-      type="button"
-      (click)="openModal('new')">
+    <button class="btn-primary" type="button" (click)="openModal('new')">
 
-      <span class="ms">
+      <span class="material-symbols-outlined">
         add
       </span>
 
@@ -51,9 +48,7 @@
         Pabellón
       </span>
 
-      <select
-        [(ngModel)]="pavilionFilter"
-        (change)="filterTable()">
+      <select [(ngModel)]="pavilionFilter" (change)="filterTable()">
 
         <option value="">
           Todos los pabellones
@@ -82,9 +77,7 @@
         Estado
       </span>
 
-      <select
-        [(ngModel)]="statusFilter"
-        (change)="filterTable()">
+      <select [(ngModel)]="statusFilter" (change)="filterTable()">
 
         <option value="">
           Todos
@@ -292,12 +285,9 @@
 
           <!-- SIN RESULTADOS -->
 
-          <tr
-            *ngIf="filteredPatients.length === 0">
+          <tr *ngIf="filteredPatients.length === 0">
 
-            <td
-              colspan="7"
-              class="empty">
+            <td colspan="7" class="empty">
 
               No se encontraron pacientes.
 
@@ -308,8 +298,7 @@
 
           <!-- PACIENTES -->
 
-          <tr
-            *ngFor="let patient of paginatedPatients">
+          <tr *ngFor="let patient of paginatedPatients">
 
             <!-- PACIENTE -->
 
@@ -317,9 +306,7 @@
 
               <div class="pat-cell">
 
-                <div
-                  class="av-lg"
-                  [style.background]="
+                <div class="av-lg" [style.background]="
                     getAvatarColor(patient.status)
                   ">
 
@@ -400,12 +387,9 @@
 
             <td>
 
-              <span
-                *ngIf="patient.status === 'stable'"
-                class="badge-stable">
+              <span *ngIf="patient.status === 'stable'" class="badge-stable">
 
-                <span
-                  class="badge-dot stable-dot">
+                <span class="badge-dot stable-dot">
                 </span>
 
                 ESTABLE
@@ -413,12 +397,9 @@
               </span>
 
 
-              <span
-                *ngIf="patient.status === 'critical'"
-                class="badge-critical">
+              <span *ngIf="patient.status === 'critical'" class="badge-critical">
 
-                <span
-                  class="badge-dot critical-dot ping">
+                <span class="badge-dot critical-dot ping">
                 </span>
 
                 CRÍTICO
@@ -426,12 +407,9 @@
               </span>
 
 
-              <span
-                *ngIf="patient.status === 'observation'"
-                class="badge-observation">
+              <span *ngIf="patient.status === 'observation'" class="badge-observation">
 
-                <span
-                  class="badge-dot observation-dot">
+                <span class="badge-dot observation-dot">
                 </span>
 
                 OBSERVACIÓN
@@ -441,79 +419,59 @@
             </td>
 
 
-            <!-- ACCIONES -->
+           <!-- ACCIONES -->
 
-            <td>
+<td>
 
-              <div class="actions-wrap">
+  <div class="action-btns">
 
-                <button
-                  class="actions-btn"
-                  type="button"
-                  title="Acciones">
+    <!-- EDITAR -->
+    <button
+      class="action-btn"
+      type="button"
+      title="Editar"
+      (click)="openModal('edit', patient.id)"
+    >
 
-                  <span class="ms">
-                    more_vert
-                  </span>
+      <span class="material-symbols-outlined">
+        edit
+      </span>
 
-                </button>
-
-
-                <div class="dropdown">
-
-                  <div class="dropdown-inner">
-
-                    <button
-                      class="drop-btn"
-                      type="button"
-                      (click)="openModal('edit', patient.id)">
-
-                      <span class="ms">
-                        edit
-                      </span>
-
-                      Editar
-
-                    </button>
+    </button>
 
 
-                    <button
-                      class="drop-btn"
-                      type="button"
-                      (click)="toggleStatus(patient.id)">
+    <!-- CAMBIAR ESTADO -->
+    <button
+      class="action-btn warn"
+      type="button"
+      title="Cambiar estado"
+      (click)="toggleStatus(patient.id)"
+    >
 
-                      <span class="ms">
-                        block
-                      </span>
+      <span class="material-symbols-outlined">
+        toggle_on
+      </span>
 
-                      Suspender
-
-                    </button>
-
-
-                    <div class="drop-sep"></div>
+    </button>
 
 
-                    <button
-                      class="drop-btn danger"
-                      type="button"
-                      (click)="deletePatient(patient.id)">
+    <!-- ELIMINAR -->
+    <button
+      class="action-btn danger"
+      type="button"
+      title="Eliminar"
+      (click)="deletePatient(patient.id)"
+    >
 
-                      <span class="ms">
-                        delete
-                      </span>
+      <span class="material-symbols-outlined">
+        delete
+      </span>
 
-                      Eliminar
+    </button>
 
-                    </button>
+  </div>
 
-                  </div>
-
-                </div>
-
-              </div>
-
-            </td>
+</td>
 
           </tr>
 
@@ -551,11 +509,7 @@
 
       <div class="pag">
 
-        <button
-          class="pag-btn"
-          type="button"
-          (click)="changePage(currentPage - 1)"
-          [disabled]="currentPage === 1">
+        <button class="pag-btn" type="button" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
 
           <span class="ms">
             chevron_left
@@ -564,25 +518,17 @@
         </button>
 
 
-        <button
-          *ngFor="
+        <button *ngFor="
             let page of [].constructor(totalPages);
             let i = index
-          "
-          class="pag-btn"
-          type="button"
-          [class.active]="currentPage === i + 1"
-          (click)="changePage(i + 1)">
+          " class="pag-btn" type="button" [class.active]="currentPage === i + 1" (click)="changePage(i + 1)">
 
           {{ i + 1 }}
 
         </button>
 
 
-        <button
-          class="pag-btn"
-          type="button"
-          (click)="changePage(currentPage + 1)"
+        <button class="pag-btn" type="button" (click)="changePage(currentPage + 1)"
           [disabled]="currentPage === totalPages">
 
           <span class="ms">
@@ -604,14 +550,9 @@
      MODAL NUEVO / EDITAR
      ========================================================= -->
 
-<div
-  class="overlay"
-  [class.open]="modalOpen"
-  (click)="closeOnBackdrop($event)">
+<div class="overlay" [class.open]="modalOpen" (click)="closeOnBackdrop($event)">
 
-  <div
-    class="modal"
-    (click)="$event.stopPropagation()">
+  <div class="modal" (click)="$event.stopPropagation()">
 
 
     <!-- HEADER MODAL -->
@@ -623,10 +564,7 @@
       </h3>
 
 
-      <button
-        class="close-btn"
-        type="button"
-        (click)="closeModal()">
+      <button class="close-btn" type="button" (click)="closeModal()">
 
         <span class="ms">
           close
@@ -657,11 +595,7 @@
             Nombre completo
           </label>
 
-          <input
-            class="form-input"
-            type="text"
-            [(ngModel)]="form.nombre"
-            placeholder="Ej: Ricardo Mendoza">
+          <input class="form-input" type="text" [(ngModel)]="form.nombre" placeholder="Ej: Ricardo Mendoza">
 
         </div>
 
@@ -672,11 +606,7 @@
             Documento
           </label>
 
-          <input
-            class="form-input"
-            type="text"
-            [(ngModel)]="form.documento"
-            placeholder="Ej: 10.455.672">
+          <input class="form-input" type="text" [(ngModel)]="form.documento" placeholder="Ej: 10.455.672">
 
         </div>
 
@@ -687,10 +617,7 @@
             Fecha de nacimiento
           </label>
 
-          <input
-            class="form-input"
-            type="date"
-            [(ngModel)]="form.nacimiento">
+          <input class="form-input" type="date" [(ngModel)]="form.nacimiento">
 
         </div>
 
@@ -701,13 +628,7 @@
             Edad
           </label>
 
-          <input
-            class="form-input"
-            type="number"
-            [(ngModel)]="form.edad"
-            placeholder="Ej: 82"
-            min="50"
-            max="120">
+          <input class="form-input" type="number" [(ngModel)]="form.edad" placeholder="Ej: 82" min="50" max="120">
 
         </div>
 
@@ -729,11 +650,7 @@
             Habitación
           </label>
 
-          <input
-            class="form-input"
-            type="text"
-            [(ngModel)]="form.habitacion"
-            placeholder="Ej: 104">
+          <input class="form-input" type="text" [(ngModel)]="form.habitacion" placeholder="Ej: 104">
 
         </div>
 
@@ -744,9 +661,7 @@
             Estado clínico
           </label>
 
-          <select
-            class="form-input"
-            [(ngModel)]="form.estado">
+          <select class="form-input" [(ngModel)]="form.estado">
 
             <option value="stable">
               Estable
@@ -771,9 +686,7 @@
             Cuidador asignado
           </label>
 
-          <select
-            class="form-input"
-            [(ngModel)]="form.cuidador">
+          <select class="form-input" [(ngModel)]="form.cuidador">
 
             <option value="Enf. Carlos Ruiz">
               Enf. Carlos Ruiz
@@ -806,9 +719,7 @@
             Pabellón
           </label>
 
-          <select
-            class="form-input"
-            [(ngModel)]="form.pabellon">
+          <select class="form-input" [(ngModel)]="form.pabellon">
 
             <option value="Ala Norte">
               Ala Norte
@@ -844,11 +755,7 @@
             Nombre encargado
           </label>
 
-          <input
-            class="form-input"
-            type="text"
-            [(ngModel)]="form.encargado"
-            placeholder="Ej: Elena Mendoza">
+          <input class="form-input" type="text" [(ngModel)]="form.encargado" placeholder="Ej: Elena Mendoza">
 
         </div>
 
@@ -859,11 +766,7 @@
             Relación
           </label>
 
-          <input
-            class="form-input"
-            type="text"
-            [(ngModel)]="form.relacion"
-            placeholder="Ej: Hija">
+          <input class="form-input" type="text" [(ngModel)]="form.relacion" placeholder="Ej: Hija">
 
         </div>
 
@@ -874,11 +777,7 @@
             Teléfono
           </label>
 
-          <input
-            class="form-input"
-            type="tel"
-            [(ngModel)]="form.telefono"
-            placeholder="Ej: 312 456 7890">
+          <input class="form-input" type="tel" [(ngModel)]="form.telefono" placeholder="Ej: 312 456 7890">
 
         </div>
 
@@ -889,11 +788,7 @@
             Email
           </label>
 
-          <input
-            class="form-input"
-            type="email"
-            [(ngModel)]="form.email"
-            placeholder="correo@mail.com">
+          <input class="form-input" type="email" [(ngModel)]="form.email" placeholder="correo@mail.com">
 
         </div>
 
@@ -915,10 +810,7 @@
             Observaciones
           </label>
 
-          <textarea
-            class="form-input"
-            [(ngModel)]="form.notas"
-            rows="3"
+          <textarea class="form-input" [(ngModel)]="form.notas" rows="3"
             placeholder="Condiciones, alergias, indicaciones especiales...">
           </textarea>
 
@@ -933,20 +825,14 @@
 
     <div class="modal-footer">
 
-      <button
-        class="btn-cancel"
-        type="button"
-        (click)="closeModal()">
+      <button class="btn-cancel" type="button" (click)="closeModal()">
 
         Cancelar
 
       </button>
 
 
-      <button
-        class="btn-save"
-        type="button"
-        (click)="savePatient()">
+      <button class="btn-save" type="button" (click)="savePatient()">
 
         {{ saveButtonText }}
 

@@ -684,134 +684,61 @@ tbody tr:hover {
    ACCIONES
    ========================================================= */
 
-.actions-wrap {
-  position: relative;
 
-  display: inline-block;
+.action-btns {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
-
-.actions-btn {
-  width: 34px;
-
-  height: 34px;
-
+.action-btn {
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
-  border: 1px solid transparent;
+  width: 32px;
+  height: 32px;
 
-  border-radius: 8px;
-
-  background: transparent;
-
-  color: #64748b;
-
-  cursor: pointer;
-}
-
-
-.actions-btn:hover {
-  background: #f1f5f9;
-
-  color: var(--text);
-}
-
-
-.dropdown {
-  position: absolute;
-
-  right: 0;
-
-  top: calc(100% + 6px);
-
-  width: 170px;
-
-  padding: 5px;
-
-  background: #ffffff;
+  padding: 0;
 
   border: 1px solid var(--border);
+  border-radius: 8px;
 
-  border-radius: 10px;
-
-  box-shadow:
-    0 12px 30px rgba(15, 23, 42, 0.12);
-
-  z-index: 20;
-
-  display: none;
-}
-
-
-.actions-wrap:hover .dropdown {
-  display: block;
-}
-
-
-.dropdown-inner {
-  display: flex;
-
-  flex-direction: column;
-}
-
-
-.drop-btn {
-  display: flex;
-
-  align-items: center;
-
-  gap: 9px;
-
-  width: 100%;
-
-  padding: 9px 10px;
-
-  border: none;
-
-  border-radius: 7px;
-
-  background: transparent;
-
-  color: var(--text);
-
-  text-align: left;
-
-  font-size: 13px;
+  background: #ffffff;
+  color: var(--muted);
 
   cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 
-
-.drop-btn:hover {
-  background: #f1f5f9;
+/* BOTÓN NORMAL */
+.action-btn:hover {
+  background: #DBE4FF;
+  border-color: #B8C7FF;
+  color: var(--primary);
 }
 
-
-.drop-btn .ms {
-  font-size: 18px;
+/* BOTÓN ACTIVAR / DESACTIVAR */
+.action-btn.warn:hover {
+  background: var(--warn-bg);
+  border-color: #FCD34D;
+  color: #D97706;
 }
 
-
-.drop-btn.danger {
+/* BOTÓN ELIMINAR */
+.action-btn.danger:hover {
+  background: var(--danger-bg);
+  border-color: #F1AEB5;
   color: var(--danger);
 }
 
-
-.drop-btn.danger:hover {
-  background: var(--danger-bg);
-}
-
-
-.drop-sep {
-  height: 1px;
-
-  background: var(--border);
-
-  margin: 4px 0;
+/* ICONOS */
+.action-btn .material-symbols-outlined {
+  font-size: 17px;
 }
 
 
