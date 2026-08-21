@@ -34,6 +34,7 @@ interface ErroresFormulario {
   nombre: boolean;
   telefono: boolean;
   email: boolean;
+  emailInvalido?: boolean; // agregamos para hacer la validacion de estructura del correo mediante regex
   cargo: boolean;
   area: boolean;
 }
@@ -166,6 +167,8 @@ export class Encargados {
     nombre: false,
     telefono: false,
     email: false,
+    //verificacion del correo
+    emailInvalido: false,
     cargo: false,
     area: false
   };
@@ -299,6 +302,35 @@ export class Encargados {
   }
 
   // =========================================================
+  // VALIDAR CORREO QUE SE VALIDO
+  // =========================================================
+
+  emailValido(email: string): boolean {
+    const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return regexEmail.test(email.trim());
+  }
+
+  emailDuplicado(email: string): boolean {
+    const emailLimpio = email.trim().toLowerCase();
+    if (!emailLimpio)
+      return false;
+
+    if (!this.editarPrincipal && this.encargadoPrincipal.email.toLowerCase() == emailLimpio){
+      return true;
+    }
+
+    return this.encargados.some(e => {
+      if (this.idEditando !== null && e.id == this.idEditando) {
+        return false;
+      }
+      return e.email.toLowerCase() == emailLimpio;
+    });
+  }
+
+
+
+
+  // =========================================================
   // VALIDAR
   // =========================================================
 
@@ -322,8 +354,13 @@ export class Encargados {
       valido = false;
     }
 
-    if (!this.formulario.email.trim()) {
+    // validacio correo
+    const emailTexto = this.formulario.email.trim();
+    if (!emailTexto) {
       this.errores.email = true;
+      valido = false ;
+    } else if (!this.emailValido(emailTexto)) {
+      this.errores.emailInvalido = true;
       valido = false;
     }
 
@@ -350,6 +387,7 @@ export class Encargados {
       nombre: false,
       telefono: false,
       email: false,
+      emailInvalido: false,
       cargo: false,
       area: false
     };
@@ -365,10 +403,12 @@ export class Encargados {
     }
 
     if (!this.validarFormulario()) {
-      this.mostrarToast(
-        'Completa los campos obligatorios.',
-        'info'
-      );
+      //Mensaje si el error es el formato
+      const mensajeError = this.errores.emailInvalido
+        ? 'Ingresa un correo electrónico válido.'
+        : 'Completa los campos obligatorios.';
+
+      this.mostrarToast(mensajeError, 'info');
       return;
     }
 
@@ -377,6 +417,16 @@ export class Encargados {
       this.errores.documento = true;
       this.mostrarToast (
         'El numero de documento ya se encuentra registrado',
+        'info'
+      );
+      return;
+    }
+
+    // verificacion del correo duplicado antes de guard
+    if (this.emailDuplicado(this.formulario.email)) {
+      this.errores.email = true;
+      this.mostrarToast(
+        'El correo electronico ya se encuentra registrado por otro encargado',
         'info'
       );
       return;
