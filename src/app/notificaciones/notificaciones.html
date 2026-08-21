@@ -1,123 +1,285 @@
 <div class="p-8 max-w-7xl mx-auto w-full space-y-6">
     
-    <div class="flex justify-between items-start">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-base">
+                <div class="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-base shadow-xs">
                     <i class="fa-regular fa-bell"></i>
                 </div>
-                <h2 class="text-xl font-bold text-slate-900 tracking-tight">Notificaciones</h2>
+                <h2 class="text-xl font-bold text-slate-900 tracking-tight">Centro de Notificaciones y Alertas</h2>
             </div>
-            <p class="text-xs text-slate-500 mt-1 ml-13">Mantente informado sobre las novedades de la Fundación Geriátrica</p>
+            <p class="text-xs text-slate-500 mt-1 ml-13">Panel administrativo para control de avisos, alertas críticas y canales de difusión.</p>
         </div>
-        <button (click)="marcarTodasLeidas()" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-medium px-4 py-2.5 rounded-xl flex items-center gap-2 shadow-xs transition-all cursor-pointer">
-            <i class="fa-solid fa-check text-blue-600"></i> Marcar todas leídas
-        </button>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4">
-            <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fa-regular fa-bell"></i></div>
-            <div>
-                <p class="text-[11px] font-medium text-slate-500">Total</p>
-                <p class="text-base font-bold text-slate-900">{{ totalNotificaciones }}</p>
-            </div>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4">
-            <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fa-regular fa-envelope"></i></div>
-            <div>
-                <p class="text-[11px] font-medium text-slate-500">No leídas</p>
-                <p class="text-base font-bold text-slate-900">{{ totalNoLeidas }}</p>
-            </div>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4">
-            <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center"><i class="fa-solid fa-triangle-exclamation"></i></div>
-            <div>
-                <p class="text-[11px] font-medium text-slate-500">Críticas</p>
-                <p class="text-base font-bold text-slate-900">{{ totalCriticas }}</p>
-            </div>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4">
-            <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center"><i class="fa-solid fa-circle-exclamation"></i></div>
-            <div>
-                <p class="text-[11px] font-medium text-slate-500">Advertencias</p>
-                <p class="text-base font-bold text-slate-900">{{ totalAdvertencias }}</p>
-            </div>
+        
+        <div class="flex items-center gap-1.5 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-xs text-xs font-semibold">
+            <button (click)="cambiarTab('bandeja')" [class.bg-blue-600]="tabActivo === 'bandeja'" [class.text-white]="tabActivo === 'bandeja'" [class.text-slate-600]="tabActivo !== 'bandeja'" class="px-4 py-2 rounded-xl transition-all cursor-pointer">Bandeja</button>
+            <button (click)="cambiarTab('enviar')" [class.bg-blue-600]="tabActivo === 'enviar'" [class.text-white]="tabActivo === 'enviar'" [class.text-slate-600]="tabActivo !== 'enviar'" class="px-4 py-2 rounded-xl transition-all cursor-pointer">Enviar Aviso</button>
+            <button (click)="cambiarTab('historial')" [class.bg-blue-600]="tabActivo === 'historial'" [class.text-white]="tabActivo === 'historial'" [class.text-slate-600]="tabActivo !== 'historial'" class="px-4 py-2 rounded-xl transition-all cursor-pointer">Historial</button>
+            <button (click)="cambiarTab('configuracion')" [class.bg-blue-600]="tabActivo === 'configuracion'" [class.text-white]="tabActivo === 'configuracion'" [class.text-slate-600]="tabActivo !== 'configuracion'" class="px-4 py-2 rounded-xl transition-all cursor-pointer">Canales & Sistema</button>
         </div>
     </div>
 
-    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 pt-2">
-        <div class="relative w-full sm:w-80">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
-                <i class="fa-solid fa-magnifying-glass text-xs"></i>
-            </span>
-            <input type="text" [(ngModel)]="filtroTexto" placeholder="Buscar notificaciones..." class="w-full bg-white text-xs text-slate-700 placeholder-slate-400 rounded-xl pl-10 pr-4 py-2.5 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 shadow-xs">
-        </div>
-        <div class="flex items-center gap-2 bg-white p-1.5 rounded-xl border border-slate-200 text-xs shadow-xs font-medium">
-            <button (click)="filtroCategoria = 'todas'" [class.bg-blue-600]="filtroCategoria === 'todas'" [class.text-white]="filtroCategoria === 'todas'" [class.text-slate-600]="filtroCategoria !== 'todas'" class="px-3 py-1.5 rounded-lg shadow-xs transition-all cursor-pointer">Todas</button>
-            <button (click)="filtroCategoria = 'no_leidas'" [class.bg-blue-600]="filtroCategoria === 'no_leidas'" [class.text-white]="filtroCategoria === 'no_leidas'" [class.text-slate-600]="filtroCategoria !== 'no_leidas'" class="px-3 py-1.5 rounded-lg transition-all cursor-pointer">No leídas</button>
-            <button (click)="filtroCategoria = 'critica'" [class.bg-blue-600]="filtroCategoria === 'critica'" [class.text-white]="filtroCategoria === 'critica'" [class.text-slate-600]="filtroCategoria !== 'critica'" class="px-3 py-1.5 rounded-lg transition-all cursor-pointer">Críticas</button>
-            <button (click)="filtroCategoria = 'advertencia'" [class.bg-blue-600]="filtroCategoria === 'advertencia'" [class.text-white]="filtroCategoria === 'advertencia'" [class.text-slate-600]="filtroCategoria !== 'advertencia'" class="px-3 py-1.5 rounded-lg transition-all cursor-pointer">Advertencias</button>
-        </div>
-    </div>
-
-    <div class="text-xs font-bold text-slate-700 pt-2">
-        Actividad reciente <span class="ml-2 px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 text-[10px]">{{ totalNotificaciones }}</span>
-        <p class="text-[11px] font-normal text-slate-400">Alertas y avisos del sistema</p>
-    </div>
-
-    <div class="space-y-3 pb-12">
-        <div *ngFor="let item of notificacionesFiltradas" class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between relative overflow-hidden transition-all hover:border-slate-300">
-            <div class="absolute left-0 top-0 bottom-0 w-1.5" [ngClass]="{
-                'bg-rose-500': item.tipo === 'critica',
-                'bg-amber-500': item.tipo === 'advertencia',
-                'bg-blue-500': item.tipo === 'informacion'
-            }"></div>
-            
-            <div class="flex items-start gap-4 pl-2">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" [ngClass]="{
-                    'bg-rose-50 text-rose-600': item.tipo === 'critica',
-                    'bg-amber-50 text-amber-600': item.tipo === 'advertencia',
-                    'bg-blue-50 text-blue-600': item.tipo === 'informacion'
-                }">
-                    <i [ngClass]="item.icono"></i>
+    <div *ngIf="tabActivo === 'bandeja'" class="space-y-6">
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4">
+                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fa-regular fa-bell"></i></div>
+                <div>
+                    <p class="text-[11px] font-medium text-slate-500">Total Notificaciones</p>
+                    <p class="text-base font-bold text-slate-900">{{ totalNotificaciones }}</p>
                 </div>
-                <div class="space-y-0.5">
-                    <div class="flex items-center gap-2">
-                        <h3 class="text-xs font-bold text-slate-900">{{ item.titulo }}</h3>
-                        <span class="px-2 py-0.5 rounded text-[10px] font-semibold capitalize" [ngClass]="{
-                            'bg-rose-50 text-rose-600': item.tipo === 'critica',
-                            'bg-amber-50 text-amber-600': item.tipo === 'advertencia',
-                            'bg-blue-50 text-blue-600': item.tipo === 'informacion'
-                        }">{{ item.tipo }}</span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4">
+                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fa-regular fa-envelope"></i></div>
+                <div>
+                    <p class="text-[11px] font-medium text-slate-500">No leídas</p>
+                    <p class="text-base font-bold text-slate-900">{{ totalNoLeidas }}</p>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4">
+                <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div>
+                    <p class="text-[11px] font-medium text-slate-500">Críticas (Alertas)</p>
+                    <p class="text-base font-bold text-slate-900">{{ totalCriticas }}</p>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4">
+                <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center"><i class="fa-solid fa-circle-exclamation"></i></div>
+                <div>
+                    <p class="text-[11px] font-medium text-slate-500">Advertencias</p>
+                    <p class="text-base font-bold text-slate-900">{{ totalAdvertencias }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="relative w-full sm:w-80">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
+                    <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                </span>
+                <input type="text" [(ngModel)]="filtroTexto" placeholder="Buscar notificaciones..." class="w-full bg-white text-xs text-slate-700 placeholder-slate-400 rounded-xl pl-10 pr-4 py-2.5 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 shadow-xs">
+            </div>
+            <button (click)="marcarTodasLeidas()" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-medium px-4 py-2.5 rounded-xl flex items-center gap-2 shadow-xs transition-all cursor-pointer">
+                <i class="fa-solid fa-check text-blue-600"></i> Marcar todas leídas
+            </button>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 pt-1">
+            <button (click)="filtroTipoSeleccionado = 'todos'" [class.bg-slate-900]="filtroTipoSeleccionado === 'todos'" [class.text-white]="filtroTipoSeleccionado === 'todos'" [class.bg-white]="filtroTipoSeleccionado !== 'todos'" [class.text-slate-600]="filtroTipoSeleccionado !== 'todos'" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold border border-slate-200 transition-all cursor-pointer shadow-2xs">
+                Todos
+            </button>
+            <button (click)="filtroTipoSeleccionado = 'critica'" [class.bg-rose-600]="filtroTipoSeleccionado === 'critica'" [class.text-white]="filtroTipoSeleccionado === 'critica'" [class.bg-white]="filtroTipoSeleccionado !== 'critica'" [class.text-rose-600]="filtroTipoSeleccionado !== 'critica'" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold border border-slate-200 transition-all cursor-pointer shadow-2xs">
+                Críticas
+            </button>
+            <button (click)="filtroTipoSeleccionado = 'advertencia'" [class.bg-amber-600]="filtroTipoSeleccionado === 'advertencia'" [class.text-white]="filtroTipoSeleccionado === 'advertencia'" [class.bg-white]="filtroTipoSeleccionado !== 'advertencia'" [class.text-amber-600]="filtroTipoSeleccionado !== 'advertencia'" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold border border-slate-200 transition-all cursor-pointer shadow-2xs">
+                Advertencias
+            </button>
+            <button (click)="filtroTipoSeleccionado = 'informacion'" [class.bg-blue-600]="filtroTipoSeleccionado === 'informacion'" [class.text-white]="filtroTipoSeleccionado === 'informacion'" [class.bg-white]="filtroTipoSeleccionado !== 'informacion'" [class.text-blue-600]="filtroTipoSeleccionado !== 'informacion'" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold border border-slate-200 transition-all cursor-pointer shadow-2xs">
+                Informativas
+            </button>
+        </div>
+
+        <div class="space-y-3 pb-12">
+            <div *ngFor="let item of notificacionesFiltradas" class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between relative overflow-hidden transition-all hover:border-slate-300">
+                <div class="absolute left-0 top-0 bottom-0 w-1.5" [ngClass]="{
+                    'bg-rose-500': item.tipo === 'critica',
+                    'bg-amber-500': item.tipo === 'advertencia',
+                    'bg-blue-500': item.tipo === 'informacion'
+                }"></div>
+                
+                <div class="flex items-start gap-4 pl-2">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" [ngClass]="{
+                        'bg-rose-50 text-rose-600': item.tipo === 'critica',
+                        'bg-amber-50 text-amber-600': item.tipo === 'advertencia',
+                        'bg-blue-50 text-blue-600': item.tipo === 'informacion'
+                    }">
+                        <i [ngClass]="item.icono"></i>
                     </div>
-                    <p class="text-xs text-slate-600">{{ item.mensaje }}</p>
-                    <p class="text-[11px] text-slate-400 flex items-center gap-1.5 pt-1">
-                        <i class="fa-regular fa-clock"></i> {{ item.tiempo }}
-                    </p>
+                    <div class="space-y-0.5">
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-xs font-bold text-slate-900">{{ item.titulo }}</h3>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-semibold uppercase" [ngClass]="{
+                                'bg-rose-50 text-rose-600': item.tipo === 'critica',
+                                'bg-amber-50 text-amber-600': item.tipo === 'advertencia',
+                                'bg-blue-50 text-blue-600': item.tipo === 'informacion'
+                            }">{{ item.tipo }}</span>
+                            <span *ngIf="item.destinatario" class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Para: {{ item.destinatario }}</span>
+                        </div>
+                        <p class="text-xs text-slate-600">{{ item.mensaje }}</p>
+                        <p class="text-[11px] text-slate-400 flex items-center gap-1.5 pt-1">
+                            <i class="fa-regular fa-clock"></i> {{ item.tiempo }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <span *ngIf="!item.leida" class="w-2 h-2 rounded-full bg-blue-600"></span>
+                    <button (click)="marcarLeida(item.id)" class="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-500 flex items-center justify-center transition-all cursor-pointer" title="Marcar leída">
+                        <i class="fa-solid fa-check text-xs"></i>
+                    </button>
+                    <button (click)="eliminarNotificacion(item.id)" class="w-8 h-8 rounded-lg hover:bg-rose-50 text-rose-500 flex items-center justify-center transition-all cursor-pointer" title="Eliminar">
+                        <i class="fa-regular fa-trash-can text-xs"></i>
+                    </button>
                 </div>
             </div>
 
-            <div class="flex items-center gap-3">
-                <span *ngIf="!item.leida" class="w-2 h-2 rounded-full bg-blue-600"></span>
-                <button (click)="marcarLeida(item.id)" class="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-500 flex items-center justify-center transition-all cursor-pointer" title="Marcar como leída">
-                    <i class="fa-solid fa-check text-xs"></i>
+            <div *ngIf="notificacionesFiltradas.length === 0" class="bg-white p-12 rounded-2xl border border-slate-200 text-center space-y-3 shadow-xs">
+                <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto text-lg">
+                    <i class="fa-regular fa-folder-open"></i>
+                </div>
+                <p class="text-xs font-semibold text-slate-700">No hay notificaciones registradas</p>
+                <p class="text-[11px] text-slate-400">El sistema no muestra elementos bajo los criterios seleccionados.</p>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="tabActivo === 'enviar'" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-6 max-w-3xl mx-auto">
+        <div>
+            <h3 class="text-sm font-bold text-slate-900">Redactar y Enviar Notificación / Alerta</h3>
+            <p class="text-xs text-slate-500">Informe eventos importantes relacionados con la atención de los pacientes o avisos operativos.</p>
+        </div>
+
+        <form (ngSubmit)="enviarNotificacionManual()" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1.5">Destinatario Principal *</label>
+                    <select [(ngModel)]="nuevoDestinatario" name="destinatario" class="w-full bg-slate-50 text-xs text-slate-700 border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                        <option value="">Seleccione un destinatario...</option>
+                        <option value="Cuidadores">Todos los Cuidadores</option>
+                        <option value="Trabajadora Social">Trabajadora Social</option>
+                        <option value="Enfermería">Personal de Enfermería</option>
+                        <option value="Todos">Todo el Personal del Geriátrico</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1.5">Nivel de Prioridad / Tipo *</label>
+                    <select [(ngModel)]="nuevoTipo" name="tipo" class="w-full bg-slate-50 text-xs text-slate-700 border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                        <option value="informacion">Informativo General</option>
+                        <option value="advertencia">Advertencia</option>
+                        <option value="critica">Crítica (Alerta Inmediata)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <div class="flex justify-between items-center mb-1.5">
+                    <label class="block text-xs font-semibold text-slate-700">Contenido del Mensaje *</label>
+                    <span class="text-[10px] font-medium" [ngClass]="{'text-rose-500 font-bold': caracteresRestantes < 20, 'text-slate-400': caracteresRestantes >= 20}">
+                        {{ caracteresRestantes }} caracteres restantes
+                    </span>
+                </div>
+                <textarea [(ngModel)]="nuevoMensaje" name="mensaje" rows="4" maxlength="300" placeholder="Escriba aquí los detalles del evento que requiere atención..." class="w-full bg-slate-50 text-xs text-slate-700 border border-slate-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500/20 resize-none"></textarea>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1.5">Contenido del Mensaje *</label>
+                <textarea [(ngModel)]="nuevoMensaje" name="mensaje" rows="4" placeholder="Escriba aquí los detalles del evento que requiere atención..." class="w-full bg-slate-50 text-xs text-slate-700 border border-slate-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500/20 resize-none"></textarea>
+            </div>
+
+            <div *ngIf="mensajeError" class="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-xs font-medium flex items-center gap-2">
+                <i class="fa-solid fa-circle-exclamation"></i> {{ mensajeError }}
+            </div>
+            <div *ngIf="mensajeExito" class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 text-xs font-medium flex items-center gap-2">
+                <i class="fa-solid fa-circle-check"></i> {{ mensajeExito }}
+            </div>
+
+            <div class="flex justify-end gap-3 pt-2">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl text-xs shadow-sm transition-all cursor-pointer">
+                    Enviar Notificación
                 </button>
-                <button (click)="eliminarNotificacion(item.id)" class="w-8 h-8 rounded-lg hover:bg-rose-50 text-rose-500 flex items-center justify-center transition-all cursor-pointer" title="Eliminar notificación">
-                    <i class="fa-regular fa-trash-can text-xs"></i>
-                </button>
+            </div>
+        </form>
+    </div>
+
+    <div *ngIf="tabActivo === 'historial'" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+        <div class="flex justify-between items-center">
+            <div>
+                <h3 class="text-sm font-bold text-slate-900">Historial de Notificaciones y Alertas</h3>
+                <p class="text-xs text-slate-500">Consulta ordenada estrictamente por fecha y hora de emisión.</p>
+            </div>
+            <span class="text-xs font-semibold bg-blue-50 text-blue-600 px-3 py-1 rounded-xl">Total Registros: {{ listaNotificaciones.length }}</span>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="border-b border-slate-200 text-[11px] font-semibold text-slate-400">
+                        <th class="pb-3 px-3">FECHA / HORA</th>
+                        <th class="pb-3 px-3">TÍTULO</th>
+                        <th class="pb-3 px-3">DESTINATARIO</th>
+                        <th class="pb-3 px-3">TIPO</th>
+                        <th class="pb-3 px-3 text-right">ACCIÓN</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-xs text-slate-700">
+                    <tr *ngFor="let item of listaNotificaciones" class="hover:bg-slate-50 transition-colors">
+                        <td class="py-3 px-3 text-slate-500 font-medium">{{ item.tiempo }}</td>
+                        <td class="py-3 px-3 font-semibold text-slate-900">{{ item.titulo }}</td>
+                        <td class="py-3 px-3">{{ item.destinatario || 'General' }}</td>
+                        <td class="py-3 px-3">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-semibold uppercase" [ngClass]="{
+                                'bg-rose-50 text-rose-600': item.tipo === 'critica',
+                                'bg-amber-50 text-amber-600': item.tipo === 'advertencia',
+                                'bg-blue-50 text-blue-600': item.tipo === 'informacion'
+                            }">{{ item.tipo }}</span>
+                        </td>
+                        <td class="py-3 px-3 text-right">
+                            <button (click)="verDetalle(item)" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-blue-50 hover:text-blue-600 text-slate-600 transition-all cursor-pointer">Detalle</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div *ngIf="tabActivo === 'configuracion'" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-6 max-w-3xl mx-auto">
+        <div>
+            <h3 class="text-sm font-bold text-slate-900">Configuración de Canales y Activación General</h3>
+            <p class="text-xs text-slate-500">Habilite o deshabilite el motor de notificaciones y seleccione los medios de distribución.</p>
+        </div>
+
+        <div class="space-y-4 divide-y divide-slate-100">
+            <div class="flex justify-between items-center pt-4">
+                <div>
+                    <p class="text-xs font-bold text-slate-900">Sistema Global de Notificaciones</p>
+                    <p class="text-[11px] text-slate-500">Control maestro para activar o pausar el envío automático de avisos.</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" [(ngModel)]="sistemaActivo" class="sr-only peer">
+                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+            </div>
+
+            <div class="pt-4 space-y-3">
+                <p class="text-xs font-bold text-slate-900">Canales de Envío Autorizados</p>
+                
+                <label class="flex items-center gap-3 text-xs text-slate-700 cursor-pointer">
+                    <input type="checkbox" [(ngModel)]="canalEmail" class="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-0">
+                    <span>Correo Electrónico (Email Institucional)</span>
+                </label>
+                <label class="flex items-center gap-3 text-xs text-slate-700 cursor-pointer">
+                    <input type="checkbox" [(ngModel)]="canalSms" class="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-0">
+                    <span>SMS (Mensajería de Texto a Cuidadores)</span>
+                </label>
+                <label class="flex items-center gap-3 text-xs text-slate-700 cursor-pointer">
+                    <input type="checkbox" [(ngModel)]="canalPush" class="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-0">
+                    <span>Aplicación Móvil (Notificaciones Push directas)</span>
+                </label>
             </div>
         </div>
 
-        <div *ngIf="notificacionesFiltradas.length === 0" class="bg-white p-8 rounded-2xl border border-slate-200 text-center space-y-2">
-            <i class="fa-regular fa-folder-open text-2xl text-slate-400"></i>
-            <p class="text-xs font-semibold text-slate-700">No se encontraron notificaciones</p>
-            <p class="text-[11px] text-slate-400">Intenta cambiando los filtros o el término de búsqueda.</p>
+        <div *ngIf="mensajeConfigExito" class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 text-xs font-medium">
+            {{ mensajeConfigExito }}
+        </div>
+
+        <div class="flex justify-end pt-2">
+            <button (click)="guardarConfiguracionCanales()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl text-xs shadow-sm transition-all cursor-pointer">
+                Guardar Configuración
+            </button>
         </div>
     </div>
 
 </div>
 
-<button (click)="abrirModalEnvio()" class="fixed bottom-8 right-8 w-14 h-14 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center shadow-lg transition-all z-30 cursor-pointer" title="Enviar nueva notificación">
+<button (click)="cambiarTab('enviar')" class="fixed bottom-8 right-8 w-14 h-14 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center shadow-lg transition-all z-30 cursor-pointer" title="Crear aviso o alerta">
     <i class="fa-solid fa-plus text-lg"></i>
 </button>

@@ -10,6 +10,7 @@ interface Notificacion {
   tiempo: string;
   leida: boolean;
   icono: string;
+  destinatario?: string;
 }
 
 @Component({
@@ -20,48 +21,62 @@ interface Notificacion {
   styleUrls: ['./notificaciones.css']
 })
 export class Notificaciones {
+  tabActivo: string = 'bandeja';
   filtroTexto: string = '';
-  filtroCategoria: string = 'todas';
 
-  // Datos mock alineados con el diseño y requerimientos de las HU (SCRUM-76 a SCRUM-80)
+  filtroTipoSeleccionado: string = 'todos';
+
+  nuevoDestinatario: string = '';
+  nuevoTipo: 'critica' | 'advertencia' | 'informacion' = 'informacion';
+  nuevoTitulo: string = '';
+  nuevoMensaje: string = '';
+  mensajeError: string = '';
+  mensajeExito: string = '';
+
+  sistemaActivo: boolean = true;
+  canalEmail: boolean = true;
+  canalSms: boolean = true;
+  canalPush: boolean = true;
+  mensajeConfigExito: string = '';
+
   listaNotificaciones: Notificacion[] = [
     {
       id: 1,
-      titulo: 'Paciente requiere atención',
-      mensaje: 'El paciente Carlos Rodríguez presenta signos que requieren valoración médica inmediata.',
+      titulo: 'Paciente requiere atención médica',
+      mensaje: 'El paciente Carlos Rodríguez presenta signos vitales alterados que requieren valoración.',
       tipo: 'critica',
       tiempo: 'Hace 10 minutos',
       leida: false,
-      icono: 'fa-solid fa-asterisk'
+      icono: 'fa-solid fa-asterisk',
+      destinatario: 'Enfermería'
     },
     {
       id: 2,
       titulo: 'Medicamento pendiente',
-      mensaje: 'La administración del medicamento de María López está pendiente según el turno asignado.',
+      mensaje: 'La administración del medicamento de María López está pendiente según el turno.',
       tipo: 'advertencia',
       tiempo: 'Hace 25 minutos',
       leida: false,
-      icono: 'fa-solid fa-pills'
+      icono: 'fa-solid fa-pills',
+      destinatario: 'Cuidadores'
     },
     {
       id: 3,
       titulo: 'Nuevo encargado registrado',
-      mensaje: 'Se ha registrado un nuevo encargado en el sistema administrativo con rol de cuidador.',
+      mensaje: 'Se ha registrado un nuevo operador en el sistema administrativo.',
       tipo: 'informacion',
       tiempo: 'Hace 1 hora',
-      leida: false,
-      icono: 'fa-solid fa-user-plus'
-    },
-    {
-      id: 4,
-      titulo: 'Control médico completado',
-      mensaje: 'El control médico del paciente Juan Pérez fue registrado correctamente.',
-      tipo: 'informacion',
-      tiempo: 'Hace 2 horas',
       leida: true,
-      icono: 'fa-solid fa-shield-heart'
+      icono: 'fa-solid fa-user-plus',
+      destinatario: 'Todos'
     }
   ];
+
+  cambiarTab(tab: string) {
+    this.tabActivo = tab;
+    this.mensajeError = '';
+    this.mensajeExito = '';
+  }
 
   get totalNotificaciones(): number {
     return this.listaNotificaciones.length;
@@ -79,29 +94,58 @@ export class Notificaciones {
     return this.listaNotificaciones.filter(n => n.tipo === 'advertencia').length;
   }
 
+  get caracteresRestantes(): number {
+    return 300 - (this.nuevoMensaje ? this.nuevoMensaje.length : 0);
+  }
+
   get notificacionesFiltradas(): Notificacion[] {
     return this.listaNotificaciones.filter(item => {
-      const coincideTexto = item.titulo.toLowerCase().includes(this.filtroTexto.toLowerCase()) ||
-                            item.mensaje.toLowerCase().includes(this.filtroTexto.toLowerCase());
-      
-      let coincideCategoria = true;
-      if (this.filtroCategoria === 'no_leidas') {
-        coincideCategoria = !item.leida;
-      } else if (this.filtroCategoria === 'critica') {
-        coincideCategoria = item.tipo === 'critica';
-      } else if (this.filtroCategoria === 'advertencia') {
-        coincideCategoria = item.tipo === 'advertencia';
-      }
-
-      return coincideTexto && coincideCategoria;
+      const matchesText = item.titulo.toLowerCase().includes(this.filtroTexto.toLowerCase()) ||
+                           item.mensaje.toLowerCase().includes(this.filtroTexto.toLowerCase());
+      const matchesType = this.filtroTipoSeleccionado === 'todos' || item.tipo === this.filtroTipoSeleccionado;
+      return matchesText && matchesType;
     });
   }
 
-  marcarLeida(id: number) {
-    const notif = this.listaNotificaciones.find(n => n.id === id);
-    if (notif) {
-      notif.leida = true;
+  enviarNotificacionManual() {
+    this.mensajeError = '';
+    this.mensajeExito = '';
+
+    if (!this.nuevoDestinatario || this.nuevoDestinatario.trim() === '') {
+      this.mensajeError = 'Error: Debe seleccionar un destinatario válido.';
     }
+   if (!this.nuevoTitulo || this.nuevoTitulo.trim() === '' || !this.nuevoMensaje || this.nuevoMensaje.trim() === '') {
+      this.mensajeError = 'Error: El título y el contenido del mensaje no pueden estar vacíos.';
+      return;
+    }
+
+    const nueva: Notificacion = {
+      id: Date.now(),
+      titulo: this.nuevoTitulo.trim(),
+      mensaje: this.nuevoMensaje.trim(),
+      tipo: this.nuevoTipo,
+      tiempo: 'Hace un momento',
+      leida: false,
+      icono: this.nuevoTipo === 'critica' ? 'fa-solid fa-triangle-exclamation' : 'fa-regular fa-bell',
+      destinatario: this.nuevoDestinatario
+    };
+
+    this.listaNotificaciones.unshift(nueva);
+    this.mensajeExito = 'Notificación enviada y registrada con éxito en el historial.';
+    
+    this.nuevoTitulo = '';
+    this.nuevoMensaje = '';
+    this.nuevoDestinatario = '';
+
+    setTimeout(() => {
+      this.tabActivo = 'bandeja';
+      this.mensajeExito = '';
+    }, 1500);
+  }
+
+  marcarLeida(id: number) {
+    const item = this.listaNotificaciones.find(n => n.id === id);
+    if (item) item.leida = true;
   }
 
   marcarTodasLeidas() {
@@ -112,8 +156,14 @@ export class Notificaciones {
     this.listaNotificaciones = this.listaNotificaciones.filter(n => n.id !== id);
   }
 
-  abrirModalEnvio() {
-    // Lógica para desplegar el modal de envío manual o creación de alertas (SCRUM-76 / SCRUM-77)
-    alert('Abriendo panel para envío manual de notificación o alerta administrativa.');
+  verDetalle(item: Notificacion) {
+    alert(`Detalle del aviso:\nTítulo: ${item.titulo}\nMensaje: ${item.mensaje}\nDestinatario: ${item.destinatario || 'General'}`);
+  }
+
+  guardarConfiguracionCanales() {
+    this.mensajeConfigExito = 'Configuración de canales y estado almacenada correctamente.';
+    setTimeout(() => {
+      this.mensajeConfigExito = '';
+    }, 2500);
   }
 }
