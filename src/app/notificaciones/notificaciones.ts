@@ -1,408 +1,119 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 interface Notificacion {
-
   id: number;
-
   titulo: string;
-
-  descripcion: string;
-
+  mensaje: string;
+  tipo: 'critica' | 'advertencia' | 'informacion';
   tiempo: string;
-
-  icono: string;
-
-  tipo: 'critical' | 'warning' | 'info';
-
   leida: boolean;
-
+  icono: string;
 }
 
-
 @Component({
-
   selector: 'app-notificaciones',
-
   standalone: true,
-
-  imports: [
-    CommonModule,
-    FormsModule
-  ],
-
+  imports: [CommonModule, FormsModule],
   templateUrl: './notificaciones.html',
-
-  styleUrl: './notificaciones.css'
-
+  styleUrls: ['./notificaciones.css']
 })
-
-
 export class Notificaciones {
+  filtroTexto: string = '';
+  filtroCategoria: string = 'todas';
 
-
-  // =========================================================
-  // TEXTO
-  // =========================================================
-
-  subtitulo =
-    'Mantente informado sobre las novedades de la Fundación Geriátrica';
-
-
-  // =========================================================
-  // BÚSQUEDA
-  // =========================================================
-
-  textoBusqueda = '';
-
-
-  // =========================================================
-  // FILTRO ACTIVO
-  // =========================================================
-
-  filtroActivo: 'todas' | 'no-leidas' | 'critical' | 'warning' = 'todas';
-
-
-  // =========================================================
-  // NOTIFICACIONES
-  // =========================================================
-
-  notificaciones: Notificacion[] = [
-
+  // Datos mock alineados con el diseño y requerimientos de las HU (SCRUM-76 a SCRUM-80)
+  listaNotificaciones: Notificacion[] = [
     {
       id: 1,
-
       titulo: 'Paciente requiere atención',
-
-      descripcion:
-        'El paciente Carlos Rodríguez presenta signos que requieren valoración médica.',
-
+      mensaje: 'El paciente Carlos Rodríguez presenta signos que requieren valoración médica inmediata.',
+      tipo: 'critica',
       tiempo: 'Hace 10 minutos',
-
-      icono: 'emergency',
-
-      tipo: 'critical',
-
-      leida: false
+      leida: false,
+      icono: 'fa-solid fa-asterisk'
     },
-
-
     {
       id: 2,
-
       titulo: 'Medicamento pendiente',
-
-      descripcion:
-        'La administración del medicamento de María López está pendiente.',
-
+      mensaje: 'La administración del medicamento de María López está pendiente según el turno asignado.',
+      tipo: 'advertencia',
       tiempo: 'Hace 25 minutos',
-
-      icono: 'medication',
-
-      tipo: 'warning',
-
-      leida: false
+      leida: false,
+      icono: 'fa-solid fa-pills'
     },
-
-
     {
       id: 3,
-
       titulo: 'Nuevo encargado registrado',
-
-      descripcion:
-        'Se ha registrado un nuevo encargado en el sistema administrativo.',
-
+      mensaje: 'Se ha registrado un nuevo encargado en el sistema administrativo con rol de cuidador.',
+      tipo: 'informacion',
       tiempo: 'Hace 1 hora',
-
-      icono: 'person_add',
-
-      tipo: 'info',
-
-      leida: false
+      leida: false,
+      icono: 'fa-solid fa-user-plus'
     },
-
-
     {
       id: 4,
-
       titulo: 'Control médico completado',
-
-      descripcion:
-        'El control médico del paciente Juan Pérez fue registrado correctamente.',
-
+      mensaje: 'El control médico del paciente Juan Pérez fue registrado correctamente.',
+      tipo: 'informacion',
       tiempo: 'Hace 2 horas',
-
-      icono: 'health_and_safety',
-
-      tipo: 'info',
-
-      leida: true
-    },
-
-
-    {
-      id: 5,
-
-      titulo: 'Cuidador disponible',
-
-      descripcion:
-        'El cuidador asignado se encuentra disponible para iniciar su turno.',
-
-      tiempo: 'Hace 3 horas',
-
-      icono: 'person',
-
-      tipo: 'info',
-
-      leida: true
-    },
-
-
-    {
-      id: 6,
-
-      titulo: 'Paciente en observación',
-
-      descripcion:
-        'Se ha actualizado el estado de un paciente a observación.',
-
-      tiempo: 'Ayer',
-
-      icono: 'visibility',
-
-      tipo: 'warning',
-
-      leida: true
+      leida: true,
+      icono: 'fa-solid fa-shield-heart'
     }
-
   ];
 
-
-  // =========================================================
-  // CANTIDAD DE CRÍTICAS
-  // =========================================================
-
-  get cantidadCriticas(): number {
-
-    return this.notificaciones.filter(
-      notificacion =>
-        notificacion.tipo === 'critical'
-    ).length;
-
+  get totalNotificaciones(): number {
+    return this.listaNotificaciones.length;
   }
 
-
-  // =========================================================
-  // CANTIDAD DE ADVERTENCIAS
-  // =========================================================
-
-  get cantidadAdvertencias(): number {
-
-    return this.notificaciones.filter(
-      notificacion =>
-        notificacion.tipo === 'warning'
-    ).length;
-
+  get totalNoLeidas(): number {
+    return this.listaNotificaciones.filter(n => !n.leida).length;
   }
 
+  get totalCriticas(): number {
+    return this.listaNotificaciones.filter(n => n.tipo === 'critica').length;
+  }
 
-  // =========================================================
-  // NOTIFICACIONES FILTRADAS
-  // =========================================================
+  get totalAdvertencias(): number {
+    return this.listaNotificaciones.filter(n => n.tipo === 'advertencia').length;
+  }
 
   get notificacionesFiltradas(): Notificacion[] {
-
-    const termino =
-      this.textoBusqueda
-        .trim()
-        .toLowerCase();
-
-
-    return this.notificaciones.filter(
-      notificacion => {
-
-        // -----------------------------------------------
-        // FILTRO POR CATEGORÍA
-        // -----------------------------------------------
-
-        let coincideFiltro = true;
-
-
-        if (this.filtroActivo === 'no-leidas') {
-
-          coincideFiltro =
-            !notificacion.leida;
-
-        }
-
-
-        if (this.filtroActivo === 'critical') {
-
-          coincideFiltro =
-            notificacion.tipo === 'critical';
-
-        }
-
-
-        if (this.filtroActivo === 'warning') {
-
-          coincideFiltro =
-            notificacion.tipo === 'warning';
-
-        }
-
-
-        // -----------------------------------------------
-        // FILTRO POR TEXTO
-        // -----------------------------------------------
-
-        const coincideBusqueda =
-          !termino
-
-          ||
-
-          notificacion.titulo
-            .toLowerCase()
-            .includes(termino)
-
-          ||
-
-          notificacion.descripcion
-            .toLowerCase()
-            .includes(termino)
-
-          ||
-
-          notificacion.tipo
-            .toLowerCase()
-            .includes(termino);
-
-
-        return coincideFiltro && coincideBusqueda;
-
+    return this.listaNotificaciones.filter(item => {
+      const coincideTexto = item.titulo.toLowerCase().includes(this.filtroTexto.toLowerCase()) ||
+                            item.mensaje.toLowerCase().includes(this.filtroTexto.toLowerCase());
+      
+      let coincideCategoria = true;
+      if (this.filtroCategoria === 'no_leidas') {
+        coincideCategoria = !item.leida;
+      } else if (this.filtroCategoria === 'critica') {
+        coincideCategoria = item.tipo === 'critica';
+      } else if (this.filtroCategoria === 'advertencia') {
+        coincideCategoria = item.tipo === 'advertencia';
       }
-    );
 
+      return coincideTexto && coincideCategoria;
+    });
   }
 
-
-  // =========================================================
-  // NOTIFICACIONES NO LEÍDAS
-  // =========================================================
-
-  get notificacionesNoLeidas(): number {
-
-    return this.notificaciones.filter(
-      notificacion =>
-        !notificacion.leida
-    ).length;
-
+  marcarLeida(id: number) {
+    const notif = this.listaNotificaciones.find(n => n.id === id);
+    if (notif) {
+      notif.leida = true;
+    }
   }
 
-
-  // =========================================================
-  // FILTRAR NOTIFICACIONES
-  // =========================================================
-
-  filtrarNotificaciones(): void {
-
-    /*
-     * La lista se actualiza automáticamente porque
-     * notificacionesFiltradas es un getter.
-     *
-     * Este método existe para que el HTML pueda
-     * ejecutar (input)="filtrarNotificaciones()"
-     */
-
+  marcarTodasLeidas() {
+    this.listaNotificaciones.forEach(n => n.leida = true);
   }
 
-
-  // =========================================================
-  // CAMBIAR FILTRO
-  // =========================================================
-
-  cambiarFiltro(
-    filtro: 'todas' | 'no-leidas' | 'critical' | 'warning'
-  ): void {
-
-    this.filtroActivo = filtro;
-
+  eliminarNotificacion(id: number) {
+    this.listaNotificaciones = this.listaNotificaciones.filter(n => n.id !== id);
   }
 
-
-  // =========================================================
-  // LIMPIAR FILTROS
-  // =========================================================
-
-  limpiarFiltros(): void {
-
-    this.textoBusqueda = '';
-
-    this.filtroActivo = 'todas';
-
+  abrirModalEnvio() {
+    // Lógica para desplegar el modal de envío manual o creación de alertas (SCRUM-76 / SCRUM-77)
+    alert('Abriendo panel para envío manual de notificación o alerta administrativa.');
   }
-
-
-  // =========================================================
-  // MARCAR UNA COMO LEÍDA
-  // =========================================================
-
-  marcarComoLeida(
-    notificacion: Notificacion
-  ): void {
-
-    notificacion.leida = true;
-
-  }
-
-
-  // =========================================================
-  // MARCAR TODAS COMO LEÍDAS
-  // =========================================================
-
-  marcarTodasLeidas(): void {
-
-    this.notificaciones =
-      this.notificaciones.map(
-        notificacion => ({
-
-          ...notificacion,
-
-          leida: true
-
-        })
-      );
-
-  }
-
-
-  // =========================================================
-  // ELIMINAR
-  // =========================================================
-
-  eliminarNotificacion(
-    id: number
-  ): void {
-
-    this.notificaciones =
-      this.notificaciones.filter(
-        notificacion =>
-          notificacion.id !== id
-      );
-
-  }
-
-
-  // =========================================================
-  // LIMPIAR BÚSQUEDA
-  // =========================================================
-
-  limpiarBusqueda(): void {
-
-    this.textoBusqueda = '';
-
-  }
-
 }
