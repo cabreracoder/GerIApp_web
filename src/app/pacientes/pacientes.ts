@@ -40,53 +40,31 @@ interface PatientForm {
 @Component({
   selector: 'app-pacientes',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule
-  ],
+  imports: [CommonModule, FormsModule],
   templateUrl: './pacientes.html',
   styleUrl: './pacientes.css'
 })
 export class Pacientes {
 
-  // =========================================================
-  // BÚSQUEDA Y FILTROS
-  // =========================================================
-
+  // Filtros
   searchText = '';
-
   pavilionFilter = '';
-
   statusFilter: PatientStatus | '' = '';
 
-  // =========================================================
-  // PAGINACIÓN
-  // =========================================================
-
+  // Paginación
   currentPage = 1;
-
   pageSize = 8;
 
-  // =========================================================
-  // MODAL
-  // =========================================================
-
+  // Modal
   modalOpen = false;
-
   editingId: number | null = null;
-
-  // =========================================================
-  // FORMULARIO
-  // =========================================================
-
   form: PatientForm = this.createEmptyForm();
 
-  // =========================================================
-  // PACIENTES
-  // =========================================================
+  // Capacidad máxima de la instalación para calcular %
+  totalCapacity = 50;
 
+  // Lista de Pacientes
   patients: Patient[] = [
-
     {
       id: 1,
       name: 'Ricardo Mendoza',
@@ -103,7 +81,6 @@ export class Pacientes {
       email: 'elena.mendoza@mail.com',
       notes: 'Control médico periódico.'
     },
-
     {
       id: 2,
       name: 'Carmen Torres',
@@ -114,157 +91,215 @@ export class Pacientes {
       guardian: 'Luis Torres',
       guardianRel: 'Hijo',
       caregiver: 'Dra. Martha Luz',
-      pavilion: 'Ala Norte',
-      status: 'observation',
-      phone: '3105551122',
+      pavilion: 'Ala Sur',
+      status: 'critical',
+      phone: '3119876543',
       email: 'luis.torres@mail.com',
-      notes: 'En observación por control de presión.'
-    },
-
-    {
-      id: 3,
-      name: 'Jorge Ramírez',
-      doc: '12.889.456',
-      age: 86,
-      birthDate: '1940-01-15',
-      room: '203',
-      guardian: 'María Ramírez',
-      guardianRel: 'Hija',
-      caregiver: 'Enf. Laura Paz',
-      pavilion: 'Ala Sur',
-      status: 'critical',
-      phone: '3158882233',
-      email: 'maria.ramirez@mail.com',
-      notes: 'Requiere monitoreo constante.'
-    },
-
-    {
-      id: 4,
-      name: 'Ana Martínez',
-      doc: '28.334.781',
-      age: 74,
-      birthDate: '1952-09-05',
-      room: '210',
-      guardian: 'Carlos Martínez',
-      guardianRel: 'Hijo',
-      caregiver: 'Enf. Ana Reyes',
-      pavilion: 'Ala Sur',
-      status: 'stable',
-      phone: '3001112233',
-      email: 'carlos.martinez@mail.com',
-      notes: 'Paciente estable.'
-    },
-
-    {
-      id: 5,
-      name: 'Pedro Gómez',
-      doc: '15.672.334',
-      age: 90,
-      birthDate: '1936-04-11',
-      room: '302',
-      guardian: 'Laura Gómez',
-      guardianRel: 'Hija',
-      caregiver: 'Juan Vela',
-      pavilion: 'Ala Este',
-      status: 'stable',
-      phone: '3184567891',
-      email: 'laura.gomez@mail.com',
-      notes: 'Seguimiento nutricional.'
-    },
-
-    {
-      id: 6,
-      name: 'Marta López',
-      doc: '26.784.551',
-      age: 81,
-      birthDate: '1945-07-23',
-      room: '305',
-      guardian: 'Diego López',
-      guardianRel: 'Hijo',
-      caregiver: 'Enf. Carlos Ruiz',
-      pavilion: 'Ala Este',
-      status: 'observation',
-      phone: '3167891122',
-      email: 'diego.lopez@mail.com',
-      notes: 'Observación médica.'
-    },
-
-    {
-      id: 7,
-      name: 'Alberto Castro',
-      doc: '11.224.998',
-      age: 88,
-      birthDate: '1938-02-17',
-      room: '109',
-      guardian: 'Sofía Castro',
-      guardianRel: 'Hija',
-      caregiver: 'Dra. Martha Luz',
-      pavilion: 'Ala Norte',
-      status: 'critical',
-      phone: '3012223344',
-      email: 'sofia.castro@mail.com',
-      notes: 'Requiere atención especial.'
-    },
-
-    {
-      id: 8,
-      name: 'Rosa Fernández',
-      doc: '35.781.223',
-      age: 76,
-      birthDate: '1950-11-30',
-      room: '215',
-      guardian: 'Miguel Fernández',
-      guardianRel: 'Hijo',
-      caregiver: 'Enf. Laura Paz',
-      pavilion: 'Ala Sur',
-      status: 'stable',
-      phone: '3134455667',
-      email: 'miguel.fernandez@mail.com',
-      notes: 'Paciente estable.'
-    },
-
-    {
-      id: 9,
-      name: 'Manuel Vargas',
-      doc: '19.672.882',
-      age: 84,
-      birthDate: '1942-05-18',
-      room: '307',
-      guardian: 'Patricia Vargas',
-      guardianRel: 'Hija',
-      caregiver: 'Juan Vela',
-      pavilion: 'Ala Este',
-      status: 'stable',
-      phone: '3204455667',
-      email: 'patricia.vargas@mail.com',
-      notes: 'Control general.'
-    },
-
-    {
-      id: 10,
-      name: 'Gloria Herrera',
-      doc: '27.882.331',
-      age: 79,
-      birthDate: '1947-12-04',
-      room: '112',
-      guardian: 'Andrés Herrera',
-      guardianRel: 'Hijo',
-      caregiver: 'Enf. Ana Reyes',
-      pavilion: 'Ala Norte',
-      status: 'observation',
-      phone: '3147788990',
-      email: 'andres.herrera@mail.com',
-      notes: 'Control y observación.'
+      notes: 'Monitoreo de presión arterial.'
     }
-
   ];
 
   // =========================================================
-  // FORMULARIO VACÍO
+  // GETTERS (PROPIEDADES COMPUTADAS)
   // =========================================================
 
-  createEmptyForm(): PatientForm {
+  get filteredPatients(): Patient[] {
+    return this.patients.filter(patient => {
+      const matchesPavilion = !this.pavilionFilter || patient.pavilion === this.pavilionFilter;
+      const matchesStatus = !this.statusFilter || patient.status === this.statusFilter;
+      const matchesSearch = !this.searchText || 
+        patient.name.toLowerCase().includes(this.searchText.toLowerCase()) ||
+        patient.doc.includes(this.searchText);
 
+      return matchesPavilion && matchesStatus && matchesSearch;
+    });
+  }
+
+  get paginatedPatients(): Patient[] {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    return this.filteredPatients.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.filteredPatients.length / this.pageSize) || 1;
+  }
+
+  get pageNumbers(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+  // Métricas
+  get totalActive(): number {
+    return this.patients.length;
+  }
+
+  get occupancy(): number {
+    return Math.round((this.patients.length / this.totalCapacity) * 100);
+  }
+
+  get stablePatients(): number {
+    return this.patients.filter(p => p.status === 'stable').length;
+  }
+
+  get criticalPatients(): number {
+    return this.patients.filter(p => p.status === 'critical').length;
+  }
+
+  get firstShown(): number {
+    if (this.filteredPatients.length === 0) return 0;
+    return (this.currentPage - 1) * this.pageSize + 1;
+  }
+
+  get lastShown(): number {
+    const calculatedLast = this.currentPage * this.pageSize;
+    return calculatedLast > this.filteredPatients.length 
+      ? this.filteredPatients.length 
+      : calculatedLast;
+  }
+
+  get modalTitle(): string {
+    return this.editingId ? 'Editar Paciente' : 'Nuevo Paciente';
+  }
+
+  get saveButtonText(): string {
+    return this.editingId ? 'Actualizar' : 'Guardar';
+  }
+
+  // =========================================================
+  // MÉTODOS DE TABLA Y PAGINACIÓN
+  // =========================================================
+
+  filterTable(): void {
+    this.currentPage = 1;
+  }
+
+  changePage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+
+  getAvatarColor(status: PatientStatus): string {
+    switch (status) {
+      case 'stable': return '#dcfce7';
+      case 'critical': return '#fee2e2';
+      case 'observation': return '#fef3c7';
+      default: return '#e2e8f0';
+    }
+  }
+
+  toggleStatus(id: number): void {
+    const patient = this.patients.find(p => p.id === id);
+    if (!patient) return;
+
+    const states: PatientStatus[] = ['stable', 'observation', 'critical'];
+    const nextIndex = (states.indexOf(patient.status) + 1) % states.length;
+    patient.status = states[nextIndex];
+  }
+
+  deletePatient(id: number): void {
+    if (confirm('¿Está seguro de eliminar este paciente?')) {
+      this.patients = this.patients.filter(p => p.id !== id);
+      if (this.paginatedPatients.length === 0 && this.currentPage > 1) {
+        this.currentPage--;
+      }
+    }
+  }
+
+  // =========================================================
+  // MÉTODOS DE MODAL Y FORMULARIO
+  // =========================================================
+
+  openModal(mode: 'new' | 'edit', id?: number): void {
+    if (mode === 'edit' && id) {
+      const patient = this.patients.find(p => p.id === id);
+      if (patient) {
+        this.editingId = id;
+        this.form = {
+          nombre: patient.name,
+          documento: patient.doc,
+          nacimiento: patient.birthDate,
+          edad: patient.age,
+          habitacion: patient.room,
+          estado: patient.status,
+          cuidador: patient.caregiver,
+          pabellon: patient.pavilion,
+          encargado: patient.guardian,
+          relacion: patient.guardianRel,
+          telefono: patient.phone,
+          email: patient.email,
+          notas: patient.notes
+        };
+      }
+    } else {
+      this.editingId = null;
+      this.form = this.createEmptyForm();
+    }
+    this.modalOpen = true;
+  }
+
+  closeModal(): void {
+    this.modalOpen = false;
+    this.editingId = null;
+    this.form = this.createEmptyForm();
+  }
+
+  closeOnBackdrop(event: MouseEvent): void {
+    if ((event.target as HTMLElement).classList.contains('overlay')) {
+      this.closeModal();
+    }
+  }
+
+  savePatient(): void {
+    if (!this.form.nombre || !this.form.documento) {
+      alert('Por favor complete al menos el nombre y el documento.');
+      return;
+    }
+
+    if (this.editingId) {
+      const index = this.patients.findIndex(p => p.id === this.editingId);
+      if (index !== -1) {
+        this.patients[index] = {
+          ...this.patients[index],
+          name: this.form.nombre,
+          doc: this.form.documento,
+          birthDate: this.form.nacimiento,
+          age: Number(this.form.edad) || 0,
+          room: this.form.habitacion,
+          status: this.form.estado,
+          caregiver: this.form.cuidador,
+          pavilion: this.form.pabellon,
+          guardian: this.form.encargado,
+          guardianRel: this.form.relacion,
+          phone: this.form.telefono,
+          email: this.form.email,
+          notes: this.form.notas
+        };
+      }
+    } else {
+      const newPatient: Patient = {
+        id: Date.now(),
+        name: this.form.nombre,
+        doc: this.form.documento,
+        birthDate: this.form.nacimiento,
+        age: Number(this.form.edad) || 0,
+        room: this.form.habitacion,
+        status: this.form.estado || 'stable',
+        caregiver: this.form.cuidador || 'Enf. Carlos Ruiz',
+        pavilion: this.form.pabellon || 'Ala Norte',
+        guardian: this.form.encargado,
+        guardianRel: this.form.relacion,
+        phone: this.form.telefono,
+        email: this.form.email,
+        notes: this.form.notas
+      };
+      this.patients.unshift(newPatient);
+    }
+
+    this.closeModal();
+  }
+
+  private createEmptyForm(): PatientForm {
     return {
       nombre: '',
       documento: '',
@@ -280,525 +315,5 @@ export class Pacientes {
       email: '',
       notas: ''
     };
-
   }
-
-  // =========================================================
-  // PACIENTES FILTRADOS
-  // =========================================================
-
-  get filteredPatients(): Patient[] {
-
-    const search = this.searchText
-      .trim()
-      .toLowerCase();
-
-    return this.patients.filter(patient => {
-
-      const matchesSearch =
-        !search ||
-        patient.name.toLowerCase().includes(search) ||
-        patient.doc.toLowerCase().includes(search) ||
-        patient.guardian.toLowerCase().includes(search) ||
-        patient.caregiver.toLowerCase().includes(search);
-
-      const matchesPavilion =
-        !this.pavilionFilter ||
-        patient.pavilion === this.pavilionFilter;
-
-      const matchesStatus =
-        !this.statusFilter ||
-        patient.status === this.statusFilter;
-
-      return (
-        matchesSearch &&
-        matchesPavilion &&
-        matchesStatus
-      );
-
-    });
-
-  }
-
-  // =========================================================
-  // PAGINACIÓN
-  // =========================================================
-
-  get totalPages(): number {
-
-    return Math.max(
-      1,
-      Math.ceil(
-        this.filteredPatients.length / this.pageSize
-      )
-    );
-
-  }
-
-  get paginatedPatients(): Patient[] {
-
-    const start =
-      (this.currentPage - 1) * this.pageSize;
-
-    return this.filteredPatients.slice(
-      start,
-      start + this.pageSize
-    );
-
-  }
-
-  get firstShown(): number {
-
-    if (this.filteredPatients.length === 0) {
-      return 0;
-    }
-
-    return (
-      (this.currentPage - 1) *
-      this.pageSize
-    ) + 1;
-
-  }
-
-  get lastShown(): number {
-
-    return Math.min(
-      this.currentPage * this.pageSize,
-      this.filteredPatients.length
-    );
-
-  }
-
-  changePage(page: number): void {
-
-    if (page < 1 || page > this.totalPages) {
-      return;
-    }
-
-    this.currentPage = page;
-
-  }
-
-  // =========================================================
-  // FILTRAR
-  // =========================================================
-
-  filterTable(): void {
-
-    this.currentPage = 1;
-
-  }
-
-  // =========================================================
-  // ESTADÍSTICAS
-  // =========================================================
-
-  get totalActive(): number {
-
-    return this.patients.length;
-
-  }
-
-  get stablePatients(): number {
-
-    return this.patients.filter(
-      patient => patient.status === 'stable'
-    ).length;
-
-  }
-
-  get criticalPatients(): number {
-
-    return this.patients.filter(
-      patient => patient.status === 'critical'
-    ).length;
-
-  }
-
-  get observationPatients(): number {
-
-    return this.patients.filter(
-      patient => patient.status === 'observation'
-    ).length;
-
-  }
-
-  get occupancy(): number {
-
-    const capacity = 135;
-
-    return Math.round(
-      (this.totalActive / capacity) * 100
-    );
-
-  }
-
-  // =========================================================
-  // MODAL
-  // =========================================================
-
-  get modalTitle(): string {
-
-    return this.editingId === null
-      ? 'Nuevo paciente'
-      : 'Editar paciente';
-
-  }
-
-  get saveButtonText(): string {
-
-    return this.editingId === null
-      ? 'Guardar paciente'
-      : 'Guardar cambios';
-
-  }
-
-  openModal(
-    mode: 'new' | 'edit',
-    patientId?: number
-  ): void {
-
-    this.modalOpen = true;
-
-    this.editingId = null;
-
-    if (mode === 'new') {
-
-      this.form = this.createEmptyForm();
-
-      return;
-
-    }
-
-    if (patientId !== undefined) {
-
-      const patient =
-        this.patients.find(
-          item => item.id === patientId
-        );
-
-      if (!patient) {
-        return;
-      }
-
-      this.editingId = patient.id;
-
-      this.form = {
-
-        nombre: patient.name,
-
-        documento: patient.doc,
-
-        nacimiento: patient.birthDate,
-
-        edad: patient.age,
-
-        habitacion: patient.room,
-
-        estado: patient.status,
-
-        cuidador: patient.caregiver,
-
-        pabellon: patient.pavilion,
-
-        encargado: patient.guardian,
-
-        relacion: patient.guardianRel,
-
-        telefono: patient.phone,
-
-        email: patient.email,
-
-        notas: patient.notes
-
-      };
-
-    }
-
-  }
-
-  closeModal(): void {
-
-    this.modalOpen = false;
-
-    this.editingId = null;
-
-    this.form = this.createEmptyForm();
-
-  }
-
-  closeOnBackdrop(event: MouseEvent): void {
-
-    if (
-      event.target ===
-      event.currentTarget
-    ) {
-
-      this.closeModal();
-
-    }
-
-  }
-
-  // =========================================================
-  // GUARDAR
-  // =========================================================
-
-  savePatient(): void {
-
-    if (!this.validarFormulario()) {
-      return;
-    }
-
-    if (this.editingId === null) {
-
-      const newId =
-        this.patients.length > 0
-          ? Math.max(
-              ...this.patients.map(
-                patient => patient.id
-              )
-            ) + 1
-          : 1;
-
-      const newPatient: Patient = {
-
-        id: newId,
-
-        name: this.form.nombre.trim(),
-
-        doc: this.form.documento.trim(),
-
-        age: this.form.edad ?? 0,
-
-        birthDate: this.form.nacimiento,
-
-        room: this.form.habitacion.trim(),
-
-        guardian: this.form.encargado.trim(),
-
-        guardianRel: this.form.relacion.trim(),
-
-        caregiver: this.form.cuidador,
-
-        pavilion: this.form.pabellon,
-
-        status: this.form.estado,
-
-        phone: this.form.telefono.trim(),
-
-        email: this.form.email.trim(),
-
-        notes: this.form.notas.trim()
-
-      };
-
-      this.patients = [
-        ...this.patients,
-        newPatient
-      ];
-
-      this.closeModal();
-
-      return;
-
-    }
-
-    const index =
-      this.patients.findIndex(
-        patient =>
-          patient.id === this.editingId
-      );
-
-    if (index === -1) {
-      return;
-    }
-
-    this.patients[index] = {
-
-      ...this.patients[index],
-
-      name: this.form.nombre.trim(),
-
-      doc: this.form.documento.trim(),
-
-      age: this.form.edad ?? 0,
-
-      birthDate: this.form.nacimiento,
-
-      room: this.form.habitacion.trim(),
-
-      guardian: this.form.encargado.trim(),
-
-      guardianRel: this.form.relacion.trim(),
-
-      caregiver: this.form.cuidador,
-
-      pavilion: this.form.pabellon,
-
-      status: this.form.estado,
-
-      phone: this.form.telefono.trim(),
-
-      email: this.form.email.trim(),
-
-      notes: this.form.notas.trim()
-
-    };
-
-    this.patients = [
-      ...this.patients
-    ];
-
-    this.closeModal();
-
-  }
-
-  // =========================================================
-  // VALIDACIÓN
-  // =========================================================
-
-  validarFormulario(): boolean {
-
-    if (!this.form.nombre.trim()) {
-      alert('Ingrese el nombre completo.');
-      return false;
-    }
-
-    if (!this.form.documento.trim()) {
-      alert('Ingrese el documento.');
-      return false;
-    }
-
-    if (!this.form.nacimiento) {
-      alert('Ingrese la fecha de nacimiento.');
-      return false;
-    }
-
-    if (
-      this.form.edad === null ||
-      this.form.edad < 50 ||
-      this.form.edad > 120
-    ) {
-
-      alert(
-        'La edad debe estar entre 50 y 120 años.'
-      );
-
-      return false;
-
-    }
-
-    if (!this.form.habitacion.trim()) {
-      alert('Ingrese la habitación.');
-      return false;
-    }
-
-    if (!this.form.encargado.trim()) {
-      alert('Ingrese el encargado familiar.');
-      return false;
-    }
-
-    if (!this.form.telefono.trim()) {
-      alert('Ingrese el teléfono.');
-      return false;
-    }
-
-    return true;
-
-  }
-
-  // =========================================================
-  // ESTADO
-  // =========================================================
-
-  toggleStatus(id: number): void {
-
-    const index =
-      this.patients.findIndex(
-        patient => patient.id === id
-      );
-
-    if (index === -1) {
-      return;
-    }
-
-    const patient =
-      this.patients[index];
-
-    patient.status =
-      patient.status === 'stable'
-        ? 'observation'
-        : 'stable';
-
-    this.patients = [
-      ...this.patients
-    ];
-
-  }
-
-  // =========================================================
-  // ELIMINAR
-  // =========================================================
-
-  deletePatient(id: number): void {
-
-    const patient =
-      this.patients.find(
-        item => item.id === id
-      );
-
-    if (!patient) {
-      return;
-    }
-
-    const confirmDelete =
-      window.confirm(
-        `¿Está seguro de eliminar a ${patient.name}?`
-      );
-
-    if (!confirmDelete) {
-      return;
-    }
-
-    this.patients =
-      this.patients.filter(
-        item => item.id !== id
-      );
-
-    if (
-      this.currentPage >
-      this.totalPages
-    ) {
-
-      this.currentPage =
-        this.totalPages;
-
-    }
-
-  }
-
-  // =========================================================
-  // COLOR AVATAR
-  // =========================================================
-
-  getAvatarColor(
-    status: PatientStatus
-  ): string {
-
-    switch (status) {
-
-      case 'critical':
-        return '#fee2e2';
-
-      case 'observation':
-        return '#fef3c7';
-
-      default:
-        return '#dbeafe';
-
-    }
-
-  }
-
 }
