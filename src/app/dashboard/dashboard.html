@@ -1,206 +1,1796 @@
-<main class="dashboard-body">
-  <section class="filter-bar">
-    <div class="filter-group">
-      <label>Rango de Fechas:</label>
-      <input type="date" [(ngModel)]="startDate" (change)="applyFilters()" />
-      <span>a</span>
-      <input type="date" [(ngModel)]="endDate" (change)="applyFilters()" />
+<main class="canvas">
+
+  <!-- =========================================
+       SALUDO
+       ========================================= -->
+
+  <section class="greeting">
+
+    <div class="greeting-left">
+      <p class="mono" id="greet-date">—</p>
+
+      <h2>
+        Buenos días, Jose Cabrera
+      </h2>
+
+      <span>
+        Fundación Geriátrica · Panel de Administración
+      </span>
     </div>
 
-    <div class="filter-group">
-      <label>Turno Personal:</label>
-      <select [(ngModel)]="selectedStaffFilter" (change)="applyFilters()">
-        <option value="TODOS">Todos los turnos</option>
-        <option value="Mañana">Turno Mañana</option>
-        <option value="Tarde">Turno Tarde</option>
-        <option value="Noche">Turno Noche</option>
-      </select>
+    <div class="greeting-right">
+
+      <div class="greeting-date">
+        <p>Fundación Geriátrica</p>
+        <p id="greet-date2">—</p>
+      </div>
+
+      <button class="btn-ghost" type="button">
+        <span class="ms">download</span>
+        Reportes
+      </button>
+
     </div>
 
-    <div class="actions-group">
-      <button class="btn-secondary" (click)="openReportModal('pacientes')">
-        <span class="material-symbols-outlined">description</span> Reporte Pacientes
-      </button>
-      <button class="btn-primary" (click)="openReportModal('personal')">
-        <span class="material-symbols-outlined">badge</span> Reporte Personal
-      </button>
-    </div>
   </section>
 
-  <section class="kpi-grid">
-    <div class="kpi-card">
-      <span class="material-symbols-outlined icon blue">groups</span>
-      <div class="kpi-info">
-        <h3>Total Pacientes</h3>
-        <p class="value">{{ totalPatientsCount }}</p>
+
+  <!-- =========================================
+       RESUMEN PRINCIPAL
+       ========================================= -->
+
+  <section class="grid grid-12 mb-4">
+
+    <!-- =======================================
+         RESUMEN DE PACIENTES
+         ======================================= -->
+
+    <article class="card col-7">
+
+      <div class="flex justify-between items-center mb-1">
+
+        <span class="card-title">
+          Resumen de Pacientes
+        </span>
+
+        <span
+          class="mono text-primary"
+          style="font-size: 12px; font-weight: 700;"
+          id="mes-label">
+          Junio
+        </span>
+
       </div>
-    </div>
-    <div class="kpi-card">
-      <span class="material-symbols-outlined icon red">warning</span>
-      <div class="kpi-info">
-        <h3>Atención / Críticos</h3>
-        <p class="value">{{ criticalPatientsCount }}</p>
+
+
+      <!-- Selector de meses -->
+
+      <div class="mb-3">
+
+        <div class="month-labels">
+
+          <span class="month-label">ENE</span>
+          <span class="month-label">FEB</span>
+          <span class="month-label">MAR</span>
+          <span class="month-label">ABR</span>
+          <span class="month-label">MAY</span>
+          <span class="month-label active">JUN</span>
+
+        </div>
+
+        <div class="month-slider">
+
+          <div
+            class="month-fill"
+            style="width: 100%;">
+          </div>
+
+          <div
+            class="month-thumb"
+            style="left: 100%;">
+          </div>
+
+        </div>
+
       </div>
-    </div>
-    <div class="kpi-card">
-      <span class="material-symbols-outlined icon green">assignment_turned_in</span>
-      <div class="kpi-info">
-        <h3>Adherencia Promedio</h3>
-        <p class="value">{{ averageAdherence }}%</p>
+
+
+      <!-- Progreso -->
+
+      <div class="mb-4">
+
+        <div class="flex justify-between text-xs mb-1">
+
+          <span class="text-muted">
+            Progreso de ocupación
+          </span>
+
+          <span class="mono font-bold text-primary">
+            80% · 160/200
+          </span>
+
+        </div>
+
+        <div class="progress-track">
+
+          <div
+            class="progress-fill"
+            style="width: 80%;">
+          </div>
+
+        </div>
+
       </div>
-    </div>
-    <div class="kpi-card">
-      <span class="material-symbols-outlined icon purple">person</span>
-      <div class="kpi-info">
-        <h3>Personal En Turno</h3>
-        <p class="value">{{ activeStaffCount }}</p>
+
+
+      <!-- Estadísticas -->
+
+      <div class="grid grid-4 mb-4" style="gap: 10px;">
+
+        <!-- Total -->
+
+        <div
+          class="stat-chip"
+          style="
+            background: #dbe4ff;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 12px 8px;
+          ">
+
+          <div
+            class="stat-chip-icon"
+            style="background: rgba(59,91,219,.18); margin-bottom: 6px;">
+
+            <span
+              class="ms"
+              style="color: var(--primary); font-size: 18px;">
+              groups
+            </span>
+
+          </div>
+
+          <div
+            class="stat-chip-val"
+            style="color: var(--primary);">
+            160
+          </div>
+
+          <div class="stat-chip-label">
+            Total Pacientes
+          </div>
+
+          <div
+            style="
+              font-size: 10px;
+              font-weight: 700;
+              color: var(--primary);
+            ">
+            80%
+          </div>
+
+        </div>
+
+
+        <!-- Estables -->
+
+        <div
+          class="stat-chip"
+          style="
+            background: #dbeeff;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 12px 8px;
+          ">
+
+          <div
+            class="stat-chip-icon"
+            style="
+              background: rgba(77,171,247,.18);
+              margin-bottom: 6px;
+            ">
+
+            <span
+              class="ms"
+              style="color: #4DABF7; font-size: 18px;">
+              check_circle
+            </span>
+
+          </div>
+
+          <div
+            class="stat-chip-val"
+            style="color: #4DABF7;">
+            105
+          </div>
+
+          <div class="stat-chip-label">
+            Estables
+          </div>
+
+          <div
+            style="
+              font-size: 10px;
+              font-weight: 700;
+              color: #4DABF7;
+            ">
+            66%
+          </div>
+
+        </div>
+
+
+        <!-- Críticos -->
+
+        <div
+          class="stat-chip"
+          style="
+            background: var(--error-bg);
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 12px 8px;
+          ">
+
+          <div
+            class="stat-chip-icon"
+            style="
+              background: rgba(220,53,69,.18);
+              margin-bottom: 6px;
+            ">
+
+            <span
+              class="ms"
+              style="color: var(--error); font-size: 18px;">
+              warning
+            </span>
+
+          </div>
+
+          <div
+            class="stat-chip-val"
+            style="color: var(--error);">
+            12
+          </div>
+
+          <div class="stat-chip-label">
+            Críticos
+          </div>
+
+          <div
+            style="
+              font-size: 10px;
+              font-weight: 700;
+              color: var(--error);
+            ">
+            8%
+          </div>
+
+        </div>
+
+
+        <!-- Altas -->
+
+        <div
+          class="stat-chip"
+          style="
+            background: var(--beige);
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 12px 8px;
+          ">
+
+          <div
+            class="stat-chip-icon"
+            style="
+              background: rgba(125,110,94,.18);
+              margin-bottom: 6px;
+            ">
+
+            <span
+              class="ms"
+              style="color: #7D6E5E; font-size: 18px;">
+              logout
+            </span>
+
+          </div>
+
+          <div
+            class="stat-chip-val"
+            style="color: #7D6E5E;">
+            9
+          </div>
+
+          <div class="stat-chip-label">
+            Altas del mes
+          </div>
+
+          <div
+            style="
+              font-size: 10px;
+              font-weight: 700;
+              color: #7D6E5E;
+            ">
+            18%
+          </div>
+
+        </div>
+
       </div>
-    </div>
+
+
+      <!-- Registros recientes -->
+
+      <div
+        class="text-xs font-bold mono mb-2"
+        style="
+          color: var(--muted);
+          text-transform: uppercase;
+          letter-spacing: .05em;
+        ">
+
+        Registros recientes
+
+      </div>
+
+
+      <div class="space-y-2">
+
+        <!-- Martha -->
+
+        <div class="patient-row">
+
+          <div
+            class="avatar"
+            style="
+              width: 36px;
+              height: 36px;
+              font-size: 13px;
+              background: var(--primary);
+            ">
+            MA
+          </div>
+
+          <div class="flex-1">
+
+            <div
+              class="font-semibold"
+              style="font-size: 14px;">
+              Martha Arango
+            </div>
+
+            <div class="text-xs text-muted">
+              Hab. 102-A · Doc. 1023847
+            </div>
+
+          </div>
+
+          <span class="badge badge-stable">
+            <span
+              class="badge-dot"
+              style="background: #7D5A4F;">
+            </span>
+            ESTABLE
+          </span>
+
+          <div class="text-xs text-muted">
+            Ana Torres
+          </div>
+
+        </div>
+
+
+        <!-- Beatriz -->
+
+        <div class="patient-row">
+
+          <div
+            class="avatar"
+            style="
+              width: 36px;
+              height: 36px;
+              font-size: 13px;
+              background: var(--error);
+            ">
+            BR
+          </div>
+
+          <div class="flex-1">
+
+            <div
+              class="font-semibold"
+              style="font-size: 14px;">
+              Beatriz Arango
+            </div>
+
+            <div class="text-xs text-muted">
+              Hab. 108-C · Doc. 9283746
+            </div>
+
+          </div>
+
+          <span class="badge badge-critical">
+            <span
+              class="badge-dot"
+              style="background: var(--error);">
+            </span>
+            CRÍTICO
+          </span>
+
+          <div class="text-xs text-muted">
+            Carlos Rivas
+          </div>
+
+        </div>
+
+
+        <!-- Ricardo -->
+
+        <div class="patient-row">
+
+          <div
+            class="avatar"
+            style="
+              width: 36px;
+              height: 36px;
+              font-size: 13px;
+              background: #4DABF7;
+            ">
+            RS
+          </div>
+
+          <div class="flex-1">
+
+            <div
+              class="font-semibold"
+              style="font-size: 14px;">
+              Ricardo Soto
+            </div>
+
+            <div class="text-xs text-muted">
+              Hab. 103-B · Doc. 3847291
+            </div>
+
+          </div>
+
+          <span class="badge badge-obs">
+            <span
+              class="badge-dot"
+              style="background: #4DABF7;">
+            </span>
+            OBSERVACIÓN
+          </span>
+
+          <div class="text-xs text-muted">
+            Lucia Medina
+          </div>
+
+        </div>
+
+
+        <!-- Marta -->
+
+        <div class="patient-row">
+
+          <div
+            class="avatar"
+            style="
+              width: 36px;
+              height: 36px;
+              font-size: 13px;
+              background: var(--primary);
+            ">
+            ML
+          </div>
+
+          <div class="flex-1">
+
+            <div
+              class="font-semibold"
+              style="font-size: 14px;">
+              Marta López
+            </div>
+
+            <div class="text-xs text-muted">
+              Hab. 105-A · Doc. 7364819
+            </div>
+
+          </div>
+
+          <span class="badge badge-stable">
+            <span
+              class="badge-dot"
+              style="background: #7D5A4F;">
+            </span>
+            ESTABLE
+          </span>
+
+          <div class="text-xs text-muted">
+            Pedro Salazar
+          </div>
+
+        </div>
+
+
+        <!-- Juan -->
+
+        <div class="patient-row">
+
+          <div
+            class="avatar"
+            style="
+              width: 36px;
+              height: 36px;
+              font-size: 13px;
+              background: var(--primary);
+            ">
+            JV
+          </div>
+
+          <div class="flex-1">
+
+            <div
+              class="font-semibold"
+              style="font-size: 14px;">
+              Juan Vega
+            </div>
+
+            <div class="text-xs text-muted">
+              Hab. 110-B · Doc. 5647382
+            </div>
+
+          </div>
+
+          <span class="badge badge-stable">
+            <span
+              class="badge-dot"
+              style="background: #7D5A4F;">
+            </span>
+            ESTABLE
+          </span>
+
+          <div class="text-xs text-muted">
+            Rosa Gómez
+          </div>
+
+        </div>
+
+      </div>
+
+    </article>
+
+
+    <!-- =======================================
+         GESTIÓN DE CUIDADORES
+         ======================================= -->
+
+    <article
+      class="card col-5"
+      style="display: flex; flex-direction: column;">
+
+      <div class="flex justify-between items-center mb-3">
+
+        <span class="card-title">
+          Gestión Cuidadores
+        </span>
+
+        <span class="badge badge-info">
+          24 registrados
+        </span>
+
+      </div>
+
+
+      <div
+        class="grid grid-3 mb-4"
+        style="gap: 8px;">
+
+        <div
+          style="
+            background: #dbeeff;
+            border-radius: 14px;
+            padding: 12px;
+            text-align: center;
+          ">
+
+          <span
+            class="ms"
+            style="
+              color: #4DABF7;
+              font-size: 18px;
+            ">
+            health_and_safety
+          </span>
+
+          <div
+            style="
+              font-size: 20px;
+              font-weight: 700;
+              color: #4DABF7;
+              font-family: 'Manrope', sans-serif;
+              margin-top: 6px;
+            ">
+            4
+          </div>
+
+          <div class="text-xs text-muted">
+            En turno
+          </div>
+
+        </div>
+
+
+        <div
+          style="
+            background: var(--beige);
+            border-radius: 14px;
+            padding: 12px;
+            text-align: center;
+          ">
+
+          <span
+            class="ms"
+            style="
+              color: #7D6E5E;
+              font-size: 18px;
+            ">
+            weekend
+          </span>
+
+          <div
+            style="
+              font-size: 20px;
+              font-weight: 700;
+              color: #7D6E5E;
+              font-family: 'Manrope', sans-serif;
+              margin-top: 6px;
+            ">
+            1
+          </div>
+
+          <div class="text-xs text-muted">
+            Libres
+          </div>
+
+        </div>
+
+
+        <div
+          style="
+            background: #dbe4ff;
+            border-radius: 14px;
+            padding: 12px;
+            text-align: center;
+          ">
+
+          <span
+            class="ms"
+            style="
+              color: var(--primary);
+              font-size: 18px;
+            ">
+            person_add
+          </span>
+
+          <div
+            style="
+              font-size: 20px;
+              font-weight: 700;
+              color: var(--primary);
+              font-family: 'Manrope', sans-serif;
+              margin-top: 6px;
+            ">
+            8
+          </div>
+
+          <div class="text-xs text-muted">
+            Ingresos
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="space-y-2"
+        style="flex: 1;">
+
+        <!-- Ana -->
+
+        <div class="cui-row">
+
+          <div class="relative flex-shrink-0">
+
+            <div
+              class="avatar"
+              style="
+                background: #4DABF7;
+                width: 40px;
+                height: 40px;
+              ">
+              AT
+            </div>
+
+            <span class="cui-status online"></span>
+
+          </div>
+
+          <div class="flex-1">
+
+            <div class="font-semibold text-sm">
+              Ana Torres
+            </div>
+
+            <div class="text-xs text-muted">
+              Cuidado integral
+            </div>
+
+          </div>
+
+          <div style="text-align: right;">
+
+            <span
+              class="badge"
+              style="
+                background: #dbeeff;
+                color: #1a6fb5;
+                display: block;
+                margin-bottom: 2px;
+              ">
+              En turno
+            </span>
+
+            <span class="text-xs text-muted mono">
+              Mañana · 10 pac.
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- Carlos -->
+
+        <div class="cui-row">
+
+          <div class="relative flex-shrink-0">
+
+            <div
+              class="avatar"
+              style="
+                background: #4DABF7;
+                width: 40px;
+                height: 40px;
+              ">
+              CR
+            </div>
+
+            <span class="cui-status online"></span>
+
+          </div>
+
+          <div class="flex-1">
+
+            <div class="font-semibold text-sm">
+              Carlos Rivas
+            </div>
+
+            <div class="text-xs text-muted">
+              Fisioterapia
+            </div>
+
+          </div>
+
+          <div style="text-align: right;">
+
+            <span
+              class="badge"
+              style="
+                background: #dbeeff;
+                color: #1a6fb5;
+                display: block;
+                margin-bottom: 2px;
+              ">
+              En turno
+            </span>
+
+            <span class="text-xs text-muted mono">
+              Tarde · 8 pac.
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- Lucia -->
+
+        <div class="cui-row">
+
+          <div class="relative flex-shrink-0">
+
+            <div
+              class="avatar"
+              style="
+                background: #4DABF7;
+                width: 40px;
+                height: 40px;
+              ">
+              LM
+            </div>
+
+            <span class="cui-status online"></span>
+
+          </div>
+
+          <div class="flex-1">
+
+            <div class="font-semibold text-sm">
+              Lucia Medina
+            </div>
+
+            <div class="text-xs text-muted">
+              Geriatría
+            </div>
+
+          </div>
+
+          <div style="text-align: right;">
+
+            <span
+              class="badge"
+              style="
+                background: #dbeeff;
+                color: #1a6fb5;
+                display: block;
+                margin-bottom: 2px;
+              ">
+              En turno
+            </span>
+
+            <span class="text-xs text-muted mono">
+              Noche · 12 pac.
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- Pedro -->
+
+        <div class="cui-row">
+
+          <div class="relative flex-shrink-0">
+
+            <div
+              class="avatar"
+              style="
+                background: #4DABF7;
+                width: 40px;
+                height: 40px;
+              ">
+              PS
+            </div>
+
+            <span class="cui-status offline"></span>
+
+          </div>
+
+          <div class="flex-1">
+
+            <div class="font-semibold text-sm">
+              Pedro Salazar
+            </div>
+
+            <div class="text-xs text-muted">
+              Cuidado integral
+            </div>
+
+          </div>
+
+          <div style="text-align: right;">
+
+            <span
+              class="badge"
+              style="
+                background: var(--card);
+                color: var(--muted);
+                display: block;
+                margin-bottom: 2px;
+              ">
+              Libre
+            </span>
+
+            <span class="text-xs text-muted mono">
+              Mañana · 9 pac.
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- Rosa -->
+
+        <div class="cui-row">
+
+          <div class="relative flex-shrink-0">
+
+            <div
+              class="avatar"
+              style="
+                background: #4DABF7;
+                width: 40px;
+                height: 40px;
+              ">
+              RG
+            </div>
+
+            <span class="cui-status online"></span>
+
+          </div>
+
+          <div class="flex-1">
+
+            <div class="font-semibold text-sm">
+              Rosa Gómez
+            </div>
+
+            <div class="text-xs text-muted">
+              Enfermería
+            </div>
+
+          </div>
+
+          <div style="text-align: right;">
+
+            <span
+              class="badge"
+              style="
+                background: #dbeeff;
+                color: #1a6fb5;
+                display: block;
+                margin-bottom: 2px;
+              ">
+              En turno
+            </span>
+
+            <span class="text-xs text-muted mono">
+              Tarde · 11 pac.
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="flex justify-between pt-3 border-t mt-3">
+
+        <span class="text-xs text-muted">
+          Ratio cuidador/paciente
+        </span>
+
+        <span
+          class="mono font-bold"
+          style="
+            font-size: 14px;
+            color: var(--primary);
+          ">
+          1 : 7
+        </span>
+
+      </div>
+
+    </article>
+
   </section>
 
-  <div class="tables-grid">
-    <section class="card-table">
+
+  <!-- =========================================
+       ROW 2
+       OCUPACIÓN | ANÁLISIS | ALERTAS
+       ========================================= -->
+
+  <section class="dashboard-grid">
+
+    <!-- =========================================
+         OCUPACIÓN
+         ========================================= -->
+
+    <section class="card occupation-card">
+
       <div class="card-header">
-        <h2>Indicadores de Pacientes</h2>
+
+        <div>
+
+          <h2 class="card-title">
+            Ocupación
+          </h2>
+
+          <p class="card-sub">
+            Progreso de capacidad · Junio
+          </p>
+
+        </div>
+
       </div>
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Documento</th>
-              <th>Nombre</th>
-              <th>Habitación</th>
-              <th>Estado</th>
-              <th>Adherencia</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let patient of filteredPatients">
-              <td>{{ patient.doc }}</td>
-              <td><strong>{{ patient.name }}</strong></td>
-              <td>{{ patient.room }}</td>
-              <td>
-                <span class="badge" [ngClass]="patient.status.toLowerCase()">
-                  {{ patient.status }}
-                </span>
-              </td>
-              <td>
-                <div class="progress-bar">
-                  <div class="fill" [style.width.%]="patient.adherence"></div>
-                </div>
-                <small>{{ patient.adherence }}%</small>
-              </td>
-            </tr>
-            <tr *ngIf="filteredPatients.length === 0">
-              <td colspan="5" class="empty-msg">No existen registros disponibles.</td>
-            </tr>
-          </tbody>
-        </table>
+
+
+      <!-- Donut -->
+
+      <div class="occupation-content">
+
+        <div class="occ-wrap">
+
+          <svg
+            viewBox="0 0 100 100"
+            class="occ-chart">
+
+            <circle
+              cx="50"
+              cy="50"
+              r="42"
+              fill="none"
+              stroke="#E9ECEF"
+              stroke-width="10">
+            </circle>
+
+            <circle
+              cx="50"
+              cy="50"
+              r="42"
+              fill="none"
+              stroke="#3B5BDB"
+              stroke-width="10"
+              stroke-linecap="round"
+              stroke-dasharray="211 264"
+              class="donut-progress">
+            </circle>
+
+          </svg>
+
+
+          <div class="occ-center">
+
+            <strong>80%</strong>
+
+            <span>
+              OCUPADO
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="occupation-meta">
+
+          <span class="ms">
+            trending_up
+          </span>
+
+          <span>
+            Meta: 85% · Junio
+          </span>
+
+        </div>
+
       </div>
+
+
+      <!-- Información turno -->
+
+      <div class="shift-info">
+
+        <div class="section-label">
+          INFO DE TURNO
+        </div>
+
+        <div class="shift-row">
+
+          <span>
+            Turno día
+          </span>
+
+          <strong>
+            08:00 – 20:00
+          </strong>
+
+        </div>
+
+        <div class="shift-row">
+
+          <span>
+            En servicio
+          </span>
+
+          <strong>
+            4 cuidadores
+          </strong>
+
+        </div>
+
+      </div>
+
     </section>
 
-    <section class="card-table">
+
+    <!-- =========================================
+         COLUMNA CENTRAL
+         ========================================= -->
+
+    <div class="analysis-column">
+
+      <!-- ANÁLISIS DE SALUD -->
+
+      <section class="card health-card">
+
+        <div class="card-header">
+
+          <div>
+
+            <h2 class="card-title">
+              Análisis de Salud
+            </h2>
+
+            <p class="card-sub">
+              Estados clínicos · Junio
+            </p>
+
+          </div>
+
+          <span class="ms card-icon">
+            monitor_heart
+          </span>
+
+        </div>
+
+
+        <div class="health-grid">
+
+          <div class="health-item critical">
+
+            <div class="health-icon">
+              <span class="ms">
+                emergency
+              </span>
+            </div>
+
+            <div>
+              <strong>8</strong>
+              <span>
+                Cuidado crítico
+              </span>
+            </div>
+
+          </div>
+
+
+          <div class="health-item nominal">
+
+            <div class="health-icon">
+              <span class="ms">
+                check_circle
+              </span>
+            </div>
+
+            <div>
+              <strong>20</strong>
+              <span>
+                Nominales
+              </span>
+            </div>
+
+          </div>
+
+
+          <div class="health-item observation">
+
+            <div class="health-icon">
+              <span class="ms">
+                visibility
+              </span>
+            </div>
+
+            <div>
+              <strong>34</strong>
+              <span>
+                Observación
+              </span>
+            </div>
+
+          </div>
+
+
+          <div class="health-item discharged">
+
+            <div class="health-icon">
+              <span class="ms">
+                logout
+              </span>
+            </div>
+
+            <div>
+              <strong>9</strong>
+              <span>
+                Altas del mes
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- TENDENCIA SEMESTRAL -->
+
+      <section class="card trend-card">
+
+        <div class="trend-header">
+
+          <span class="section-label">
+            TENDENCIA SEMESTRAL
+          </span>
+
+          <span class="trend-chip">
+            +12 vs Enero
+          </span>
+
+        </div>
+
+
+        <div class="trend-chart">
+
+          <svg
+            viewBox="0 0 400 100"
+            preserveAspectRatio="none">
+
+            <defs>
+
+              <linearGradient
+                id="trendGradient"
+                x1="0"
+                x2="0"
+                y1="0"
+                y2="1">
+
+                <stop
+                  offset="0%"
+                  stop-color="#3B5BDB"
+                  stop-opacity=".18">
+                </stop>
+
+                <stop
+                  offset="100%"
+                  stop-color="#3B5BDB"
+                  stop-opacity="0">
+                </stop>
+
+              </linearGradient>
+
+            </defs>
+
+
+            <line
+              x1="0"
+              y1="20"
+              x2="400"
+              y2="20"
+              class="chart-grid">
+            </line>
+
+            <line
+              x1="0"
+              y1="50"
+              x2="400"
+              y2="50"
+              class="chart-grid">
+            </line>
+
+            <line
+              x1="0"
+              y1="80"
+              x2="400"
+              y2="80"
+              class="chart-grid">
+            </line>
+
+
+            <path
+              d="M0,75
+                 L80,66
+                 L160,55
+                 L240,45
+                 L320,34
+                 L400,18
+                 L400,100
+                 L0,100 Z"
+              fill="url(#trendGradient)">
+            </path>
+
+
+            <path
+              d="M0,75
+                 L80,66
+                 L160,55
+                 L240,45
+                 L320,34
+                 L400,18"
+              fill="none"
+              stroke="#3B5BDB"
+              stroke-width="4"
+              stroke-linecap="round"
+              stroke-linejoin="round">
+            </path>
+
+
+            <circle
+              cx="0"
+              cy="75"
+              r="5"
+              class="trend-point">
+            </circle>
+
+            <circle
+              cx="80"
+              cy="66"
+              r="5"
+              class="trend-point">
+            </circle>
+
+            <circle
+              cx="160"
+              cy="55"
+              r="5"
+              class="trend-point">
+            </circle>
+
+            <circle
+              cx="240"
+              cy="45"
+              r="5"
+              class="trend-point">
+            </circle>
+
+            <circle
+              cx="320"
+              cy="34"
+              r="5"
+              class="trend-point">
+            </circle>
+
+            <circle
+              cx="400"
+              cy="18"
+              r="9"
+              class="trend-last-shadow">
+            </circle>
+
+            <circle
+              cx="400"
+              cy="18"
+              r="6"
+              class="trend-last">
+            </circle>
+
+          </svg>
+
+        </div>
+
+
+        <div class="spark-labels">
+
+          <span>ENE</span>
+          <span>FEB</span>
+          <span>MAR</span>
+          <span>ABR</span>
+          <span>MAY</span>
+          <span class="active">JUN</span>
+
+        </div>
+
+
+        <div class="section-label wellness-title">
+          INDICADORES DE BIENESTAR
+        </div>
+
+
+        <!-- Medicación -->
+
+        <div class="wellness-item">
+
+          <div class="wellness-header">
+
+            <div class="wellness-name">
+
+              <span class="ms primary">
+                medication
+              </span>
+
+              <span>
+                Adherencia medicación
+              </span>
+
+            </div>
+
+            <strong class="primary">
+              92%
+            </strong>
+
+          </div>
+
+          <div class="progress-track">
+
+            <div
+              class="progress-fill primary-bg"
+              style="width:92%">
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Fisioterapia -->
+
+        <div class="wellness-item">
+
+          <div class="wellness-header">
+
+            <div class="wellness-name">
+
+              <span class="ms secondary">
+                self_improvement
+              </span>
+
+              <span>
+                Asistencia fisioterapia
+              </span>
+
+            </div>
+
+            <strong class="secondary">
+              78%
+            </strong>
+
+          </div>
+
+          <div class="progress-track">
+
+            <div
+              class="progress-fill secondary-bg"
+              style="width:78%">
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Incidentes -->
+
+        <div class="wellness-item">
+
+          <div class="wellness-header">
+
+            <div class="wellness-name">
+
+              <span class="ms error">
+                emergency
+              </span>
+
+              <span>
+                Incidentes / total
+              </span>
+
+            </div>
+
+            <strong class="error">
+              5%
+            </strong>
+
+          </div>
+
+          <div class="progress-track">
+
+            <div
+              class="progress-fill error-bg"
+              style="width:5%">
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- =========================================
+         ALERTAS DEL SISTEMA
+         ========================================= -->
+
+    <section class="card alerts-card">
+
       <div class="card-header">
-        <h2>Indicadores del Personal</h2>
+
+        <div>
+
+          <h2 class="card-title">
+            Alertas del Sistema
+          </h2>
+
+          <p class="card-sub">
+            3 sin leer · 7 total
+          </p>
+
+        </div>
+
+
+        <div class="notification-icon">
+
+          <span class="ms">
+            notifications_active
+          </span>
+
+          <span class="notification-count">
+            3
+          </span>
+
+        </div>
+
       </div>
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Rol</th>
-              <th>Turno</th>
-              <th>Estado</th>
-              <th>Tareas</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let staff of filteredStaff">
-              <td><strong>{{ staff.name }}</strong></td>
-              <td>{{ staff.role }}</td>
-              <td>{{ staff.shift }}</td>
-              <td>
-                <span class="badge" [ngClass]="staff.status === 'En Turno' ? 'estable' : 'atención'">
-                  {{ staff.status }}
-                </span>
-              </td>
-              <td>{{ staff.tasksCompleted }} asignaciones</td>
-            </tr>
-            <tr *ngIf="filteredStaff.length === 0">
-              <td colspan="5" class="empty-msg">No existe personal registrado para este turno.</td>
-            </tr>
-          </tbody>
-        </table>
+
+
+      <!-- Resumen -->
+
+      <div class="alerts-summary">
+
+        <div class="alert-summary critical">
+
+          <span class="ms">
+            emergency
+          </span>
+
+          <strong>2</strong>
+
+          <small>
+            Críticas
+          </small>
+
+        </div>
+
+
+        <div class="alert-summary warning">
+
+          <span class="ms">
+            warning
+          </span>
+
+          <strong>2</strong>
+
+          <small>
+            Avisos
+          </small>
+
+        </div>
+
+
+        <div class="alert-summary info">
+
+          <span class="ms">
+            info
+          </span>
+
+          <strong>3</strong>
+
+          <small>
+            Info
+          </small>
+
+        </div>
+
       </div>
+
+
+      <!-- Lista -->
+
+      <div class="alert-list">
+
+        <div class="alert-item critical">
+
+          <span class="ms alert-item-icon">
+            emergency
+          </span>
+
+          <div class="alert-content">
+
+            <strong>
+              Estado Crítico: Beatriz Arango
+            </strong>
+
+            <p>
+              SpO₂ bajo 88%. Requiere atención inmediata.
+            </p>
+
+          </div>
+
+          <span class="alert-time">
+            Hace 4 min
+          </span>
+
+          <span class="unread-dot"></span>
+
+        </div>
+
+
+        <div class="alert-item warning">
+
+          <span class="ms alert-item-icon">
+            medication
+          </span>
+
+          <div class="alert-content">
+
+            <strong>
+              Medicación pendiente – Sala 108-C
+            </strong>
+
+            <p>
+              Marta Soto: Metformina 850mg aún no suministrada.
+            </p>
+
+          </div>
+
+          <span class="alert-time">
+            Hace 12 min
+          </span>
+
+          <span class="unread-dot"></span>
+
+        </div>
+
+
+        <div class="alert-item info">
+
+          <span class="ms alert-item-icon">
+            calendar_month
+          </span>
+
+          <div class="alert-content">
+
+            <strong>
+              Turno confirmado: Dra. Martha Luz
+            </strong>
+
+            <p>
+              Guardia nocturna 20:00 – 06:00 confirmada.
+            </p>
+
+          </div>
+
+          <span class="alert-time">
+            Hace 30 min
+          </span>
+
+          <span class="unread-dot"></span>
+
+        </div>
+
+
+        <div class="alert-item warning read">
+
+          <span class="ms alert-item-icon">
+            inventory_2
+          </span>
+
+          <div class="alert-content">
+
+            <strong>
+              Stock crítico: Gasas estériles
+            </strong>
+
+            <p>
+              Quedan solo 12 unidades. Pedido sugerido.
+            </p>
+
+          </div>
+
+          <span class="alert-time">
+            Hace 1 hora
+          </span>
+
+        </div>
+
+
+        <div class="alert-item info read">
+
+          <span class="ms alert-item-icon">
+            person_add
+          </span>
+
+          <div class="alert-content">
+
+            <strong>
+              Nuevo cuidador registrado
+            </strong>
+
+            <p>
+              Juan Vela fue incorporado al sistema.
+            </p>
+
+          </div>
+
+          <span class="alert-time">
+            Hace 2 horas
+          </span>
+
+        </div>
+
+
+        <div class="alert-item info read">
+
+          <span class="ms alert-item-icon">
+            description
+          </span>
+
+          <div class="alert-content">
+
+            <strong>
+              Reporte mensual generado
+            </strong>
+
+            <p>
+              #REP-0922 listo para descarga.
+            </p>
+
+          </div>
+
+          <span class="alert-time">
+            Hace 3 horas
+          </span>
+
+        </div>
+
+
+        <div class="alert-item critical read">
+
+          <span class="ms alert-item-icon">
+            warning
+          </span>
+
+          <div class="alert-content">
+
+            <strong>
+              Alerta caída: Ricardo Mendoza S.
+            </strong>
+
+            <p>
+              Sensor de movimiento activado en Hab. 104.
+            </p>
+
+          </div>
+
+          <span class="alert-time">
+            Ayer 22:41
+          </span>
+
+        </div>
+
+      </div>
+
     </section>
-  </div>
+
+  </section>
+
 </main>
-
-<!-- Modal Vista Previa y Exportación -->
-<div class="modal-backdrop" *ngIf="showReportModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h2>Vista Previa de Reporte de {{ reportType | titlecase }}</h2>
-      <button class="close-btn" (click)="closeReportModal()">&times;</button>
-    </div>
-
-    <div class="modal-body">
-      <p class="subtitle">Rango: {{ startDate }} al {{ endDate }}</p>
-
-      <div *ngIf="exportError" class="alert-error">
-        {{ exportError }}
-      </div>
-
-      <div class="preview-table-container">
-        <table>
-          <thead>
-            <tr *ngIf="reportType === 'pacientes'">
-              <th>Doc</th>
-              <th>Nombre</th>
-              <th>Hab.</th>
-              <th>Estado</th>
-            </tr>
-            <tr *ngIf="reportType === 'personal'">
-              <th>Nombre</th>
-              <th>Rol</th>
-              <th>Turno</th>
-              <th>Tareas</th>
-            </tr>
-          </thead>
-          <tbody>
-            <ng-container *ngIf="reportType === 'pacientes'">
-              <tr *ngFor="let item of previewData">
-                <td>{{ item.doc }}</td>
-                <td>{{ item.name }}</td>
-                <td>{{ item.room }}</td>
-                <td>{{ item.status }}</td>
-              </tr>
-            </ng-container>
-            <ng-container *ngIf="reportType === 'personal'">
-              <tr *ngFor="let item of previewData">
-                <td>{{ item.name }}</td>
-                <td>{{ item.role }}</td>
-                <td>{{ item.shift }}</td>
-                <td>{{ item.tasksCompleted }}</td>
-              </tr>
-            </ng-container>
-            <tr *ngIf="previewData.length === 0">
-              <td colspan="4" class="empty-msg">Sin datos para generar reporte.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="modal-footer">
-      <button class="btn-secondary" (click)="closeReportModal()">Cancelar</button>
-      <button class="btn-pdf" (click)="exportData('PDF')" [disabled]="isExporting">
-        <span class="material-symbols-outlined">picture_as_pdf</span> Exportar PDF
-      </button>
-
-      <button class="btn-excel" (click)="exportData('EXCEL')" [disabled]="isExporting">
-        <span class="material-symbols-outlined">grid_on</span> Exportar EXCEL
-      </button>
-    </div>
-  </div>
-</div>
