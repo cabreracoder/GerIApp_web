@@ -1,9 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 interface Permiso {
   label: string;
   granted: boolean;
+}
+
+interface UsuarioAsociado {
+  id: number;
+  name: string;
+  email: string;
+  estado: 'Activo' | 'Inactivo';
+  avatar: string;
 }
 
 interface Rol {
@@ -13,12 +22,13 @@ interface Rol {
   userCount: number;
   description: string;
   perms: Permiso[];
+  usuariosAsociados?: UsuarioAsociado[];
 }
 
 @Component({
   selector: 'app-roles',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './roles.html',
   styleUrl: './roles.css'
 })
@@ -54,7 +64,12 @@ export class Roles {
       perms: this.PERM_LABELS.map(label => ({
         label,
         granted: true
-      }))
+      })),
+
+      usuariosAsociados: [
+        { id: 1, name: 'Jose Cabrera', email: 'jose.cabrera@fundacion.org', estado: 'Activo', avatar: 'JC' },
+        { id: 2, name: 'Ana María Gómez', email: 'ana.gomez@fundacion.org', estado: 'Activo', avatar: 'AM' }
+      ]
     },
 
     {
@@ -97,6 +112,10 @@ export class Roles {
           label: 'Configuración del sistema',
           granted: false
         }
+      ],
+      usuariosAsociados: [
+        { id: 3, name: 'Carlos Pérez', email: 'carlos.perez@fundacion.org', estado: 'Activo', avatar: 'CP' },
+        { id: 4, name: 'Lucía Benítez', email: 'lucia.benitez@fundacion.org', estado: 'Inactivo', avatar: 'LB' }
       ]
     },
 
@@ -140,6 +159,9 @@ export class Roles {
           label: 'Configuración del sistema',
           granted: false
         }
+      ],
+      usuariosAsociados: [
+        { id: 5, name: 'María López', email: 'maria.lopez@fundacion.org', estado: 'Activo', avatar: 'RS' }
       ]
     }
   ];
@@ -149,8 +171,12 @@ export class Roles {
   // =========================================================
 
   selectedRole: string = 'Administrador';
-
   searchTerm: string = '';
+  filtroEstadoUsuario: 'Todos' | 'Activo' | 'Inactivo' = 'Todos';
+
+  mensajeExito: string = '';
+  mensajeError: string = '';
+  ultimoRegistroAuditoria: string = 'Sin modificaciones recientes en esta sesión.';
 
   // =========================================================
   // OBTENER ROL SELECCIONADO
@@ -163,6 +189,17 @@ export class Roles {
     );
   }
 
+  // =========================================================
+  // USUARIOS FILTRADOS POR ESTADO (1)
+  // =========================================================
+
+  get usuariosFiltrados(): UsuarioAsociado[] {
+    const lista = this.selectedRoleObject.usuariosAsociados || [];
+    if (this.filtroEstadoUsuario === 'Todos') {
+      return lista;
+    }
+    return lista.filter(u => u.estado === this.filtroEstadoUsuario);
+  }
   // =========================================================
   // ROLES FILTRADOS POR BÚSQUEDA
   // =========================================================
@@ -186,6 +223,8 @@ export class Roles {
 
   selectRole(name: string): void {
     this.selectedRole = name;
+    this.mensajeError = '';
+    this.mensajeExito = '';
   }
 
   // =========================================================
@@ -194,6 +233,38 @@ export class Roles {
 
   togglePermiso(role: Rol, permiso: Permiso): void {
     permiso.granted = !permiso.granted;
+  }
+
+  // =========================================================
+  // GUARDAR PERMISOS (2)
+  // =========================================================
+
+  guardarPermisosRol(): void {
+    const permisosActivos = this.selectedRoleObject.perms.filter(p => p.granted).length;
+    
+    if (permisosActivos === 0) {
+      this.mensajeError = 'Debe seleccionar al menos un permiso para este rol.';
+      this.mensajeExito = '';
+      return;
+    }
+
+    this.mensajeError = '';
+    this.mensajeExito = `Configuración guardada con éxito para "${this.selectedRoleObject.name}".`;
+
+    const fechaActual = new Date().toLocaleString();
+    this.ultimoRegistroAuditoria = `Modificado el ${fechaActual} por Administrador (Jose Cabrera)`;
+
+    setTimeout(() => {
+      this.mensajeExito = '';
+    }, 4000);
+  }
+
+  // =========================================================
+  // VER DETALLE DEL USUARIO (1)
+  // =========================================================
+
+  verDetalleUsuario(user: UsuarioAsociado): void {
+    alert(`Detalle del Usuario:\n\nNombre: ${user.name}\nCorreo: ${user.email}\nEstado: ${user.estado.toUpperCase()}`);
   }
 
   // =========================================================
