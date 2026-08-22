@@ -19,6 +19,14 @@ interface Patient {
   phone: string;
   email: string;
   notes: string;
+  gender: string;
+  bloodType:string;
+  admissionDate: string;
+  diagnosis: string;
+  eps: string;
+  headquarters: string;
+  medications: string;
+  guardianAddress: string;
 }
 
 interface PatientForm {
@@ -35,6 +43,14 @@ interface PatientForm {
   telefono: string;
   email: string;
   notas: string;
+  genero: string;
+  tipoSangre: string;
+  fechaIngreso: string;
+  diagnostico: string;
+  eps: string;
+  sede: string;
+  medicamentos: string;
+  direccion: string;
 }
 
 @Component({
@@ -101,7 +117,15 @@ export class Pacientes {
       status: 'stable',
       phone: '3124567890',
       email: 'elena.mendoza@mail.com',
-      notes: 'Control médico periódico.'
+      notes: 'Control médico periódico.',
+      gender: '',
+      bloodType: '',
+      admissionDate: '',
+      diagnosis: '',
+      eps: '',
+      headquarters: '',
+      medications: '',
+      guardianAddress: ''
     },
 
     {
@@ -118,7 +142,15 @@ export class Pacientes {
       status: 'observation',
       phone: '3105551122',
       email: 'luis.torres@mail.com',
-      notes: 'En observación por control de presión.'
+      notes: 'En observación por control de presión.',
+      gender: '',
+      bloodType: '',
+      admissionDate: '',
+      diagnosis: '',
+      eps: '',
+      headquarters: '',
+      medications: '',
+      guardianAddress: ''
     },
 
     {
@@ -135,7 +167,15 @@ export class Pacientes {
       status: 'critical',
       phone: '3158882233',
       email: 'maria.ramirez@mail.com',
-      notes: 'Requiere monitoreo constante.'
+      notes: 'Requiere monitoreo constante.',
+      gender: '',
+      bloodType: '',
+      admissionDate: '',
+      diagnosis: '',
+      eps: '',
+      headquarters: '',
+      medications: '',
+      guardianAddress: ''
     },
 
     {
@@ -152,7 +192,15 @@ export class Pacientes {
       status: 'stable',
       phone: '3001112233',
       email: 'carlos.martinez@mail.com',
-      notes: 'Paciente estable.'
+      notes: 'Paciente estable.',
+      gender: '',
+      bloodType: '',
+      admissionDate: '',
+      diagnosis: '',
+      eps: '',
+      headquarters: '',
+      medications: '',
+      guardianAddress: ''
     },
 
     {
@@ -169,7 +217,15 @@ export class Pacientes {
       status: 'stable',
       phone: '3184567891',
       email: 'laura.gomez@mail.com',
-      notes: 'Seguimiento nutricional.'
+      notes: 'Seguimiento nutricional.',
+      gender: '',
+      bloodType: '',
+      admissionDate: '',
+      diagnosis: '',
+      eps: '',
+      headquarters: '',
+      medications: '',
+      guardianAddress: ''
     },
 
     {
@@ -186,7 +242,15 @@ export class Pacientes {
       status: 'observation',
       phone: '3167891122',
       email: 'diego.lopez@mail.com',
-      notes: 'Observación médica.'
+      notes: 'Observación médica.',
+      gender: '',
+      bloodType: '',
+      admissionDate: '',
+      diagnosis: '',
+      eps: '',
+      headquarters: '',
+      medications: '',
+      guardianAddress: ''
     },
 
     {
@@ -203,7 +267,15 @@ export class Pacientes {
       status: 'critical',
       phone: '3012223344',
       email: 'sofia.castro@mail.com',
-      notes: 'Requiere atención especial.'
+      notes: 'Requiere atención especial.',
+      gender: '',
+      bloodType: '',
+      admissionDate: '',
+      diagnosis: '',
+      eps: '',
+      headquarters: '',
+      medications: '',
+      guardianAddress: ''
     },
 
     {
@@ -220,7 +292,15 @@ export class Pacientes {
       status: 'stable',
       phone: '3134455667',
       email: 'miguel.fernandez@mail.com',
-      notes: 'Paciente estable.'
+      notes: 'Paciente estable.',
+      gender: '',
+      bloodType: '',
+      admissionDate: '',
+      diagnosis: '',
+      eps: '',
+      headquarters: '',
+      medications: '',
+      guardianAddress: ''
     },
 
     {
@@ -237,7 +317,15 @@ export class Pacientes {
       status: 'stable',
       phone: '3204455667',
       email: 'patricia.vargas@mail.com',
-      notes: 'Control general.'
+      notes: 'Control general.',
+      gender: '',
+      bloodType: '',
+      admissionDate: '',
+      diagnosis: '',
+      eps: '',
+      headquarters: '',
+      medications: '',
+      guardianAddress: ''
     },
 
     {
@@ -254,7 +342,15 @@ export class Pacientes {
       status: 'observation',
       phone: '3147788990',
       email: 'andres.herrera@mail.com',
-      notes: 'Control y observación.'
+      notes: 'Control y observación.',
+      gender: '',
+      bloodType: '',
+      admissionDate: '',
+      diagnosis: '',
+      eps: '',
+      headquarters: '',
+      medications: '',
+      guardianAddress: ''
     }
 
   ];
@@ -278,7 +374,15 @@ export class Pacientes {
       relacion: '',
       telefono: '',
       email: '',
-      notas: ''
+      notas: '',
+      genero: '',
+      tipoSangre: '',
+      fechaIngreso: '',
+      diagnostico: '',
+      eps: '',
+      sede: '',
+      medicamentos: '',
+      direccion: ''
     };
 
   }
@@ -509,7 +613,23 @@ export class Pacientes {
 
         email: patient.email,
 
-        notas: patient.notes
+        notas: patient.notes,
+
+        genero: patient.gender,
+
+        tipoSangre: patient.bloodType,
+
+        fechaIngreso: patient.admissionDate,
+
+        diagnostico: patient.diagnosis,
+
+        eps: patient.eps,
+
+        sede: patient.headquarters,
+
+        medicamentos: patient.medications,
+
+        direccion: patient.guardianAddress
 
       };
 
@@ -589,7 +709,23 @@ export class Pacientes {
 
         email: this.form.email.trim(),
 
-        notes: this.form.notas.trim()
+        notes: this.form.notas.trim(),
+
+        gender: this.form.genero,
+
+        bloodType: this.form.tipoSangre,
+
+        admissionDate: this.form.fechaIngreso,
+
+        diagnosis: this.form.diagnostico.trim(),
+
+        eps: this.form.eps.trim(),
+
+        headquarters: this.form.sede.trim(),
+
+        medications: this.form.medicamentos.trim(),
+
+  guardianAddress: this.form.direccion.trim()
 
       };
 
@@ -642,7 +778,23 @@ export class Pacientes {
 
       email: this.form.email.trim(),
 
-      notes: this.form.notas.trim()
+      notes: this.form.notas.trim(),
+
+      gender: this.form.genero,
+
+      bloodType: this.form.tipoSangre,
+
+      admissionDate: this.form.fechaIngreso,
+
+      diagnosis: this.form.diagnostico.trim(),
+
+      eps: this.form.eps.trim(),
+
+      headquarters: this.form.sede.trim(),
+
+      medications: this.form.medicamentos.trim(),
+
+      guardianAddress: this.form.direccion.trim()
 
     };
 
