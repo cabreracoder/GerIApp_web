@@ -1,0 +1,586 @@
+<!-- =========================================================
+     ROLES Y PERMISOS
+========================================================= -->
+
+<main class="main" role="main">
+
+  <!-- =======================================================
+       CABECERA
+  ======================================================== -->
+
+  <div class="page-header">
+
+    <h2 class="page-title">
+      Roles y Permisos
+    </h2>
+
+    <p class="page-subtitle">
+      Accesos y niveles de autorización por rol en la Fundación Geriátrica
+    </p>
+
+  </div>
+
+
+  <!-- =======================================================
+       SELECCIONAR ROL
+  ======================================================== -->
+
+  <div class="section-label">
+    Seleccionar rol
+  </div>
+
+  <div
+    class="role-cards"
+    role="radiogroup"
+    aria-label="Selección de rol"
+  >
+
+    <div
+      *ngFor="let role of filteredRoles"
+      class="role-card"
+      [class.selected]="role.name === selectedRole"
+      [style.--role-color]="role.color"
+      role="radio"
+      [attr.aria-checked]="role.name === selectedRole"
+      tabindex="0"
+      [attr.aria-label]="'Rol ' + role.name"
+
+      (click)="selectRole(role.name)"
+
+      (keydown.enter)="selectRole(role.name)"
+
+      (keydown.space)="
+        $event.preventDefault();
+        selectRole(role.name)
+      "
+    >
+
+      <!-- CHECK DE SELECCIÓN -->
+
+      <div
+        *ngIf="role.name === selectedRole"
+        class="selected-check"
+        [style.background]="role.color"
+      >
+
+        <span class="material-symbols-outlined">
+          check
+        </span>
+
+      </div>
+
+
+      <!-- CABECERA DE LA TARJETA -->
+
+      <div class="role-card-header">
+
+        <div
+          class="role-icon-wrap"
+          [style.background]="role.color"
+        >
+
+          <span class="material-symbols-outlined">
+            {{ role.icon }}
+          </span>
+
+        </div>
+
+
+        <div class="role-card-meta">
+
+          <div class="role-card-name">
+            {{ role.name }}
+          </div>
+
+          <div class="role-user-count">
+
+            <span class="material-symbols-outlined">
+              group
+            </span>
+
+            {{ role.userCount }}
+
+            usuario{{ role.userCount !== 1 ? 's' : '' }}
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- DESCRIPCIÓN -->
+
+      <p class="role-card-desc">
+        {{ role.description }}
+      </p>
+
+
+      <!-- RESUMEN DE PERMISOS -->
+
+      <div class="role-perm-summary">
+
+        <!-- PERMITIDOS -->
+
+        <span
+          class="perm-badge allowed"
+          [style.background]="role.color + '18'"
+          [style.color]="role.color"
+        >
+
+          <span
+            class="material-symbols-outlined"
+            style="
+              font-size:13px;
+              font-variation-settings:
+              'FILL' 1,
+              'wght' 600,
+              'GRAD' 0,
+              'opsz' 16;
+            "
+          >
+            check_circle
+          </span>
+
+          {{ getAllowedCount(role) }}
+
+          Permitidos
+
+        </span>
+
+
+        <!-- RESTRINGIDOS -->
+
+        <span class="perm-badge restricted">
+
+          <span
+            class="material-symbols-outlined"
+            style="
+              font-size:13px;
+              font-variation-settings:
+              'FILL' 1,
+              'wght' 600,
+              'GRAD' 0,
+              'opsz' 16;
+            "
+          >
+            remove_circle
+          </span>
+
+          {{ getRestrictedCount(role) }}
+
+          Restringidos
+
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =======================================================
+       DETALLE DEL ROL
+  ======================================================== -->
+
+  <div class="section-label">
+    Detalle del rol
+  </div>
+
+
+  <div class="detail-panel">
+
+    <!-- =====================================================
+         INFORMACIÓN DEL ROL
+    ====================================================== -->
+
+    <div class="detail-info-card">
+
+      <!-- ICONO -->
+
+      <div
+        class="detail-icon-wrap"
+        [style.background]="selectedRoleObject.color"
+      >
+
+        <span class="material-symbols-outlined">
+          {{ selectedRoleObject.icon }}
+        </span>
+
+      </div>
+
+
+      <!-- NOMBRE -->
+
+      <div class="detail-role-name">
+        {{ selectedRoleObject.name }}
+      </div>
+
+
+      <!-- USUARIOS -->
+
+      <div
+        class="detail-user-count"
+        [style.color]="selectedRoleObject.color"
+      >
+
+        <span class="material-symbols-outlined">
+          group
+        </span>
+
+        {{ selectedRoleObject.userCount }}
+
+        usuario{{ selectedRoleObject.userCount !== 1 ? 's' : '' }}
+
+        asignado{{ selectedRoleObject.userCount !== 1 ? 's' : '' }}
+
+      </div>
+
+
+      <!-- DESCRIPCIÓN -->
+
+      <p class="detail-desc">
+        {{ selectedRoleObject.description }}
+      </p>
+
+
+      <!-- ESTADÍSTICAS -->
+
+      <div class="detail-stats">
+
+        <!-- PERMITIDOS -->
+
+        <div
+          class="stat-box allowed"
+          [style.background]="selectedRoleObject.color + '0d'"
+        >
+
+          <div
+            class="stat-box-num"
+            [style.color]="selectedRoleObject.color"
+          >
+            {{ getAllowedCount(selectedRoleObject) }}
+          </div>
+
+          <div
+            class="stat-box-label"
+            [style.color]="selectedRoleObject.color"
+          >
+            Permitidos
+          </div>
+
+        </div>
+
+
+        <!-- RESTRINGIDOS -->
+
+        <div class="stat-box restricted">
+
+          <div class="stat-box-num">
+            {{ getRestrictedCount(selectedRoleObject) }}
+          </div>
+
+          <div class="stat-box-label">
+            Restringidos
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         LISTA DE PERMISOS
+    ====================================================== -->
+
+    <div class="perm-list-card">
+
+      <!-- HEADER -->
+
+      <div class="perm-list-header">
+
+        <span class="perm-list-title">
+          Permisos del rol
+        </span>
+
+        <span class="perm-list-hint">
+
+          <span class="material-symbols-outlined">
+            touch_app
+          </span>
+
+          Haz clic para activar o desactivar
+
+        </span>
+
+      </div>
+
+
+      <!-- FILAS -->
+
+      <div class="perm-rows">
+
+        <div
+          *ngFor="let permiso of selectedRoleObject.perms"
+          class="perm-row"
+          role="button"
+          tabindex="0"
+
+          [attr.aria-label]="
+            'Alternar permiso: ' + permiso.label
+          "
+
+          (click)="
+            togglePermiso(
+              selectedRoleObject,
+              permiso
+            )
+          "
+
+          (keydown.enter)="
+            togglePermiso(
+              selectedRoleObject,
+              permiso
+            )
+          "
+
+          (keydown.space)="
+            $event.preventDefault();
+            togglePermiso(
+              selectedRoleObject,
+              permiso
+            )
+          "
+        >
+
+          <!-- ICONO -->
+
+          <span
+            class="perm-row-icon"
+
+            [class.granted]="permiso.granted"
+
+            [class.denied]="!permiso.granted"
+
+            [style.--role-color]="
+              selectedRoleObject.color
+            "
+          >
+
+            <span class="material-symbols-outlined">
+
+              {{
+                permiso.granted
+                  ? 'lock_open'
+                  : 'lock'
+              }}
+
+            </span>
+
+          </span>
+
+
+          <!-- NOMBRE -->
+
+          <span class="perm-row-label">
+            {{ permiso.label }}
+          </span>
+
+
+          <!-- ESTADO -->
+
+          <span
+            class="perm-status-badge"
+
+            [class.granted]="permiso.granted"
+
+            [class.denied]="!permiso.granted"
+
+            [style.background]="
+              permiso.granted
+                ? selectedRoleObject.color + '12'
+                : ''
+            "
+
+            [style.color]="
+              permiso.granted
+                ? selectedRoleObject.color
+                : ''
+            "
+          >
+
+            {{
+              permiso.granted
+                ? 'Permitido'
+                : 'Restringido'
+            }}
+
+          </span>
+
+
+          <!-- TOGGLE -->
+
+          <div
+            class="toggle"
+
+            [class.on]="permiso.granted"
+
+            [style.--role-color]="
+              selectedRoleObject.color
+            "
+          >
+
+            <div class="toggle-track"></div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =======================================================
+       MATRIZ DE PERMISOS
+  ======================================================== -->
+
+  <div class="section-label">
+    Matriz de permisos
+  </div>
+
+
+  <div
+    class="matrix-section"
+    role="region"
+    aria-label="Matriz de permisos"
+  >
+
+    <!-- HEADER -->
+
+    <div class="matrix-header">
+
+      <span
+        class="material-symbols-outlined"
+        style="
+          color:var(--primary);
+          font-size:20px;
+          font-variation-settings:
+          'FILL' 1,
+          'wght' 500,
+          'GRAD' 0,
+          'opsz' 20;
+        "
+      >
+        grid_view
+      </span>
+
+      <span class="matrix-title">
+        Comparativa de accesos por rol
+      </span>
+
+      <span class="matrix-subtitle">
+        Haz clic en una fila del panel de detalle para modificar permisos
+      </span>
+
+    </div>
+
+
+    <!-- TABLA -->
+
+    <div class="matrix-table-wrap">
+
+      <table
+        class="matrix-table"
+        aria-label="Tabla de permisos por rol"
+      >
+
+        <thead>
+
+          <tr>
+
+            <th>
+              Permiso
+            </th>
+
+            <th *ngFor="let role of roles">
+
+              <div class="matrix-role-label">
+
+                <div
+                  class="matrix-role-dot"
+                  [style.background]="role.color"
+                ></div>
+
+                {{ role.name }}
+
+              </div>
+
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          <tr *ngFor="let label of PERM_LABELS">
+
+            <td>
+              {{ label }}
+            </td>
+
+
+            <td *ngFor="let role of roles">
+
+              <div
+                class="matrix-icon"
+
+                [class.granted]="
+                  hasPermission(role, label)
+                "
+
+                [class.denied]="
+                  !hasPermission(role, label)
+                "
+              >
+
+                <span
+                  class="material-symbols-outlined"
+
+                  [style.color]="
+                    hasPermission(role, label)
+                      ? role.color
+                      : ''
+                  "
+                >
+
+                  {{
+                    hasPermission(role, label)
+                      ? 'check_circle'
+                      : 'remove_circle'
+                  }}
+
+                </span>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</main>

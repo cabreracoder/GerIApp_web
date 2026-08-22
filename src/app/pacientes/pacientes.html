@@ -1,0 +1,983 @@
+<!-- =========================================================
+     CONTENIDO DE PACIENTES
+     El Sidebar y Header pertenecen al Layout
+     ========================================================= -->
+
+<section class="page-content">
+
+  <!-- =======================================================
+       ENCABEZADO DE LA PÁGINA
+       ======================================================= -->
+
+  <div class="page-hdr">
+
+    <div>
+
+      <h2>
+        Gestión de Pacientes
+      </h2>
+
+      <p>
+        Monitoreo y administración de residentes actuales
+      </p>
+
+    </div>
+
+    <button class="btn-primary" type="button" (click)="openModal('new')">
+
+      <span class="material-symbols-outlined">
+        add
+      </span>
+
+      Nuevo Paciente
+
+    </button>
+
+  </div>
+
+
+  <!-- =======================================================
+       FILTROS
+       ======================================================= -->
+
+  <div class="filters">
+
+    <div class="filter-group">
+
+      <span class="filter-label">
+        Pabellón
+      </span>
+
+      <select [(ngModel)]="pavilionFilter" (change)="filterTable()">
+
+        <option value="">
+          Todos los pabellones
+        </option>
+
+        <option value="Ala Norte">
+          Ala Norte
+        </option>
+
+        <option value="Ala Sur">
+          Ala Sur
+        </option>
+
+        <option value="Ala Este">
+          Ala Este
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div class="filter-group">
+
+      <span class="filter-label">
+        Estado
+      </span>
+
+      <select [(ngModel)]="statusFilter" (change)="filterTable()">
+
+        <option value="">
+          Todos
+        </option>
+
+        <option value="stable">
+          Estable
+        </option>
+
+        <option value="critical">
+          Crítico
+        </option>
+
+        <option value="observation">
+          Observación
+        </option>
+
+      </select>
+
+    </div>
+
+  </div>
+
+
+  <!-- =======================================================
+       TARJETAS DE ESTADÍSTICAS
+       ======================================================= -->
+
+  <div class="stats">
+
+    <!-- TOTAL -->
+
+    <div class="stat-card total-card">
+
+      <div class="stat-card-top">
+
+        <span class="ms stat-icon">
+          groups
+        </span>
+
+        <span class="stat-badge total-badge">
+          Total
+        </span>
+
+      </div>
+
+      <div>
+
+        <div class="stat-val white-text">
+          {{ totalActive }}
+        </div>
+
+        <div class="stat-lbl white-muted">
+          Residentes Activos
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- CAPACIDAD -->
+
+    <div class="stat-card capacity-card">
+
+      <div class="stat-card-top">
+
+        <span class="ms stat-icon beige-icon">
+          bed
+        </span>
+
+        <span class="stat-badge capacity-badge">
+          Capacidad
+        </span>
+
+      </div>
+
+      <div>
+
+        <div class="stat-val">
+          {{ occupancy }}%
+        </div>
+
+        <div class="stat-lbl">
+          Ocupación General
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- SALUD -->
+
+    <div class="stat-card health-card">
+
+      <div class="stat-card-top">
+
+        <span class="ms stat-icon beige-icon">
+          check_circle
+        </span>
+
+        <span class="stat-badge health-badge">
+          Salud
+        </span>
+
+      </div>
+
+      <div>
+
+        <div class="stat-val beige-text">
+          {{ stablePatients }}
+        </div>
+
+        <div class="stat-lbl beige-muted">
+          Pacientes Estables
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ALERTA -->
+
+    <div class="stat-card alert-card">
+
+      <div class="stat-card-top">
+
+        <span class="ms stat-icon error-icon">
+          warning
+        </span>
+
+        <span class="stat-badge alert-badge">
+          Alerta
+        </span>
+
+      </div>
+
+      <div>
+
+        <div class="stat-val critical-text">
+          {{ criticalPatients }}
+        </div>
+
+        <div class="stat-lbl critical-muted">
+          Estado Crítico
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =======================================================
+       TABLA
+       ======================================================= -->
+
+  <div class="tbl-wrap">
+
+    <div class="tbl-scroll">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>
+              Paciente
+            </th>
+
+            <th>
+              Documento
+            </th>
+
+            <th>
+              Edad
+            </th>
+
+            <th>
+              Encargado
+            </th>
+
+            <th>
+              Cuidador
+            </th>
+
+            <th>
+              Estado
+            </th>
+
+            <th>
+              Acciones
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          <!-- SIN RESULTADOS -->
+
+          <tr *ngIf="filteredPatients.length === 0">
+
+            <td colspan="7" class="empty">
+
+              No se encontraron pacientes.
+
+            </td>
+
+          </tr>
+
+
+          <!-- PACIENTES -->
+
+          <tr *ngFor="let patient of paginatedPatients">
+
+            <!-- PACIENTE -->
+
+            <td>
+
+              <div class="pat-cell">
+
+                <div class="av-lg" [style.background]="
+                    getAvatarColor(patient.status)
+                  ">
+
+                  {{ patient.name.charAt(0) }}
+
+                </div>
+
+                <div class="pat-info">
+
+                  <p>
+                    {{ patient.name }}
+                  </p>
+
+                  <p>
+                    Habitación {{ patient.room }}
+                  </p>
+
+                </div>
+
+              </div>
+
+            </td>
+
+
+            <!-- DOCUMENTO -->
+
+            <td class="document-cell">
+
+              {{ patient.doc }}
+
+            </td>
+
+
+            <!-- EDAD -->
+
+            <td>
+
+              {{ patient.age }} años
+
+            </td>
+
+
+            <!-- ENCARGADO -->
+
+            <td>
+
+              <div class="guardian-cell">
+
+                <p>
+                  {{ patient.guardian }}
+                </p>
+
+                <p>
+                  {{ patient.guardianRel }}
+                </p>
+
+              </div>
+
+            </td>
+
+
+            <!-- CUIDADOR -->
+
+            <td>
+
+              <div class="care-cell">
+
+                <span class="care-dot"></span>
+
+                {{ patient.caregiver }}
+
+              </div>
+
+            </td>
+
+
+            <!-- ESTADO -->
+
+            <td>
+
+              <span *ngIf="patient.status === 'stable'" class="badge-stable">
+
+                <span class="badge-dot stable-dot">
+                </span>
+
+                ESTABLE
+
+              </span>
+
+
+              <span *ngIf="patient.status === 'critical'" class="badge-critical">
+
+                <span class="badge-dot critical-dot ping">
+                </span>
+
+                CRÍTICO
+
+              </span>
+
+
+              <span *ngIf="patient.status === 'observation'" class="badge-observation">
+
+                <span class="badge-dot observation-dot">
+                </span>
+
+                OBSERVACIÓN
+
+              </span>
+
+            </td>
+
+
+           <!-- ACCIONES -->
+
+<td>
+
+  <div class="action-btns">
+
+    <!-- EDITAR -->
+    <button
+      class="action-btn"
+      type="button"
+      title="Editar"
+      (click)="openModal('edit', patient.id)"
+    >
+
+      <span class="material-symbols-outlined">
+        edit
+      </span>
+
+    </button>
+
+
+    <!-- CAMBIAR ESTADO -->
+    <button
+      class="action-btn warn"
+      type="button"
+      title="Cambiar estado"
+      (click)="toggleStatus(patient.id)"
+    >
+
+      <span class="material-symbols-outlined">
+        toggle_on
+      </span>
+
+    </button>
+
+
+    <!-- ELIMINAR -->
+    <button
+      class="action-btn danger"
+      type="button"
+      title="Eliminar"
+      (click)="deletePatient(patient.id)"
+    >
+
+      <span class="material-symbols-outlined">
+        delete
+      </span>
+
+    </button>
+
+  </div>
+
+</td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <div class="tbl-footer">
+
+      <p>
+
+        Mostrando
+
+        {{ firstShown }}
+
+        -
+
+        {{ lastShown }}
+
+        de
+
+        {{ filteredPatients.length }}
+
+        pacientes registrados
+
+      </p>
+
+
+      <div class="pag">
+
+        <button class="pag-btn" type="button" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
+
+          <span class="ms">
+            chevron_left
+          </span>
+
+        </button>
+
+
+        <button *ngFor="
+            let page of [].constructor(totalPages);
+            let i = index
+          " class="pag-btn" type="button" [class.active]="currentPage === i + 1" (click)="changePage(i + 1)">
+
+          {{ i + 1 }}
+
+        </button>
+
+
+        <button class="pag-btn" type="button" (click)="changePage(currentPage + 1)"
+          [disabled]="currentPage === totalPages">
+
+          <span class="ms">
+            chevron_right
+          </span>
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================================================
+     MODAL NUEVO / EDITAR
+     ========================================================= -->
+
+<div class="overlay" [class.open]="modalOpen" (click)="closeOnBackdrop($event)">
+
+  <div class="modal" (click)="$event.stopPropagation()">
+
+
+    <!-- HEADER MODAL -->
+
+    <div class="modal-hdr">
+
+      <h3>
+        {{ modalTitle }}
+      </h3>
+
+
+      <button class="close-btn" type="button" (click)="closeModal()">
+
+        <span class="ms">
+          close
+        </span>
+
+      </button>
+
+    </div>
+
+
+    <!-- BODY -->
+
+    <div class="modal-body">
+
+      <div class="form-section">
+        Datos Personales
+      </div>
+
+      <div class="form-grid">
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Nombres y Apellidos
+          </label>
+
+          <input
+            class="form-input"
+            type="text"
+            [(ngModel)]="form.nombre"
+            placeholder="Ej: Ricardo Mendoza">
+
+        </div>
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Documento de Identidad
+          </label>
+
+          <input
+            class="form-input"
+            type="text"
+            [(ngModel)]="form.documento"
+            placeholder="Ej: 10.455.672">
+
+        </div>
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Fecha de nacimiento
+          </label>
+
+          <input
+            class="form-input"
+            type="date"
+            [(ngModel)]="form.nacimiento">
+
+        </div>
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Edad
+          </label>
+
+          <input
+            class="form-input"
+            type="number"
+            [(ngModel)]="form.edad"
+            placeholder="Ej: 82"
+            min="50"
+            max="120">
+
+        </div>
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Género
+          </label>
+
+          <select
+            class="form-input"
+            [(ngModel)]="form.genero">
+
+            <option value="">Seleccione</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Femenino">Femenino</option>
+            <option value="Otro">Otro</option>
+
+          </select>
+
+        </div>
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Tipo de sangre
+          </label>
+
+          <select
+            class="form-input"
+            [(ngModel)]="form.tipoSangre">
+
+            <option value="">Seleccione</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+
+          </select>
+
+        </div>
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Fecha de ingreso
+          </label>
+
+          <input
+            class="form-input"
+            type="date"
+            [(ngModel)]="form.fechaIngreso">
+
+        </div>
+
+      </div>
+
+      <div class="form-section">
+        Información Médica
+      </div>
+
+      <div class="form-grid">
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Diagnóstico
+          </label>
+
+          <input
+            class="form-input"
+            type="text"
+            [(ngModel)]="form.diagnostico"
+            placeholder="Ej: Hipertensión arterial">
+
+        </div>
+
+        <div class="form-field">
+
+          <label class="form-label">
+            EPS
+          </label>
+
+          <input
+            class="form-input"
+            type="text"
+            [(ngModel)]="form.eps"
+            placeholder="Ej: Nueva EPS">
+
+        </div>
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Sede
+          </label>
+
+          <input
+            class="form-input"
+            type="text"
+            [(ngModel)]="form.sede"
+            placeholder="Ej: Sede Principal">
+
+        </div>
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Medicamentos
+          </label>
+
+          <textarea
+            class="form-input"
+            [(ngModel)]="form.medicamentos"
+            rows="3"
+            placeholder="Ej: Losartán 50 mg, Metformina 500 mg..."></textarea>
+
+        </div>
+
+      </div>
+
+      <div class="form-section">
+        Ubicación y asignación
+      </div>
+
+      <div class="form-grid">
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Habitación
+          </label>
+
+          <input
+            class="form-input"
+            type="text"
+            [(ngModel)]="form.habitacion"
+            placeholder="Ej: 104">
+
+        </div>
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Estado clínico
+          </label>
+
+          <select
+            class="form-input"
+            [(ngModel)]="form.estado">
+
+            <option value="stable">Estable</option>
+            <option value="observation">Observación</option>
+            <option value="critical">Crítico</option>
+
+          </select>
+
+        </div>
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Cuidador asignado
+          </label>
+
+          <select
+            class="form-input"
+            [(ngModel)]="form.cuidador">
+
+            <option value="Enf. Carlos Ruiz">
+              Enf. Carlos Ruiz
+            </option>
+
+            <option value="Dra. Martha Luz">
+              Dra. Martha Luz
+            </option>
+
+            <option value="Enf. Laura Paz">
+              Enf. Laura Paz
+            </option>
+
+            <option value="Enf. Ana Reyes">
+              Enf. Ana Reyes
+            </option>
+
+            <option value="Juan Vela">
+              Juan Vela
+            </option>
+
+          </select>
+
+        </div>
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Pabellón
+          </label>
+
+          <select
+            class="form-input"
+            [(ngModel)]="form.pabellon">
+
+            <option value="Ala Norte">Ala Norte</option>
+            <option value="Ala Sur">Ala Sur</option>
+            <option value="Ala Este">Ala Este</option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+      <div class="form-section">
+        Encargado familiar
+      </div>
+
+      <div class="form-grid">
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Nombre encargado
+          </label>
+
+          <input
+            class="form-input"
+            type="text"
+            [(ngModel)]="form.encargado"
+            placeholder="Ej: Elena Mendoza">
+
+        </div>
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Relación
+          </label>
+
+          <input
+            class="form-input"
+            type="text"
+            [(ngModel)]="form.relacion"
+            placeholder="Ej: Hija">
+
+        </div>
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Teléfono
+          </label>
+
+          <input
+            class="form-input"
+            type="tel"
+            [(ngModel)]="form.telefono"
+            placeholder="Ej: 312 456 7890">
+
+        </div>
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Email
+          </label>
+
+          <input
+            class="form-input"
+            type="email"
+            [(ngModel)]="form.email"
+            placeholder="correo@mail.com">
+
+        </div>
+
+        <div class="form-field full">
+
+          <label class="form-label">
+            Dirección
+          </label>
+
+          <input
+            class="form-input"
+            type="text"
+            [(ngModel)]="form.direccion"
+            placeholder="Ej: Calle 10 # 5-20">
+
+        </div>
+
+      </div>
+
+      <div class="form-section">
+        Notas clínicas
+      </div>
+
+      <div class="form-grid">
+
+        <div class="form-field full">
+
+          <label class="form-label">
+            Observaciones
+          </label>
+
+          <textarea
+            class="form-input"
+            [(ngModel)]="form.notas"
+            rows="3"
+            placeholder="Condiciones, alergias, indicaciones especiales..."></textarea>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <div class="modal-footer">
+
+      <button class="btn-cancel" type="button" (click)="closeModal()">
+
+        Cancelar
+
+      </button>
+
+
+      <button class="btn-save" type="button" (click)="savePatient()">
+
+        {{ saveButtonText }}
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
