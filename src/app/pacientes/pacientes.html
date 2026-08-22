@@ -579,37 +579,39 @@
 
     <div class="modal-body">
 
-
-      <!-- INFORMACIÓN PERSONAL -->
-
       <div class="form-section">
-        Información personal
+        Datos Personales
       </div>
-
 
       <div class="form-grid">
 
         <div class="form-field">
 
           <label class="form-label">
-            Nombre completo
+            Nombres y Apellidos
           </label>
 
-          <input class="form-input" type="text" [(ngModel)]="form.nombre" placeholder="Ej: Ricardo Mendoza">
+          <input
+            class="form-input"
+            type="text"
+            [(ngModel)]="form.nombre"
+            placeholder="Ej: Ricardo Mendoza">
 
         </div>
-
 
         <div class="form-field">
 
           <label class="form-label">
-            Documento
+            Documento de Identidad
           </label>
 
-          <input class="form-input" type="text" [(ngModel)]="form.documento" placeholder="Ej: 10.455.672">
+          <input
+            class="form-input"
+            type="text"
+            [(ngModel)]="form.documento"
+            placeholder="Ej: 10.455.672">
 
         </div>
-
 
         <div class="form-field">
 
@@ -617,10 +619,12 @@
             Fecha de nacimiento
           </label>
 
-          <input class="form-input" type="date" [(ngModel)]="form.nacimiento">
+          <input
+            class="form-input"
+            type="date"
+            [(ngModel)]="form.nacimiento">
 
         </div>
-
 
         <div class="form-field">
 
@@ -628,19 +632,141 @@
             Edad
           </label>
 
-          <input class="form-input" type="number" [(ngModel)]="form.edad" placeholder="Ej: 82" min="50" max="120">
+          <input
+            class="form-input"
+            type="number"
+            [(ngModel)]="form.edad"
+            placeholder="Ej: 82"
+            min="50"
+            max="120">
+
+        </div>
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Género
+          </label>
+
+          <select
+            class="form-input"
+            [(ngModel)]="form.genero">
+
+            <option value="">Seleccione</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Femenino">Femenino</option>
+            <option value="Otro">Otro</option>
+
+          </select>
+
+        </div>
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Tipo de sangre
+          </label>
+
+          <select
+            class="form-input"
+            [(ngModel)]="form.tipoSangre">
+
+            <option value="">Seleccione</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+
+          </select>
+
+        </div>
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Fecha de ingreso
+          </label>
+
+          <input
+            class="form-input"
+            type="date"
+            [(ngModel)]="form.fechaIngreso">
 
         </div>
 
       </div>
 
+      <div class="form-section">
+        Información Médica
+      </div>
 
-      <!-- UBICACIÓN -->
+      <div class="form-grid">
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Diagnóstico
+          </label>
+
+          <input
+            class="form-input"
+            type="text"
+            [(ngModel)]="form.diagnostico"
+            placeholder="Ej: Hipertensión arterial">
+
+        </div>
+
+        <div class="form-field">
+
+          <label class="form-label">
+            EPS
+          </label>
+
+          <input
+            class="form-input"
+            type="text"
+            [(ngModel)]="form.eps"
+            placeholder="Ej: Nueva EPS">
+
+        </div>
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Sede
+          </label>
+
+          <input
+            class="form-input"
+            type="text"
+            [(ngModel)]="form.sede"
+            placeholder="Ej: Sede Principal">
+
+        </div>
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Medicamentos
+          </label>
+
+          <textarea
+            class="form-input"
+            [(ngModel)]="form.medicamentos"
+            rows="3"
+            placeholder="Ej: Losartán 50 mg, Metformina 500 mg..."></textarea>
+
+        </div>
+
+      </div>
 
       <div class="form-section">
         Ubicación y asignación
       </div>
-
 
       <div class="form-grid">
 
@@ -650,10 +776,13 @@
             Habitación
           </label>
 
-          <input class="form-input" type="text" [(ngModel)]="form.habitacion" placeholder="Ej: 104">
+          <input
+            class="form-input"
+            type="text"
+            [(ngModel)]="form.habitacion"
+            placeholder="Ej: 104">
 
         </div>
-
 
         <div class="form-field">
 
@@ -661,24 +790,17 @@
             Estado clínico
           </label>
 
-          <select class="form-input" [(ngModel)]="form.estado">
+          <select
+            class="form-input"
+            [(ngModel)]="form.estado">
 
-            <option value="stable">
-              Estable
-            </option>
-
-            <option value="observation">
-              Observación
-            </option>
-
-            <option value="critical">
-              Crítico
-            </option>
+            <option value="stable">Estable</option>
+            <option value="observation">Observación</option>
+            <option value="critical">Crítico</option>
 
           </select>
 
         </div>
-
 
         <div class="form-field">
 
@@ -686,7 +808,9 @@
             Cuidador asignado
           </label>
 
-          <select class="form-input" [(ngModel)]="form.cuidador">
+          <select
+            class="form-input"
+            [(ngModel)]="form.cuidador">
 
             <option value="Enf. Carlos Ruiz">
               Enf. Carlos Ruiz
@@ -712,26 +836,19 @@
 
         </div>
 
-
         <div class="form-field">
 
           <label class="form-label">
             Pabellón
           </label>
 
-          <select class="form-input" [(ngModel)]="form.pabellon">
+          <select
+            class="form-input"
+            [(ngModel)]="form.pabellon">
 
-            <option value="Ala Norte">
-              Ala Norte
-            </option>
-
-            <option value="Ala Sur">
-              Ala Sur
-            </option>
-
-            <option value="Ala Este">
-              Ala Este
-            </option>
+            <option value="Ala Norte">Ala Norte</option>
+            <option value="Ala Sur">Ala Sur</option>
+            <option value="Ala Este">Ala Este</option>
 
           </select>
 
@@ -739,13 +856,9 @@
 
       </div>
 
-
-      <!-- ENCARGADO -->
-
       <div class="form-section">
         Encargado familiar
       </div>
-
 
       <div class="form-grid">
 
@@ -755,10 +868,13 @@
             Nombre encargado
           </label>
 
-          <input class="form-input" type="text" [(ngModel)]="form.encargado" placeholder="Ej: Elena Mendoza">
+          <input
+            class="form-input"
+            type="text"
+            [(ngModel)]="form.encargado"
+            placeholder="Ej: Elena Mendoza">
 
         </div>
-
 
         <div class="form-field">
 
@@ -766,10 +882,13 @@
             Relación
           </label>
 
-          <input class="form-input" type="text" [(ngModel)]="form.relacion" placeholder="Ej: Hija">
+          <input
+            class="form-input"
+            type="text"
+            [(ngModel)]="form.relacion"
+            placeholder="Ej: Hija">
 
         </div>
-
 
         <div class="form-field">
 
@@ -777,10 +896,13 @@
             Teléfono
           </label>
 
-          <input class="form-input" type="tel" [(ngModel)]="form.telefono" placeholder="Ej: 312 456 7890">
+          <input
+            class="form-input"
+            type="tel"
+            [(ngModel)]="form.telefono"
+            placeholder="Ej: 312 456 7890">
 
         </div>
-
 
         <div class="form-field">
 
@@ -788,19 +910,33 @@
             Email
           </label>
 
-          <input class="form-input" type="email" [(ngModel)]="form.email" placeholder="correo@mail.com">
+          <input
+            class="form-input"
+            type="email"
+            [(ngModel)]="form.email"
+            placeholder="correo@mail.com">
+
+        </div>
+
+        <div class="form-field full">
+
+          <label class="form-label">
+            Dirección
+          </label>
+
+          <input
+            class="form-input"
+            type="text"
+            [(ngModel)]="form.direccion"
+            placeholder="Ej: Calle 10 # 5-20">
 
         </div>
 
       </div>
 
-
-      <!-- NOTAS -->
-
       <div class="form-section">
         Notas clínicas
       </div>
-
 
       <div class="form-grid">
 
@@ -810,9 +946,11 @@
             Observaciones
           </label>
 
-          <textarea class="form-input" [(ngModel)]="form.notas" rows="3"
-            placeholder="Condiciones, alergias, indicaciones especiales...">
-          </textarea>
+          <textarea
+            class="form-input"
+            [(ngModel)]="form.notas"
+            rows="3"
+            placeholder="Condiciones, alergias, indicaciones especiales..."></textarea>
 
         </div>
 

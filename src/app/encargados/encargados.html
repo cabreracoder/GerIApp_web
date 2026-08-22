@@ -665,9 +665,11 @@
             <input
               id="f-email"
               type="email"
+              name="email"
               class="form-input"
               placeholder="nombre@fundacion.org"
               [(ngModel)]="formulario.email"
+              [class.is-invalid]="errores.email || errores.emailInvalido"
             >
 
             <div
@@ -680,6 +682,14 @@
               </span>
 
               Campo requerido
+
+            </div>
+
+            <!-- Mensaje si el correo es inválido -->
+            <div class="form-err-msg" [class.show]="errores.emailInvalido">
+
+              <span class="material-symbols-outlined">error</span>
+              Ingresa un correo electrónico válido
 
             </div>
 
