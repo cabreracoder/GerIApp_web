@@ -1,408 +1,169 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 interface Notificacion {
-
   id: number;
-
   titulo: string;
-
-  descripcion: string;
-
+  mensaje: string;
+  tipo: 'critica' | 'advertencia' | 'informacion';
   tiempo: string;
-
-  icono: string;
-
-  tipo: 'critical' | 'warning' | 'info';
-
   leida: boolean;
-
+  icono: string;
+  destinatario?: string;
 }
 
-
 @Component({
-
   selector: 'app-notificaciones',
-
   standalone: true,
-
-  imports: [
-    CommonModule,
-    FormsModule
-  ],
-
+  imports: [CommonModule, FormsModule],
   templateUrl: './notificaciones.html',
-
-  styleUrl: './notificaciones.css'
-
+  styleUrls: ['./notificaciones.css']
 })
-
-
 export class Notificaciones {
+  tabActivo: string = 'bandeja';
+  filtroTexto: string = '';
 
+  filtroTipoSeleccionado: string = 'todos';
 
-  // =========================================================
-  // TEXTO
-  // =========================================================
+  nuevoDestinatario: string = '';
+  nuevoTipo: 'critica' | 'advertencia' | 'informacion' = 'informacion';
+  nuevoTitulo: string = '';
+  nuevoMensaje: string = '';
+  mensajeError: string = '';
+  mensajeExito: string = '';
 
-  subtitulo =
-    'Mantente informado sobre las novedades de la Fundación Geriátrica';
+  sistemaActivo: boolean = true;
+  canalEmail: boolean = true;
+  canalSms: boolean = true;
+  canalPush: boolean = true;
+  mensajeConfigExito: string = '';
 
-
-  // =========================================================
-  // BÚSQUEDA
-  // =========================================================
-
-  textoBusqueda = '';
-
-
-  // =========================================================
-  // FILTRO ACTIVO
-  // =========================================================
-
-  filtroActivo: 'todas' | 'no-leidas' | 'critical' | 'warning' = 'todas';
-
-
-  // =========================================================
-  // NOTIFICACIONES
-  // =========================================================
-
-  notificaciones: Notificacion[] = [
-
+  listaNotificaciones: Notificacion[] = [
     {
       id: 1,
-
-      titulo: 'Paciente requiere atención',
-
-      descripcion:
-        'El paciente Carlos Rodríguez presenta signos que requieren valoración médica.',
-
+      titulo: 'Paciente requiere atención médica',
+      mensaje: 'El paciente Carlos Rodríguez presenta signos vitales alterados que requieren valoración.',
+      tipo: 'critica',
       tiempo: 'Hace 10 minutos',
-
-      icono: 'emergency',
-
-      tipo: 'critical',
-
-      leida: false
+      leida: false,
+      icono: 'fa-solid fa-asterisk',
+      destinatario: 'Enfermería'
     },
-
-
     {
       id: 2,
-
       titulo: 'Medicamento pendiente',
-
-      descripcion:
-        'La administración del medicamento de María López está pendiente.',
-
+      mensaje: 'La administración del medicamento de María López está pendiente según el turno.',
+      tipo: 'advertencia',
       tiempo: 'Hace 25 minutos',
-
-      icono: 'medication',
-
-      tipo: 'warning',
-
-      leida: false
+      leida: false,
+      icono: 'fa-solid fa-pills',
+      destinatario: 'Cuidadores'
     },
-
-
     {
       id: 3,
-
       titulo: 'Nuevo encargado registrado',
-
-      descripcion:
-        'Se ha registrado un nuevo encargado en el sistema administrativo.',
-
+      mensaje: 'Se ha registrado un nuevo operador en el sistema administrativo.',
+      tipo: 'informacion',
       tiempo: 'Hace 1 hora',
-
-      icono: 'person_add',
-
-      tipo: 'info',
-
-      leida: false
-    },
-
-
-    {
-      id: 4,
-
-      titulo: 'Control médico completado',
-
-      descripcion:
-        'El control médico del paciente Juan Pérez fue registrado correctamente.',
-
-      tiempo: 'Hace 2 horas',
-
-      icono: 'health_and_safety',
-
-      tipo: 'info',
-
-      leida: true
-    },
-
-
-    {
-      id: 5,
-
-      titulo: 'Cuidador disponible',
-
-      descripcion:
-        'El cuidador asignado se encuentra disponible para iniciar su turno.',
-
-      tiempo: 'Hace 3 horas',
-
-      icono: 'person',
-
-      tipo: 'info',
-
-      leida: true
-    },
-
-
-    {
-      id: 6,
-
-      titulo: 'Paciente en observación',
-
-      descripcion:
-        'Se ha actualizado el estado de un paciente a observación.',
-
-      tiempo: 'Ayer',
-
-      icono: 'visibility',
-
-      tipo: 'warning',
-
-      leida: true
+      leida: true,
+      icono: 'fa-solid fa-user-plus',
+      destinatario: 'Todos'
     }
-
   ];
 
-
-  // =========================================================
-  // CANTIDAD DE CRÍTICAS
-  // =========================================================
-
-  get cantidadCriticas(): number {
-
-    return this.notificaciones.filter(
-      notificacion =>
-        notificacion.tipo === 'critical'
-    ).length;
-
+  cambiarTab(tab: string) {
+    this.tabActivo = tab;
+    this.mensajeError = '';
+    this.mensajeExito = '';
   }
 
-
-  // =========================================================
-  // CANTIDAD DE ADVERTENCIAS
-  // =========================================================
-
-  get cantidadAdvertencias(): number {
-
-    return this.notificaciones.filter(
-      notificacion =>
-        notificacion.tipo === 'warning'
-    ).length;
-
+  get totalNotificaciones(): number {
+    return this.listaNotificaciones.length;
   }
 
+  get totalNoLeidas(): number {
+    return this.listaNotificaciones.filter(n => !n.leida).length;
+  }
 
-  // =========================================================
-  // NOTIFICACIONES FILTRADAS
-  // =========================================================
+  get totalCriticas(): number {
+    return this.listaNotificaciones.filter(n => n.tipo === 'critica').length;
+  }
+
+  get totalAdvertencias(): number {
+    return this.listaNotificaciones.filter(n => n.tipo === 'advertencia').length;
+  }
+
+  get caracteresRestantes(): number {
+    return 300 - (this.nuevoMensaje ? this.nuevoMensaje.length : 0);
+  }
 
   get notificacionesFiltradas(): Notificacion[] {
-
-    const termino =
-      this.textoBusqueda
-        .trim()
-        .toLowerCase();
-
-
-    return this.notificaciones.filter(
-      notificacion => {
-
-        // -----------------------------------------------
-        // FILTRO POR CATEGORÍA
-        // -----------------------------------------------
-
-        let coincideFiltro = true;
-
-
-        if (this.filtroActivo === 'no-leidas') {
-
-          coincideFiltro =
-            !notificacion.leida;
-
-        }
-
-
-        if (this.filtroActivo === 'critical') {
-
-          coincideFiltro =
-            notificacion.tipo === 'critical';
-
-        }
-
-
-        if (this.filtroActivo === 'warning') {
-
-          coincideFiltro =
-            notificacion.tipo === 'warning';
-
-        }
-
-
-        // -----------------------------------------------
-        // FILTRO POR TEXTO
-        // -----------------------------------------------
-
-        const coincideBusqueda =
-          !termino
-
-          ||
-
-          notificacion.titulo
-            .toLowerCase()
-            .includes(termino)
-
-          ||
-
-          notificacion.descripcion
-            .toLowerCase()
-            .includes(termino)
-
-          ||
-
-          notificacion.tipo
-            .toLowerCase()
-            .includes(termino);
-
-
-        return coincideFiltro && coincideBusqueda;
-
-      }
-    );
-
+    return this.listaNotificaciones.filter(item => {
+      const matchesText = item.titulo.toLowerCase().includes(this.filtroTexto.toLowerCase()) ||
+                           item.mensaje.toLowerCase().includes(this.filtroTexto.toLowerCase());
+      const matchesType = this.filtroTipoSeleccionado === 'todos' || item.tipo === this.filtroTipoSeleccionado;
+      return matchesText && matchesType;
+    });
   }
 
+  enviarNotificacionManual() {
+    this.mensajeError = '';
+    this.mensajeExito = '';
 
-  // =========================================================
-  // NOTIFICACIONES NO LEÍDAS
-  // =========================================================
+    if (!this.nuevoDestinatario || this.nuevoDestinatario.trim() === '') {
+      this.mensajeError = 'Error: Debe seleccionar un destinatario válido.';
+    }
+   if (!this.nuevoTitulo || this.nuevoTitulo.trim() === '' || !this.nuevoMensaje || this.nuevoMensaje.trim() === '') {
+      this.mensajeError = 'Error: El título y el contenido del mensaje no pueden estar vacíos.';
+      return;
+    }
 
-  get notificacionesNoLeidas(): number {
+    const nueva: Notificacion = {
+      id: Date.now(),
+      titulo: this.nuevoTitulo.trim(),
+      mensaje: this.nuevoMensaje.trim(),
+      tipo: this.nuevoTipo,
+      tiempo: 'Hace un momento',
+      leida: false,
+      icono: this.nuevoTipo === 'critica' ? 'fa-solid fa-triangle-exclamation' : 'fa-regular fa-bell',
+      destinatario: this.nuevoDestinatario
+    };
 
-    return this.notificaciones.filter(
-      notificacion =>
-        !notificacion.leida
-    ).length;
+    this.listaNotificaciones.unshift(nueva);
+    this.mensajeExito = 'Notificación enviada y registrada con éxito en el historial.';
+    
+    this.nuevoTitulo = '';
+    this.nuevoMensaje = '';
+    this.nuevoDestinatario = '';
 
+    setTimeout(() => {
+      this.tabActivo = 'bandeja';
+      this.mensajeExito = '';
+    }, 1500);
   }
 
-
-  // =========================================================
-  // FILTRAR NOTIFICACIONES
-  // =========================================================
-
-  filtrarNotificaciones(): void {
-
-    /*
-     * La lista se actualiza automáticamente porque
-     * notificacionesFiltradas es un getter.
-     *
-     * Este método existe para que el HTML pueda
-     * ejecutar (input)="filtrarNotificaciones()"
-     */
-
+  marcarLeida(id: number) {
+    const item = this.listaNotificaciones.find(n => n.id === id);
+    if (item) item.leida = true;
   }
 
-
-  // =========================================================
-  // CAMBIAR FILTRO
-  // =========================================================
-
-  cambiarFiltro(
-    filtro: 'todas' | 'no-leidas' | 'critical' | 'warning'
-  ): void {
-
-    this.filtroActivo = filtro;
-
+  marcarTodasLeidas() {
+    this.listaNotificaciones.forEach(n => n.leida = true);
   }
 
-
-  // =========================================================
-  // LIMPIAR FILTROS
-  // =========================================================
-
-  limpiarFiltros(): void {
-
-    this.textoBusqueda = '';
-
-    this.filtroActivo = 'todas';
-
+  eliminarNotificacion(id: number) {
+    this.listaNotificaciones = this.listaNotificaciones.filter(n => n.id !== id);
   }
 
-
-  // =========================================================
-  // MARCAR UNA COMO LEÍDA
-  // =========================================================
-
-  marcarComoLeida(
-    notificacion: Notificacion
-  ): void {
-
-    notificacion.leida = true;
-
+  verDetalle(item: Notificacion) {
+    alert(`Detalle del aviso:\nTítulo: ${item.titulo}\nMensaje: ${item.mensaje}\nDestinatario: ${item.destinatario || 'General'}`);
   }
 
-
-  // =========================================================
-  // MARCAR TODAS COMO LEÍDAS
-  // =========================================================
-
-  marcarTodasLeidas(): void {
-
-    this.notificaciones =
-      this.notificaciones.map(
-        notificacion => ({
-
-          ...notificacion,
-
-          leida: true
-
-        })
-      );
-
+  guardarConfiguracionCanales() {
+    this.mensajeConfigExito = 'Configuración de canales y estado almacenada correctamente.';
+    setTimeout(() => {
+      this.mensajeConfigExito = '';
+    }, 2500);
   }
-
-
-  // =========================================================
-  // ELIMINAR
-  // =========================================================
-
-  eliminarNotificacion(
-    id: number
-  ): void {
-
-    this.notificaciones =
-      this.notificaciones.filter(
-        notificacion =>
-          notificacion.id !== id
-      );
-
-  }
-
-
-  // =========================================================
-  // LIMPIAR BÚSQUEDA
-  // =========================================================
-
-  limpiarBusqueda(): void {
-
-    this.textoBusqueda = '';
-
-  }
-
 }
