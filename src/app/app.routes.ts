@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { Layout } from './layout/layout';
-import { Dashboard } from './dashboard/dashboard';
+import { DashboardComponent } from './dashboard/dashboard';
 import { Pacientes } from './pacientes/pacientes';
 import { Cuidadores } from './cuidadores/cuidadores';
 import { Encargados } from './encargados/encargados';
@@ -22,7 +22,7 @@ export const routes: Routes = [
 
       {
         path: 'dashboard',
-        component: Dashboard
+        component: DashboardComponent
       },
 
       {
