@@ -425,6 +425,20 @@
 
   <div class="action-btns">
 
+        <!-- Boton agregado para ver datos de paciente -->
+    <button
+      class="action-btn view"
+      type="button"
+      title="Ver datos del paciente"
+      (click)="viewPatient(patient.id)"
+    >
+
+      <span class="material-symbols-outlined">
+        visibility
+      </span>
+
+    </button>
+
     <!-- EDITAR -->
     <button
       class="action-btn"
@@ -974,6 +988,378 @@
 
         {{ saveButtonText }}
 
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- =========================================================
+     MODAL CONSULTAR PACIENTE
+     Agregado para visualizar información del paciente
+     ========================================================= -->
+
+<div
+  class="overlay"
+  [class.open]="viewModalOpen"
+  (click)="closeViewModal()"
+>
+
+  <div
+    class="modal"
+    (click)="$event.stopPropagation()"
+    *ngIf="selectedPatient"
+  >
+
+    <!-- HEADER -->
+
+    <div class="modal-hdr">
+
+      <h3>
+        Datos del paciente
+      </h3>
+
+      <button
+        class="close-btn"
+        type="button"
+        (click)="closeViewModal()"
+      >
+
+        <span class="ms">
+          close
+        </span>
+
+      </button>
+
+    </div>
+
+
+    <!-- BODY -->
+
+    <div class="modal-body">
+
+      <div class="form-section">
+        Información personal
+      </div>
+
+      <div class="form-grid">
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Nombre completo
+          </label>
+
+          <input
+            class="form-input"
+            [value]="selectedPatient.name"
+            readonly
+          >
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Documento
+          </label>
+
+          <input
+            class="form-input"
+            [value]="selectedPatient.doc"
+            readonly
+          >
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Edad
+          </label>
+
+          <input
+            class="form-input"
+            [value]="selectedPatient.age + ' años'"
+            readonly
+          >
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Fecha de nacimiento
+          </label>
+
+          <input
+            class="form-input"
+            [value]="selectedPatient.birthDate"
+            readonly
+          >
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Género
+          </label>
+
+          <input
+            class="form-input"
+            [value]="selectedPatient.gender || 'No registrado'"
+            readonly
+          >
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Tipo de sangre
+          </label>
+
+          <input
+            class="form-input"
+            [value]="selectedPatient.bloodType || 'No registrado'"
+            readonly
+          >
+
+        </div>
+
+      </div>
+
+
+      <div class="form-section">
+        Información médica
+      </div>
+
+      <div class="form-grid">
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Diagnóstico
+          </label>
+
+          <input
+            class="form-input"
+            [value]="selectedPatient.diagnosis || 'No registrado'"
+            readonly
+          >
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label class="form-label">
+            EPS
+          </label>
+
+          <input
+            class="form-input"
+            [value]="selectedPatient.eps || 'No registrado'"
+            readonly
+          >
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Medicamentos
+          </label>
+
+          <textarea
+            class="form-input"
+            [value]="selectedPatient.medications || 'No registrado'"
+            readonly
+            rows="3"
+          ></textarea>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-section">
+        Ubicación y asignación
+      </div>
+
+      <div class="form-grid">
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Habitación
+          </label>
+
+          <input
+            class="form-input"
+            [value]="selectedPatient.room"
+            readonly
+          >
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Pabellón
+          </label>
+
+          <input
+            class="form-input"
+            [value]="selectedPatient.pavilion"
+            readonly
+          >
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Estado
+          </label>
+
+          <input
+            class="form-input"
+            [value]="selectedPatient.status"
+            readonly
+          >
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Cuidador
+          </label>
+
+          <input
+            class="form-input"
+            [value]="selectedPatient.caregiver"
+            readonly
+          >
+
+        </div>
+
+      </div>
+
+
+      <div class="form-section">
+        Encargado familiar
+      </div>
+
+      <div class="form-grid">
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Nombre
+          </label>
+
+          <input
+            class="form-input"
+            [value]="selectedPatient.guardian"
+            readonly
+          >
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Relación
+          </label>
+
+          <input
+            class="form-input"
+            [value]="selectedPatient.guardianRel"
+            readonly
+          >
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Teléfono
+          </label>
+
+          <input
+            class="form-input"
+            [value]="selectedPatient.phone"
+            readonly
+          >
+
+        </div>
+
+
+        <div class="form-field">
+
+          <label class="form-label">
+            Email
+          </label>
+
+          <input
+            class="form-input"
+            [value]="selectedPatient.email"
+            readonly
+          >
+
+        </div>
+
+      </div>
+
+
+      <div class="form-section">
+        Observaciones
+      </div>
+
+      <div class="form-grid">
+
+        <div class="form-field full">
+
+          <textarea
+            class="form-input"
+            [value]="selectedPatient.notes || 'Sin observaciones'"
+            readonly
+            rows="3"
+          ></textarea>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <div class="modal-footer">
+
+      <button
+        class="btn-cancel"
+        type="button"
+        (click)="closeViewModal()"
+      >
+        Cerrar
       </button>
 
     </div>
