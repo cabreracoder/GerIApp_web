@@ -11,7 +11,7 @@ interface UsuarioAsociado {
   id: number;
   name: string;
   email: string;
-  estado: 'Activo' | 'Inactivo';
+  estado: 'activo' | 'inactivo';
   avatar: string;
 }
 
@@ -67,8 +67,8 @@ export class Roles {
       })),
 
       usuariosAsociados: [
-        { id: 1, name: 'Jose Cabrera', email: 'jose.cabrera@fundacion.org', estado: 'Activo', avatar: 'JC' },
-        { id: 2, name: 'Ana María Gómez', email: 'ana.gomez@fundacion.org', estado: 'Activo', avatar: 'AM' }
+        { id: 1, name: 'Jose Cabrera', email: 'jose.cabrera@fundacion.org', estado: 'activo', avatar: 'JC' },
+        { id: 2, name: 'Ana María Gómez', email: 'ana.gomez@fundacion.org', estado: 'activo', avatar: 'AM' }
       ]
     },
 
@@ -114,8 +114,8 @@ export class Roles {
         }
       ],
       usuariosAsociados: [
-        { id: 3, name: 'Carlos Pérez', email: 'carlos.perez@fundacion.org', estado: 'Activo', avatar: 'CP' },
-        { id: 4, name: 'Lucía Benítez', email: 'lucia.benitez@fundacion.org', estado: 'Inactivo', avatar: 'LB' }
+        { id: 3, name: 'Carlos Pérez', email: 'carlos.perez@fundacion.org', estado: 'activo', avatar: 'CP' },
+        { id: 4, name: 'Lucía Benítez', email: 'lucia.benitez@fundacion.org', estado: 'inactivo', avatar: 'LB' }
       ]
     },
 
@@ -161,7 +161,7 @@ export class Roles {
         }
       ],
       usuariosAsociados: [
-        { id: 5, name: 'María López', email: 'maria.lopez@fundacion.org', estado: 'Activo', avatar: 'RS' }
+        { id: 5, name: 'María López', email: 'maria.lopez@fundacion.org', estado: 'activo', avatar: 'RS' }
       ]
     }
   ];
@@ -172,7 +172,7 @@ export class Roles {
 
   selectedRole: string = 'Administrador';
   searchTerm: string = '';
-  filtroEstadoUsuario: 'Todos' | 'Activo' | 'Inactivo' = 'Todos';
+  filtroEstadoUsuario: 'Todos' | 'activo' | 'inactivo' = 'Todos';
 
   mensajeExito: string = '';
   mensajeError: string = '';
