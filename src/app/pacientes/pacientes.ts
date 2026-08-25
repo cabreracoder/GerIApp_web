@@ -88,6 +88,13 @@ export class Pacientes {
   editingId: number | null = null;
 
   // =========================================================
+// MODAL DE CONSULTA DE OACIENTES
+// =========================================================
+
+viewModalOpen = false;
+selectedPatient: Patient | null = null;
+
+  // =========================================================
   // FORMULARIO
   // =========================================================
 
@@ -523,6 +530,29 @@ export class Pacientes {
       this.closeModal();
     }
   }
+
+ // =========================================================
+    // CONSULTAR PACIENTE
+    // =========================================================
+
+
+  viewPatient(id: number): void {
+
+    const patient = this.patients.find(item => item.id === id);
+
+    if (!patient) return;
+
+    this.selectedPatient = patient;
+
+    this.viewModalOpen = true;
+  }
+
+  closeViewModal(): void {
+
+  this.viewModalOpen = false;
+
+  this.selectedPatient = null;
+}
 
   // =========================================================
   // GUARDAR
