@@ -8,31 +8,33 @@
 from django.db import models
 
 
-class AdministracionMedicamento(models.Model):
-    id_admin_medicamento = models.AutoField(primary_key=True)
-    fecha = models.DateTimeField()
-    estado = models.CharField()
-    observaciones = models.CharField()
-    id_horario = models.ForeignKey('HorarioMedicamento', models.DO_NOTHING, db_column='id_horario', blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'administracion_medicamento'
-
-
-class Alertas(models.Model):
-    id_alerta = models.AutoField(primary_key=True)
-    tipo = models.CharField()
-    titulo = models.CharField()
+class Actividades(models.Model):
+    id_actividad = models.AutoField(primary_key=True)
+    id_bitacora = models.ForeignKey('Bitacora', models.DO_NOTHING, db_column='id_bitacora', blank=True, null=True)
+    nombre = models.CharField()
     descripcion = models.CharField()
-    fecha = models.DateTimeField()
-    hora = models.DateTimeField()
-    prioridad = models.CharField()
+    fecha_hora = models.DateTimeField()
     estado = models.BooleanField()
 
     class Meta:
         managed = False
-        db_table = 'alertas'
+        db_table = 'actividades'
+
+
+class AplicacionMedicamento(models.Model):
+    id_aplicacion = models.AutoField(primary_key=True)
+    id_medicamento_medicamento = models.ForeignKey('TratamientoMedicamento', models.DO_NOTHING, db_column='id_medicamento_medicamento', blank=True, null=True)
+    id_inventario = models.ForeignKey('Inventario', models.DO_NOTHING, db_column='id_inventario', blank=True, null=True)
+    id_usuario = models.ForeignKey('Usuarios', models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
+    fecha_hora = models.DateTimeField()
+    dosis_administrada = models.CharField()
+    via_administracion = models.CharField()
+    estado = models.BooleanField()
+    observacion = models.CharField()
+
+    class Meta:
+        managed = False
+        db_table = 'aplicacion_medicamento'
 
 
 class AplicacionMedicamentos(models.Model):
@@ -48,43 +50,81 @@ class AplicacionMedicamentos(models.Model):
         db_table = 'aplicacion_medicamentos'
 
 
+class AsignacionPacienteCuidador(models.Model):
+    id_asignacion = models.AutoField(primary_key=True)
+    id_paciente = models.ForeignKey('Pacientes', models.DO_NOTHING, db_column='id_paciente', blank=True, null=True)
+    id_usuario = models.ForeignKey('Usuarios', models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
+    fecha_inicio = models.DateTimeField()
+    fecha_fin = models.DateTimeField()
+    estado = models.CharField()
+    observaciones = models.CharField()
+
+    class Meta:
+        managed = False
+        db_table = 'asignacion_paciente_cuidador'
+
+
+class AsignacionTurnoUsuario(models.Model):
+    id_asignacion_turno_usuario = models.AutoField(primary_key=True)
+    id_usuario = models.ForeignKey('Usuarios', models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
+    id_turno = models.ForeignKey('Turnos', models.DO_NOTHING, db_column='id_turno', blank=True, null=True)
+    fecha = models.DateField()
+    estado = models.CharField()
+
+    class Meta:
+        managed = False
+        db_table = 'asignacion_turno_usuario'
+
+
 class Bitacora(models.Model):
     id_bitacora = models.AutoField(primary_key=True)
-    accion = models.CharField()
-    modulo = models.CharField()
+    estado = models.BooleanField()
+    tipo_registro = models.CharField()
     descripcion = models.CharField()
-    fecha = models.DateTimeField()
-    hora = models.DateTimeField()
+    fecha_hora = models.DateTimeField()
+    id_usuario = models.ForeignKey('Usuarios', models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
+    id_paciente = models.ForeignKey('Pacientes', models.DO_NOTHING, db_column='id_paciente', blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'bitacora'
 
 
-class Cuidados(models.Model):
-    id_cuidado = models.AutoField(primary_key=True)
-    detalle = models.CharField()
-    fecha = models.DateTimeField()
-    hora = models.DateTimeField()
-    id_paciente = models.ForeignKey('Pacientes', models.DO_NOTHING, db_column='id_paciente', blank=True, null=True)
+class DetalleEntregaInsumos(models.Model):
+    id_detalle_entrega_insumos = models.AutoField(primary_key=True)
+    id_insumo = models.ForeignKey('Insumos', models.DO_NOTHING, db_column='id_insumo', blank=True, null=True)
+    cantidad = models.IntegerField()
+    fecha_vencimiento = models.DateField()
+    id_entrega_insumo = models.ForeignKey('EntregaInsumo', models.DO_NOTHING, db_column='id_entrega_insumo', blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'cuidados'
+        db_table = 'detalle_entrega_insumos'
 
 
-class Emergencias(models.Model):
-    id_emergencia = models.AutoField(primary_key=True)
-    fecha = models.DateTimeField()
-    causa = models.CharField()
-    urgencia = models.CharField()
-    signos_vitales = models.CharField()
-    registro_fotografico = models.CharField()
-    ambulancia = models.CharField()
+class DetalleEntregaMedicamento(models.Model):
+    id_detalle_entrega_medicamento = models.AutoField(primary_key=True)
+    id_entrega_medica = models.ForeignKey('EntregaMedica', models.DO_NOTHING, db_column='id_entrega_medica', blank=True, null=True)
+    id_medicamentos = models.ForeignKey('Medicamentos', models.DO_NOTHING, db_column='id_medicamentos', blank=True, null=True)
+    cantidad = models.IntegerField()
+    fecha_vencimiento = models.DateField()
 
     class Meta:
         managed = False
-        db_table = 'emergencias'
+        db_table = 'detalle_entrega_medicamento'
+
+
+class Diagnosticos(models.Model):
+    id_diagnostico = models.AutoField(primary_key=True)
+    id_historia_clinica = models.ForeignKey('HistoriaClinicas', models.DO_NOTHING, db_column='id_historia_clinica', blank=True, null=True)
+    id_enfermedad = models.ForeignKey('Enfermedades', models.DO_NOTHING, db_column='id_enfermedad', blank=True, null=True)
+    descripcion = models.CharField()
+    estado = models.BooleanField()
+    fecha_diagnostico = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'diagnosticos'
 
 
 class Enfermedades(models.Model):
@@ -98,16 +138,43 @@ class Enfermedades(models.Model):
         db_table = 'enfermedades'
 
 
-class Eventos(models.Model):
-    id_evento = models.AutoField(primary_key=True)
-    tipo = models.CharField()
-    observacion = models.CharField()
-    fecha = models.DateTimeField()
-    id_paciente = models.ForeignKey('Pacientes', models.DO_NOTHING, db_column='id_paciente', blank=True, null=True)
+class EntregaInsumo(models.Model):
+    id_entrega_insumo = models.AutoField(primary_key=True)
+    fehca_entrega = models.DateTimeField()
+    observaciones = models.CharField()
+    id_usuario = models.ForeignKey('Usuarios', models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'eventos'
+        db_table = 'entrega_insumo'
+
+
+class EntregaMedica(models.Model):
+    id_entrega_medica = models.AutoField(primary_key=True)
+    id_paciente = models.ForeignKey('Pacientes', models.DO_NOTHING, db_column='id_paciente', blank=True, null=True)
+    id_usuario = models.ForeignKey('Usuarios', models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
+    fecha_entrega = models.DateTimeField()
+    observaciones = models.CharField()
+    estado = models.BooleanField()
+
+    class Meta:
+        managed = False
+        db_table = 'entrega_medica'
+
+
+class EventosAdversos(models.Model):
+    id_evento_adverso = models.AutoField(primary_key=True)
+    id_bitacora = models.ForeignKey(Bitacora, models.DO_NOTHING, db_column='id_bitacora', blank=True, null=True)
+    id_evento = models.ForeignKey('TipoEvento', models.DO_NOTHING, db_column='id_evento', blank=True, null=True)
+    id_tipo_emergencia = models.ForeignKey('TipoEmergencia', models.DO_NOTHING, db_column='id_tipo_emergencia', blank=True, null=True)
+    fecha_hora = models.DateTimeField()
+    descripcion = models.CharField()
+    acciones_realizadas = models.CharField()
+    estado = models.CharField()
+
+    class Meta:
+        managed = False
+        db_table = 'eventos_adversos'
 
 
 class HistoriaClinicas(models.Model):
@@ -124,72 +191,87 @@ class HistoriaClinicas(models.Model):
         db_table = 'historia_clinicas'
 
 
-class HorarioMedicamento(models.Model):
-    id_horario = models.AutoField(primary_key=True)
-    hora = models.DateTimeField()
-    estado = models.CharField()
-    observaciones = models.CharField()
-    id_tratamiento = models.ForeignKey('Tratamiento', models.DO_NOTHING, db_column='id_tratamiento', blank=True, null=True)
+class ImagenesEventoAdverso(models.Model):
+    id_imagen = models.AutoField(primary_key=True)
+    id_evento_adverso = models.ForeignKey(EventosAdversos, models.DO_NOTHING, db_column='id_evento_adverso', blank=True, null=True)
+    url_imagen = models.CharField()
+    descripcion = models.CharField()
+    fecha_subida = models.DateTimeField()
 
     class Meta:
         managed = False
-        db_table = 'horario_medicamento'
+        db_table = 'imagenes_evento_adverso'
 
 
-class InventarioInsumos(models.Model):
-    id_innventario_insumos = models.AutoField(primary_key=True)
+class Insumos(models.Model):
+    id_insumo = models.AutoField(primary_key=True)
+    id_tipo_insumo = models.ForeignKey('TipoInsumo', models.DO_NOTHING, db_column='id_tipo_insumo', blank=True, null=True)
     nombre = models.CharField()
-    categoria = models.CharField()
-    cantidad = models.IntegerField()
-    fecha_ingreso = models.DateTimeField()
+    descripcion = models.CharField()
+    unidad_medida = models.CharField()
     estado = models.BooleanField()
 
     class Meta:
         managed = False
-        db_table = 'inventario_\x1finsumos'
+        db_table = 'insumos'
 
 
-class Medicacion(models.Model):
-    id_medicacion = models.AutoField(primary_key=True)
-    dosis = models.CharField()
-    horario = models.CharField()
+class Inventario(models.Model):
+    id_inventario = models.AutoField(primary_key=True)
+    id_paciente = models.ForeignKey('Pacientes', models.DO_NOTHING, db_column='id_paciente', blank=True, null=True)
+    id_medicamentos = models.ForeignKey('Medicamentos', models.DO_NOTHING, db_column='id_medicamentos', blank=True, null=True)
+    cantidad_actual = models.IntegerField()
+    cantidad_minima = models.IntegerField()
+    fecha_ultimo_ingreso = models.DateTimeField()
+    fecha_vencimiento = models.DateField()
+    estado = models.BooleanField()
 
     class Meta:
         managed = False
-        db_table = 'medicacion'
+        db_table = 'inventario'
 
 
 class Medicamentos(models.Model):
     id_medicamentos = models.AutoField(primary_key=True)
     nombre = models.CharField()
-    vencimiento = models.CharField()
-    cantidad = models.CharField()
+    vencimiento = models.DateField()
     descripcion = models.CharField()
+    principio_activo = models.CharField()
+    concentracion = models.CharField()
+    presentacion = models.CharField()
+    estado = models.BooleanField()
+    unidad_medida = models.CharField()
 
     class Meta:
         managed = False
         db_table = 'medicamentos'
 
 
-class Notificaciones(models.Model):
-    id_notificaciones = models.AutoField(primary_key=True)
-    fecha = models.TextField()  # This field type is a guess.
-    mensaje = models.CharField()
-    estado = models.BooleanField()
+class MovimientoInsumo(models.Model):
+    id_movimiento_insumo = models.AutoField(primary_key=True)
+    id_insumo = models.ForeignKey(Insumos, models.DO_NOTHING, db_column='id_insumo', blank=True, null=True)
+    id_detalle_entrega_insumos = models.ForeignKey(DetalleEntregaInsumos, models.DO_NOTHING, db_column='id_detalle_entrega_insumos', blank=True, null=True)
+    tipo_insumo = models.CharField()
+    cantidad = models.IntegerField()
+    fecha_movimiento = models.DateTimeField()
+    observacion = models.CharField()
 
     class Meta:
         managed = False
-        db_table = 'notificaciones'
+        db_table = 'movimiento_insumo'
 
 
-class PacienteEnfermedad(models.Model):
-    id_paciente_enfermedad = models.AutoField(primary_key=True)
-    id_paciente = models.ForeignKey('Pacientes', models.DO_NOTHING, db_column='id_paciente', blank=True, null=True)
-    id_enfermedad = models.ForeignKey(Enfermedades, models.DO_NOTHING, db_column='id_enfermedad', blank=True, null=True)
+class MovimientoMedicamento(models.Model):
+    id_movimiento = models.AutoField(primary_key=True)
+    id_inventario = models.ForeignKey(Inventario, models.DO_NOTHING, db_column='id_inventario', blank=True, null=True)
+    id_detalle_entrega_medicamento = models.ForeignKey(DetalleEntregaMedicamento, models.DO_NOTHING, db_column='id_detalle_entrega_medicamento', blank=True, null=True)
+    cantidad = models.IntegerField()
+    fecha_movimiento = models.DateTimeField()
+    observaciones = models.CharField()
 
     class Meta:
         managed = False
-        db_table = 'paciente_enfermedad'
+        db_table = 'movimiento_medicamento'
 
 
 class Pacientes(models.Model):
@@ -198,27 +280,19 @@ class Pacientes(models.Model):
     apellido = models.CharField()
     eps = models.CharField()
     sede = models.CharField()
-    fecha_nacimiento = models.DateTimeField()
-    cedula = models.IntegerField()
-    edad = models.IntegerField()
     fecha_ingreso = models.DateTimeField()
     habitacion = models.IntegerField()
     responsable = models.CharField()
     id_usuario = models.ForeignKey('Usuarios', models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
+    tipo_documento = models.CharField()
+    numero_documento = models.CharField()
+    fecha_nacimiento = models.DateField()
+    sexo = models.CharField()
+    telefono = models.CharField(blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'pacientes'
-
-
-class Recomendaciones(models.Model):
-    id_recomendacion = models.AutoField(primary_key=True)
-    indicacion = models.CharField()
-    fecha = models.DateTimeField()
-
-    class Meta:
-        managed = False
-        db_table = 'recomendaciones'
 
 
 class Roles(models.Model):
@@ -232,30 +306,56 @@ class Roles(models.Model):
         db_table = 'roles'
 
 
-class StockMedicamentos(models.Model):
-    id_stock_medicamentos = models.AutoField(primary_key=True)
-    cantidad = models.CharField()
-    nombre = models.CharField()
-    fecha_actualizacion = models.CharField()
-    id_medicacion = models.ForeignKey(Medicacion, models.DO_NOTHING, db_column='id_medicacion', blank=True, null=True)
+class SignosVitales(models.Model):
+    id_signos_vitales = models.AutoField(primary_key=True)
+    id_bitacora = models.ForeignKey(Bitacora, models.DO_NOTHING, db_column='id_bitacora', blank=True, null=True)
+    temperatura = models.CharField()
+    presion_sistolica = models.CharField()
+    presion_diastolica = models.CharField()
+    frecuencia_cardiaca = models.CharField()
+    frecuencia_respiratoria = models.CharField()
+    saturacion_oxigeno = models.CharField()
+    peso = models.CharField()
+    fecha_hora = models.DateTimeField()
+    observaciones = models.CharField()
 
     class Meta:
         managed = False
-        db_table = 'stock_medicamentos'
+        db_table = 'signos_vitales'
 
 
-class Tareas(models.Model):
-    id_tareas = models.AutoField(primary_key=True)
-    titulo = models.CharField()
+class TipoEmergencia(models.Model):
+    id_tipo_emergencia = models.AutoField(primary_key=True)
+    nombre = models.CharField()
+    descripcion = models.CharField()
+    nivel = models.CharField()
+    estado = models.BooleanField()
+
+    class Meta:
+        managed = False
+        db_table = 'tipo_emergencia'
+
+
+class TipoEvento(models.Model):
+    id_evento = models.CharField(primary_key=True)
+    nombre = models.CharField()
+    descripcion = models.CharField()
+    estado = models.BooleanField()
+
+    class Meta:
+        managed = False
+        db_table = 'tipo_evento'
+
+
+class TipoInsumo(models.Model):
+    id_tipo_insumo = models.AutoField(primary_key=True)
+    nombre = models.CharField()
     descripcion = models.CharField()
     estado = models.CharField()
-    fecha_creacion = models.CharField()
-    fecha_limite = models.CharField()
-    hora_limite = models.CharField()
 
     class Meta:
         managed = False
-        db_table = 'tareas'
+        db_table = 'tipo_insumo'
 
 
 class Tratamiento(models.Model):
@@ -264,20 +364,41 @@ class Tratamiento(models.Model):
     descripcion = models.CharField()
     dosis = models.CharField()
     frecuencia = models.CharField(blank=True, null=True)
-    id_paciente = models.ForeignKey(Pacientes, models.DO_NOTHING, db_column='id_paciente', blank=True, null=True)
-    id_medicacion = models.ForeignKey(Medicacion, models.DO_NOTHING, db_column='id_medicacion', blank=True, null=True)
+    id_diagnostico = models.ForeignKey(Diagnosticos, models.DO_NOTHING, db_column='id_diagnostico', blank=True, null=True)
+    fecha_inicio = models.DateTimeField()
+    fecha_fin = models.DateTimeField()
+    indicaciones = models.CharField()
 
     class Meta:
         managed = False
         db_table = 'tratamiento'
 
 
+class TratamientoMedicamento(models.Model):
+    id_medicamento_medicamento = models.AutoField(primary_key=True)
+    id_tratamiento = models.ForeignKey(Tratamiento, models.DO_NOTHING, db_column='id_tratamiento', blank=True, null=True)
+    id_medicamentos = models.ForeignKey(Medicamentos, models.DO_NOTHING, db_column='id_medicamentos', blank=True, null=True)
+    dosis = models.CharField()
+    frecuencia = models.CharField()
+    via_administracion = models.CharField()
+    duracion = models.CharField()
+    cantidad_prescrita = models.IntegerField()
+    observaciones = models.CharField()
+    estado = models.BooleanField()
+
+    class Meta:
+        managed = False
+        db_table = 'tratamiento_medicamento'
+
+
 class Turnos(models.Model):
     id_turno = models.AutoField(primary_key=True)
-    fecha = models.CharField()
-    hora_inicio = models.CharField()
-    hora_fin = models.CharField(blank=True, null=True)
+    fecha = models.DateField()
+    hora_inicio = models.TimeField()
+    hora_fin = models.TimeField(blank=True, null=True)
     estado = models.BooleanField()
+    nombre = models.CharField()
+    descripcion = models.CharField()
 
     class Meta:
         managed = False
@@ -285,14 +406,17 @@ class Turnos(models.Model):
 
 
 class Usuarios(models.Model):
-    nombre = models.CharField()
-    apellido = models.CharField()
+    nombres = models.CharField()
+    apellidos = models.CharField()
     correo = models.CharField()
-    contraseña = models.CharField()
-    fecha_ingreso = models.CharField()
+    contrasena = models.CharField()
+    fecha_ingreso = models.DateTimeField()
     estado = models.BooleanField()
     id_usuario = models.AutoField(primary_key=True)
     id_rol = models.ForeignKey(Roles, models.DO_NOTHING, db_column='id_rol', blank=True, null=True)
+    tipo_documento = models.CharField()
+    numero_documento = models.CharField()
+    telefono = models.CharField(blank=True, null=True)
 
     class Meta:
         managed = False
