@@ -17,7 +17,6 @@
   display: block;
   width: 100%;
   min-height: 100vh;
-
   background: var(--bg-primary);
   color: var(--text-primary);
 
@@ -29,7 +28,7 @@
 
 /* =========================================================
    MAIN
-   IMPORTANTE:
+   IMPORTNTE:
    El Layout ya controla el Sidebar y Header.
    Este componente NO debe volver a aplicar margin-left.
 ========================================================= */

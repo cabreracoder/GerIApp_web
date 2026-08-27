@@ -1,13 +1,3 @@
-/*
- * DASHBOARD
- * Usa las variables globales definidas en src/styles.css.
- * No declarar otro :root ni una paleta local en este componente.
- */
-
-/* =========================================================
-   DASHBOARD
-========================================================= */
-
 :host {
   display: block;
   width: 100%;
