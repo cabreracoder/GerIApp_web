@@ -10,6 +10,9 @@ class Actividades(models.Model):
     fecha_hora = models.DateTimeField()
     estado = models.BooleanField()
 
+    def __str__(self):
+        return self.nombre
+
     class Meta:
         managed = False
         db_table = 'actividades'
@@ -26,6 +29,9 @@ class AplicacionMedicamento(models.Model):
     estado = models.BooleanField()
     observacion = models.CharField()
 
+    def __str__(self):
+        return f"Aplicación {self.id_aplicacion}"
+
     class Meta:
         managed = False
         db_table = 'aplicacion_medicamento'
@@ -38,6 +44,9 @@ class AplicacionMedicamentos(models.Model):
     estado = models.CharField()
     observaciones = models.CharField()
     id_usuario = models.ForeignKey('Usuarios', models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
+
+    def __str__(self):
+        return f"Aplicación {self.id_aplicacion}"
 
     class Meta:
         managed = False
@@ -53,6 +62,9 @@ class AsignacionPacienteCuidador(models.Model):
     estado = models.CharField()
     observaciones = models.CharField()
 
+    def __str__(self):
+        return f"Asignación {self.id_asignacion}"
+
     class Meta:
         managed = False
         db_table = 'asignacion_paciente_cuidador'
@@ -64,6 +76,9 @@ class AsignacionTurnoUsuario(models.Model):
     id_turno = models.ForeignKey('Turnos', models.DO_NOTHING, db_column='id_turno', blank=True, null=True)
     fecha = models.DateField()
     estado = models.CharField()
+
+    def __str__(self):
+        return f"Asignación turno {self.id_asignacion_turno_usuario}"
 
     class Meta:
         managed = False
@@ -79,6 +94,9 @@ class Bitacora(models.Model):
     id_usuario = models.ForeignKey('Usuarios', models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
     id_paciente = models.ForeignKey('Pacientes', models.DO_NOTHING, db_column='id_paciente', blank=True, null=True)
 
+    def __str__(self):
+        return f"Bitácora {self.id_bitacora} - {self.tipo_registro}"
+
     class Meta:
         managed = False
         db_table = 'bitacora'
@@ -91,6 +109,9 @@ class DetalleEntregaInsumos(models.Model):
     fecha_vencimiento = models.DateField()
     id_entrega_insumo = models.ForeignKey('EntregaInsumo', models.DO_NOTHING, db_column='id_entrega_insumo', blank=True, null=True)
 
+    def __str__(self):
+        return f"Detalle entrega insumo {self.id_detalle_entrega_insumos}"
+
     class Meta:
         managed = False
         db_table = 'detalle_entrega_insumos'
@@ -102,6 +123,9 @@ class DetalleEntregaMedicamento(models.Model):
     id_medicamentos = models.ForeignKey('Medicamentos', models.DO_NOTHING, db_column='id_medicamentos', blank=True, null=True)
     cantidad = models.IntegerField()
     fecha_vencimiento = models.DateField()
+
+    def __str__(self):
+        return f"Detalle medicamento {self.id_detalle_entrega_medicamento}"
 
     class Meta:
         managed = False
@@ -116,6 +140,9 @@ class Diagnosticos(models.Model):
     estado = models.BooleanField()
     fecha_diagnostico = models.DateTimeField()
 
+    def __str__(self):
+        return f"Diagnóstico {self.id_diagnostico} - {self.descripcion}"
+
     class Meta:
         managed = False
         db_table = 'diagnosticos'
@@ -127,6 +154,9 @@ class Enfermedades(models.Model):
     descripcion = models.CharField()
     estado = models.BooleanField()
 
+    def __str__(self):
+        return self.nombre
+
     class Meta:
         managed = False
         db_table = 'enfermedades'
@@ -137,6 +167,9 @@ class EntregaInsumo(models.Model):
     fehca_entrega = models.DateTimeField()
     observaciones = models.CharField()
     id_usuario = models.ForeignKey('Usuarios', models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
+
+    def __str__(self):
+        return f"Entrega de insumo {self.id_entrega_insumo}"
 
     class Meta:
         managed = False
@@ -150,6 +183,9 @@ class EntregaMedica(models.Model):
     fecha_entrega = models.DateTimeField()
     observaciones = models.CharField()
     estado = models.BooleanField()
+
+    def __str__(self):
+        return f"Entrega médica {self.id_entrega_medica}"
 
     class Meta:
         managed = False
@@ -166,6 +202,9 @@ class EventosAdversos(models.Model):
     acciones_realizadas = models.CharField()
     estado = models.CharField()
 
+    def __str__(self):
+        return f"Evento adverso {self.id_evento_adverso}"
+
     class Meta:
         managed = False
         db_table = 'eventos_adversos'
@@ -180,6 +219,9 @@ class HistoriaClinicas(models.Model):
     estado = models.BooleanField()
     id_paciente = models.ForeignKey('Pacientes', models.DO_NOTHING, db_column='id_paciente', blank=True, null=True)
 
+    def __str__(self):
+        return f"Historia clínica {self.id_historia_clinica}"
+
     class Meta:
         managed = False
         db_table = 'historia_clinicas'
@@ -191,6 +233,9 @@ class ImagenesEventoAdverso(models.Model):
     url_imagen = models.CharField()
     descripcion = models.CharField()
     fecha_subida = models.DateTimeField()
+
+    def __str__(self):
+        return f"Imagen {self.id_imagen}"
 
     class Meta:
         managed = False
@@ -204,6 +249,9 @@ class Insumos(models.Model):
     descripcion = models.CharField()
     unidad_medida = models.CharField()
     estado = models.BooleanField()
+
+    def __str__(self):
+        return self.nombre
 
     class Meta:
         managed = False
@@ -219,6 +267,9 @@ class Inventario(models.Model):
     fecha_ultimo_ingreso = models.DateTimeField()
     fecha_vencimiento = models.DateField()
     estado = models.BooleanField()
+
+    def __str__(self):
+        return f"Inventario {self.id_inventario}"
 
     class Meta:
         managed = False
@@ -236,6 +287,9 @@ class Medicamentos(models.Model):
     estado = models.BooleanField()
     unidad_medida = models.CharField()
 
+    def __str__(self):
+        return self.nombre
+
     class Meta:
         managed = False
         db_table = 'medicamentos'
@@ -250,6 +304,9 @@ class MovimientoInsumo(models.Model):
     fecha_movimiento = models.DateTimeField()
     observacion = models.CharField()
 
+    def __str__(self):
+        return f"Movimiento insumo {self.id_movimiento_insumo}"
+
     class Meta:
         managed = False
         db_table = 'movimiento_insumo'
@@ -262,6 +319,9 @@ class MovimientoMedicamento(models.Model):
     cantidad = models.IntegerField()
     fecha_movimiento = models.DateTimeField()
     observaciones = models.CharField()
+
+    def __str__(self):
+        return f"Movimiento medicamento {self.id_movimiento}"
 
     class Meta:
         managed = False
@@ -284,6 +344,9 @@ class Pacientes(models.Model):
     sexo = models.CharField()
     telefono = models.CharField(blank=True, null=True)
 
+    def __str__(self):
+        return f"{self.nombre} {self.apellido}"
+
     class Meta:
         managed = False
         db_table = 'pacientes'
@@ -294,6 +357,9 @@ class Roles(models.Model):
     nombre = models.CharField()
     descripcion = models.CharField()
     estado = models.BooleanField()
+
+    def __str__(self):
+        return self.nombre
 
     class Meta:
         managed = False
@@ -313,6 +379,9 @@ class SignosVitales(models.Model):
     fecha_hora = models.DateTimeField()
     observaciones = models.CharField()
 
+    def __str__(self):
+        return f"Signos vitales {self.id_signos_vitales}"
+
     class Meta:
         managed = False
         db_table = 'signos_vitales'
@@ -325,6 +394,9 @@ class TipoEmergencia(models.Model):
     nivel = models.CharField()
     estado = models.BooleanField()
 
+    def __str__(self):
+        return self.nombre
+
     class Meta:
         managed = False
         db_table = 'tipo_emergencia'
@@ -336,6 +408,9 @@ class TipoEvento(models.Model):
     descripcion = models.CharField()
     estado = models.BooleanField()
 
+    def __str__(self):
+        return self.nombre
+
     class Meta:
         managed = False
         db_table = 'tipo_evento'
@@ -346,6 +421,9 @@ class TipoInsumo(models.Model):
     nombre = models.CharField()
     descripcion = models.CharField()
     estado = models.CharField()
+
+    def __str__(self):
+        return self.nombre
 
     class Meta:
         managed = False
@@ -362,6 +440,9 @@ class Tratamiento(models.Model):
     fecha_inicio = models.DateTimeField()
     fecha_fin = models.DateTimeField()
     indicaciones = models.CharField()
+
+    def __str__(self):
+        return self.nombre
 
     class Meta:
         managed = False
@@ -380,6 +461,9 @@ class TratamientoMedicamento(models.Model):
     observaciones = models.CharField()
     estado = models.BooleanField()
 
+    def __str__(self):
+        return f"Tratamiento medicamento {self.id_medicamento_medicamento}"
+
     class Meta:
         managed = False
         db_table = 'tratamiento_medicamento'
@@ -393,6 +477,9 @@ class Turnos(models.Model):
     estado = models.BooleanField()
     nombre = models.CharField()
     descripcion = models.CharField()
+
+    def __str__(self):
+        return self.nombre
 
     class Meta:
         managed = False
@@ -412,6 +499,10 @@ class Usuarios(models.Model):
     numero_documento = models.CharField()
     telefono = models.CharField(blank=True, null=True)
 
+    def __str__(self):
+        return f"{self.nombres} {self.apellidos}"
+
     class Meta:
         managed = False
         db_table = 'usuarios'
+        
