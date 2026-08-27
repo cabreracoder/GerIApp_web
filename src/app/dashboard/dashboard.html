@@ -1,12 +1,13 @@
 <main class="canvas">
 
-  <!-- =========================================
+  <!-- =====================================================
        SALUDO
-       ========================================= -->
+  ====================================================== -->
 
-  <section class="greeting">
+  <section class="greet">
 
-    <div class="greeting-left">
+    <div class="gl">
+
       <p class="mono" id="greet-date">—</p>
 
       <h2>
@@ -16,18 +17,31 @@
       <span>
         Fundación Años Maravilloos · Panel de Administración
       </span>
+
     </div>
 
-    <div class="greeting-right">
+    <div class="gr">
 
-      <div class="greeting-date">
-        <p>Fundación Años Maravilloos</p>
-        <p id="greet-date2">—</p>
+      <div class="gd">
+
+        <p>
+          Fundación Años Maravilloos
+        </p>
+
+        <p id="greet-date2">
+          —
+        </p>
+
       </div>
 
-      <button class="btn-ghost" type="button">
-        <span class="ms">download</span>
+      <button class="bg" type="button">
+
+        <span class="ms">
+          download
+        </span>
+
         Reportes
+
       </button>
 
     </div>
@@ -35,29 +49,35 @@
   </section>
 
 
-  <!-- =========================================
+  <!-- =====================================================
        RESUMEN PRINCIPAL
-       ========================================= -->
+  ====================================================== -->
 
-  <section class="grid grid-12 mb-4">
+  <section class="g12 mb4">
 
-    <!-- =======================================
+    <!-- ===================================================
          RESUMEN DE PACIENTES
-         ======================================= -->
+    ==================================================== -->
 
-    <article class="card col-7">
+    <article class="card c7">
 
-      <div class="flex justify-between items-center mb-1">
+      <div class="flex ic jb mb1">
 
-        <span class="card-title">
+        <span class="ct">
           Resumen de Pacientes
         </span>
 
         <span
-          class="mono text-primary"
-          style="font-size: 12px; font-weight: 700;"
+          class="mono"
+          style="
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--color-primary);
+          "
           id="mes-label">
+
           Junio
+
         </span>
 
       </div>
@@ -65,28 +85,28 @@
 
       <!-- Selector de meses -->
 
-      <div class="mb-3">
+      <div class="mb3">
 
-        <div class="month-labels">
+        <div class="ms-l">
 
-          <span class="month-label">ENE</span>
-          <span class="month-label">FEB</span>
-          <span class="month-label">MAR</span>
-          <span class="month-label">ABR</span>
-          <span class="month-label">MAY</span>
-          <span class="month-label active">JUN</span>
+          <span class="ml">ENE</span>
+          <span class="ml">FEB</span>
+          <span class="ml">MAR</span>
+          <span class="ml">ABR</span>
+          <span class="ml">MAY</span>
+          <span class="ml a">JUN</span>
 
         </div>
 
-        <div class="month-slider">
+        <div class="msl">
 
           <div
-            class="month-fill"
+            class="mf"
             style="width: 100%;">
           </div>
 
           <div
-            class="month-thumb"
+            class="mt"
             style="left: 100%;">
           </div>
 
@@ -97,24 +117,24 @@
 
       <!-- Progreso -->
 
-      <div class="mb-4">
+      <div class="mb4">
 
-        <div class="flex justify-between text-xs mb-1">
+        <div class="flex jb txs mb1">
 
-          <span class="text-muted">
+          <span class="tm">
             Progreso de ocupación
           </span>
 
-          <span class="mono font-bold text-primary">
+          <span class="mono fb primary-text">
             80% · 160/200
           </span>
 
         </div>
 
-        <div class="progress-track">
+        <div class="pt">
 
           <div
-            class="progress-fill"
+            class="pf"
             style="width: 80%;">
           </div>
 
@@ -125,48 +145,29 @@
 
       <!-- Estadísticas -->
 
-      <div class="grid grid-4 mb-4" style="gap: 10px;">
+      <div class="stats-grid mb4">
 
         <!-- Total -->
 
-        <div
-          class="stat-chip"
-          style="
-            background: #dbe4ff;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 12px 8px;
-          ">
+        <div class="stat-card patients">
 
-          <div
-            class="stat-chip-icon"
-            style="background: rgba(59,91,219,.18); margin-bottom: 6px;">
+          <div class="stat-icon">
 
-            <span
-              class="ms"
-              style="color: var(--primary); font-size: 18px;">
+            <span class="ms">
               groups
             </span>
 
           </div>
 
-          <div
-            class="stat-chip-val"
-            style="color: var(--primary);">
+          <div class="stat-number">
             160
           </div>
 
-          <div class="stat-chip-label">
+          <div class="stat-label">
             Total Pacientes
           </div>
 
-          <div
-            style="
-              font-size: 10px;
-              font-weight: 700;
-              color: var(--primary);
-            ">
+          <div class="stat-percent">
             80%
           </div>
 
@@ -175,47 +176,25 @@
 
         <!-- Estables -->
 
-        <div
-          class="stat-chip"
-          style="
-            background: #dbeeff;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 12px 8px;
-          ">
+        <div class="stat-card stable">
 
-          <div
-            class="stat-chip-icon"
-            style="
-              background: rgba(77,171,247,.18);
-              margin-bottom: 6px;
-            ">
+          <div class="stat-icon">
 
-            <span
-              class="ms"
-              style="color: #4DABF7; font-size: 18px;">
+            <span class="ms">
               check_circle
             </span>
 
           </div>
 
-          <div
-            class="stat-chip-val"
-            style="color: #4DABF7;">
+          <div class="stat-number">
             105
           </div>
 
-          <div class="stat-chip-label">
+          <div class="stat-label">
             Estables
           </div>
 
-          <div
-            style="
-              font-size: 10px;
-              font-weight: 700;
-              color: #4DABF7;
-            ">
+          <div class="stat-percent">
             66%
           </div>
 
@@ -224,47 +203,25 @@
 
         <!-- Críticos -->
 
-        <div
-          class="stat-chip"
-          style="
-            background: var(--error-bg);
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 12px 8px;
-          ">
+        <div class="stat-card critical">
 
-          <div
-            class="stat-chip-icon"
-            style="
-              background: rgba(220,53,69,.18);
-              margin-bottom: 6px;
-            ">
+          <div class="stat-icon">
 
-            <span
-              class="ms"
-              style="color: var(--error); font-size: 18px;">
+            <span class="ms">
               warning
             </span>
 
           </div>
 
-          <div
-            class="stat-chip-val"
-            style="color: var(--error);">
+          <div class="stat-number">
             12
           </div>
 
-          <div class="stat-chip-label">
+          <div class="stat-label">
             Críticos
           </div>
 
-          <div
-            style="
-              font-size: 10px;
-              font-weight: 700;
-              color: var(--error);
-            ">
+          <div class="stat-percent">
             8%
           </div>
 
@@ -273,47 +230,25 @@
 
         <!-- Altas -->
 
-        <div
-          class="stat-chip"
-          style="
-            background: var(--beige);
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 12px 8px;
-          ">
+        <div class="stat-card discharged">
 
-          <div
-            class="stat-chip-icon"
-            style="
-              background: rgba(125,110,94,.18);
-              margin-bottom: 6px;
-            ">
+          <div class="stat-icon">
 
-            <span
-              class="ms"
-              style="color: #7D6E5E; font-size: 18px;">
+            <span class="ms">
               logout
             </span>
 
           </div>
 
-          <div
-            class="stat-chip-val"
-            style="color: #7D6E5E;">
+          <div class="stat-number">
             9
           </div>
 
-          <div class="stat-chip-label">
+          <div class="stat-label">
             Altas del mes
           </div>
 
-          <div
-            style="
-              font-size: 10px;
-              font-weight: 700;
-              color: #7D6E5E;
-            ">
+          <div class="stat-percent">
             18%
           </div>
 
@@ -324,59 +259,45 @@
 
       <!-- Registros recientes -->
 
-      <div
-        class="text-xs font-bold mono mb-2"
-        style="
-          color: var(--muted);
-          text-transform: uppercase;
-          letter-spacing: .05em;
-        ">
-
-        Registros recientes
-
+      <div class="section-label mb2">
+        REGISTROS RECIENTES
       </div>
 
 
-      <div class="space-y-2">
+      <div class="sy2">
 
         <!-- Martha -->
 
-        <div class="patient-row">
+        <div class="pr">
 
-          <div
-            class="avatar"
-            style="
-              width: 36px;
-              height: 36px;
-              font-size: 13px;
-              background: var(--primary);
-            ">
+          <div class="av primary-avatar">
             MA
           </div>
 
-          <div class="flex-1">
+          <div class="f1">
 
-            <div
-              class="font-semibold"
-              style="font-size: 14px;">
+            <div class="patient-name fs">
               Martha Arango
             </div>
 
-            <div class="text-xs text-muted">
+            <div class="txs tm">
               Hab. 102-A · Doc. 1023847
             </div>
 
           </div>
 
-          <span class="badge badge-stable">
+          <span class="badge bs">
+
             <span
-              class="badge-dot"
+              class="bd"
               style="background: #7D5A4F;">
             </span>
+
             ESTABLE
+
           </span>
 
-          <div class="text-xs text-muted">
+          <div class="txs tm">
             Ana Torres
           </div>
 
@@ -385,42 +306,36 @@
 
         <!-- Beatriz -->
 
-        <div class="patient-row">
+        <div class="pr">
 
-          <div
-            class="avatar"
-            style="
-              width: 36px;
-              height: 36px;
-              font-size: 13px;
-              background: var(--error);
-            ">
+          <div class="av error-avatar">
             BR
           </div>
 
-          <div class="flex-1">
+          <div class="f1">
 
-            <div
-              class="font-semibold"
-              style="font-size: 14px;">
+            <div class="patient-name fs">
               Beatriz Arango
             </div>
 
-            <div class="text-xs text-muted">
+            <div class="txs tm">
               Hab. 108-C · Doc. 9283746
             </div>
 
           </div>
 
-          <span class="badge badge-critical">
+          <span class="badge bc">
+
             <span
-              class="badge-dot"
-              style="background: var(--error);">
+              class="bd"
+              style="background: var(--bg-surface);">
             </span>
+
             CRÍTICO
+
           </span>
 
-          <div class="text-xs text-muted">
+          <div class="txs tm">
             Carlos Rivas
           </div>
 
@@ -429,42 +344,36 @@
 
         <!-- Ricardo -->
 
-        <div class="patient-row">
+        <div class="pr">
 
-          <div
-            class="avatar"
-            style="
-              width: 36px;
-              height: 36px;
-              font-size: 13px;
-              background: #4DABF7;
-            ">
+          <div class="av blue-avatar">
             RS
           </div>
 
-          <div class="flex-1">
+          <div class="f1">
 
-            <div
-              class="font-semibold"
-              style="font-size: 14px;">
+            <div class="patient-name fs">
               Ricardo Soto
             </div>
 
-            <div class="text-xs text-muted">
+            <div class="txs tm">
               Hab. 103-B · Doc. 3847291
             </div>
 
           </div>
 
-          <span class="badge badge-obs">
+          <span class="badge bo">
+
             <span
-              class="badge-dot"
-              style="background: #4DABF7;">
+              class="bd"
+              style="background: var(--bg-surface);">
             </span>
+
             OBSERVACIÓN
+
           </span>
 
-          <div class="text-xs text-muted">
+          <div class="txs tm">
             Lucia Medina
           </div>
 
@@ -473,42 +382,36 @@
 
         <!-- Marta -->
 
-        <div class="patient-row">
+        <div class="pr">
 
-          <div
-            class="avatar"
-            style="
-              width: 36px;
-              height: 36px;
-              font-size: 13px;
-              background: var(--primary);
-            ">
+          <div class="av primary-avatar">
             ML
           </div>
 
-          <div class="flex-1">
+          <div class="f1">
 
-            <div
-              class="font-semibold"
-              style="font-size: 14px;">
+            <div class="patient-name fs">
               Marta López
             </div>
 
-            <div class="text-xs text-muted">
+            <div class="txs tm">
               Hab. 105-A · Doc. 7364819
             </div>
 
           </div>
 
-          <span class="badge badge-stable">
+          <span class="badge bs">
+
             <span
-              class="badge-dot"
+              class="bd"
               style="background: #7D5A4F;">
             </span>
+
             ESTABLE
+
           </span>
 
-          <div class="text-xs text-muted">
+          <div class="txs tm">
             Pedro Salazar
           </div>
 
@@ -517,42 +420,36 @@
 
         <!-- Juan -->
 
-        <div class="patient-row">
+        <div class="pr">
 
-          <div
-            class="avatar"
-            style="
-              width: 36px;
-              height: 36px;
-              font-size: 13px;
-              background: var(--primary);
-            ">
+          <div class="av primary-avatar">
             JV
           </div>
 
-          <div class="flex-1">
+          <div class="f1">
 
-            <div
-              class="font-semibold"
-              style="font-size: 14px;">
+            <div class="patient-name fs">
               Juan Vega
             </div>
 
-            <div class="text-xs text-muted">
+            <div class="txs tm">
               Hab. 110-B · Doc. 5647382
             </div>
 
           </div>
 
-          <span class="badge badge-stable">
+          <span class="badge bs">
+
             <span
-              class="badge-dot"
+              class="bd"
               style="background: #7D5A4F;">
             </span>
+
             ESTABLE
+
           </span>
 
-          <div class="text-xs text-muted">
+          <div class="txs tm">
             Rosa Gómez
           </div>
 
@@ -563,130 +460,78 @@
     </article>
 
 
-    <!-- =======================================
+    <!-- ===================================================
          GESTIÓN DE CUIDADORES
-         ======================================= -->
+    ==================================================== -->
 
-    <article
-      class="card col-5"
-      style="display: flex; flex-direction: column;">
+    <article class="card c5 caregiver-card">
 
-      <div class="flex justify-between items-center mb-3">
+      <div class="flex ic jb mb3">
 
-        <span class="card-title">
+        <span class="ct">
           Gestión Cuidadores
         </span>
 
-        <span class="badge badge-info">
+        <span class="badge bi">
           24 registrados
         </span>
 
       </div>
 
 
-      <div
-        class="grid grid-3 mb-4"
-        style="gap: 8px;">
+      <div class="g3 mb4">
 
-        <div
-          style="
-            background: #dbeeff;
-            border-radius: 14px;
-            padding: 12px;
-            text-align: center;
-          ">
+        <!-- En turno -->
 
-          <span
-            class="ms"
-            style="
-              color: #4DABF7;
-              font-size: 18px;
-            ">
+        <div class="care-stat blue">
+
+          <span class="ms">
             health_and_safety
           </span>
 
-          <div
-            style="
-              font-size: 20px;
-              font-weight: 700;
-              color: #4DABF7;
-              font-family: 'Manrope', sans-serif;
-              margin-top: 6px;
-            ">
+          <div class="care-number">
             4
           </div>
 
-          <div class="text-xs text-muted">
+          <div class="care-label">
             En turno
           </div>
 
         </div>
 
 
-        <div
-          style="
-            background: var(--beige);
-            border-radius: 14px;
-            padding: 12px;
-            text-align: center;
-          ">
+        <!-- Libres -->
 
-          <span
-            class="ms"
-            style="
-              color: #7D6E5E;
-              font-size: 18px;
-            ">
+        <div class="care-stat beige">
+
+          <span class="ms">
             weekend
           </span>
 
-          <div
-            style="
-              font-size: 20px;
-              font-weight: 700;
-              color: #7D6E5E;
-              font-family: 'Manrope', sans-serif;
-              margin-top: 6px;
-            ">
+          <div class="care-number">
             1
           </div>
 
-          <div class="text-xs text-muted">
+          <div class="care-label">
             Libres
           </div>
 
         </div>
 
 
-        <div
-          style="
-            background: #dbe4ff;
-            border-radius: 14px;
-            padding: 12px;
-            text-align: center;
-          ">
+        <!-- Ingresos -->
 
-          <span
-            class="ms"
-            style="
-              color: var(--primary);
-              font-size: 18px;
-            ">
+        <div class="care-stat primary">
+
+          <span class="ms">
             person_add
           </span>
 
-          <div
-            style="
-              font-size: 20px;
-              font-weight: 700;
-              color: var(--primary);
-              font-family: 'Manrope', sans-serif;
-              margin-top: 6px;
-            ">
+          <div class="care-number">
             8
           </div>
 
-          <div class="text-xs text-muted">
+          <div class="care-label">
             Ingresos
           </div>
 
@@ -695,56 +540,41 @@
       </div>
 
 
-      <div
-        class="space-y-2"
-        style="flex: 1;">
+      <div class="sy2 f1">
 
         <!-- Ana -->
 
-        <div class="cui-row">
+        <div class="cr">
 
-          <div class="relative flex-shrink-0">
+          <div class="rel fs0">
 
-            <div
-              class="avatar"
-              style="
-                background: #4DABF7;
-                width: 40px;
-                height: 40px;
-              ">
+            <div class="caregiver-avatar">
               AT
             </div>
 
-            <span class="cui-status online"></span>
+            <span class="cst on"></span>
 
           </div>
 
-          <div class="flex-1">
+          <div class="f1">
 
-            <div class="font-semibold text-sm">
+            <div class="fs">
               Ana Torres
             </div>
 
-            <div class="text-xs text-muted">
+            <div class="txs tm">
               Cuidado integral
             </div>
 
           </div>
 
-          <div style="text-align: right;">
+          <div class="care-status">
 
-            <span
-              class="badge"
-              style="
-                background: #dbeeff;
-                color: #1a6fb5;
-                display: block;
-                margin-bottom: 2px;
-              ">
+            <span class="badge caregiver-on">
               En turno
             </span>
 
-            <span class="text-xs text-muted mono">
+            <span class="txs tm mono">
               Mañana · 10 pac.
             </span>
 
@@ -755,50 +585,37 @@
 
         <!-- Carlos -->
 
-        <div class="cui-row">
+        <div class="cr">
 
-          <div class="relative flex-shrink-0">
+          <div class="rel fs0">
 
-            <div
-              class="avatar"
-              style="
-                background: #4DABF7;
-                width: 40px;
-                height: 40px;
-              ">
+            <div class="caregiver-avatar">
               CR
             </div>
 
-            <span class="cui-status online"></span>
+            <span class="cst on"></span>
 
           </div>
 
-          <div class="flex-1">
+          <div class="f1">
 
-            <div class="font-semibold text-sm">
+            <div class="fs">
               Carlos Rivas
             </div>
 
-            <div class="text-xs text-muted">
+            <div class="txs tm">
               Fisioterapia
             </div>
 
           </div>
 
-          <div style="text-align: right;">
+          <div class="care-status">
 
-            <span
-              class="badge"
-              style="
-                background: #dbeeff;
-                color: #1a6fb5;
-                display: block;
-                margin-bottom: 2px;
-              ">
+            <span class="badge caregiver-on">
               En turno
             </span>
 
-            <span class="text-xs text-muted mono">
+            <span class="txs tm mono">
               Tarde · 8 pac.
             </span>
 
@@ -809,50 +626,37 @@
 
         <!-- Lucia -->
 
-        <div class="cui-row">
+        <div class="cr">
 
-          <div class="relative flex-shrink-0">
+          <div class="rel fs0">
 
-            <div
-              class="avatar"
-              style="
-                background: #4DABF7;
-                width: 40px;
-                height: 40px;
-              ">
+            <div class="caregiver-avatar">
               LM
             </div>
 
-            <span class="cui-status online"></span>
+            <span class="cst on"></span>
 
           </div>
 
-          <div class="flex-1">
+          <div class="f1">
 
-            <div class="font-semibold text-sm">
+            <div class="fs">
               Lucia Medina
             </div>
 
-            <div class="text-xs text-muted">
+            <div class="txs tm">
               Geriatría
             </div>
 
           </div>
 
-          <div style="text-align: right;">
+          <div class="care-status">
 
-            <span
-              class="badge"
-              style="
-                background: #dbeeff;
-                color: #1a6fb5;
-                display: block;
-                margin-bottom: 2px;
-              ">
+            <span class="badge caregiver-on">
               En turno
             </span>
 
-            <span class="text-xs text-muted mono">
+            <span class="txs tm mono">
               Noche · 12 pac.
             </span>
 
@@ -863,50 +667,37 @@
 
         <!-- Pedro -->
 
-        <div class="cui-row">
+        <div class="cr">
 
-          <div class="relative flex-shrink-0">
+          <div class="rel fs0">
 
-            <div
-              class="avatar"
-              style="
-                background: #4DABF7;
-                width: 40px;
-                height: 40px;
-              ">
+            <div class="caregiver-avatar">
               PS
             </div>
 
-            <span class="cui-status offline"></span>
+            <span class="cst off"></span>
 
           </div>
 
-          <div class="flex-1">
+          <div class="f1">
 
-            <div class="font-semibold text-sm">
+            <div class="fs">
               Pedro Salazar
             </div>
 
-            <div class="text-xs text-muted">
+            <div class="txs tm">
               Cuidado integral
             </div>
 
           </div>
 
-          <div style="text-align: right;">
+          <div class="care-status">
 
-            <span
-              class="badge"
-              style="
-                background: var(--card);
-                color: var(--muted);
-                display: block;
-                margin-bottom: 2px;
-              ">
+            <span class="badge caregiver-off">
               Libre
             </span>
 
-            <span class="text-xs text-muted mono">
+            <span class="txs tm mono">
               Mañana · 9 pac.
             </span>
 
@@ -917,50 +708,37 @@
 
         <!-- Rosa -->
 
-        <div class="cui-row">
+        <div class="cr">
 
-          <div class="relative flex-shrink-0">
+          <div class="rel fs0">
 
-            <div
-              class="avatar"
-              style="
-                background: #4DABF7;
-                width: 40px;
-                height: 40px;
-              ">
+            <div class="caregiver-avatar">
               RG
             </div>
 
-            <span class="cui-status online"></span>
+            <span class="cst on"></span>
 
           </div>
 
-          <div class="flex-1">
+          <div class="f1">
 
-            <div class="font-semibold text-sm">
+            <div class="fs">
               Rosa Gómez
             </div>
 
-            <div class="text-xs text-muted">
+            <div class="txs tm">
               Enfermería
             </div>
 
           </div>
 
-          <div style="text-align: right;">
+          <div class="care-status">
 
-            <span
-              class="badge"
-              style="
-                background: #dbeeff;
-                color: #1a6fb5;
-                display: block;
-                margin-bottom: 2px;
-              ">
+            <span class="badge caregiver-on">
               En turno
             </span>
 
-            <span class="text-xs text-muted mono">
+            <span class="txs tm mono">
               Tarde · 11 pac.
             </span>
 
@@ -971,18 +749,13 @@
       </div>
 
 
-      <div class="flex justify-between pt-3 border-t mt-3">
+      <div class="flex jb pt3 bt mt3">
 
-        <span class="text-xs text-muted">
+        <span class="txs tm">
           Ratio cuidador/paciente
         </span>
 
-        <span
-          class="mono font-bold"
-          style="
-            font-size: 14px;
-            color: var(--primary);
-          ">
+        <span class="mono fb ratio">
           1 : 7
         </span>
 
@@ -993,16 +766,16 @@
   </section>
 
 
-  <!-- =========================================
+  <!-- =====================================================
        ROW 2
        OCUPACIÓN | ANÁLISIS | ALERTAS
-       ========================================= -->
+  ====================================================== -->
 
   <section class="dashboard-grid">
 
-    <!-- =========================================
+    <!-- ===================================================
          OCUPACIÓN
-         ========================================= -->
+    ==================================================== -->
 
     <section class="card occupation-card">
 
@@ -1010,11 +783,11 @@
 
         <div>
 
-          <h2 class="card-title">
+          <h2 class="ct">
             Ocupación
           </h2>
 
-          <p class="card-sub">
+          <p class="cs">
             Progreso de capacidad · Junio
           </p>
 
@@ -1023,22 +796,20 @@
       </div>
 
 
-      <!-- Donut -->
-
       <div class="occupation-content">
 
-        <div class="occ-wrap">
+        <div class="ow">
 
           <svg
             viewBox="0 0 100 100"
-            class="occ-chart">
+            class="occupation-svg">
 
             <circle
               cx="50"
               cy="50"
               r="42"
               fill="none"
-              stroke="#E9ECEF"
+              stroke="var(--bg-neutral-light)"
               stroke-width="10">
             </circle>
 
@@ -1047,21 +818,22 @@
               cy="50"
               r="42"
               fill="none"
-              stroke="#3B5BDB"
+              stroke="var(--color-primary)"
               stroke-width="10"
               stroke-linecap="round"
-              stroke-dasharray="211 264"
-              class="donut-progress">
+              stroke-dasharray="211 264">
             </circle>
 
           </svg>
 
 
-          <div class="occ-center">
+          <div class="oc">
 
-            <strong>80%</strong>
+            <strong class="occupation-percent">
+              80%
+            </strong>
 
-            <span>
+            <span class="occupation-label">
               OCUPADO
             </span>
 
@@ -1084,8 +856,6 @@
 
       </div>
 
-
-      <!-- Información turno -->
 
       <div class="shift-info">
 
@@ -1122,13 +892,13 @@
     </section>
 
 
-    <!-- =========================================
+    <!-- ===================================================
          COLUMNA CENTRAL
-         ========================================= -->
+    ==================================================== -->
 
     <div class="analysis-column">
 
-      <!-- ANÁLISIS DE SALUD -->
+      <!-- Análisis de salud -->
 
       <section class="card health-card">
 
@@ -1136,11 +906,11 @@
 
           <div>
 
-            <h2 class="card-title">
+            <h2 class="ct">
               Análisis de Salud
             </h2>
 
-            <p class="card-sub">
+            <p class="cs">
               Estados clínicos · Junio
             </p>
 
@@ -1155,73 +925,101 @@
 
         <div class="health-grid">
 
-          <div class="health-item critical">
+          <div class="health-item critical-health">
 
             <div class="health-icon">
+
               <span class="ms">
                 emergency
               </span>
+
             </div>
 
             <div>
-              <strong>8</strong>
+
+              <strong class="health-number">
+                8
+              </strong>
+
               <span>
                 Cuidado crítico
               </span>
+
             </div>
 
           </div>
 
 
-          <div class="health-item nominal">
+          <div class="health-item nominal-health">
 
             <div class="health-icon">
+
               <span class="ms">
                 check_circle
               </span>
+
             </div>
 
             <div>
-              <strong>20</strong>
+
+              <strong class="health-number">
+                20
+              </strong>
+
               <span>
                 Nominales
               </span>
+
             </div>
 
           </div>
 
 
-          <div class="health-item observation">
+          <div class="health-item observation-health">
 
             <div class="health-icon">
+
               <span class="ms">
                 visibility
               </span>
+
             </div>
 
             <div>
-              <strong>34</strong>
+
+              <strong class="health-number">
+                34
+              </strong>
+
               <span>
                 Observación
               </span>
+
             </div>
 
           </div>
 
 
-          <div class="health-item discharged">
+          <div class="health-item discharged-health">
 
             <div class="health-icon">
+
               <span class="ms">
                 logout
               </span>
+
             </div>
 
             <div>
-              <strong>9</strong>
+
+              <strong class="health-number">
+                9
+              </strong>
+
               <span>
                 Altas del mes
               </span>
+
             </div>
 
           </div>
@@ -1231,7 +1029,7 @@
       </section>
 
 
-      <!-- TENDENCIA SEMESTRAL -->
+      <!-- Tendencia -->
 
       <section class="card trend-card">
 
@@ -1241,7 +1039,7 @@
             TENDENCIA SEMESTRAL
           </span>
 
-          <span class="trend-chip">
+          <span class="trend-badge">
             +12 vs Enero
           </span>
 
@@ -1306,27 +1104,30 @@
 
 
             <path
-              d="M0,75
-                 L80,66
-                 L160,55
-                 L240,45
-                 L320,34
-                 L400,18
-                 L400,100
-                 L0,100 Z"
+              d="
+                M0,75
+                L80,66
+                L160,55
+                L240,45
+                L320,34
+                L400,18
+                L400,100
+                L0,100
+                Z"
               fill="url(#trendGradient)">
             </path>
 
 
             <path
-              d="M0,75
-                 L80,66
-                 L160,55
-                 L240,45
-                 L320,34
-                 L400,18"
+              d="
+                M0,75
+                L80,66
+                L160,55
+                L240,45
+                L320,34
+                L400,18"
               fill="none"
-              stroke="#3B5BDB"
+              stroke="var(--color-primary)"
               stroke-width="4"
               stroke-linecap="round"
               stroke-linejoin="round">
@@ -1387,52 +1188,69 @@
         </div>
 
 
-        <div class="spark-labels">
+        <div class="sl">
 
-          <span>ENE</span>
-          <span>FEB</span>
-          <span>MAR</span>
-          <span>ABR</span>
-          <span>MAY</span>
-          <span class="active">JUN</span>
+          <span class="slb">
+            ENE
+          </span>
+
+          <span class="slb">
+            FEB
+          </span>
+
+          <span class="slb">
+            MAR
+          </span>
+
+          <span class="slb">
+            ABR
+          </span>
+
+          <span class="slb">
+            MAY
+          </span>
+
+          <span class="slb tp">
+            JUN
+          </span>
 
         </div>
 
 
-        <div class="section-label wellness-title">
+        <div class="section-label mt3 mb3">
           INDICADORES DE BIENESTAR
         </div>
 
 
         <!-- Medicación -->
 
-        <div class="wellness-item">
+        <div class="indicator mb3">
 
-          <div class="wellness-header">
+          <div class="flex jb ic mb1">
 
-            <div class="wellness-name">
+            <div class="flex ic g2p">
 
-              <span class="ms primary">
+              <span class="ms indicator-blue">
                 medication
               </span>
 
-              <span>
+              <span class="txs">
                 Adherencia medicación
               </span>
 
             </div>
 
-            <strong class="primary">
+            <strong class="indicator-value primary-text">
               92%
             </strong>
 
           </div>
 
-          <div class="progress-track">
+          <div class="pt small-progress">
 
             <div
-              class="progress-fill primary-bg"
-              style="width:92%">
+              class="pf"
+              style="width: 92%;">
             </div>
 
           </div>
@@ -1442,33 +1260,33 @@
 
         <!-- Fisioterapia -->
 
-        <div class="wellness-item">
+        <div class="indicator mb3">
 
-          <div class="wellness-header">
+          <div class="flex jb ic mb1">
 
-            <div class="wellness-name">
+            <div class="flex ic g2p">
 
-              <span class="ms secondary">
+              <span class="ms indicator-light-blue">
                 self_improvement
               </span>
 
-              <span>
+              <span class="txs">
                 Asistencia fisioterapia
               </span>
 
             </div>
 
-            <strong class="secondary">
+            <strong class="indicator-value light-blue-text">
               78%
             </strong>
 
           </div>
 
-          <div class="progress-track">
+          <div class="pt small-progress">
 
             <div
-              class="progress-fill secondary-bg"
-              style="width:78%">
+              class="pf light-blue-progress"
+              style="width: 78%;">
             </div>
 
           </div>
@@ -1478,33 +1296,33 @@
 
         <!-- Incidentes -->
 
-        <div class="wellness-item">
+        <div class="indicator">
 
-          <div class="wellness-header">
+          <div class="flex jb ic mb1">
 
-            <div class="wellness-name">
+            <div class="flex ic g2p">
 
-              <span class="ms error">
+              <span class="ms indicator-red">
                 emergency
               </span>
 
-              <span>
+              <span class="txs">
                 Incidentes / total
               </span>
 
             </div>
 
-            <strong class="error">
+            <strong class="indicator-value error-text">
               5%
             </strong>
 
           </div>
 
-          <div class="progress-track">
+          <div class="pt small-progress">
 
             <div
-              class="progress-fill error-bg"
-              style="width:5%">
+              class="pf error-progress"
+              style="width: 5%;">
             </div>
 
           </div>
@@ -1516,9 +1334,9 @@
     </div>
 
 
-    <!-- =========================================
-         ALERTAS DEL SISTEMA
-         ========================================= -->
+    <!-- ===================================================
+         ALERTAS
+    ==================================================== -->
 
     <section class="card alerts-card">
 
@@ -1526,24 +1344,28 @@
 
         <div>
 
-          <h2 class="card-title">
+          <h2 class="ct">
             Alertas del Sistema
           </h2>
 
-          <p class="card-sub">
+          <p class="cs">
             3 sin leer · 7 total
           </p>
 
         </div>
 
 
-        <div class="notification-icon">
+        <div class="alert-icon-container">
 
-          <span class="ms">
-            notifications_active
-          </span>
+          <div class="alert-icon">
 
-          <span class="notification-count">
+            <span class="ms">
+              notifications_active
+            </span>
+
+          </div>
+
+          <span class="alert-count">
             3
           </span>
 
@@ -1554,49 +1376,55 @@
 
       <!-- Resumen -->
 
-      <div class="alerts-summary">
+      <div class="g3 mb3">
 
-        <div class="alert-summary critical">
+        <div class="alert-stat critical-alert">
 
           <span class="ms">
             emergency
           </span>
 
-          <strong>2</strong>
+          <div>
+            2
+          </div>
 
-          <small>
+          <span>
             Críticas
-          </small>
+          </span>
 
         </div>
 
 
-        <div class="alert-summary warning">
+        <div class="alert-stat warning-alert">
 
           <span class="ms">
             warning
           </span>
 
-          <strong>2</strong>
+          <div>
+            2
+          </div>
 
-          <small>
+          <span>
             Avisos
-          </small>
+          </span>
 
         </div>
 
 
-        <div class="alert-summary info">
+        <div class="alert-stat info-alert">
 
           <span class="ms">
             info
           </span>
 
-          <strong>3</strong>
+          <div>
+            3
+          </div>
 
-          <small>
+          <span>
             Info
-          </small>
+          </span>
 
         </div>
 
@@ -1605,23 +1433,25 @@
 
       <!-- Lista -->
 
-      <div class="alert-list">
+      <div class="alerts-list sy2">
 
-        <div class="alert-item critical">
+        <!-- Crítica -->
 
-          <span class="ms alert-item-icon">
+        <div class="ni ncr">
+
+          <span class="ms alert-symbol">
             emergency
           </span>
 
           <div class="alert-content">
 
-            <strong>
+            <div class="alert-title">
               Estado Crítico: Beatriz Arango
-            </strong>
+            </div>
 
-            <p>
+            <div class="alert-description">
               SpO₂ bajo 88%. Requiere atención inmediata.
-            </p>
+            </div>
 
           </div>
 
@@ -1634,21 +1464,23 @@
         </div>
 
 
-        <div class="alert-item warning">
+        <!-- Medicación -->
 
-          <span class="ms alert-item-icon">
+        <div class="ni nw">
+
+          <span class="ms alert-symbol">
             medication
           </span>
 
           <div class="alert-content">
 
-            <strong>
+            <div class="alert-title">
               Medicación pendiente – Sala 108-C
-            </strong>
+            </div>
 
-            <p>
+            <div class="alert-description">
               Marta Soto: Metformina 850mg aún no suministrada.
-            </p>
+            </div>
 
           </div>
 
@@ -1661,21 +1493,23 @@
         </div>
 
 
-        <div class="alert-item info">
+        <!-- Turno -->
 
-          <span class="ms alert-item-icon">
+        <div class="ni nif">
+
+          <span class="ms alert-symbol">
             calendar_month
           </span>
 
           <div class="alert-content">
 
-            <strong>
+            <div class="alert-title">
               Turno confirmado: Dra. Martha Luz
-            </strong>
+            </div>
 
-            <p>
+            <div class="alert-description">
               Guardia nocturna 20:00 – 06:00 confirmada.
-            </p>
+            </div>
 
           </div>
 
@@ -1688,21 +1522,23 @@
         </div>
 
 
-        <div class="alert-item warning read">
+        <!-- Stock -->
 
-          <span class="ms alert-item-icon">
+        <div class="ni nw nr">
+
+          <span class="ms alert-symbol">
             inventory_2
           </span>
 
           <div class="alert-content">
 
-            <strong>
+            <div class="alert-title">
               Stock crítico: Gasas estériles
-            </strong>
+            </div>
 
-            <p>
+            <div class="alert-description">
               Quedan solo 12 unidades. Pedido sugerido.
-            </p>
+            </div>
 
           </div>
 
@@ -1713,21 +1549,23 @@
         </div>
 
 
-        <div class="alert-item info read">
+        <!-- Nuevo cuidador -->
 
-          <span class="ms alert-item-icon">
+        <div class="ni nif nr">
+
+          <span class="ms alert-symbol">
             person_add
           </span>
 
           <div class="alert-content">
 
-            <strong>
+            <div class="alert-title">
               Nuevo cuidador registrado
-            </strong>
+            </div>
 
-            <p>
+            <div class="alert-description">
               Juan Vela fue incorporado al sistema.
-            </p>
+            </div>
 
           </div>
 
@@ -1738,21 +1576,23 @@
         </div>
 
 
-        <div class="alert-item info read">
+        <!-- Reporte -->
 
-          <span class="ms alert-item-icon">
+        <div class="ni nif nr">
+
+          <span class="ms alert-symbol">
             description
           </span>
 
           <div class="alert-content">
 
-            <strong>
+            <div class="alert-title">
               Reporte mensual generado
-            </strong>
+            </div>
 
-            <p>
+            <div class="alert-description">
               #REP-0922 listo para descarga.
-            </p>
+            </div>
 
           </div>
 
@@ -1763,21 +1603,23 @@
         </div>
 
 
-        <div class="alert-item critical read">
+        <!-- Caída -->
 
-          <span class="ms alert-item-icon">
+        <div class="ni ncr nr">
+
+          <span class="ms alert-symbol">
             warning
           </span>
 
           <div class="alert-content">
 
-            <strong>
+            <div class="alert-title">
               Alerta caída: Ricardo Mendoza S.
-            </strong>
+            </div>
 
-            <p>
+            <div class="alert-description">
               Sensor de movimiento activado en Hab. 104.
-            </p>
+            </div>
 
           </div>
 
