@@ -1,18 +1,3 @@
-/* =========================================================
-   ENCARGADOS
-
-   Este componente vive dentro del Layout.
-   El Sidebar y Header son responsabilidad del Layout.
-
-   Las variables de colores, tipografía, espaciados,
-   bordes y sombras vienen de src/styles.css.
-========================================================= */
-
-
-/* =========================================================
-   HOST
-========================================================= */
-
 :host {
   display: block;
   box-sizing: border-box;
