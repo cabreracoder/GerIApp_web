@@ -1,3 +1,4 @@
+
 <main class="configuracion-page">
 
   <!-- =====================================================
@@ -11,43 +12,355 @@
     </h2>
 
     <p class="configuracion-subtitle">
-      Configuración general de la aplicación.
+      Preferencias del sistema y cuenta de administrador
     </p>
 
   </div>
 
 
   <!-- =====================================================
-       CONTENIDO
+       PERFIL DE ADMINISTRADOR
   ====================================================== -->
 
-  <div class="configuracion-card">
+  <section class="configuracion-card">
 
-    <!-- ICONO -->
-
-    <div class="configuracion-icon">
+    <div class="configuracion-section-title">
 
       <span class="material-symbols-outlined">
-        settings
+        manage_accounts
       </span>
 
-    </div>
-
-
-    <!-- INFORMACIÓN -->
-
-    <div class="configuracion-content">
-
       <h3>
-        Configuración general
+        Perfil de Administrador
       </h3>
 
-      <p>
-        Aquí construiremos las opciones de configuración.
-      </p>
+    </div>
+
+
+    <!-- PERFIL -->
+
+    <div class="configuracion-profile-row">
+
+      <div class="configuracion-avatar-lg">
+        JC
+      </div>
+
+      <div class="configuracion-profile-info">
+
+        <div class="configuracion-profile-name">
+          Jose Cabrera
+        </div>
+
+        <div class="configuracion-profile-meta">
+          Administrador General · j.cabrera@fundacion.org
+        </div>
+
+      </div>
+
+      <button
+        type="button"
+        class="configuracion-btn-secondary">
+        Cambiar foto
+      </button>
 
     </div>
 
-  </div>
+
+    <!-- CAMPOS -->
+
+    <div class="configuracion-form-grid">
+
+      <div class="configuracion-form-field">
+
+        <label for="configuracionNombre">
+          Nombre Completo
+        </label>
+
+        <input
+          id="configuracionNombre"
+          type="text"
+          value="Jose Cabrera" />
+
+      </div>
+
+
+      <div class="configuracion-form-field">
+
+        <label for="configuracionEmail">
+          Correo Electrónico
+        </label>
+
+        <input
+          id="configuracionEmail"
+          type="email"
+          value="j.cabrera@fundacion.org" />
+
+      </div>
+
+
+      <div class="configuracion-form-field">
+
+        <label for="configuracionTelefono">
+          Teléfono
+        </label>
+
+        <input
+          id="configuracionTelefono"
+          type="tel"
+          value="+502 5555 0001" />
+
+      </div>
+
+
+      <div class="configuracion-form-field">
+
+        <label for="configuracionCargo">
+          Cargo
+        </label>
+
+        <input
+          id="configuracionCargo"
+          type="text"
+          value="Administrador General" />
+
+      </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <div class="configuracion-card-footer">
+
+      <div class="configuracion-success-msg">
+
+        <span class="material-symbols-outlined">
+          check_circle
+        </span>
+
+        Cambios guardados correctamente
+
+      </div>
+
+
+      <button
+        type="button"
+        class="configuracion-btn-primary">
+
+        <span class="configuracion-spinner"></span>
+
+        <span class="configuracion-btn-label">
+          Guardar cambios
+        </span>
+
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       PREFERENCIAS DE NOTIFICACIONES
+  ====================================================== -->
+
+  <section class="configuracion-card">
+
+    <div class="configuracion-section-title">
+
+      <span class="material-symbols-outlined">
+        notifications_active
+      </span>
+
+      <h3>
+        Preferencias de Notificaciones
+      </h3>
+
+    </div>
+
+
+    <div class="configuracion-toggle-list">
+
+      <!-- CORREO -->
+
+      <div class="configuracion-toggle-row">
+
+        <div class="configuracion-toggle-info">
+
+          <div class="configuracion-toggle-label">
+            Notificaciones por correo
+          </div>
+
+          <div class="configuracion-toggle-desc">
+            Recibir alertas en el correo registrado
+          </div>
+
+        </div>
+
+
+        <label class="configuracion-toggle-switch">
+
+          <input
+            type="checkbox"
+            checked />
+
+          <span class="configuracion-toggle-track"></span>
+
+          <span class="configuracion-toggle-knob"></span>
+
+        </label>
+
+      </div>
+
+
+      <!-- SMS -->
+
+      <div class="configuracion-toggle-row">
+
+        <div class="configuracion-toggle-info">
+
+          <div class="configuracion-toggle-label">
+            Notificaciones por SMS
+          </div>
+
+          <div class="configuracion-toggle-desc">
+            Recibir alertas en el teléfono registrado
+          </div>
+
+        </div>
+
+
+        <label class="configuracion-toggle-switch">
+
+          <input type="checkbox" />
+
+          <span class="configuracion-toggle-track"></span>
+
+          <span class="configuracion-toggle-knob"></span>
+
+        </label>
+
+      </div>
+
+
+      <!-- ALERTAS CRÍTICAS -->
+
+      <div class="configuracion-toggle-row">
+
+        <div class="configuracion-toggle-info">
+
+          <div class="configuracion-toggle-label">
+            Alertas críticas en tiempo real
+          </div>
+
+          <div class="configuracion-toggle-desc">
+            Notificación inmediata ante estado crítico
+          </div>
+
+        </div>
+
+
+        <label class="configuracion-toggle-switch">
+
+          <input
+            type="checkbox"
+            checked />
+
+          <span class="configuracion-toggle-track"></span>
+
+          <span class="configuracion-toggle-knob"></span>
+
+        </label>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       SEGURIDAD
+  ====================================================== -->
+
+  <section class="configuracion-card">
+
+    <div class="configuracion-section-title">
+
+      <span class="material-symbols-outlined">
+        lock
+      </span>
+
+      <h3>
+        Seguridad
+      </h3>
+
+    </div>
+
+
+    <div class="configuracion-security-grid">
+
+      <div class="configuracion-form-field">
+
+        <label for="configuracionPasswordActual">
+          Contraseña actual
+        </label>
+
+        <input
+          id="configuracionPasswordActual"
+          type="password"
+          placeholder="••••••••" />
+
+      </div>
+
+
+      <div class="configuracion-form-field configuracion-form-field-empty">
+      </div>
+
+
+      <div class="configuracion-form-field">
+
+        <label for="configuracionPasswordNueva">
+          Nueva contraseña
+        </label>
+
+        <input
+          id="configuracionPasswordNueva"
+          type="password"
+          placeholder="••••••••" />
+
+      </div>
+
+
+      <div class="configuracion-form-field">
+
+        <label for="configuracionPasswordConfirmar">
+          Confirmar contraseña
+        </label>
+
+        <input
+          id="configuracionPasswordConfirmar"
+          type="password"
+          placeholder="••••••••" />
+
+      </div>
+
+    </div>
+
+
+    <div class="configuracion-security-footer">
+
+      <button
+        type="button"
+        class="configuracion-btn-primary-outline">
+
+        Actualizar contraseña
+
+      </button>
+
+    </div>
+
+  </section>
 
 </main>
+
