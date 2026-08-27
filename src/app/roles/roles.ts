@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RolesService, RolApi } from './roles.service';
 
 interface Permiso {
   label: string;
@@ -32,7 +33,41 @@ interface Rol {
   templateUrl: './roles.html',
   styleUrl: './roles.css'
 })
-export class Roles {
+export class Roles implements OnInit  {
+
+  constructor(private rolesService: RolesService) {}
+
+  ngOnInit(): void {
+  this.cargarRolesDesdeApi();
+}
+cargarRolesDesdeApi(): void {
+  this.rolesService.listarRoles().subscribe({
+    next: (rolesApi: RolApi[]) => {
+      console.log('Roles recibidos desde la API:', rolesApi);
+
+      if (!rolesApi || rolesApi.length === 0) {
+        return;
+      }
+
+      rolesApi.forEach((rolApi: RolApi) => {
+        const rolLocal = this.roles.find(
+          rol => rol.name.toLowerCase() === rolApi.nombre.toLowerCase()
+        );
+
+        if (rolLocal) {
+          rolLocal.description = rolApi.descripcion;
+        }
+      });
+    },
+
+    error: (error) => {
+      console.warn(
+        'La API de roles no está disponible. Se mantienen los roles locales.',
+        error
+      );
+    }
+  });
+}
 
   // =========================================================
   // PERMISOS DISPONIBLES
@@ -179,6 +214,18 @@ export class Roles {
   ultimoRegistroAuditoria: string = 'Sin modificaciones recientes en esta sesión.';
 
   // =========================================================
+  // CREAR NUEVO ROL
+  // =========================================================
+
+  mostrarFormularioRol: boolean = false;
+
+  nuevoRol = {
+  nombre: '',
+  descripcion: '',
+  permisos: [] as string[]
+  };
+
+  // =========================================================
   // OBTENER ROL SELECCIONADO
   // =========================================================
 
@@ -225,6 +272,103 @@ export class Roles {
     this.selectedRole = name;
     this.mensajeError = '';
     this.mensajeExito = '';
+  }
+  abrirNuevoRol(): void {
+  this.mostrarFormularioRol = true;
+
+  this.nuevoRol = {
+  nombre: '',
+  descripcion: '',
+  permisos: []
+  };
+
+  this.mensajeError = '';
+  this.mensajeExito = '';
+  }
+
+  cerrarFormularioRol(): void {
+  this.mostrarFormularioRol = false;
+  }
+
+  crearRol(): void {
+  // Validar nombre
+  if (!this.nuevoRol.nombre.trim()) {
+    this.mensajeError = 'Debe ingresar un nombre para el rol.';
+    this.mensajeExito = '';
+    return;
+  }
+
+  // Validar descripción
+  if (!this.nuevoRol.descripcion.trim()) {
+    this.mensajeError = 'Debe ingresar una descripción para el rol.';
+    this.mensajeExito = '';
+    return;
+  }
+
+  // Validar permisos
+  if (this.nuevoRol.permisos.length === 0) {
+    this.mensajeError = 'Debe seleccionar al menos un permiso.';
+    this.mensajeExito = '';
+    return;
+  }
+
+  // Evitar roles duplicados
+  const rolExiste = this.roles.some(
+    rol => rol.name.toLowerCase() === this.nuevoRol.nombre.trim().toLowerCase()
+  );
+
+  if (rolExiste) {
+    this.mensajeError = 'Ya existe un rol con ese nombre.';
+    this.mensajeExito = '';
+    return;
+  }
+
+  // Crear permisos del nuevo rol
+  const permisosNuevoRol: Permiso[] = this.PERM_LABELS.map(label => ({
+    label,
+    granted: this.nuevoRol.permisos.includes(label)
+  }));
+
+  // Crear el nuevo rol localmente
+  const nuevoRol: Rol = {
+    name: this.nuevoRol.nombre.trim(),
+    color: '#3B5BDB',
+    icon: 'badge',
+    userCount: 0,
+    description: this.nuevoRol.descripcion.trim(),
+    perms: permisosNuevoRol,
+    usuariosAsociados: []
+  };
+
+  // Agregarlo a la lista
+  this.roles.push(nuevoRol);
+
+  // Seleccionar automáticamente el nuevo rol
+  this.selectedRole = nuevoRol.name;
+
+  // Cerrar formulario
+  this.mostrarFormularioRol = false;
+
+  // Limpiar formulario
+  this.nuevoRol = {
+    nombre: '',
+    descripcion: '',
+    permisos: []
+  };
+
+  // Mostrar mensaje
+  this.mensajeError = '';
+  this.mensajeExito = `El rol "${nuevoRol.name}" fue creado correctamente.`;
+
+  // Auditoría local
+  const fechaActual = new Date().toLocaleString();
+  this.ultimoRegistroAuditoria =
+    `Creado el ${fechaActual} por Administrador (Jose Cabrera)`;
+
+  // Ocultar mensaje después de unos segundos
+  setTimeout(() => {
+    this.mensajeExito = '';
+  }, 4000);
   }
 
   // =========================================================
