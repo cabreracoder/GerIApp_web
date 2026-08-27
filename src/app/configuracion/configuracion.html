@@ -5,17 +5,21 @@
        CABECERA
   ====================================================== -->
 
-  <div class="configuracion-header">
+  <header class="configuracion-header">
 
-    <h2 class="configuracion-title">
-      Configuración
-    </h2>
+    <div class="configuracion-header-content">
 
-    <p class="configuracion-subtitle">
-      Preferencias del sistema y cuenta de administrador
-    </p>
+      <h2 class="configuracion-title">
+        Configuración
+      </h2>
 
-  </div>
+      <p class="configuracion-subtitle">
+        Preferencias del sistema y cuenta de administrador
+      </p>
+
+    </div>
+
+  </header>
 
 
   <!-- =====================================================
@@ -79,7 +83,7 @@
         <input
           id="configuracionNombre"
           type="text"
-          value="Jose Cabrera" />
+          value="Jose Cabrera">
 
       </div>
 
@@ -93,7 +97,7 @@
         <input
           id="configuracionEmail"
           type="email"
-          value="j.cabrera@fundacion.org" />
+          value="j.cabrera@fundacion.org">
 
       </div>
 
@@ -107,7 +111,7 @@
         <input
           id="configuracionTelefono"
           type="tel"
-          value="+502 5555 0001" />
+          value="+502 5555 0001">
 
       </div>
 
@@ -121,7 +125,7 @@
         <input
           id="configuracionCargo"
           type="text"
-          value="Administrador General" />
+          value="Administrador General">
 
       </div>
 
@@ -202,7 +206,7 @@
 
           <input
             type="checkbox"
-            checked />
+            checked>
 
           <span class="configuracion-toggle-track"></span>
 
@@ -232,7 +236,8 @@
 
         <label class="configuracion-toggle-switch">
 
-          <input type="checkbox" />
+          <input
+            type="checkbox">
 
           <span class="configuracion-toggle-track"></span>
 
@@ -264,7 +269,7 @@
 
           <input
             type="checkbox"
-            checked />
+            checked>
 
           <span class="configuracion-toggle-track"></span>
 
@@ -300,6 +305,8 @@
 
     <div class="configuracion-security-grid">
 
+      <!-- CONTRASEÑA ACTUAL -->
+
       <div class="configuracion-form-field">
 
         <label for="configuracionPasswordActual">
@@ -309,14 +316,19 @@
         <input
           id="configuracionPasswordActual"
           type="password"
-          placeholder="••••••••" />
+          placeholder="••••••••">
 
       </div>
 
 
-      <div class="configuracion-form-field configuracion-form-field-empty">
+      <!-- ESPACIO -->
+
+      <div
+        class="configuracion-form-field configuracion-form-field-empty">
       </div>
 
+
+      <!-- NUEVA CONTRASEÑA -->
 
       <div class="configuracion-form-field">
 
@@ -327,10 +339,12 @@
         <input
           id="configuracionPasswordNueva"
           type="password"
-          placeholder="••••••••" />
+          placeholder="••••••••">
 
       </div>
 
+
+      <!-- CONFIRMAR CONTRASEÑA -->
 
       <div class="configuracion-form-field">
 
@@ -341,12 +355,14 @@
         <input
           id="configuracionPasswordConfirmar"
           type="password"
-          placeholder="••••••••" />
+          placeholder="••••••••">
 
       </div>
 
     </div>
 
+
+    <!-- FOOTER SEGURIDAD -->
 
     <div class="configuracion-security-footer">
 
