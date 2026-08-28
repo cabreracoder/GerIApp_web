@@ -1,3 +1,4 @@
+
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -21,149 +22,397 @@ interface Notificacion {
   styleUrls: ['./notificaciones.css']
 })
 export class Notificaciones {
-  tabActivo: string = 'bandeja';
-  filtroTexto: string = '';
 
-  filtroTipoSeleccionado: string = 'todos';
+  // =========================================================
+  // NAVEGACIÓN
+  // =========================================================
 
-  nuevoDestinatario: string = '';
-  nuevoTipo: 'critica' | 'advertencia' | 'informacion' = 'informacion';
-  nuevoTitulo: string = '';
-  nuevoMensaje: string = '';
+  pestanaActual: string = 'bandeja';
+
+
+  // =========================================================
+  // FILTROS
+  // =========================================================
+
+  textoBusqueda: string = '';
+
+  tipoFiltro: string = 'todos';
+
+
+  // =========================================================
+  // FORMULARIO DE NOTIFICACIÓN
+  // =========================================================
+
+  destinatarioSeleccionado: string = '';
+
+  tipoNotificacion: 'critica' | 'advertencia' | 'informacion' =
+    'informacion';
+
+  tituloNotificacion: string = '';
+
+  mensajeNotificacion: string = '';
+
+
+  // =========================================================
+  // MENSAJES
+  // =========================================================
+
   mensajeError: string = '';
+
   mensajeExito: string = '';
 
-  sistemaActivo: boolean = true;
-  canalEmail: boolean = true;
-  canalSms: boolean = true;
-  canalPush: boolean = true;
-  mensajeConfigExito: string = '';
+  mensajeConfiguracion: string = '';
 
-  listaNotificaciones: Notificacion[] = [
-    {
-      id: 1,
-      titulo: 'Paciente requiere atención médica',
-      mensaje: 'El paciente Carlos Rodríguez presenta signos vitales alterados que requieren valoración.',
-      tipo: 'critica',
-      tiempo: 'Hace 10 minutos',
-      leida: false,
-      icono: 'fa-solid fa-asterisk',
-      destinatario: 'Enfermería'
-    },
-    {
-      id: 2,
-      titulo: 'Medicamento pendiente',
-      mensaje: 'La administración del medicamento de María López está pendiente según el turno.',
-      tipo: 'advertencia',
-      tiempo: 'Hace 25 minutos',
-      leida: false,
-      icono: 'fa-solid fa-pills',
-      destinatario: 'Cuidadores'
-    },
-    {
-      id: 3,
-      titulo: 'Nuevo encargado registrado',
-      mensaje: 'Se ha registrado un nuevo operador en el sistema administrativo.',
-      tipo: 'informacion',
-      tiempo: 'Hace 1 hora',
-      leida: true,
-      icono: 'fa-solid fa-user-plus',
-      destinatario: 'Todos'
-    }
-  ];
 
-  cambiarTab(tab: string) {
-    this.tabActivo = tab;
+  // =========================================================
+  // CONFIGURACIÓN
+  // =========================================================
+
+  notificacionesActivas: boolean = true;
+
+  emailActivo: boolean = true;
+
+  smsActivo: boolean = true;
+
+  notificacionesPushActivas: boolean = true;
+
+
+  // =========================================================
+  // DATOS
+  // =========================================================
+
+  notificaciones: Notificacion[] = [];
+
+
+  // =========================================================
+  // CAMBIAR PESTAÑA
+  // =========================================================
+
+  cambiarPestana(pestana: string): void {
+
+    this.pestanaActual = pestana;
+
     this.mensajeError = '';
+
     this.mensajeExito = '';
+
   }
+
+
+  // =========================================================
+  // RESUMEN
+  // =========================================================
 
   get totalNotificaciones(): number {
-    return this.listaNotificaciones.length;
+
+    return this.notificaciones.length;
+
   }
+
 
   get totalNoLeidas(): number {
-    return this.listaNotificaciones.filter(n => !n.leida).length;
+
+    return this.notificaciones.filter(
+      notificacion => !notificacion.leida
+    ).length;
+
   }
+
 
   get totalCriticas(): number {
-    return this.listaNotificaciones.filter(n => n.tipo === 'critica').length;
+
+    return this.notificaciones.filter(
+      notificacion => notificacion.tipo === 'critica'
+    ).length;
+
   }
+
 
   get totalAdvertencias(): number {
-    return this.listaNotificaciones.filter(n => n.tipo === 'advertencia').length;
+
+    return this.notificaciones.filter(
+      notificacion => notificacion.tipo === 'advertencia'
+    ).length;
+
   }
+
+
+  // =========================================================
+  // CONTADOR DE CARACTERES
+  // =========================================================
 
   get caracteresRestantes(): number {
-    return 300 - (this.nuevoMensaje ? this.nuevoMensaje.length : 0);
+
+    return 300 - this.mensajeNotificacion.length;
+
   }
+
+
+  // =========================================================
+  // FILTRAR NOTIFICACIONES
+  // =========================================================
 
   get notificacionesFiltradas(): Notificacion[] {
-    return this.listaNotificaciones.filter(item => {
-      const matchesText = item.titulo.toLowerCase().includes(this.filtroTexto.toLowerCase()) ||
-                           item.mensaje.toLowerCase().includes(this.filtroTexto.toLowerCase());
-      const matchesType = this.filtroTipoSeleccionado === 'todos' || item.tipo === this.filtroTipoSeleccionado;
-      return matchesText && matchesType;
-    });
+
+    const texto = this.textoBusqueda
+      .toLowerCase()
+      .trim();
+
+    return this.notificaciones.filter(
+      notificacion => {
+
+        const coincideTexto =
+          !texto ||
+          notificacion.titulo
+            .toLowerCase()
+            .includes(texto) ||
+          notificacion.mensaje
+            .toLowerCase()
+            .includes(texto);
+
+        const coincideTipo =
+          this.tipoFiltro === 'todos' ||
+          notificacion.tipo === this.tipoFiltro;
+
+        return coincideTexto && coincideTipo;
+
+      }
+    );
+
   }
 
-  enviarNotificacionManual() {
+
+  // =========================================================
+  // ENVIAR NOTIFICACIÓN
+  // =========================================================
+
+  enviarNotificacionManual(): void {
+
     this.mensajeError = '';
+
     this.mensajeExito = '';
 
-    if (!this.nuevoDestinatario || this.nuevoDestinatario.trim() === '') {
-      this.mensajeError = 'Error: Debe seleccionar un destinatario válido.';
-    }
-   if (!this.nuevoTitulo || this.nuevoTitulo.trim() === '' || !this.nuevoMensaje || this.nuevoMensaje.trim() === '') {
-      this.mensajeError = 'Error: El título y el contenido del mensaje no pueden estar vacíos.';
+
+    // Validar destinatario
+
+    if (!this.destinatarioSeleccionado.trim()) {
+
+      this.mensajeError =
+        'Debe seleccionar un destinatario válido.';
+
       return;
+
     }
 
-    const nueva: Notificacion = {
+
+    // Validar título
+
+    if (!this.tituloNotificacion.trim()) {
+
+      this.mensajeError =
+        'Debe ingresar un título para la notificación.';
+
+      return;
+
+    }
+
+
+    // Validar mensaje
+
+    if (!this.mensajeNotificacion.trim()) {
+
+      this.mensajeError =
+        'El contenido del mensaje no puede estar vacío.';
+
+      return;
+
+    }
+
+
+    // Crear notificación
+
+    const nuevaNotificacion: Notificacion = {
+
       id: Date.now(),
-      titulo: this.nuevoTitulo.trim(),
-      mensaje: this.nuevoMensaje.trim(),
-      tipo: this.nuevoTipo,
+
+      titulo: this.tituloNotificacion.trim(),
+
+      mensaje: this.mensajeNotificacion.trim(),
+
+      tipo: this.tipoNotificacion,
+
       tiempo: 'Hace un momento',
+
       leida: false,
-      icono: this.nuevoTipo === 'critica' ? 'fa-solid fa-triangle-exclamation' : 'fa-regular fa-bell',
-      destinatario: this.nuevoDestinatario
+
+      icono: this.obtenerIcono(
+        this.tipoNotificacion
+      ),
+
+      destinatario: this.destinatarioSeleccionado
+
     };
 
-    this.listaNotificaciones.unshift(nueva);
-    this.mensajeExito = 'Notificación enviada y registrada con éxito en el historial.';
-    
-    this.nuevoTitulo = '';
-    this.nuevoMensaje = '';
-    this.nuevoDestinatario = '';
+
+    // Agregar la notificación
+
+    this.notificaciones.unshift(
+      nuevaNotificacion
+    );
+
+
+    this.mensajeExito =
+      'Notificación enviada y registrada correctamente.';
+
+
+    // Limpiar formulario
+
+    this.limpiarFormulario();
+
+
+    // Regresar a la bandeja
 
     setTimeout(() => {
-      this.tabActivo = 'bandeja';
+
+      this.pestanaActual = 'bandeja';
+
       this.mensajeExito = '';
+
     }, 1500);
+
   }
 
-  marcarLeida(id: number) {
-    const item = this.listaNotificaciones.find(n => n.id === id);
-    if (item) item.leida = true;
+
+  // =========================================================
+  // OBTENER ICONO
+  // =========================================================
+
+  private obtenerIcono(
+    tipo: 'critica' | 'advertencia' | 'informacion'
+  ): string {
+
+    switch (tipo) {
+
+      case 'critica':
+
+        return 'fa-solid fa-triangle-exclamation';
+
+
+      case 'advertencia':
+
+        return 'fa-solid fa-circle-exclamation';
+
+
+      default:
+
+        return 'fa-regular fa-bell';
+
+    }
+
   }
 
-  marcarTodasLeidas() {
-    this.listaNotificaciones.forEach(n => n.leida = true);
+
+  // =========================================================
+  // LIMPIAR FORMULARIO
+  // =========================================================
+
+  private limpiarFormulario(): void {
+
+    this.tituloNotificacion = '';
+
+    this.mensajeNotificacion = '';
+
+    this.destinatarioSeleccionado = '';
+
+    this.tipoNotificacion = 'informacion';
+
   }
 
-  eliminarNotificacion(id: number) {
-    this.listaNotificaciones = this.listaNotificaciones.filter(n => n.id !== id);
+
+  // =========================================================
+  // MARCAR UNA NOTIFICACIÓN COMO LEÍDA
+  // =========================================================
+
+  marcarLeida(id: number): void {
+
+    const notificacion =
+      this.notificaciones.find(
+        item => item.id === id
+      );
+
+    if (notificacion) {
+
+      notificacion.leida = true;
+
+    }
+
   }
 
-  verDetalle(item: Notificacion) {
-    alert(`Detalle del aviso:\nTítulo: ${item.titulo}\nMensaje: ${item.mensaje}\nDestinatario: ${item.destinatario || 'General'}`);
+
+  // =========================================================
+  // MARCAR TODAS COMO LEÍDAS
+  // =========================================================
+
+  marcarTodasLeidas(): void {
+
+    this.notificaciones.forEach(
+      notificacion => {
+
+        notificacion.leida = true;
+
+      }
+    );
+
   }
 
-  guardarConfiguracionCanales() {
-    this.mensajeConfigExito = 'Configuración de canales y estado almacenada correctamente.';
+
+  // =========================================================
+  // ELIMINAR NOTIFICACIÓN
+  // =========================================================
+
+  eliminarNotificacion(id: number): void {
+
+    this.notificaciones =
+      this.notificaciones.filter(
+        notificacion => notificacion.id !== id
+      );
+
+  }
+
+
+  // =========================================================
+  // VER DETALLE
+  // =========================================================
+
+  verDetalle(notificacion: Notificacion): void {
+
+    alert(
+      `Título: ${notificacion.titulo}\n\n` +
+      `Mensaje: ${notificacion.mensaje}\n\n` +
+      `Destinatario: ${
+        notificacion.destinatario || 'General'
+      }`
+    );
+
+  }
+
+
+  // =========================================================
+  // GUARDAR CONFIGURACIÓN
+  // =========================================================
+
+  guardarConfiguracion(): void {
+
+    this.mensajeConfiguracion =
+      'Configuración de canales guardada correctamente.';
+
+
     setTimeout(() => {
-      this.mensajeConfigExito = '';
+
+      this.mensajeConfiguracion = '';
+
     }, 2500);
+
   }
+
 }
