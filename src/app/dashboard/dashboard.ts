@@ -78,7 +78,7 @@ interface Alerta {
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })
-export class DashboardComponent implements OnInit {
+export class Dashboard implements OnInit {
 
   // =====================================================
   // INFORMACIÓN GENERAL
