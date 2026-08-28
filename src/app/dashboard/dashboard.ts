@@ -6,34 +6,27 @@ interface Mes {
   activo: boolean;
 }
 
-interface Paciente {
+interface PacienteReciente {
+  iniciales: string;
   nombre: string;
   habitacion: string;
   documento: string;
-  iniciales: string;
   estado: string;
-  cuidador: string;
-  avatarClass: string;
   badgeClass: string;
+  avatarClass: string;
   colorEstado: string;
+  cuidador: string;
 }
 
 interface Cuidador {
-  nombre: string;
   iniciales: string;
+  nombre: string;
   especialidad: string;
   estado: string;
-  turno: string;
-  pacientes: number;
   estadoClase: string;
   badgeClass: string;
-}
-
-interface Turno {
-  nombre: string;
-  horaInicio: string;
-  horaFin: string;
-  cuidadores: number;
+  turno: string;
+  pacientes: number;
 }
 
 interface EstadoSalud {
@@ -43,13 +36,9 @@ interface EstadoSalud {
   clase: string;
 }
 
-interface IndicadorBienestar {
+interface MesTendencia {
   nombre: string;
-  porcentaje: number;
-  icono: string;
-  iconoClase: string;
-  valorClase: string;
-  progresoClase: string;
+  activo: boolean;
 }
 
 interface PuntoTendencia {
@@ -57,9 +46,13 @@ interface PuntoTendencia {
   y: number;
 }
 
-interface MesTendencia {
+interface IndicadorBienestar {
   nombre: string;
-  activo: boolean;
+  icono: string;
+  iconoClase: string;
+  porcentaje: number;
+  valorClase: string;
+  progresoClase: string;
 }
 
 interface Alerta {
@@ -71,6 +64,13 @@ interface Alerta {
   noLeida: boolean;
 }
 
+interface Turno {
+  nombre: string;
+  horaInicio: string;
+  horaFin: string;
+  cuidadores: number;
+}
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -78,86 +78,59 @@ interface Alerta {
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })
-export class Dashboard implements OnInit {
+export class DashboardComponent implements OnInit {
 
-  // =====================================================
-  // INFORMACIÓN GENERAL
-  // =====================================================
-
-  nombreAdministrador = '';
-
-  nombreFundacion = '';
+  /* =====================================================
+     INFORMACIÓN DEL DASHBOARD
+  ===================================================== */
 
   fechaActual = '';
+  nombreAdministrador = '';
+  nombreFundacion = '';
 
   mesActual = '';
 
+  /* =====================================================
+     PACIENTES
+  ===================================================== */
 
-  // =====================================================
-  // MESES
-  // =====================================================
+  totalPacientes = 0;
+  pacientesActuales = 0;
+  capacidadMaxima = 0;
 
-  meses: Mes[] = [];
+  pacientesEstables = 0;
+  pacientesCriticos = 0;
+  altasDelMes = 0;
+
+  porcentajeOcupacion = 0;
+  porcentajeEstables = 0;
+  porcentajeCriticos = 0;
+  porcentajeAltas = 0;
 
   progresoMes = 0;
 
+  meses: Mes[] = [];
 
-  // =====================================================
-  // PACIENTES
-  // =====================================================
+  pacientesRecientes: PacienteReciente[] = [];
 
-  totalPacientes = 0;
-
-  pacientesActuales = 0;
-
-  capacidadMaxima = 0;
-
-  porcentajeOcupacion = 0;
-
-  pacientesEstables = 0;
-
-  pacientesCriticos = 0;
-
-  altasDelMes = 0;
-
-  porcentajeEstables = 0;
-
-  porcentajeCriticos = 0;
-
-  porcentajeAltas = 0;
-
-  pacientesRecientes: Paciente[] = [];
-
-
-  // =====================================================
-  // CUIDADORES
-  // =====================================================
+  /* =====================================================
+     CUIDADORES
+  ===================================================== */
 
   totalCuidadores = 0;
-
   cuidadoresEnTurno = 0;
-
   cuidadoresLibres = 0;
-
   ingresosCuidadores = 0;
-
-  ratioCuidadorPaciente = '0 : 0';
 
   cuidadores: Cuidador[] = [];
 
+  ratioCuidadorPaciente = '—';
 
-  // =====================================================
-  // OCUPACIÓN
-  // =====================================================
+  /* =====================================================
+     OCUPACIÓN
+  ===================================================== */
 
   metaOcupacion = 0;
-
-  ocupacionDashArray = '0 264';
-
-
-  // =====================================================
-  // TURNO ACTUAL
-  // =====================================================
 
   turnoActual: Turno = {
     nombre: '',
@@ -166,19 +139,19 @@ export class Dashboard implements OnInit {
     cuidadores: 0
   };
 
+  ocupacionDashArray = '0 263.89';
 
-  // =====================================================
-  // ESTADOS DE SALUD
-  // =====================================================
+  /* =====================================================
+     ANÁLISIS DE SALUD
+  ===================================================== */
 
   estadosSalud: EstadoSalud[] = [];
 
+  /* =====================================================
+     TENDENCIA
+  ===================================================== */
 
-  // =====================================================
-  // TENDENCIA
-  // =====================================================
-
-  tendenciaTexto = '';
+  tendenciaTexto = '—';
 
   mesesTendencia: MesTendencia[] = [];
 
@@ -188,51 +161,43 @@ export class Dashboard implements OnInit {
 
   tendenciaAreaPath = '';
 
-
-  // =====================================================
-  // INDICADORES DE BIENESTAR
-  // =====================================================
+  /* =====================================================
+     INDICADORES DE BIENESTAR
+  ===================================================== */
 
   indicadoresBienestar: IndicadorBienestar[] = [];
 
-
-  // =====================================================
-  // ALERTAS
-  // =====================================================
+  /* =====================================================
+     ALERTAS
+  ===================================================== */
 
   alertasSinLeer = 0;
-
   totalAlertas = 0;
 
   alertasCriticas = 0;
-
   alertasAvisos = 0;
-
   alertasInfo = 0;
 
   alertas: Alerta[] = [];
 
-
-  // =====================================================
-  // INICIO
-  // =====================================================
+  /* =====================================================
+     INICIO
+  ===================================================== */
 
   ngOnInit(): void {
-    this.obtenerFechaActual();
+    this.cargarFechaActual();
+    this.calcularOcupacion();
   }
 
+  /* =====================================================
+     FECHA ACTUAL
+  ===================================================== */
 
-  // =====================================================
-  // FECHA ACTUAL
-  // =====================================================
-
-  private obtenerFechaActual(): void {
-
+  private cargarFechaActual(): void {
     const fecha = new Date();
 
     this.fechaActual = fecha.toLocaleDateString('es-CO', {
-      weekday: 'long',
-      day: 'numeric',
+      day: '2-digit',
       month: 'long',
       year: 'numeric'
     });
@@ -241,145 +206,42 @@ export class Dashboard implements OnInit {
       month: 'long'
     });
 
+    this.mesActual =
+      this.mesActual.charAt(0).toUpperCase() +
+      this.mesActual.slice(1);
   }
 
+  /* =====================================================
+     CÁLCULO DE OCUPACIÓN
+  ===================================================== */
 
-  // =====================================================
-  // CÁLCULO DE OCUPACIÓN
-  // =====================================================
-
-  private calcularPorcentajeOcupacion(): void {
+  private calcularOcupacion(): void {
 
     if (this.capacidadMaxima <= 0) {
       this.porcentajeOcupacion = 0;
+      this.ocupacionDashArray = '0 263.89';
       return;
     }
 
-    this.porcentajeOcupacion =
-      Math.round(
-        (this.pacientesActuales / this.capacidadMaxima) * 100
-      );
+    this.porcentajeOcupacion = Math.round(
+      (this.pacientesActuales / this.capacidadMaxima) * 100
+    );
 
-    this.porcentajeOcupacion =
-      Math.min(this.porcentajeOcupacion, 100);
+    const radio = 42;
+    const circunferencia = 2 * Math.PI * radio;
 
-    this.actualizarOcupacionGrafica();
+    const porcentaje = Math.min(
+      Math.max(this.porcentajeOcupacion, 0),
+      100
+    );
 
-  }
-
-
-  // =====================================================
-  // GRÁFICA DE OCUPACIÓN
-  // =====================================================
-
-  private actualizarOcupacionGrafica(): void {
-
-    const circunferencia = 264;
-
-    const porcentaje =
-      Math.max(0, Math.min(this.porcentajeOcupacion, 100));
-
-    const progreso =
+    const ocupado =
       (porcentaje / 100) * circunferencia;
 
     const restante =
-      circunferencia - progreso;
+      circunferencia - ocupado;
 
     this.ocupacionDashArray =
-      `${progreso} ${restante}`;
-
+      `${ocupado} ${restante}`;
   }
-
-
-  // =====================================================
-  // CÁLCULO DE PORCENTAJES DE PACIENTES
-  // =====================================================
-
-  private calcularPorcentajesPacientes(): void {
-
-    if (this.totalPacientes <= 0) {
-      this.porcentajeEstables = 0;
-      this.porcentajeCriticos = 0;
-      this.porcentajeAltas = 0;
-      return;
-    }
-
-    this.porcentajeEstables =
-      Math.round(
-        (this.pacientesEstables / this.totalPacientes) * 100
-      );
-
-    this.porcentajeCriticos =
-      Math.round(
-        (this.pacientesCriticos / this.totalPacientes) * 100
-      );
-
-    this.porcentajeAltas =
-      Math.round(
-        (this.altasDelMes / this.totalPacientes) * 100
-      );
-
-  }
-
-
-  // =====================================================
-  // CÁLCULO DEL RATIO CUIDADOR / PACIENTE
-  // =====================================================
-
-  private calcularRatioCuidadorPaciente(): void {
-
-    if (this.totalCuidadores <= 0) {
-      this.ratioCuidadorPaciente = '0 : 0';
-      return;
-    }
-
-    this.ratioCuidadorPaciente =
-      `1 : ${Math.ceil(
-        this.totalPacientes / this.totalCuidadores
-      )}`;
-
-  }
-
-
-  // =====================================================
-  // GRÁFICA DE TENDENCIA
-  // =====================================================
-
-  private generarGraficaTendencia(): void {
-
-    if (this.puntosTendencia.length === 0) {
-      this.tendenciaLinePath = '';
-      this.tendenciaAreaPath = '';
-      return;
-    }
-
-    this.tendenciaLinePath =
-      this.puntosTendencia
-        .map((punto, index) => {
-
-          const comando =
-            index === 0 ? 'M' : 'L';
-
-          return `${comando}${punto.x},${punto.y}`;
-
-        })
-        .join(' ');
-
-    const primerPunto =
-      this.puntosTendencia[0];
-
-    const ultimoPunto =
-      this.puntosTendencia[
-        this.puntosTendencia.length - 1
-      ];
-
-    this.tendenciaAreaPath = `
-      ${this.tendenciaLinePath}
-      L${ultimoPunto.x},100
-      L${primerPunto.x},100
-      Z
-    `;
-
-  }
-
 }
