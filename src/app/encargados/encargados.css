@@ -1,3 +1,5 @@
+css
+
 :host {
   display: block;
   box-sizing: border-box;
@@ -46,7 +48,7 @@
   color: var(--text-primary);
 
   font-family: var(--font-heading-family);
-  font-size: var(--font-size-h2);
+  font-size: var(--font-size-h1);
   font-weight: var(--font-weight-bold);
 }
 
@@ -275,6 +277,8 @@
 
   flex-shrink: 0;
 
+  overflow: hidden;
+
   border: 4px solid rgba(255, 255, 255, 0.35);
   border-radius: var(--radius-full);
 
@@ -284,6 +288,13 @@
   font-family: var(--font-heading-family);
   font-size: var(--font-size-h4);
   font-weight: var(--font-weight-bold);
+}
+
+.hero-avatar img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
 }
 
 .hero-info {
@@ -522,6 +533,8 @@ tbody tr:hover {
 
   flex-shrink: 0;
 
+  overflow: hidden;
+
   border-radius: var(--radius-full);
 
   background: var(--color-accent-beige);
@@ -530,6 +543,13 @@ tbody tr:hover {
   font-family: var(--font-heading-family);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
+}
+
+.tbl-avatar img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
 }
 
 .tbl-info {
@@ -600,6 +620,8 @@ tbody tr:hover {
   width: 6px;
   height: 6px;
 
+  flex-shrink: 0;
+
   border-radius: var(--radius-full);
 }
 
@@ -621,6 +643,10 @@ tbody tr:hover {
   align-items: center;
 
   gap: var(--spacing-2xs);
+
+  min-width: 140px;
+
+  flex-wrap: nowrap;
 }
 
 .action-btn {
@@ -629,9 +655,12 @@ tbody tr:hover {
   justify-content: center;
 
   width: 32px;
+  min-width: 32px;
   height: 32px;
 
   padding: 0;
+
+  flex-shrink: 0;
 
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
@@ -647,26 +676,87 @@ tbody tr:hover {
     border-color 0.2s ease;
 }
 
-.action-btn:hover {
-  background: var(--color-secondary);
-  border-color: var(--color-secondary);
+
+/* =========================================================
+   BOTÓN VER DETALLE
+========================================================= */
+
+.action-btn.details {
+  color: var(--color-primary);
+
+  background: var(--bg-surface);
+
+  border-color: var(--border-color);
+}
+
+.action-btn.details:hover {
+  background: var(--color-primary);
+
+  border-color: var(--color-primary);
+
   color: var(--bg-surface);
 }
+
+
+/* =========================================================
+   BOTÓN EDITAR
+========================================================= */
+
+.action-btn:hover {
+  background: var(--color-secondary);
+
+  border-color: var(--color-secondary);
+
+  color: var(--bg-surface);
+}
+
+
+/* =========================================================
+   BOTÓN CAMBIAR ESTADO
+========================================================= */
 
 .action-btn.warn:hover {
   background: var(--color-warning);
+
   border-color: var(--color-warning);
+
   color: var(--bg-surface);
 }
+
+
+/* =========================================================
+   BOTÓN ELIMINAR
+========================================================= */
 
 .action-btn.danger:hover {
   background: var(--color-danger);
+
   border-color: var(--color-danger);
+
   color: var(--bg-surface);
 }
 
+
+/* =========================================================
+   ICONOS DE LOS BOTONES
+========================================================= */
+
 .action-btn .material-symbols-outlined {
   font-size: var(--icon-size-sm);
+}
+
+
+/* =========================================================
+   COLUMNA DE ACCIONES
+========================================================= */
+
+.table-card table th:last-child,
+.table-card table td:last-child {
+  min-width: 155px;
+
+  width: 155px;
+
+  white-space: nowrap;
 }
 
 
@@ -794,6 +884,8 @@ tbody tr:hover {
   padding: var(--spacing-md) var(--spacing-lg);
 
   border-bottom: 1px solid var(--border-color);
+
+  flex-shrink: 0;
 }
 
 .modal-hdr-icon {
@@ -1041,6 +1133,8 @@ tbody tr:hover {
   border-top: 1px solid var(--border-color);
 
   background: var(--bg-neutral-light);
+
+  flex-shrink: 0;
 }
 
 .btn-cancel,
@@ -1199,6 +1293,632 @@ tbody tr:hover {
 
 
 /* =========================================================
+   PERFIL DEL ENCARGADO
+   Estilos exclusivos para el modal de detalles
+========================================================= */
+
+
+/* =========================================================
+   MODAL DE DETALLES
+   Hace que el perfil tenga más espacio horizontal
+   y una apariencia más limpia y organizada.
+========================================================= */
+
+.detalles-overlay {
+  z-index: 1100;
+}
+
+.modal-detalles {
+  width: min(820px, 100%);
+
+  max-height: 92vh;
+
+  border-radius: var(--radius-lg);
+
+  background: var(--bg-surface);
+
+  box-shadow: var(--shadow-lg);
+}
+
+
+/* =========================================================
+   CUERPO DEL PERFIL
+   Separamos visualmente el contenido del encabezado
+   y permitimos desplazamiento independiente.
+========================================================= */
+
+.detalles-body {
+  padding: var(--spacing-lg);
+
+  overflow-y: auto;
+
+  background: var(--bg-surface);
+}
+
+
+/* =========================================================
+   PERFIL PRINCIPAL
+   Contenedor superior con avatar e información básica.
+========================================================= */
+
+.perfil-detalle {
+  display: flex;
+  align-items: center;
+
+  gap: var(--spacing-lg);
+
+  width: 100%;
+
+  padding: var(--spacing-md);
+
+  margin-bottom: var(--spacing-lg);
+
+  background: var(--bg-surface);
+
+  border: 1px solid var(--border-color);
+
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-sm);
+}
+
+
+/* =========================================================
+   AVATAR DEL PERFIL
+   Presentación visual del encargado.
+========================================================= */
+
+.perfil-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 96px;
+  height: 96px;
+
+  flex-shrink: 0;
+
+  overflow: hidden;
+
+  border: 4px solid var(--color-accent-beige);
+
+  border-radius: var(--radius-full);
+
+  background: var(--color-accent-beige);
+
+  color: var(--color-primary);
+
+  font-family: var(--font-heading-family);
+
+  font-size: var(--font-size-h2);
+
+  font-weight: var(--font-weight-bold);
+}
+
+.perfil-avatar img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+}
+
+
+/* =========================================================
+   INFORMACIÓN BÁSICA DEL PERFIL
+========================================================= */
+
+.perfil-info {
+  display: flex;
+  flex-direction: column;
+
+  align-items: flex-start;
+
+  min-width: 0;
+
+  gap: var(--spacing-2xs);
+}
+
+
+/* =========================================================
+   NOMBRE DEL ENCARGADO
+========================================================= */
+
+.perfil-nombre {
+  color: var(--text-primary);
+
+  font-family: var(--font-heading-family);
+
+  font-size: var(--font-size-h2);
+
+  font-weight: var(--font-weight-bold);
+
+  line-height: 1.2;
+}
+
+
+/* =========================================================
+   CARGO
+========================================================= */
+
+.perfil-cargo {
+  color: var(--text-secondary);
+
+  font-size: var(--font-size-sm);
+
+  font-weight: var(--font-weight-bold);
+}
+
+
+/* =========================================================
+   ÁREA
+========================================================= */
+
+.perfil-area {
+  display: inline-flex;
+  align-items: center;
+
+  gap: var(--spacing-xs);
+
+  color: var(--text-primary);
+
+  font-size: var(--font-size-sm);
+}
+
+.perfil-area .material-symbols-outlined {
+  color: var(--color-primary);
+
+  font-size: var(--icon-size-sm);
+}
+
+
+/* =========================================================
+   ESTADO DENTRO DEL PERFIL
+========================================================= */
+
+.detalle-status {
+  margin-top: var(--spacing-xs);
+}
+
+
+/* =========================================================
+   SECCIONES DE INFORMACIÓN
+   Cada bloque funciona como una tarjeta independiente,
+   siguiendo el patrón limpio del formulario.
+========================================================= */
+
+.detalle-section {
+  width: 100%;
+
+  margin-bottom: var(--spacing-md);
+
+  padding: var(--spacing-md);
+
+  background: var(--bg-surface);
+
+  border: 1px solid var(--border-color);
+
+  border-radius: var(--radius-lg);
+}
+
+.detalle-section:last-child {
+  margin-bottom: 0;
+}
+
+
+/* =========================================================
+   TÍTULO DE CADA SECCIÓN
+========================================================= */
+
+.detalle-section-title {
+  display: flex;
+  align-items: center;
+
+  gap: var(--spacing-xs);
+
+  margin-bottom: var(--spacing-md);
+
+  padding-bottom: var(--spacing-sm);
+
+  border-bottom: 1px solid var(--border-color);
+
+  color: var(--text-primary);
+
+  font-family: var(--font-heading-family);
+
+  font-size: var(--font-size-sm);
+
+  font-weight: var(--font-weight-bold);
+}
+
+.detalle-section-title > .material-symbols-outlined {
+  color: var(--color-primary);
+
+  font-size: var(--icon-size-md);
+}
+
+
+/* =========================================================
+   GRID DE INFORMACIÓN
+   Dos columnas en escritorio para aprovechar el espacio.
+========================================================= */
+
+.detalle-grid {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: var(--spacing-sm);
+}
+
+
+/* =========================================================
+   ITEM DE INFORMACIÓN
+   Cada dato funciona como una pequeña tarjeta.
+========================================================= */
+
+.detalle-item {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+
+  min-width: 0;
+
+  min-height: 68px;
+
+  padding: var(--spacing-sm);
+
+  background: var(--bg-neutral-light);
+
+  border: 1px solid var(--border-color);
+
+  border-radius: var(--radius-md);
+}
+
+
+/* =========================================================
+   ETIQUETA DEL DATO
+========================================================= */
+
+.detalle-label {
+  display: block;
+
+  margin-bottom: var(--spacing-xs);
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-size-xs);
+
+  font-weight: var(--font-weight-bold);
+
+  line-height: 1.3;
+}
+
+
+/* =========================================================
+   VALOR DEL DATO
+========================================================= */
+
+.detalle-value {
+  display: flex;
+  align-items: center;
+
+  gap: var(--spacing-xs);
+
+  min-width: 0;
+
+  color: var(--text-primary);
+
+  font-size: var(--font-size-sm);
+
+  font-weight: var(--font-weight-regular);
+
+  line-height: 1.4;
+
+  overflow-wrap: anywhere;
+}
+
+.detalle-value .material-symbols-outlined {
+  flex-shrink: 0;
+
+  color: var(--color-primary);
+
+  font-size: var(--icon-size-sm);
+}
+
+
+/* =========================================================
+   DESCRIPCIÓN DEL CARGO
+========================================================= */
+
+.detalle-description {
+  width: 100%;
+
+  min-height: 80px;
+
+  padding: var(--spacing-md);
+
+  background: var(--bg-neutral-light);
+
+  border: 1px solid var(--border-color);
+
+  border-radius: var(--radius-md);
+
+  color: var(--text-primary);
+
+  font-size: var(--font-size-sm);
+
+  line-height: 1.6;
+
+  white-space: pre-line;
+}
+
+
+/* =========================================================
+   CABECERA DE PACIENTES
+========================================================= */
+
+.pacientes-title {
+  justify-content: space-between;
+}
+
+.pacientes-title-left {
+  display: flex;
+  align-items: center;
+
+  gap: var(--spacing-xs);
+}
+
+
+/* =========================================================
+   CONTADOR DE PACIENTES
+========================================================= */
+
+.pacientes-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 28px;
+  height: 24px;
+
+  padding: 0 var(--spacing-xs);
+
+  border-radius: var(--radius-full);
+
+  background: var(--color-accent-beige);
+
+  color: var(--text-primary);
+
+  font-size: var(--font-size-xs);
+
+  font-weight: var(--font-weight-bold);
+}
+
+
+/* =========================================================
+   LISTA DE PACIENTES
+========================================================= */
+
+.pacientes-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--spacing-sm);
+
+  width: 100%;
+}
+
+
+/* =========================================================
+   TARJETA DE PACIENTE
+========================================================= */
+
+.paciente-card {
+  display: flex;
+  align-items: center;
+
+  gap: var(--spacing-sm);
+
+  width: 100%;
+
+  min-height: 68px;
+
+  padding: var(--spacing-sm);
+
+  background: var(--bg-neutral-light);
+
+  border: 1px solid var(--border-color);
+
+  border-radius: var(--radius-md);
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.paciente-card:hover {
+  background: var(--bg-surface);
+
+  border-color: var(--color-secondary);
+
+  box-shadow: var(--shadow-sm);
+}
+
+
+/* =========================================================
+   AVATAR DEL PACIENTE
+========================================================= */
+
+.paciente-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 44px;
+  height: 44px;
+
+  flex-shrink: 0;
+
+  overflow: hidden;
+
+  border-radius: var(--radius-full);
+
+  background: var(--color-accent-beige);
+
+  color: var(--color-primary);
+
+  font-family: var(--font-heading-family);
+
+  font-size: var(--font-size-xs);
+
+  font-weight: var(--font-weight-bold);
+}
+
+.paciente-avatar img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+}
+
+
+/* =========================================================
+   INFORMACIÓN DEL PACIENTE
+========================================================= */
+
+.paciente-info {
+  flex: 1;
+
+  min-width: 0;
+}
+
+.paciente-name {
+  color: var(--text-primary);
+
+  font-size: var(--font-size-sm);
+
+  font-weight: var(--font-weight-bold);
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+.paciente-documento {
+  margin-top: var(--spacing-2xs);
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-size-xs);
+}
+
+
+/* =========================================================
+   ESTADO DEL PACIENTE
+========================================================= */
+
+.paciente-status {
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   ESTADO VACÍO DE PACIENTES
+========================================================= */
+
+.pacientes-empty {
+  display: flex;
+  align-items: center;
+
+  gap: var(--spacing-md);
+
+  width: 100%;
+
+  padding: var(--spacing-md);
+
+  background: var(--bg-neutral-light);
+
+  border: 1px dashed var(--border-color);
+
+  border-radius: var(--radius-md);
+}
+
+.pacientes-empty > .material-symbols-outlined {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+
+  flex-shrink: 0;
+
+  border-radius: var(--radius-full);
+
+  background: var(--color-accent-beige);
+
+  color: var(--color-primary);
+
+  font-size: var(--icon-size-md);
+}
+
+
+/* =========================================================
+   TEXTO DEL ESTADO VACÍO
+========================================================= */
+
+.pacientes-empty-title {
+  color: var(--text-primary);
+
+  font-size: var(--font-size-sm);
+
+  font-weight: var(--font-weight-bold);
+}
+
+.pacientes-empty-sub {
+  margin-top: var(--spacing-2xs);
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-size-xs);
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   SCROLLBAR DEL PERFIL
+   Hace más limpio el desplazamiento del modal.
+========================================================= */
+
+.detalles-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.detalles-body::-webkit-scrollbar-track {
+  background: var(--bg-neutral-light);
+}
+
+.detalles-body::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+
+  border-radius: var(--radius-full);
+}
+
+.detalles-body::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+
+/* =========================================================
    RESPONSIVE
 ========================================================= */
 
@@ -1212,6 +1932,12 @@ tbody tr:hover {
   .hero-edit-btn {
     position: static;
     margin-bottom: var(--spacing-md);
+  }
+
+  /* PERFIL DEL ENCARGADO */
+
+  .modal-detalles {
+    width: min(760px, 100%);
   }
 }
 
@@ -1257,6 +1983,46 @@ tbody tr:hover {
 
   .form-row {
     grid-template-columns: 1fr;
+  }
+
+
+  /* =======================================================
+     PERFIL DEL ENCARGADO EN TABLET / MÓVIL
+  ======================================================= */
+
+  .detalles-body {
+    padding: var(--spacing-md);
+  }
+
+  .perfil-detalle {
+    align-items: flex-start;
+
+    padding: var(--spacing-md);
+
+    gap: var(--spacing-md);
+  }
+
+  .perfil-avatar {
+    width: 78px;
+    height: 78px;
+
+    font-size: var(--font-size-h3);
+  }
+
+  .perfil-nombre {
+    font-size: var(--font-size-h3);
+  }
+
+  .detalle-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .paciente-card {
+    align-items: flex-start;
+  }
+
+  .paciente-status {
+    margin-left: auto;
   }
 }
 
@@ -1313,4 +2079,744 @@ tbody tr:hover {
     width: 100%;
     min-width: 0;
   }
+
+
+  /* =======================================================
+     PERFIL DEL ENCARGADO EN PANTALLAS PEQUEÑAS
+  ======================================================= */
+
+  .modal-detalles {
+    width: 100%;
+
+    max-height: 95vh;
+  }
+
+  .detalles-body {
+    padding: var(--spacing-sm);
+  }
+
+  .perfil-detalle {
+    flex-direction: column;
+
+    align-items: center;
+
+    text-align: center;
+
+    padding: var(--spacing-md);
+  }
+
+  .perfil-avatar {
+    width: 82px;
+    height: 82px;
+  }
+
+  .perfil-info {
+    align-items: center;
+
+    width: 100%;
+  }
+
+  .perfil-nombre {
+    font-size: var(--font-size-h3);
+
+    text-align: center;
+
+    overflow-wrap: anywhere;
+  }
+
+  .perfil-cargo {
+    text-align: center;
+  }
+
+  .perfil-area {
+    justify-content: center;
+  }
+
+  .detalle-section {
+    padding: var(--spacing-sm);
+  }
+
+  .detalle-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detalle-item {
+    min-height: 62px;
+  }
+
+  .paciente-card {
+    flex-wrap: wrap;
+  }
+
+  .paciente-info {
+    width: calc(100% - 60px);
+  }
+
+  .paciente-status {
+    width: 100%;
+
+    margin-left: 0;
+  }
+
+  .pacientes-empty {
+    align-items: flex-start;
+  }
 }
+/* =========================================================
+   BOTONES DEL ENCABEZADO
+   Mantiene la misma estructura visual del botón principal.
+========================================================= */
+
+.page-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: var(--spacing-sm);
+
+  flex-wrap: wrap;
+}
+
+
+/* =========================================================
+   BOTÓN REGISTRO DE CAMBIOS
+   Utiliza únicamente las variables de color existentes.
+========================================================= */
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: var(--spacing-xs);
+
+  min-height: 42px;
+  padding: 0 var(--spacing-md);
+
+  border: 1px solid var(--color-secondary);
+  border-radius: var(--radius-md);
+
+  background: var(--bg-surface);
+  color: var(--color-primary);
+
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+  color: var(--bg-surface);
+
+  box-shadow: var(--shadow-md);
+
+  transform: translateY(-1px);
+}
+
+.btn-secondary:focus-visible {
+  outline: none;
+
+  box-shadow:
+    0 0 0 3px rgba(77, 171, 247, 0.15),
+    var(--shadow-sm);
+}
+
+.btn-secondary .material-symbols-outlined {
+  font-size: var(--icon-size-md);
+}
+
+
+/* =========================================================
+   CONTADOR DEL BOTÓN REGISTRO DE CAMBIOS
+========================================================= */
+
+.header-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 22px;
+  height: 22px;
+
+  padding: 0 var(--spacing-2xs);
+
+  border-radius: var(--radius-full);
+
+  background: var(--color-accent-beige);
+  color: var(--text-primary);
+
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+
+  line-height: 1;
+}
+
+
+/* =========================================================
+   MODAL REGISTRO DE CAMBIOS
+   Modal independiente para el historial.
+========================================================= */
+
+.registro-overlay {
+  z-index: 1200;
+}
+
+.modal-registro-cambios {
+  width: min(820px, 100%);
+  max-height: 92vh;
+
+  background: var(--bg-surface);
+
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-lg);
+}
+
+
+/* =========================================================
+   CUERPO DEL REGISTRO
+========================================================= */
+
+.registro-body {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--spacing-md);
+
+  overflow-y: auto;
+
+  padding: var(--spacing-lg);
+
+  background: var(--bg-surface);
+}
+
+
+/* =========================================================
+   RESUMEN DEL REGISTRO
+========================================================= */
+
+.registro-resumen {
+  display: flex;
+  align-items: center;
+
+  gap: var(--spacing-md);
+
+  width: 100%;
+
+  padding: var(--spacing-md);
+
+  background: var(--bg-neutral-light);
+
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+}
+
+.registro-resumen-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 46px;
+  height: 46px;
+
+  flex-shrink: 0;
+
+  border-radius: var(--radius-md);
+
+  background: var(--color-accent-beige);
+  color: var(--color-primary);
+}
+
+.registro-resumen-icon .material-symbols-outlined {
+  font-size: var(--icon-size-md);
+}
+
+.registro-resumen-info {
+  min-width: 0;
+}
+
+.registro-resumen-title {
+  color: var(--text-primary);
+
+  font-family: var(--font-heading-family);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.registro-resumen-sub {
+  margin-top: var(--spacing-2xs);
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-size-xs);
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   ESTADO SIN REGISTROS
+========================================================= */
+
+.registro-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 230px;
+
+  padding: var(--spacing-xl);
+
+  background: var(--bg-surface);
+
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+
+  text-align: center;
+}
+
+.registro-empty > .material-symbols-outlined {
+  margin-bottom: var(--spacing-sm);
+
+  color: var(--text-secondary);
+
+  font-size: 44px;
+}
+
+.registro-empty-title {
+  color: var(--text-primary);
+
+  font-family: var(--font-heading-family);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.registro-empty-sub {
+  max-width: 430px;
+
+  margin-top: var(--spacing-xs);
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-size-xs);
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   LISTA DE REGISTROS
+========================================================= */
+
+.registro-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--spacing-sm);
+
+  width: 100%;
+}
+
+
+/* =========================================================
+   TARJETA DE CADA CAMBIO
+========================================================= */
+
+.registro-item {
+  display: flex;
+  align-items: flex-start;
+
+  gap: var(--spacing-md);
+
+  width: 100%;
+
+  padding: var(--spacing-md);
+
+  background: var(--bg-surface);
+
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.registro-item:hover {
+  background: var(--bg-neutral-light);
+
+  border-color: var(--color-secondary);
+
+  box-shadow: var(--shadow-sm);
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   ICONO DEL CAMBIO
+========================================================= */
+
+.registro-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 44px;
+  height: 44px;
+
+  flex-shrink: 0;
+
+  border-radius: var(--radius-full);
+
+  background: var(--color-accent-beige);
+  color: var(--color-primary);
+}
+
+.registro-icon .material-symbols-outlined {
+  font-size: var(--icon-size-md);
+}
+
+
+/* =========================================================
+   COLORES SEMÁNTICOS DEL HISTORIAL
+   Se apoyan en la paleta ya definida por el componente.
+========================================================= */
+
+.registro-icon.creacion {
+  background: var(--color-accent-beige);
+  color: var(--color-primary);
+}
+
+.registro-icon.actualizacion {
+  background: rgba(77, 171, 247, 0.14);
+  color: var(--color-secondary);
+}
+
+.registro-icon.activacion {
+  background: rgba(77, 171, 247, 0.14);
+  color: var(--color-secondary);
+}
+
+.registro-icon.desactivacion {
+  background: var(--bg-neutral-light);
+  color: var(--text-secondary);
+}
+
+.registro-icon.eliminacion {
+  background: rgba(220, 53, 69, 0.10);
+  color: var(--color-danger);
+}
+
+
+/* =========================================================
+   CONTENIDO DEL REGISTRO
+========================================================= */
+
+.registro-content {
+  flex: 1;
+
+  min-width: 0;
+}
+
+
+/* =========================================================
+   PARTE SUPERIOR: ACCIÓN + FECHA
+========================================================= */
+
+.registro-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--spacing-sm);
+
+  width: 100%;
+}
+
+
+/* =========================================================
+   ETIQUETA DE ACCIÓN
+========================================================= */
+
+.registro-accion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 24px;
+
+  padding: var(--spacing-2xs) var(--spacing-sm);
+
+  border-radius: var(--radius-full);
+
+  background: var(--color-accent-beige);
+  color: var(--text-primary);
+
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+
+  white-space: nowrap;
+}
+
+.registro-accion.creacion {
+  background: var(--color-accent-beige);
+  color: var(--text-primary);
+}
+
+.registro-accion.actualizacion {
+  background: rgba(77, 171, 247, 0.14);
+  color: var(--color-primary);
+}
+
+.registro-accion.activacion {
+  background: rgba(77, 171, 247, 0.14);
+  color: var(--color-primary);
+}
+
+.registro-accion.desactivacion {
+  background: var(--bg-neutral-light);
+  color: var(--text-secondary);
+}
+
+.registro-accion.eliminacion {
+  background: rgba(220, 53, 69, 0.10);
+  color: var(--color-danger);
+}
+
+
+/* =========================================================
+   FECHA DEL CAMBIO
+========================================================= */
+
+.registro-fecha {
+  display: inline-flex;
+  align-items: center;
+
+  gap: var(--spacing-2xs);
+
+  flex-shrink: 0;
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-size-xs);
+}
+
+.registro-fecha .material-symbols-outlined {
+  font-size: var(--icon-size-sm);
+}
+
+
+/* =========================================================
+   ENCARGADO AFECTADO
+========================================================= */
+
+.registro-encargado {
+  display: flex;
+  align-items: center;
+
+  gap: var(--spacing-xs);
+
+  margin-top: var(--spacing-sm);
+
+  color: var(--text-primary);
+
+  font-size: var(--font-size-sm);
+}
+
+.registro-encargado .material-symbols-outlined {
+  flex-shrink: 0;
+
+  color: var(--color-primary);
+
+  font-size: var(--icon-size-sm);
+}
+
+.registro-encargado strong {
+  overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   DESCRIPCIÓN DEL CAMBIO
+========================================================= */
+
+.registro-descripcion {
+  margin-top: var(--spacing-xs);
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-size-xs);
+  line-height: 1.6;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   USUARIO QUE REALIZÓ EL CAMBIO
+========================================================= */
+
+.registro-usuario {
+  display: flex;
+  align-items: center;
+
+  gap: var(--spacing-2xs);
+
+  margin-top: var(--spacing-sm);
+  padding-top: var(--spacing-sm);
+
+  border-top: 1px solid var(--border-color);
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-size-xs);
+}
+
+.registro-usuario .material-symbols-outlined {
+  color: var(--color-primary);
+
+  font-size: var(--icon-size-sm);
+}
+
+.registro-usuario strong {
+  color: var(--text-primary);
+}
+
+
+/* =========================================================
+   SCROLLBAR DEL REGISTRO
+========================================================= */
+
+.registro-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.registro-body::-webkit-scrollbar-track {
+  background: var(--bg-neutral-light);
+}
+
+.registro-body::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+
+  border-radius: var(--radius-full);
+}
+
+.registro-body::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+
+/* =========================================================
+   RESPONSIVE DEL REGISTRO
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .page-header-actions {
+    width: 100%;
+
+    justify-content: stretch;
+  }
+
+  .page-header-actions .btn-secondary,
+  .page-header-actions .btn-primary {
+    flex: 1;
+  }
+
+  .modal-registro-cambios {
+    width: 100%;
+    max-height: 95vh;
+  }
+
+  .registro-body {
+    padding: var(--spacing-md);
+  }
+
+  .registro-item {
+    gap: var(--spacing-sm);
+
+    padding: var(--spacing-sm);
+  }
+
+  .registro-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .registro-top {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .registro-fecha {
+    width: 100%;
+  }
+}
+
+
+@media (max-width: 500px) {
+
+  .page-header-actions {
+    flex-direction: column;
+  }
+
+  .page-header-actions .btn-secondary,
+  .page-header-actions .btn-primary {
+    width: 100%;
+    flex: none;
+  }
+
+  .btn-secondary,
+  .btn-primary {
+    min-height: 40px;
+  }
+
+  .registro-body {
+    padding: var(--spacing-sm);
+  }
+
+  .registro-resumen {
+    align-items: flex-start;
+
+    padding: var(--spacing-sm);
+  }
+
+  .registro-resumen-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .registro-item {
+    align-items: flex-start;
+  }
+
+  .registro-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .registro-encargado {
+    align-items: flex-start;
+  }
+
+  .registro-usuario {
+    align-items: flex-start;
+  }
+}
+
+
+
+
+
