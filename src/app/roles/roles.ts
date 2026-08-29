@@ -47,6 +47,24 @@ export class Roles implements OnInit {
     'Descargar Reportes',
     'Configuración del sistema'
   ];
+  // =========================================================
+  // LISTADO GENERAL DE ROLES
+  // =========================================================
+
+  usuariosGeneralesDisponibles: UsuarioAsociado[] = [
+    { id: 1, name: 'Jose Cabrera', email: 'jose.cabrera@fundacion.org', estado: 'activo', avatar: 'JC' },
+    { id: 2, name: 'Ana María Gómez', email: 'ana.gomez@fundacion.org', estado: 'activo', avatar: 'AM' },
+    { id: 3, name: 'Carlos Pérez', email: 'carlos.perez@fundacion.org', estado: 'activo', avatar: 'CP' },
+    { id: 4, name: 'Lucía Benítez', email: 'lucia.benitez@fundacion.org', estado: 'inactivo', avatar: 'LB' },
+    { id: 5, name: 'María López', email: 'maria.lopez@fundacion.org', estado: 'activo', avatar: 'ML' },
+    { id: 6, name: 'Esteban Quito', email: 'esteban.quito@fundacion.org', estado: 'activo', avatar: 'EQ' },
+    { id: 7, name: 'Sofía Vergara', email: 'sofia.vergara@fundacion.org', estado: 'inactivo', avatar: 'SV' },
+    { id: 8, name: 'Mateo Riascos', email: 'mateo.riascos@fundacion.org', estado: 'activo', avatar: 'MR' },
+    { id: 9, name: 'Valeria Jaramillo', email: 'valeria.jaramillo@fundacion.org', estado: 'activo', avatar: 'VJ' },
+    { id: 10, name: 'Andrés Quina', email: 'andres.quina@fundacion.org', estado: 'activo', avatar: 'AQ' },
+    { id: 11, name: 'Alex Rosero', email: 'alex.rosero@fundacion.org', estado: 'inactivo', avatar: 'AR' },
+    { id: 12, name: 'Camila Torres', email: 'camila.torres@fundacion.org', estado: 'activo', avatar: 'CT' }
+  ];
 
   private readonly CONFIGURACION_ROLES: Record<
     string,
