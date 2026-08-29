@@ -1,35 +1,17 @@
 <main class="canvas">
-
-  <!-- =========================================================
-       ENCABEZADO
-  ========================================================== -->
+  <!-- ENCABEZADO -->
 
   <section class="page-header">
-
     <div>
-
-      <h1 class="page-title">
-        Gestión Encargado
-      </h1>
+      <h1 class="page-title">Gestión Encargado</h1>
 
       <p class="page-sub">
-        Responsables de la dirección y administración
-        de la Fundación Geriátrica
+        Responsables de la dirección y administración de la Fundación Geriátrica
       </p>
-
     </div>
 
-
-    <!-- =======================================================
-         BOTONES DEL ENCABEZADO
-    ======================================================== -->
-
     <div class="page-header-actions">
-
-
-      <!-- =====================================================
-           REGISTRO DE CAMBIOS
-      ====================================================== -->
+      <!-- REGISTRO DE CAMBIOS -->
 
       <button
         class="btn-secondary"
@@ -37,99 +19,51 @@
         (click)="abrirRegistroCambios()"
         title="Ver registro de cambios"
       >
-
-        <span class="material-symbols-outlined">
-          history
-        </span>
+        <span class="material-symbols-outlined"> history </span>
 
         Registro de cambios
 
-        <span
-          class="header-count"
-          *ngIf="registrosCambios.length > 0"
-        >
+        <span class="header-count" *ngIf="registrosCambios.length > 0">
           {{ registrosCambios.length }}
         </span>
-
       </button>
 
+      <!-- NUEVO ENCARGADO -->
 
-      <!-- =====================================================
-           NUEVO ENCARGADO
-      ====================================================== -->
-
-      <button
-        class="btn-primary"
-        type="button"
-        (click)="openModal('new')"
-      >
-
-        <span class="material-symbols-outlined">
-          add
-        </span>
+      <button class="btn-primary" type="button" (click)="openModal('new')">
+        <span class="material-symbols-outlined"> add </span>
 
         Nuevo Encargado
-
       </button>
-
     </div>
-
   </section>
 
-
-
-  <!-- =========================================================
-       BUSCADOR
-  ========================================================== -->
+  <!-- BUSCADOR -->
 
   <section class="search-card">
-
-    <span class="material-symbols-outlined search-icon">
-      search
-    </span>
-
+    <span class="material-symbols-outlined search-icon"> search </span>
 
     <input
-      type="text"
-      placeholder="Buscar encargados, cargos, áreas..."
-      aria-label="Buscar encargados"
+      type="search"
+      placeholder="Buscar por documento, nombre o cargo..."
+      aria-label="Buscar encargado"
+      autocomplete="off"
       [(ngModel)]="busqueda"
       (input)="filtrarEncargados()"
-    >
+      (keyup.enter)="filtrarEncargados()"
+    />
 
-
-    <span
-      class="search-count"
-      *ngIf="busqueda"
-    >
-
+    <span class="search-count" *ngIf="busqueda">
       {{ encargadosFiltrados.length }}
 
       resultado{{ encargadosFiltrados.length === 1 ? '' : 's' }}
-
     </span>
-
   </section>
 
+  <!-- ENCARGADO PRINCIPAL -->
 
-
-  <!-- =========================================================
-       ENCARGADO PRINCIPAL
-  ========================================================== -->
-
-  <section
-    class="hero-card"
-    role="region"
-    aria-label="Encargado Principal"
-  >
-
-    <span
-      class="material-symbols-outlined hero-watermark"
-      aria-hidden="true"
-    >
-      verified
-    </span>
-
+  <section class="hero-card" role="region" aria-label="Encargado Principal">
+    <span class="material-symbols-outlined hero-watermark" aria-hidden="true"> verified </span>
 
     <button
       class="hero-edit-btn"
@@ -137,270 +71,142 @@
       (click)="openModal('editPrincipal')"
       title="Editar encargado principal"
     >
-
-      <span class="material-symbols-outlined">
-        edit
-      </span>
+      <span class="material-symbols-outlined"> edit </span>
 
       Editar
-
     </button>
 
-
     <div class="hero-content">
-
-
       <div class="hero-avatar">
-
-        <ng-container
-          *ngIf="encargadoPrincipal.foto; else inicialesPrincipal"
-        >
-
-          <img
-            [src]="encargadoPrincipal.foto"
-            [alt]="'Foto de ' + encargadoPrincipal.nombre"
-          >
-
+        <ng-container *ngIf="encargadoPrincipal.foto; else inicialesPrincipal">
+          <img [src]="encargadoPrincipal.foto" [alt]="'Foto de ' + encargadoPrincipal.nombre" />
         </ng-container>
 
-
         <ng-template #inicialesPrincipal>
-
           {{ encargadoPrincipal.iniciales }}
-
         </ng-template>
-
       </div>
 
-
       <div class="hero-info">
-
         <div class="hero-badge">
-
-          <span class="material-symbols-outlined">
-            workspace_premium
-          </span>
+          <span class="material-symbols-outlined"> workspace_premium </span>
 
           ENCARGADO PRINCIPAL
-
         </div>
-
 
         <div class="hero-name">
-
           {{ encargadoPrincipal.nombre }}
-
         </div>
 
-
         <div class="hero-role">
-
           {{ encargadoPrincipal.cargo }}
 
           ·
 
           {{ encargadoPrincipal.area }}
-
         </div>
-
 
         <div class="hero-desc">
-
           {{ encargadoPrincipal.descripcion }}
-
         </div>
 
-
         <div class="hero-contacts">
-
-
           <div class="hero-contact">
-
-            <span class="material-symbols-outlined">
-              phone
-            </span>
+            <span class="material-symbols-outlined"> phone </span>
 
             <span>
               {{ encargadoPrincipal.telefono }}
             </span>
-
           </div>
 
-
           <div class="hero-contact">
-
-            <span class="material-symbols-outlined">
-              mail
-            </span>
+            <span class="material-symbols-outlined"> mail </span>
 
             <span>
               {{ encargadoPrincipal.email }}
             </span>
-
           </div>
 
-
           <div class="hero-contact">
-
-            <span class="material-symbols-outlined">
-              calendar_month
-            </span>
+            <span class="material-symbols-outlined"> calendar_month </span>
 
             <span>
               {{ encargadoPrincipal.ingresoTexto }}
             </span>
-
           </div>
-
-
         </div>
-
       </div>
-
     </div>
-
   </section>
 
-
-
-  <!-- =========================================================
-       OTROS ENCARGADOS
-  ========================================================== -->
+  <!-- OTROS ENCARGADOS -->
 
   <section class="section-hdr">
-
     <div class="section-title">
+      <span class="material-symbols-outlined"> group </span>
 
-      <span class="material-symbols-outlined">
-        group
-      </span>
-
-      <span>
-        Otros Encargados
-      </span>
-
+      <span> Otros Encargados </span>
     </div>
-
 
     <span class="count-pill">
-
       {{ encargadosFiltrados.length }}
-
     </span>
-
   </section>
 
+  <!-- ESTADO VACÍO -->
 
-
-  <!-- =========================================================
-       ESTADO VACÍO
-  ========================================================== -->
-
-  <section
-    class="empty-state"
-    *ngIf="encargadosFiltrados.length === 0"
-  >
-
-    <span class="material-symbols-outlined">
-      group_off
-    </span>
-
+  <section class="empty-state" *ngIf="encargadosFiltrados.length === 0">
+    <span class="material-symbols-outlined"> group_off </span>
 
     <div class="empty-title">
-      No hay otros encargados
+      {{ busqueda ? 'No se encontró ningún encargado' : 'No hay otros encargados' }}
     </div>
-
 
     <div class="empty-sub">
-      Los encargados adicionales aparecerán aquí.
+      {{
+        busqueda
+          ? 'Verifica el número de documento, nombre o criterio de búsqueda.'
+          : 'Los encargados adicionales aparecerán aquí.'
+      }}
     </div>
-
   </section>
 
+  <!-- TABLA -->
 
-
-  <!-- =========================================================
-       TABLA
-  ========================================================== -->
-
-  <section
-    class="table-card"
-    *ngIf="encargadosFiltrados.length > 0"
-  >
-
+  <section class="table-card" *ngIf="encargadosFiltrados.length > 0">
     <div class="table-wrapper">
-
       <table>
-
         <thead>
-
           <tr>
+            <th>Encargado</th>
 
-            <th>
-              Encargado
-            </th>
+            <th>Cargo</th>
 
-            <th>
-              Cargo
-            </th>
+            <th>Área</th>
 
-            <th>
-              Área
-            </th>
+            <th>Teléfono</th>
 
-            <th>
-              Teléfono
-            </th>
+            <th>Estado</th>
 
-            <th>
-              Estado
-            </th>
-
-            <th>
-              Acciones
-            </th>
-
+            <th>Acciones</th>
           </tr>
-
         </thead>
 
-
         <tbody>
-
-          <tr
-            *ngFor="let encargado of encargadosFiltrados"
-          >
-
-
+          <tr *ngFor="let encargado of encargadosFiltrados">
             <td>
-
               <div class="cell-enc">
-
                 <div class="tbl-avatar">
-
-                  <ng-container
-                    *ngIf="encargado.foto; else inicialesTabla"
-                  >
-
-                    <img
-                      [src]="encargado.foto"
-                      [alt]="'Foto de ' + encargado.nombre"
-                    >
-
+                  <ng-container *ngIf="encargado.foto; else inicialesTabla">
+                    <img [src]="encargado.foto" [alt]="'Foto de ' + encargado.nombre" />
                   </ng-container>
 
-
                   <ng-template #inicialesTabla>
-
                     {{ encargado.iniciales }}
-
                   </ng-template>
-
                 </div>
 
-
                 <div class="tbl-info">
-
                   <div class="tbl-name">
                     {{ encargado.nombre }}
                   </div>
@@ -408,55 +214,38 @@
                   <div class="tbl-email">
                     {{ encargado.email }}
                   </div>
-
                 </div>
-
               </div>
-
             </td>
-
 
             <td>
               {{ encargado.cargo }}
             </td>
 
-
             <td>
               {{ encargado.area }}
             </td>
 
-
             <td>
-
               <span class="tbl-phone">
                 {{ encargado.telefono }}
               </span>
-
             </td>
 
-
             <td>
-
               <span
                 class="status-badge"
                 [class.activo]="encargado.estado === 'Activo'"
                 [class.inactivo]="encargado.estado === 'Inactivo'"
               >
-
                 <span class="status-dot"></span>
 
                 {{ encargado.estado }}
-
               </span>
-
             </td>
 
-
             <td>
-
               <div class="action-btns">
-
-
                 <!-- VER DETALLES -->
 
                 <button
@@ -466,13 +255,8 @@
                   aria-label="Ver detalles de encargado"
                   (click)="verDetalles(encargado)"
                 >
-
-                  <span class="material-symbols-outlined">
-                    visibility
-                  </span>
-
+                  <span class="material-symbols-outlined"> visibility </span>
                 </button>
-
 
                 <!-- EDITAR -->
 
@@ -483,30 +267,24 @@
                   aria-label="Editar encargado"
                   (click)="openModal('edit', encargado)"
                 >
-
-                  <span class="material-symbols-outlined">
-                    edit
-                  </span>
-
+                  <span class="material-symbols-outlined"> edit </span>
                 </button>
-
 
                 <!-- CAMBIAR ESTADO -->
 
                 <button
                   class="action-btn warn"
                   type="button"
-                  title="Cambiar estado"
-                  aria-label="Cambiar estado"
+                  [title]="
+                    encargado.estado === 'Activo' ? 'Desactivar encargado' : 'Activar encargado'
+                  "
+                  [attr.aria-label]="
+                    encargado.estado === 'Activo' ? 'Desactivar encargado' : 'Activar encargado'
+                  "
                   (click)="cambiarEstado(encargado)"
                 >
-
-                  <span class="material-symbols-outlined">
-                    toggle_on
-                  </span>
-
+                  <span class="material-symbols-outlined"> toggle_on </span>
                 </button>
-
 
                 <!-- ELIMINAR -->
 
@@ -517,523 +295,282 @@
                   aria-label="Eliminar encargado"
                   (click)="eliminarEncargado(encargado.id)"
                 >
-
-                  <span class="material-symbols-outlined">
-                    delete
-                  </span>
-
+                  <span class="material-symbols-outlined"> delete </span>
                 </button>
-
-
               </div>
-
             </td>
-
           </tr>
-
         </tbody>
-
       </table>
-
     </div>
-
   </section>
-
 </main>
 
+<!-- MODAL NUEVO / EDITAR ENCARGADO -->
 
-
-<!-- =================================================================
-     MODAL NUEVO / EDITAR ENCARGADO
-================================================================== -->
-
-<div
-  class="modal-overlay"
-  [class.open]="modalAbierto"
-  (click)="cerrarAlClickarFondo($event)"
->
-
-  <div
-    class="modal"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="modal-title"
-  >
-
-
+<div class="modal-overlay" [class.open]="modalAbierto" (click)="cerrarAlClickarFondo($event)">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal-header">
-
       <div class="modal-hdr-icon">
-
-        <span class="material-symbols-outlined">
-          manage_accounts
-        </span>
-
+        <span class="material-symbols-outlined"> manage_accounts </span>
       </div>
 
-
       <div class="modal-hdr-content">
-
-        <div
-          id="modal-title"
-          class="modal-hdr-title"
-        >
-
-          {{
-            modoEdicion
-              ? 'Editar Encargado'
-              : 'Nuevo Encargado'
-          }}
-
+        <div id="modal-title" class="modal-hdr-title">
+          {{ modoEdicion ? 'Editar Encargado' : 'Nuevo Encargado' }}
         </div>
 
-
         <div class="modal-hdr-sub">
-
           {{
             modoEdicion
               ? 'Modifique los datos del encargado'
               : 'Complete los datos del nuevo encargado'
           }}
-
         </div>
-
       </div>
 
-
-      <button
-        class="modal-close"
-        type="button"
-        (click)="closeModal()"
-        aria-label="Cerrar modal"
-      >
-
-        <span class="material-symbols-outlined">
-          close
-        </span>
-
+      <button class="modal-close" type="button" (click)="closeModal()" aria-label="Cerrar modal">
+        <span class="material-symbols-outlined"> close </span>
       </button>
-
     </div>
 
-
-
-    <!-- =========================================================
-         CUERPO FORMULARIO
-    ========================================================== -->
+    <!-- CUERPO FORMULARIO -->
 
     <div class="modal-body">
-
-
       <!-- DATOS PERSONALES -->
 
       <section class="form-section">
-
         <div class="form-sec-title">
-
-          <span class="material-symbols-outlined">
-            person
-          </span>
+          <span class="material-symbols-outlined"> person </span>
 
           Datos Personales
-
         </div>
 
-
         <div class="form-row">
-
+          <!-- NOMBRE -->
 
           <div class="form-group">
-
-            <label
-              class="form-label"
-              for="f-nombre"
-            >
-
+            <label class="form-label" for="f-nombre">
               Nombre completo
 
-              <span class="req">
-                *
-              </span>
-
+              <span class="req"> * </span>
             </label>
-
 
             <input
               id="f-nombre"
               type="text"
               class="form-input"
+              [class.is-invalid]="errores.nombre"
               placeholder="Ej. Carlos Méndez"
+              autocomplete="off"
               [(ngModel)]="formulario.nombre"
-            >
+            />
 
-
-            <div
-              class="form-err-msg"
-              [class.show]="errores.nombre"
-            >
-
-              <span class="material-symbols-outlined">
-                error
-              </span>
+            <div class="form-err-msg" [class.show]="errores.nombre">
+              <span class="material-symbols-outlined"> error </span>
 
               Campo requerido
-
             </div>
-
           </div>
 
+          <!-- DOCUMENTO -->
 
           <div class="form-group">
-
-            <label
-              class="form-label"
-              for="f-documento"
-            >
-
+            <label class="form-label" for="f-documento">
               Número de documento
 
-              <span class="req">
-                *
-              </span>
-
+              <span class="req"> * </span>
             </label>
-
 
             <input
               id="f-documento"
               type="text"
+              inputmode="numeric"
               class="form-input"
+              [class.is-invalid]="errores.documento"
               placeholder="Ej. 42343534"
+              autocomplete="off"
               [(ngModel)]="formulario.documento"
-            >
+            />
 
+            <div class="form-err-msg" [class.show]="errores.documento">
+              <span class="material-symbols-outlined"> error </span>
 
-            <div
-              class="form-err-msg"
-              [class.show]="errores.documento"
-            >
-
-              <span class="material-symbols-outlined">
-                error
-              </span>
-
-              El número de documento es requerido
-              o ya se encuentra registrado.
-
+              El número de documento es requerido o ya se encuentra registrado.
             </div>
-
           </div>
 
+          <!-- FECHA -->
 
           <div class="form-group">
-
-            <label
-              class="form-label"
-              for="f-fecha"
-            >
-
-              Fecha de ingreso
-
-            </label>
-
+            <label class="form-label" for="f-fecha"> Fecha de ingreso </label>
 
             <input
               id="f-fecha"
               type="date"
               class="form-input"
               [(ngModel)]="formulario.fechaIngreso"
-            >
-
+            />
           </div>
-
         </div>
 
-
         <div class="form-row">
-
+          <!-- TELEFONO -->
 
           <div class="form-group">
-
-            <label
-              class="form-label"
-              for="f-telefono"
-            >
-
+            <label class="form-label" for="f-telefono">
               Teléfono
 
-              <span class="req">
-                *
-              </span>
-
+              <span class="req"> * </span>
             </label>
-
 
             <input
               id="f-telefono"
               type="tel"
+              inputmode="numeric"
               class="form-input"
+              [class.is-invalid]="errores.telefono"
               placeholder="3000000000"
               maxlength="10"
+              autocomplete="off"
               [(ngModel)]="formulario.telefono"
               (input)="soloNumerosTelefono($event)"
-            >
+            />
 
+            <div class="form-err-msg" [class.show]="errores.telefono">
+              <span class="material-symbols-outlined"> error </span>
 
-            <div
-              class="form-err-msg"
-              [class.show]="errores.telefono"
-            >
-
-              <span class="material-symbols-outlined">
-                error
-              </span>
-
-              El teléfono debe contener exactamente
-              10 números.
-
+              El teléfono debe contener exactamente 10 números.
             </div>
-
           </div>
 
+          <!-- EMAIL -->
 
           <div class="form-group">
-
-            <label
-              class="form-label"
-              for="f-email"
-            >
-
+            <label class="form-label" for="f-email">
               Correo electrónico
 
-              <span class="req">
-                *
-              </span>
-
+              <span class="req"> * </span>
             </label>
-
 
             <input
               id="f-email"
               type="email"
               name="email"
               class="form-input"
-              placeholder="nombre@fundacion.org"
-              [(ngModel)]="formulario.email"
               [class.is-invalid]="errores.email || errores.emailInvalido"
-            >
+              placeholder="nombre@fundacion.org"
+              autocomplete="off"
+              [(ngModel)]="formulario.email"
+            />
 
+            <div class="form-err-msg" [class.show]="errores.email">
+              <span class="material-symbols-outlined"> error </span>
 
-            <div
-              class="form-err-msg"
-              [class.show]="errores.email"
-            >
-
-              <span class="material-symbols-outlined">
-                error
-              </span>
-
-              Campo requerido
-
+              El correo electrónico es requerido.
             </div>
 
+            <div class="form-err-msg" [class.show]="errores.emailInvalido">
+              <span class="material-symbols-outlined"> error </span>
 
-            <div
-              class="form-err-msg"
-              [class.show]="errores.emailInvalido"
-            >
-
-              <span class="material-symbols-outlined">
-                error
-              </span>
-
-              Ingresa un correo electrónico válido
-
+              Ingresa un correo electrónico válido.
             </div>
-
           </div>
-
         </div>
-
       </section>
-
-
 
       <!-- CARGO Y RESPONSABILIDADES -->
 
       <section class="form-section">
-
         <div class="form-sec-title">
-
-          <span class="material-symbols-outlined">
-            work
-          </span>
+          <span class="material-symbols-outlined"> work </span>
 
           Cargo y Responsabilidades
-
         </div>
 
-
         <div class="form-row">
-
+          <!-- CARGO -->
 
           <div class="form-group">
-
-            <label
-              class="form-label"
-              for="f-cargo"
-            >
-
+            <label class="form-label" for="f-cargo">
               Cargo
 
-              <span class="req">
-                *
-              </span>
-
+              <span class="req"> * </span>
             </label>
-
 
             <select
               id="f-cargo"
               class="form-select"
+              [class.is-invalid]="errores.cargo"
               [(ngModel)]="formulario.cargo"
             >
+              <option value="">Seleccionar cargo</option>
 
-              <option value="">
-                Seleccionar cargo
-              </option>
+              <option value="Director General">Director General</option>
 
-              <option value="Director General">
-                Director General
-              </option>
+              <option value="Subdirector">Subdirector</option>
 
-              <option value="Subdirector">
-                Subdirector
-              </option>
+              <option value="Coordinador Administrativo">Coordinador Administrativo</option>
 
-              <option value="Coordinador Administrativo">
-                Coordinador Administrativo
-              </option>
+              <option value="Jefe de Área Médica">Jefe de Área Médica</option>
 
-              <option value="Jefe de Área Médica">
-                Jefe de Área Médica
-              </option>
+              <option value="Coordinador de RRHH">Coordinador de RRHH</option>
 
-              <option value="Coordinador de RRHH">
-                Coordinador de RRHH
-              </option>
+              <option value="Gerente Financiero">Gerente Financiero</option>
 
-              <option value="Gerente Financiero">
-                Gerente Financiero
-              </option>
-
-              <option value="Coordinador Operativo">
-                Coordinador Operativo
-              </option>
-
+              <option value="Coordinador Operativo">Coordinador Operativo</option>
             </select>
 
-
-            <div
-              class="form-err-msg"
-              [class.show]="errores.cargo"
-            >
-
-              <span class="material-symbols-outlined">
-                error
-              </span>
+            <div class="form-err-msg" [class.show]="errores.cargo">
+              <span class="material-symbols-outlined"> error </span>
 
               Seleccione un cargo
-
             </div>
-
           </div>
 
+          <!-- AREA -->
 
           <div class="form-group">
-
-            <label
-              class="form-label"
-              for="f-area"
-            >
-
+            <label class="form-label" for="f-area">
               Área
 
-              <span class="req">
-                *
-              </span>
-
+              <span class="req"> * </span>
             </label>
-
 
             <select
               id="f-area"
               class="form-select"
+              [class.is-invalid]="errores.area"
               [(ngModel)]="formulario.area"
             >
+              <option value="">Seleccionar área</option>
 
-              <option value="">
-                Seleccionar área
-              </option>
+              <option value="Dirección">Dirección</option>
 
-              <option value="Dirección">
-                Dirección
-              </option>
+              <option value="Administración">Administración</option>
 
-              <option value="Administración">
-                Administración
-              </option>
+              <option value="Área Médica">Área Médica</option>
 
-              <option value="Área Médica">
-                Área Médica
-              </option>
+              <option value="Recursos Humanos">Recursos Humanos</option>
 
-              <option value="Recursos Humanos">
-                Recursos Humanos
-              </option>
+              <option value="Finanzas">Finanzas</option>
 
-              <option value="Finanzas">
-                Finanzas
-              </option>
-
-              <option value="Operaciones">
-                Operaciones
-              </option>
-
+              <option value="Operaciones">Operaciones</option>
             </select>
 
-
-            <div
-              class="form-err-msg"
-              [class.show]="errores.area"
-            >
-
-              <span class="material-symbols-outlined">
-                error
-              </span>
+            <div class="form-err-msg" [class.show]="errores.area">
+              <span class="material-symbols-outlined"> error </span>
 
               Seleccione un área
-
             </div>
-
           </div>
-
         </div>
 
+        <!-- DESCRIPCION -->
 
         <div class="form-row full">
-
           <div class="form-group">
-
-            <label
-              class="form-label"
-              for="f-desc"
-            >
-
-              Descripción del cargo
-
-            </label>
-
+            <label class="form-label" for="f-desc"> Descripción del cargo </label>
 
             <textarea
               id="f-desc"
@@ -1041,84 +578,38 @@
               placeholder="Describa las principales responsabilidades del cargo..."
               [(ngModel)]="formulario.descripcion"
             ></textarea>
-
           </div>
-
         </div>
-
       </section>
-
     </div>
-
-
 
     <!-- FOOTER -->
 
     <div class="modal-footer">
-
-      <button
-        class="btn-cancel"
-        type="button"
-        (click)="closeModal()"
-        [disabled]="guardando"
-      >
-
+      <button class="btn-cancel" type="button" (click)="closeModal()" [disabled]="guardando">
         Cancelar
-
       </button>
 
+      <button class="btn-save" type="button" [disabled]="guardando" (click)="saveEncargado()">
+        <span *ngIf="!guardando" class="material-symbols-outlined"> save </span>
 
-      <button
-        class="btn-save"
-        type="button"
-        [disabled]="guardando"
-        (click)="saveEncargado()"
-      >
-
-        <span
-          *ngIf="!guardando"
-          class="material-symbols-outlined"
-        >
-          save
-        </span>
-
-
-        <span
-          *ngIf="guardando"
-          class="spinner"
-        ></span>
-
+        <span *ngIf="guardando" class="spinner"></span>
 
         <span>
-
-          {{
-            guardando
-              ? 'Guardando...'
-              : 'Guardar'
-          }}
-
+          {{ guardando ? 'Guardando...' : 'Guardar' }}
         </span>
-
       </button>
-
     </div>
-
   </div>
-
 </div>
 
-
-
-<!-- =================================================================
-     MODAL VER DETALLES
-================================================================== -->
+<!-- MODAL VER DETALLES -->
 
 <div
   class="modal-overlay detalles-overlay"
   [class.open]="modalDetallesAbierto"
   (click)="cerrarModalDetallesPorFondo($event)"
 >
-
   <div
     class="modal modal-detalles"
     role="dialog"
@@ -1126,39 +617,16 @@
     aria-labelledby="detalle-encargado-title"
     *ngIf="encargadoSeleccionado"
   >
-
-
     <div class="modal-header">
-
       <div class="modal-hdr-icon">
-
-        <span class="material-symbols-outlined">
-          account_circle
-        </span>
-
+        <span class="material-symbols-outlined"> account_circle </span>
       </div>
-
 
       <div class="modal-hdr-content">
+        <div id="detalle-encargado-title" class="modal-hdr-title">Perfil del Encargado</div>
 
-        <div
-          id="detalle-encargado-title"
-          class="modal-hdr-title"
-        >
-
-          Perfil del Encargado
-
-        </div>
-
-
-        <div class="modal-hdr-sub">
-
-          Información completa del responsable
-
-        </div>
-
+        <div class="modal-hdr-sub">Información completa del responsable</div>
       </div>
-
 
       <button
         class="modal-close"
@@ -1167,513 +635,214 @@
         aria-label="Cerrar detalles"
         title="Cerrar"
       >
-
-        <span class="material-symbols-outlined">
-          close
-        </span>
-
+        <span class="material-symbols-outlined"> close </span>
       </button>
-
     </div>
 
-
-
     <div class="modal-body detalles-body">
-
-
       <!-- PERFIL -->
 
       <section class="perfil-detalle">
-
         <div class="perfil-avatar">
-
-          <ng-container
-            *ngIf="encargadoSeleccionado.foto; else avatarDetalles"
-          >
-
+          <ng-container *ngIf="encargadoSeleccionado.foto; else avatarDetalles">
             <img
               [src]="encargadoSeleccionado.foto"
               [alt]="'Foto de ' + encargadoSeleccionado.nombre"
-            >
-
+            />
           </ng-container>
 
-
           <ng-template #avatarDetalles>
-
             <span>
               {{ encargadoSeleccionado.iniciales }}
             </span>
-
           </ng-template>
-
         </div>
 
-
         <div class="perfil-info">
-
           <div class="perfil-nombre">
             {{ encargadoSeleccionado.nombre }}
           </div>
-
 
           <div class="perfil-cargo">
             {{ encargadoSeleccionado.cargo }}
           </div>
 
-
           <div class="perfil-area">
-
-            <span class="material-symbols-outlined">
-              business
-            </span>
+            <span class="material-symbols-outlined"> business </span>
 
             {{ encargadoSeleccionado.area }}
-
           </div>
-
 
           <div
             class="status-badge detalle-status"
             [class.activo]="encargadoSeleccionado.estado === 'Activo'"
             [class.inactivo]="encargadoSeleccionado.estado === 'Inactivo'"
           >
-
             <span class="status-dot"></span>
 
             {{ encargadoSeleccionado.estado }}
-
           </div>
-
         </div>
-
       </section>
-
-
 
       <!-- DATOS PERSONALES -->
 
       <section class="detalle-section">
-
         <div class="detalle-section-title">
-
-          <span class="material-symbols-outlined">
-            person
-          </span>
+          <span class="material-symbols-outlined"> person </span>
 
           Datos personales
-
         </div>
 
-
         <div class="detalle-grid">
-
-
           <div class="detalle-item">
-
-            <span class="detalle-label">
-              Número de documento
-            </span>
+            <span class="detalle-label"> Número de documento </span>
 
             <span class="detalle-value">
               {{ encargadoSeleccionado.documento }}
             </span>
-
           </div>
 
-
           <div class="detalle-item">
-
-            <span class="detalle-label">
-              Teléfono
-            </span>
+            <span class="detalle-label"> Teléfono </span>
 
             <span class="detalle-value">
-
-              <span class="material-symbols-outlined">
-                phone
-              </span>
+              <span class="material-symbols-outlined"> phone </span>
 
               {{ encargadoSeleccionado.telefono }}
-
             </span>
-
           </div>
 
-
           <div class="detalle-item">
-
-            <span class="detalle-label">
-              Correo electrónico
-            </span>
+            <span class="detalle-label"> Correo electrónico </span>
 
             <span class="detalle-value">
-
-              <span class="material-symbols-outlined">
-                mail
-              </span>
+              <span class="material-symbols-outlined"> mail </span>
 
               {{ encargadoSeleccionado.email }}
-
             </span>
-
           </div>
-
 
           <div class="detalle-item">
-
-            <span class="detalle-label">
-              Fecha de ingreso
-            </span>
+            <span class="detalle-label"> Fecha de ingreso </span>
 
             <span class="detalle-value">
-
-              <span class="material-symbols-outlined">
-                calendar_month
-              </span>
+              <span class="material-symbols-outlined"> calendar_month </span>
 
               {{ encargadoSeleccionado.fechaIngreso || 'No registrada' }}
-
             </span>
-
           </div>
-
         </div>
-
       </section>
-
-
 
       <!-- INFORMACIÓN LABORAL -->
 
       <section class="detalle-section">
-
         <div class="detalle-section-title">
-
-          <span class="material-symbols-outlined">
-            work
-          </span>
+          <span class="material-symbols-outlined"> work </span>
 
           Información laboral
-
         </div>
 
-
         <div class="detalle-grid">
-
-
           <div class="detalle-item">
-
-            <span class="detalle-label">
-              Cargo
-            </span>
+            <span class="detalle-label"> Cargo </span>
 
             <span class="detalle-value">
               {{ encargadoSeleccionado.cargo }}
             </span>
-
           </div>
 
-
           <div class="detalle-item">
-
-            <span class="detalle-label">
-              Área
-            </span>
+            <span class="detalle-label"> Área </span>
 
             <span class="detalle-value">
               {{ encargadoSeleccionado.area }}
             </span>
-
           </div>
 
-
           <div class="detalle-item">
-
-            <span class="detalle-label">
-              Antigüedad
-            </span>
+            <span class="detalle-label"> Antigüedad </span>
 
             <span class="detalle-value">
               {{ encargadoSeleccionado.ingresoTexto }}
             </span>
-
           </div>
 
-
           <div class="detalle-item">
-
-            <span class="detalle-label">
-              Estado
-            </span>
+            <span class="detalle-label"> Estado </span>
 
             <span
               class="status-badge"
               [class.activo]="encargadoSeleccionado.estado === 'Activo'"
               [class.inactivo]="encargadoSeleccionado.estado === 'Inactivo'"
             >
-
               <span class="status-dot"></span>
 
               {{ encargadoSeleccionado.estado }}
-
             </span>
-
           </div>
-
         </div>
-
       </section>
-
-
 
       <!-- DESCRIPCIÓN -->
 
       <section class="detalle-section">
-
         <div class="detalle-section-title">
-
-          <span class="material-symbols-outlined">
-            description
-          </span>
+          <span class="material-symbols-outlined"> description </span>
 
           Descripción del cargo
-
         </div>
-
 
         <div class="detalle-description">
-
-          {{
-            encargadoSeleccionado.descripcion ||
-            'Sin descripción registrada.'
-          }}
-
+          {{ encargadoSeleccionado.descripcion || 'Sin descripción registrada.' }}
         </div>
-
       </section>
-
-
-
-      <!-- PACIENTES ASOCIADOS -->
-
-      <section class="detalle-section pacientes-section">
-
-        <div class="detalle-section-title pacientes-title">
-
-          <div class="pacientes-title-left">
-
-            <span class="material-symbols-outlined">
-              groups
-            </span>
-
-            Pacientes asociados
-
-          </div>
-
-
-          <span class="pacientes-count">
-            {{ pacientesAsociados.length }}
-          </span>
-
-        </div>
-
-
-        <div
-          class="pacientes-list"
-          *ngIf="pacientesAsociados.length > 0"
-        >
-
-          <div
-            class="paciente-card"
-            *ngFor="let paciente of pacientesAsociados"
-          >
-
-            <div class="paciente-avatar">
-
-              <ng-container
-                *ngIf="paciente.foto; else inicialesPaciente"
-              >
-
-                <img
-                  [src]="paciente.foto"
-                  [alt]="'Foto de ' + paciente.nombre"
-                >
-
-              </ng-container>
-
-
-              <ng-template #inicialesPaciente>
-
-                {{ paciente.iniciales }}
-
-              </ng-template>
-
-            </div>
-
-
-            <div class="paciente-info">
-
-              <div class="paciente-name">
-                {{ paciente.nombre }}
-              </div>
-
-
-              <div class="paciente-documento">
-
-                Documento:
-                {{ paciente.documento }}
-
-              </div>
-
-            </div>
-
-
-            <span
-              class="status-badge paciente-status"
-              [class.activo]="paciente.estado === 'Activo'"
-              [class.inactivo]="paciente.estado === 'Inactivo'"
-            >
-
-              <span class="status-dot"></span>
-
-              {{ paciente.estado }}
-
-            </span>
-
-          </div>
-
-        </div>
-
-
-        <div
-          class="pacientes-empty"
-          *ngIf="pacientesAsociados.length === 0"
-        >
-
-          <span class="material-symbols-outlined">
-            person_off
-          </span>
-
-
-          <div>
-
-            <div class="pacientes-empty-title">
-              No tiene pacientes asociados
-            </div>
-
-
-            <div class="pacientes-empty-sub">
-
-              Este encargado actualmente no tiene
-              pacientes relacionados.
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
     </div>
 
-
-
     <div class="modal-footer">
-
-      <button
-        class="btn-cancel"
-        type="button"
-        (click)="cerrarModalDetalles()"
-      >
-
-        <span class="material-symbols-outlined">
-          close
-        </span>
+      <button class="btn-cancel" type="button" (click)="cerrarModalDetalles()">
+        <span class="material-symbols-outlined"> close </span>
 
         Cerrar
-
       </button>
-
 
       <button
         class="btn-save"
         type="button"
         (click)="cerrarModalDetalles(); openModal('edit', encargadoSeleccionado)"
       >
-
-        <span class="material-symbols-outlined">
-          edit
-        </span>
+        <span class="material-symbols-outlined"> edit </span>
 
         Editar encargado
-
       </button>
-
     </div>
-
   </div>
-
 </div>
 
-
-
-<!-- =================================================================
-     MODAL REGISTRO DE CAMBIOS
-================================================================== -->
+<!-- MODAL REGISTRO DE CAMBIOS -->
 
 <div
   class="modal-overlay registro-overlay"
   [class.open]="modalRegistroCambiosAbierto"
   (click)="cerrarRegistroCambiosPorFondo($event)"
 >
-
-
   <div
     class="modal modal-registro-cambios"
     role="dialog"
     aria-modal="true"
     aria-labelledby="registro-cambios-title"
   >
-
-
-    <!-- =============================================================
-         HEADER REGISTRO
-    ============================================================== -->
-
     <div class="modal-header">
-
-
       <div class="modal-hdr-icon">
-
-        <span class="material-symbols-outlined">
-          history
-        </span>
-
+        <span class="material-symbols-outlined"> history </span>
       </div>
-
 
       <div class="modal-hdr-content">
+        <div id="registro-cambios-title" class="modal-hdr-title">Registro de cambios</div>
 
-        <div
-          id="registro-cambios-title"
-          class="modal-hdr-title"
-        >
-
-          Registro de cambios
-
-        </div>
-
-
-        <div class="modal-hdr-sub">
-
-          Historial de acciones realizadas sobre los encargados
-
-        </div>
-
+        <div class="modal-hdr-sub">Historial de acciones realizadas sobre los encargados</div>
       </div>
-
 
       <button
         class="modal-close"
@@ -1682,113 +851,47 @@
         aria-label="Cerrar registro de cambios"
         title="Cerrar"
       >
-
-        <span class="material-symbols-outlined">
-          close
-        </span>
-
+        <span class="material-symbols-outlined"> close </span>
       </button>
-
     </div>
 
-
-
-    <!-- =============================================================
-         CUERPO REGISTRO
-    ============================================================== -->
-
     <div class="modal-body registro-body">
-
-
-      <!-- ===========================================================
-           RESUMEN
-      ============================================================ -->
+      <!-- RESUMEN -->
 
       <div class="registro-resumen">
-
         <div class="registro-resumen-icon">
-
-          <span class="material-symbols-outlined">
-            manage_history
-          </span>
-
+          <span class="material-symbols-outlined"> manage_history </span>
         </div>
 
-
         <div class="registro-resumen-info">
-
-          <div class="registro-resumen-title">
-
-            Historial de modificaciones
-
-          </div>
-
+          <div class="registro-resumen-title">Historial de modificaciones</div>
 
           <div class="registro-resumen-sub">
-
             {{ registrosCambios.length }}
 
             registro{{ registrosCambios.length === 1 ? '' : 's' }}
+
             realizado{{ registrosCambios.length === 1 ? '' : 's' }}
-
           </div>
-
         </div>
-
       </div>
 
+      <!-- SIN REGISTROS -->
 
+      <div class="registro-empty" *ngIf="registrosCambios.length === 0">
+        <span class="material-symbols-outlined"> history_toggle_off </span>
 
-      <!-- ===========================================================
-           SIN REGISTROS
-      ============================================================ -->
-
-      <div
-        class="registro-empty"
-        *ngIf="registrosCambios.length === 0"
-      >
-
-        <span class="material-symbols-outlined">
-          history_toggle_off
-        </span>
-
-
-        <div class="registro-empty-title">
-
-          No hay registros de cambios
-
-        </div>
-
+        <div class="registro-empty-title">No hay registros de cambios</div>
 
         <div class="registro-empty-sub">
-
-          Las acciones realizadas sobre los encargados
-          aparecerán aquí automáticamente.
-
+          Las acciones realizadas sobre los encargados aparecerán aquí automáticamente.
         </div>
-
       </div>
 
+      <!-- LISTA -->
 
-
-      <!-- ===========================================================
-           LISTA DE REGISTROS
-      ============================================================ -->
-
-      <div
-        class="registro-list"
-        *ngIf="registrosCambios.length > 0"
-      >
-
-
-        <div
-          class="registro-item"
-          *ngFor="let registro of registrosCambios"
-        >
-
-
-          <!-- ICONO -->
-
+      <div class="registro-list" *ngIf="registrosCambios.length > 0">
+        <div class="registro-item" *ngFor="let registro of registrosCambios">
           <div
             class="registro-icon"
             [class.creacion]="registro.accion === 'Creación'"
@@ -1797,38 +900,23 @@
             [class.desactivacion]="registro.accion === 'Desactivación'"
             [class.eliminacion]="registro.accion === 'Eliminación'"
           >
-
-            <span
-              class="material-symbols-outlined"
-            >
-
+            <span class="material-symbols-outlined">
               {{
                 registro.accion === 'Creación'
                   ? 'person_add'
                   : registro.accion === 'Actualización'
-                  ? 'edit'
-                  : registro.accion === 'Activación'
-                  ? 'check_circle'
-                  : registro.accion === 'Desactivación'
-                  ? 'block'
-                  : 'delete'
+                    ? 'edit'
+                    : registro.accion === 'Activación'
+                      ? 'check_circle'
+                      : registro.accion === 'Desactivación'
+                        ? 'block'
+                        : 'delete'
               }}
-
             </span>
-
           </div>
 
-
-
-          <!-- INFORMACIÓN -->
-
           <div class="registro-content">
-
-
-            <!-- ACCIÓN -->
-
             <div class="registro-top">
-
               <span
                 class="registro-accion"
                 [class.creacion]="registro.accion === 'Creación'"
@@ -1837,135 +925,62 @@
                 [class.desactivacion]="registro.accion === 'Desactivación'"
                 [class.eliminacion]="registro.accion === 'Eliminación'"
               >
-
                 {{ registro.accion }}
-
               </span>
-
 
               <span class="registro-fecha">
-
-                <span class="material-symbols-outlined">
-                  schedule
-                </span>
+                <span class="material-symbols-outlined"> schedule </span>
 
                 {{ registro.fecha }}
-
               </span>
-
             </div>
 
-
-
-            <!-- ENCARGADO -->
-
             <div class="registro-encargado">
-
-              <span class="material-symbols-outlined">
-                person
-              </span>
+              <span class="material-symbols-outlined"> person </span>
 
               <strong>
                 {{ registro.encargado }}
               </strong>
-
             </div>
-
-
-
-            <!-- DESCRIPCIÓN -->
 
             <div class="registro-descripcion">
-
               {{ registro.descripcion }}
-
             </div>
 
-
-
-            <!-- USUARIO -->
-
             <div class="registro-usuario">
-
-              <span class="material-symbols-outlined">
-                account_circle
-              </span>
+              <span class="material-symbols-outlined"> account_circle </span>
 
               Realizado por:
 
               <strong>
                 {{ registro.usuario }}
               </strong>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
-
-
-
-    <!-- =============================================================
-         FOOTER
-    ============================================================== -->
 
     <div class="modal-footer">
-
-      <button
-        class="btn-cancel"
-        type="button"
-        (click)="cerrarRegistroCambios()"
-      >
-
-        <span class="material-symbols-outlined">
-          close
-        </span>
+      <button class="btn-cancel" type="button" (click)="cerrarRegistroCambios()">
+        <span class="material-symbols-outlined"> close </span>
 
         Cerrar
-
       </button>
-
     </div>
-
   </div>
-
 </div>
 
-
-
-<!-- =================================================================
-     TOAST
-================================================================== -->
+<!-- TOAST -->
 
 <div class="toast-wrap">
-
-  <div
-    *ngIf="toast.mostrar"
-    class="toast"
-    [ngClass]="toast.tipo"
-  >
-
+  <div *ngIf="toast.mostrar" class="toast" [ngClass]="toast.tipo">
     <span class="material-symbols-outlined t-icon">
-
-      {{
-        toast.tipo === 'ok'
-          ? 'check_circle'
-          : toast.tipo === 'del'
-          ? 'delete'
-          : 'info'
-      }}
-
+      {{ toast.tipo === 'ok' ? 'check_circle' : toast.tipo === 'del' ? 'delete' : 'info' }}
     </span>
-
 
     <span>
       {{ toast.mensaje }}
     </span>
-
   </div>
-
 </div>
