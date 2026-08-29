@@ -1,6 +1,8 @@
+
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+
 import { RolesService, RolApi } from './roles.service';
 
 interface Permiso {
@@ -23,7 +25,7 @@ interface Rol {
   userCount: number;
   description: string;
   perms: Permiso[];
-  usuariosAsociados?: UsuarioAsociado[];
+  usuariosAsociados: UsuarioAsociado[];
 }
 
 @Component({
@@ -33,45 +35,7 @@ interface Rol {
   templateUrl: './roles.html',
   styleUrl: './roles.css'
 })
-export class Roles implements OnInit  {
-
-  constructor(private rolesService: RolesService) {}
-
-  ngOnInit(): void {
-  this.cargarRolesDesdeApi();
-}
-cargarRolesDesdeApi(): void {
-  this.rolesService.listarRoles().subscribe({
-    next: (rolesApi: RolApi[]) => {
-      console.log('Roles recibidos desde la API:', rolesApi);
-
-      if (!rolesApi || rolesApi.length === 0) {
-        return;
-      }
-
-      rolesApi.forEach((rolApi: RolApi) => {
-        const rolLocal = this.roles.find(
-          rol => rol.name.toLowerCase() === rolApi.nombre.toLowerCase()
-        );
-
-        if (rolLocal) {
-          rolLocal.description = rolApi.descripcion;
-        }
-      });
-    },
-
-    error: (error) => {
-      console.warn(
-        'La API de roles no está disponible. Se mantienen los roles locales.',
-        error
-      );
-    }
-  });
-}
-
-  // =========================================================
-  // PERMISOS DISPONIBLES
-  // =========================================================
+export class Roles implements OnInit {
 
   readonly PERM_LABELS: string[] = [
     'Ver Dashboard',
@@ -84,396 +48,381 @@ cargarRolesDesdeApi(): void {
     'Configuración del sistema'
   ];
 
-  // =========================================================
-  // ROLES
-  // =========================================================
-
-  roles: Rol[] = [
-    {
-      name: 'Administrador',
-      color: '#3B5BDB',
+  private readonly CONFIGURACION_ROLES: Record<
+    string,
+    { color: string; icon: string; permisos: string[] }
+  > = {
+    Administrador: {
+      color: 'var(--color-primary)',
       icon: 'admin_panel_settings',
-      userCount: 2,
-      description:
-        'Acceso total al sistema. Gestiona usuarios, configura la plataforma y supervisa todas las operaciones de la fundación.',
-      perms: this.PERM_LABELS.map(label => ({
-        label,
-        granted: true
-      })),
-
-      usuariosAsociados: [
-        { id: 1, name: 'Jose Cabrera', email: 'jose.cabrera@fundacion.org', estado: 'activo', avatar: 'JC' },
-        { id: 2, name: 'Ana María Gómez', email: 'ana.gomez@fundacion.org', estado: 'activo', avatar: 'AM' }
-      ]
+      permisos: [...this.PERM_LABELS]
     },
 
-    {
-      name: 'Cuidador',
-      color: '#4DABF7',
+    Cuidador: {
+      color: 'var(--color-secondary)',
       icon: 'health_and_safety',
-      userCount: 8,
-      description:
-        'Personal de cuidado directo. Visualiza y actualiza información de los pacientes a su cargo durante su turno.',
-      perms: [
-        {
-          label: 'Ver Dashboard',
-          granted: false
-        },
-        {
-          label: 'Gestión de Pacientes',
-          granted: true
-        },
-        {
-          label: 'Gestión de Cuidadores',
-          granted: false
-        },
-        {
-          label: 'Gestión de Encargados',
-          granted: false
-        },
-        {
-          label: 'Roles y Permisos',
-          granted: false
-        },
-        {
-          label: 'Notificaciones',
-          granted: true
-        },
-        {
-          label: 'Descargar Reportes',
-          granted: false
-        },
-        {
-          label: 'Configuración del sistema',
-          granted: false
-        }
-      ],
-      usuariosAsociados: [
-        { id: 3, name: 'Carlos Pérez', email: 'carlos.perez@fundacion.org', estado: 'activo', avatar: 'CP' },
-        { id: 4, name: 'Lucía Benítez', email: 'lucia.benitez@fundacion.org', estado: 'inactivo', avatar: 'LB' }
+      permisos: [
+        'Gestión de Pacientes',
+        'Notificaciones'
       ]
     },
 
-    {
-      name: 'Encargado',
-      color: '#7D6E5E',
+    Encargado: {
+      color: 'var(--color-tertiary)',
       icon: 'supervisor_account',
-      userCount: 1,
-      description:
-        'Supervisa el funcionamiento general de la fundación y tiene acceso a reportes y estadísticas operativas.',
-      perms: [
-        {
-          label: 'Ver Dashboard',
-          granted: true
-        },
-        {
-          label: 'Gestión de Pacientes',
-          granted: true
-        },
-        {
-          label: 'Gestión de Cuidadores',
-          granted: true
-        },
-        {
-          label: 'Gestión de Encargados',
-          granted: true
-        },
-        {
-          label: 'Roles y Permisos',
-          granted: false
-        },
-        {
-          label: 'Notificaciones',
-          granted: true
-        },
-        {
-          label: 'Descargar Reportes',
-          granted: true
-        },
-        {
-          label: 'Configuración del sistema',
-          granted: false
-        }
-      ],
-      usuariosAsociados: [
-        { id: 5, name: 'María López', email: 'maria.lopez@fundacion.org', estado: 'activo', avatar: 'RS' }
+      permisos: [
+        'Ver Dashboard',
+        'Gestión de Pacientes',
+        'Gestión de Cuidadores',
+        'Gestión de Encargados',
+        'Notificaciones',
+        'Descargar Reportes'
       ]
     }
-  ];
-
-  // =========================================================
-  // VARIABLES
-  // =========================================================
-
-  selectedRole: string = 'Administrador';
-  searchTerm: string = '';
-  filtroEstadoUsuario: 'Todos' | 'activo' | 'inactivo' = 'Todos';
-
-  mensajeExito: string = '';
-  mensajeError: string = '';
-  ultimoRegistroAuditoria: string = 'Sin modificaciones recientes en esta sesión.';
-
-  // =========================================================
-  // CREAR NUEVO ROL
-  // =========================================================
-
-  mostrarFormularioRol: boolean = false;
-
-  nuevoRol = {
-  nombre: '',
-  descripcion: '',
-  permisos: [] as string[]
   };
 
-  // =========================================================
-  // OBTENER ROL SELECCIONADO
-  // =========================================================
+  roles: Rol[] = [];
+
+  selectedRole = '';
+  searchTerm = '';
+
+  filtroEstadoUsuario: 'Todos' | 'activo' | 'inactivo' = 'Todos';
+
+  mostrarFormularioRol = false;
+
+  mensajeExito = '';
+  mensajeError = '';
+
+  ultimoRegistroAuditoria =
+    'Sin modificaciones recientes en esta sesión.';
+
+  nuevoRol = {
+    nombre: '',
+    descripcion: '',
+    permisos: [] as string[]
+  };
+
+  constructor(
+    private readonly rolesService: RolesService
+  ) {}
+
+  ngOnInit(): void {
+    this.cargarRoles();
+  }
+
+  /**
+   * Carga los roles registrados en la API.
+   */
+  cargarRoles(): void {
+    this.rolesService.listarRoles().subscribe({
+      next: (rolesApi: RolApi[]) => {
+        this.roles = rolesApi.map(rol => this.convertirRol(rol));
+
+        if (this.roles.length > 0) {
+          this.selectedRole = this.roles[0].name;
+        }
+      },
+
+      error: error => {
+        console.error('Error al cargar los roles:', error);
+
+        this.mensajeError =
+          'No fue posible cargar los roles desde el servidor.';
+      }
+    });
+  }
+
+  /**
+   * Convierte el modelo recibido desde la API
+   * al modelo utilizado por la interfaz.
+   */
+  private convertirRol(rolApi: RolApi): Rol {
+
+    const configuracion =
+      this.CONFIGURACION_ROLES[rolApi.nombre] ??
+      this.crearConfiguracionPorDefecto();
+
+    const permisos = this.PERM_LABELS.map(label => ({
+      label,
+      granted: configuracion.permisos.includes(label)
+    }));
+
+    return {
+      name: rolApi.nombre,
+      color: configuracion.color,
+      icon: configuracion.icon,
+      userCount: 0,
+      description: rolApi.descripcion,
+      perms: permisos,
+      usuariosAsociados: []
+    };
+  }
+
+  /**
+   * Configuración visual para roles nuevos.
+   */
+  private crearConfiguracionPorDefecto() {
+    return {
+      color: 'var(--color-primary)',
+      icon: 'badge',
+      permisos: []
+    };
+  }
 
   get selectedRoleObject(): Rol {
+
     return (
-      this.roles.find(role => role.name === this.selectedRole)
-      ?? this.roles[0]
+      this.roles.find(
+        role => role.name === this.selectedRole
+      ) ?? this.roles[0]
     );
   }
 
-  // =========================================================
-  // USUARIOS FILTRADOS POR ESTADO (1)
-  // =========================================================
-
-  get usuariosFiltrados(): UsuarioAsociado[] {
-    const lista = this.selectedRoleObject.usuariosAsociados || [];
-    if (this.filtroEstadoUsuario === 'Todos') {
-      return lista;
-    }
-    return lista.filter(u => u.estado === this.filtroEstadoUsuario);
-  }
-  // =========================================================
-  // ROLES FILTRADOS POR BÚSQUEDA
-  // =========================================================
-
   get filteredRoles(): Rol[] {
-    const search = this.searchTerm.trim().toLowerCase();
 
-    if (!search) {
+    const textoBusqueda =
+      this.searchTerm.trim().toLowerCase();
+
+    if (!textoBusqueda) {
       return this.roles;
     }
 
     return this.roles.filter(role =>
-      role.name.toLowerCase().includes(search) ||
-      role.description.toLowerCase().includes(search)
+      role.name.toLowerCase().includes(textoBusqueda) ||
+      role.description.toLowerCase().includes(textoBusqueda)
     );
   }
 
-  // =========================================================
-  // SELECCIONAR ROL
-  // =========================================================
+  get usuariosFiltrados(): UsuarioAsociado[] {
 
-  selectRole(name: string): void {
-    this.selectedRole = name;
-    this.mensajeError = '';
-    this.mensajeExito = '';
+    const usuarios =
+      this.selectedRoleObject?.usuariosAsociados ?? [];
+
+    if (this.filtroEstadoUsuario === 'Todos') {
+      return usuarios;
+    }
+
+    return usuarios.filter(
+      usuario => usuario.estado === this.filtroEstadoUsuario
+    );
   }
+
+  selectRole(nombreRol: string): void {
+
+    this.selectedRole = nombreRol;
+
+    this.filtroEstadoUsuario = 'Todos';
+
+    this.limpiarMensajes();
+  }
+
   abrirNuevoRol(): void {
-  this.mostrarFormularioRol = true;
 
-  this.nuevoRol = {
-  nombre: '',
-  descripcion: '',
-  permisos: []
-  };
+    this.mostrarFormularioRol = true;
 
-  this.mensajeError = '';
-  this.mensajeExito = '';
+    this.nuevoRol = {
+      nombre: '',
+      descripcion: '',
+      permisos: []
+    };
+
+    this.limpiarMensajes();
   }
 
   cerrarFormularioRol(): void {
-  this.mostrarFormularioRol = false;
+    this.mostrarFormularioRol = false;
   }
 
   crearRol(): void {
-  // Validar nombre
-  if (!this.nuevoRol.nombre.trim()) {
-    this.mensajeError = 'Debe ingresar un nombre para el rol.';
-    this.mensajeExito = '';
-    return;
-  }
 
-  // Validar descripción
-  if (!this.nuevoRol.descripcion.trim()) {
-    this.mensajeError = 'Debe ingresar una descripción para el rol.';
-    this.mensajeExito = '';
-    return;
-  }
+    const nombre =
+      this.nuevoRol.nombre.trim();
 
-  // Validar permisos
-  if (this.nuevoRol.permisos.length === 0) {
-    this.mensajeError = 'Debe seleccionar al menos un permiso.';
-    this.mensajeExito = '';
-    return;
-  }
+    const descripcion =
+      this.nuevoRol.descripcion.trim();
 
-  // Evitar roles duplicados
-  const rolExiste = this.roles.some(
-    rol => rol.name.toLowerCase() === this.nuevoRol.nombre.trim().toLowerCase()
-  );
-
-  if (rolExiste) {
-    this.mensajeError = 'Ya existe un rol con ese nombre.';
-    this.mensajeExito = '';
-    return;
-  }
-
-  // Crear permisos del nuevo rol
-  const permisosNuevoRol: Permiso[] = this.PERM_LABELS.map(label => ({
-    label,
-    granted: this.nuevoRol.permisos.includes(label)
-  }));
-
-  // Crear el nuevo rol localmente
-  const nuevoRol: Rol = {
-    name: this.nuevoRol.nombre.trim(),
-    color: '#3B5BDB',
-    icon: 'badge',
-    userCount: 0,
-    description: this.nuevoRol.descripcion.trim(),
-    perms: permisosNuevoRol,
-    usuariosAsociados: []
-  };
-
-  // Agregarlo a la lista
-  this.roles.push(nuevoRol);
-
-  // Seleccionar automáticamente el nuevo rol
-  this.selectedRole = nuevoRol.name;
-
-  // Cerrar formulario
-  this.mostrarFormularioRol = false;
-
-  // Limpiar formulario
-  this.nuevoRol = {
-    nombre: '',
-    descripcion: '',
-    permisos: []
-  };
-
-  // Mostrar mensaje
-  this.mensajeError = '';
-  this.mensajeExito = `El rol "${nuevoRol.name}" fue creado correctamente.`;
-
-  // Auditoría local
-  const fechaActual = new Date().toLocaleString();
-  this.ultimoRegistroAuditoria =
-    `Creado el ${fechaActual} por Administrador (Jose Cabrera)`;
-
-  // Ocultar mensaje después de unos segundos
-  setTimeout(() => {
-    this.mensajeExito = '';
-  }, 4000);
-  }
-
-  // =========================================================
-  // CAMBIAR PERMISO
-  // =========================================================
-
-  togglePermiso(role: Rol, permiso: Permiso): void {
-    permiso.granted = !permiso.granted;
-  }
-
-  // =========================================================
-  // GUARDAR PERMISOS (2)
-  // =========================================================
-
-  guardarPermisosRol(): void {
-    const permisosActivos = this.selectedRoleObject.perms.filter(p => p.granted).length;
-    
-    if (permisosActivos === 0) {
-      this.mensajeError = 'Debe seleccionar al menos un permiso para este rol.';
-      this.mensajeExito = '';
+    if (!nombre) {
+      this.mostrarError(
+        'Debe ingresar un nombre para el rol.'
+      );
       return;
     }
 
-    this.mensajeError = '';
-    this.mensajeExito = `Configuración guardada con éxito para "${this.selectedRoleObject.name}".`;
+    if (!descripcion) {
+      this.mostrarError(
+        'Debe ingresar una descripción para el rol.'
+      );
+      return;
+    }
 
-    const fechaActual = new Date().toLocaleString();
-    this.ultimoRegistroAuditoria = `Modificado el ${fechaActual} por Administrador (Jose Cabrera)`;
+    if (this.nuevoRol.permisos.length === 0) {
+      this.mostrarError(
+        'Debe seleccionar al menos un permiso.'
+      );
+      return;
+    }
+
+    const existe =
+      this.roles.some(
+        rol =>
+          rol.name.toLowerCase() ===
+          nombre.toLowerCase()
+      );
+
+    if (existe) {
+      this.mostrarError(
+        'Ya existe un rol con ese nombre.'
+      );
+      return;
+    }
+
+    const nuevoRol: Rol = {
+      name: nombre,
+      color: 'var(--color-primary)',
+      icon: 'badge',
+      userCount: 0,
+      description: descripcion,
+
+      perms: this.PERM_LABELS.map(label => ({
+        label,
+        granted:
+          this.nuevoRol.permisos.includes(label)
+      })),
+
+      usuariosAsociados: []
+    };
+
+    this.roles.push(nuevoRol);
+
+    this.selectedRole = nuevoRol.name;
+
+    this.cerrarFormularioRol();
+
+    this.mostrarExito(
+      `El rol "${nuevoRol.name}" fue creado correctamente.`
+    );
+
+    this.ultimoRegistroAuditoria =
+      `Rol creado el ${this.obtenerFechaActual()}.`;
+
+    this.limpiarFormulario();
+  }
+
+  togglePermiso(
+    role: Rol,
+    permiso: Permiso
+  ): void {
+
+    permiso.granted = !permiso.granted;
+  }
+
+  guardarPermisosRol(): void {
+
+    const rol = this.selectedRoleObject;
+
+    if (!rol) {
+      return;
+    }
+
+    const permisosActivos =
+      this.getAllowedCount(rol);
+
+    if (permisosActivos === 0) {
+      this.mostrarError(
+        'Debe seleccionar al menos un permiso para este rol.'
+      );
+      return;
+    }
+
+    this.mostrarExito(
+      `Configuración guardada correctamente para "${rol.name}".`
+    );
+
+    this.ultimoRegistroAuditoria =
+      `Permisos modificados el ${this.obtenerFechaActual()}.`;
+  }
+
+  verDetalleUsuario(
+    usuario: UsuarioAsociado
+  ): void {
+
+    alert(
+      [
+        'Detalle del usuario',
+        '',
+        `Nombre: ${usuario.name}`,
+        `Correo: ${usuario.email}`,
+        `Estado: ${usuario.estado.toUpperCase()}`
+      ].join('\n')
+    );
+  }
+
+  getAllowedCount(role: Rol): number {
+    return role.perms.filter(
+      permiso => permiso.granted
+    ).length;
+  }
+
+  getRestrictedCount(role: Rol): number {
+    return role.perms.filter(
+      permiso => !permiso.granted
+    ).length;
+  }
+
+  hasPermission(
+    role: Rol,
+    nombrePermiso: string
+  ): boolean {
+
+    return role.perms.some(
+      permiso =>
+        permiso.label === nombrePermiso &&
+        permiso.granted
+    );
+  }
+
+  onSearch(event: Event): void {
+
+    const input =
+      event.target as HTMLInputElement;
+
+    this.searchTerm = input.value;
+  }
+
+  private mostrarError(mensaje: string): void {
+
+    this.mensajeError = mensaje;
+    this.mensajeExito = '';
+  }
+
+  private mostrarExito(mensaje: string): void {
+
+    this.mensajeExito = mensaje;
+    this.mensajeError = '';
 
     setTimeout(() => {
       this.mensajeExito = '';
     }, 4000);
   }
 
-  // =========================================================
-  // VER DETALLE DEL USUARIO (1)
-  // =========================================================
+  private limpiarMensajes(): void {
 
-  verDetalleUsuario(user: UsuarioAsociado): void {
-    alert(`Detalle del Usuario:\n\nNombre: ${user.name}\nCorreo: ${user.email}\nEstado: ${user.estado.toUpperCase()}`);
+    this.mensajeError = '';
+    this.mensajeExito = '';
   }
 
-  // =========================================================
-  // CONTAR PERMISOS PERMITIDOS
-  // =========================================================
+  private limpiarFormulario(): void {
 
-  getAllowedCount(role: Rol): number {
-    return role.perms.filter(permiso => permiso.granted).length;
+    this.nuevoRol = {
+      nombre: '',
+      descripcion: '',
+      permisos: []
+    };
   }
 
-  // =========================================================
-  // CONTAR PERMISOS RESTRINGIDOS
-  // =========================================================
+  private obtenerFechaActual(): string {
 
-  getRestrictedCount(role: Rol): number {
-    return role.perms.filter(permiso => !permiso.granted).length;
-  }
-
-  // =========================================================
-  // SABER SI UN PERMISO ESTÁ HABILITADO
-  // =========================================================
-
-  hasPermission(role: Rol, label: string): boolean {
-    const permiso = role.perms.find(
-      permiso => permiso.label === label
-    );
-
-    return permiso?.granted ?? false;
-  }
-
-  // =========================================================
-  // BÚSQUEDA
-  // =========================================================
-
-  onSearch(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.searchTerm = input.value;
-  }
-
-  // =========================================================
-  // BOTONES DEL HEADER
-  // =========================================================
-
-  mostrarNotificaciones(): void {
-    console.log('Notificaciones');
-  }
-
-  mostrarCalendario(): void {
-    console.log('Calendario');
-  }
-
-  abrirPerfil(): void {
-    console.log('Perfil del usuario');
-  }
-
-  // =========================================================
-  // NAVEGACIÓN DEL SIDEBAR
-  // =========================================================
-
-  navegar(nombre: string): void {
-    console.log(`Navegando a: ${nombre}`);
-  }
-
-  cerrarSesion(): void {
-    console.log('Cerrar sesión');
+    return new Date().toLocaleString();
   }
 }
-//prueba de commit subido
+

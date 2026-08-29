@@ -1,14 +1,9 @@
-<!-- =========================================================
-     ROLES Y PERMISOS
-========================================================= -->
 
 <main class="main" role="main">
 
-  <!-- =======================================================
-       CABECERA
-  ======================================================== -->
+  <!-- CABECERA -->
 
-  <div class="page-header">
+  <header class="page-header">
 
     <h2 class="page-title">
       Roles y Permisos
@@ -18,299 +13,172 @@
       Accesos y niveles de autorización por rol en la Fundación Geriátrica
     </p>
 
-  </div>
+  </header>
 
 
-  <!-- =======================================================
-       SELECCIONAR ROL
-  ======================================================== -->
+  <!-- SELECCIÓN DE ROL -->
 
   <div class="section-label">
     Seleccionar rol
   </div>
 
-  <div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+  <div class="role-actions">
+
     <button
       type="button"
+      class="primary-button"
       (click)="abrirNuevoRol()"
-      style="padding: 10px 18px; background: #3b5bdb; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;"
     >
-      + Crear rol
-    </button>
-  </div>
+      <span class="material-symbols-outlined">
+        add
+      </span>
 
-  <!-- =========================================================
-     FORMULARIO CREAR NUEVO ROL
-========================================================= -->
-
-<div
-  *ngIf="mostrarFormularioRol"
-  style="
-    margin-bottom: 24px;
-    padding: 24px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 14px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  "
->
-
-  <!-- ENCABEZADO -->
-
-  <div
-    style="
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    "
-  >
-
-    <div>
-
-      <div
-        style="
-          font-size: 18px;
-          font-weight: 700;
-          color: #1e293b;
-          margin-bottom: 4px;
-        "
-      >
-        Crear nuevo rol
-      </div>
-
-      <div
-        style="
-          font-size: 13px;
-          color: #64748b;
-        "
-      >
-        Define el nombre, descripción y permisos del nuevo rol.
-      </div>
-
-    </div>
-
-    <button
-      type="button"
-      (click)="cerrarFormularioRol()"
-      style="
-        width: 34px;
-        height: 34px;
-        border: none;
-        border-radius: 8px;
-        background: #f1f5f9;
-        color: #475569;
-        font-size: 20px;
-        cursor: pointer;
-      "
-    >
-      ×
-    </button>
-
-  </div>
-
-
-  <!-- CAMPOS PRINCIPALES -->
-
-  <div
-    style="
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      margin-bottom: 20px;
-    "
-  >
-
-    <!-- NOMBRE -->
-
-    <div>
-
-      <label
-        style="
-          display: block;
-          margin-bottom: 7px;
-          font-size: 13px;
-          font-weight: 600;
-          color: #334155;
-        "
-      >
-        Nombre del rol
-      </label>
-
-      <input
-        type="text"
-        [(ngModel)]="nuevoRol.nombre"
-        placeholder="Ej. Recepcionista"
-        style="
-          width: 100%;
-          box-sizing: border-box;
-          padding: 10px 12px;
-          border: 1px solid #cbd5e1;
-          border-radius: 8px;
-          outline: none;
-          font-size: 14px;
-          color: #334155;
-        "
-      />
-
-    </div>
-
-
-    <!-- DESCRIPCIÓN -->
-
-    <div>
-
-      <label
-        style="
-          display: block;
-          margin-bottom: 7px;
-          font-size: 13px;
-          font-weight: 600;
-          color: #334155;
-        "
-      >
-        Descripción
-      </label>
-
-      <input
-        type="text"
-        [(ngModel)]="nuevoRol.descripcion"
-        placeholder="Describe las funciones de este rol"
-        style="
-          width: 100%;
-          box-sizing: border-box;
-          padding: 10px 12px;
-          border: 1px solid #cbd5e1;
-          border-radius: 8px;
-          outline: none;
-          font-size: 14px;
-          color: #334155;
-        "
-      />
-
-    </div>
-
-  </div>
-
-
-  <!-- PERMISOS -->
-
-  <div>
-
-    <div
-      style="
-        font-size: 14px;
-        font-weight: 600;
-        color: #1e293b;
-        margin-bottom: 12px;
-      "
-    >
-      Permisos del rol
-    </div>
-
-    <div
-      style="
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-      "
-    >
-
-      <label
-        *ngFor="let permiso of PERM_LABELS"
-        style="
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          padding: 11px 12px;
-          border: 1px solid #e2e8f0;
-          border-radius: 8px;
-          background: #f8fafc;
-          cursor: pointer;
-          font-size: 13px;
-          color: #334155;
-        "
-      >
-
-        <input
-          type="checkbox"
-          [value]="permiso"
-          [checked]="nuevoRol.permisos.includes(permiso)"
-          (change)="
-            $any($event.target).checked
-              ? nuevoRol.permisos.push(permiso)
-              : nuevoRol.permisos.splice(
-                  nuevoRol.permisos.indexOf(permiso),
-                  1
-                )
-          "
-        />
-
-        {{ permiso }}
-
-      </label>
-
-    </div>
-
-  </div>
-
-
-  <!-- BOTONES -->
-
-  <div
-    style="
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 24px;
-      padding-top: 16px;
-      border-top: 1px solid #f1f5f9;
-    "
-  >
-
-    <button
-      type="button"
-      (click)="cerrarFormularioRol()"
-      style="
-        padding: 10px 18px;
-        background: #f1f5f9;
-        color: #475569;
-        border: none;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
-      "
-    >
-      Cancelar
-    </button>
-
-    <button
-      type="button"
-      (click)="crearRol()"
-      style="
-        padding: 10px 18px;
-        background: #3b5bdb;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
-      "
-    >
       Crear rol
     </button>
 
   </div>
 
-</div>
 
-  <div
+  <!-- CREAR ROL -->
+
+  <section
+    *ngIf="mostrarFormularioRol"
+    class="new-role-card"
+  >
+
+    <div class="new-role-header">
+
+      <div>
+
+        <h3>
+          Crear nuevo rol
+        </h3>
+
+        <p>
+          Define el nombre, descripción y permisos del nuevo rol.
+        </p>
+
+      </div>
+
+      <button
+        type="button"
+        class="close-button"
+        (click)="cerrarFormularioRol()"
+        aria-label="Cerrar formulario"
+      >
+        <span class="material-symbols-outlined">
+          close
+        </span>
+      </button>
+
+    </div>
+
+
+    <div class="form-grid">
+
+      <div class="form-field">
+
+        <label for="nombreRol">
+          Nombre del rol
+        </label>
+
+        <input
+          id="nombreRol"
+          type="text"
+          [(ngModel)]="nuevoRol.nombre"
+          placeholder="Ej. Recepcionista"
+        >
+
+      </div>
+
+
+      <div class="form-field">
+
+        <label for="descripcionRol">
+          Descripción
+        </label>
+
+        <input
+          id="descripcionRol"
+          type="text"
+          [(ngModel)]="nuevoRol.descripcion"
+          placeholder="Describe las funciones del rol"
+        >
+
+      </div>
+
+    </div>
+
+
+    <div class="permissions-form">
+
+      <h4>
+        Permisos del rol
+      </h4>
+
+      <div class="permission-options">
+
+        <label
+          *ngFor="let permiso of PERM_LABELS"
+          class="permission-option"
+        >
+
+          <input
+            type="checkbox"
+            [checked]="nuevoRol.permisos.includes(permiso)"
+            (change)="
+              $any($event.target).checked
+                ? nuevoRol.permisos.push(permiso)
+                : nuevoRol.permisos.splice(
+                    nuevoRol.permisos.indexOf(permiso),
+                    1
+                  )
+            "
+          >
+
+          <span>
+            {{ permiso }}
+          </span>
+
+        </label>
+
+      </div>
+
+    </div>
+
+
+    <div class="form-actions">
+
+      <button
+        type="button"
+        class="secondary-button"
+        (click)="cerrarFormularioRol()"
+      >
+        Cancelar
+      </button>
+
+      <button
+        type="button"
+        class="primary-button"
+        (click)="crearRol()"
+      >
+        Crear rol
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- TARJETAS DE ROLES -->
+
+  <section
     class="role-cards"
     role="radiogroup"
     aria-label="Selección de rol"
   >
 
-    <div
+    <article
       *ngFor="let role of filteredRoles"
       class="role-card"
       [class.selected]="role.name === selectedRole"
@@ -319,23 +187,17 @@
       [attr.aria-checked]="role.name === selectedRole"
       tabindex="0"
       [attr.aria-label]="'Rol ' + role.name"
-
       (click)="selectRole(role.name)"
-
       (keydown.enter)="selectRole(role.name)"
-
       (keydown.space)="
         $event.preventDefault();
         selectRole(role.name)
       "
     >
 
-      <!-- CHECK DE SELECCIÓN -->
-
       <div
         *ngIf="role.name === selectedRole"
         class="selected-check"
-        [style.background]="role.color"
       >
 
         <span class="material-symbols-outlined">
@@ -345,21 +207,15 @@
       </div>
 
 
-      <!-- CABECERA DE LA TARJETA -->
-
       <div class="role-card-header">
 
-        <div
-          class="role-icon-wrap"
-          [style.background]="role.color"
-        >
+        <div class="role-icon-wrap">
 
           <span class="material-symbols-outlined">
             {{ role.icon }}
           </span>
 
         </div>
-
 
         <div class="role-card-meta">
 
@@ -384,36 +240,16 @@
       </div>
 
 
-      <!-- DESCRIPCIÓN -->
-
       <p class="role-card-desc">
         {{ role.description }}
       </p>
 
 
-      <!-- RESUMEN DE PERMISOS -->
-
       <div class="role-perm-summary">
 
-        <!-- PERMITIDOS -->
+        <span class="perm-badge allowed">
 
-        <span
-          class="perm-badge allowed"
-          [style.background]="role.color + '18'"
-          [style.color]="role.color"
-        >
-
-          <span
-            class="material-symbols-outlined"
-            style="
-              font-size:13px;
-              font-variation-settings:
-              'FILL' 1,
-              'wght' 600,
-              'GRAD' 0,
-              'opsz' 16;
-            "
-          >
+          <span class="material-symbols-outlined">
             check_circle
           </span>
 
@@ -424,21 +260,9 @@
         </span>
 
 
-        <!-- RESTRINGIDOS -->
-
         <span class="perm-badge restricted">
 
-          <span
-            class="material-symbols-outlined"
-            style="
-              font-size:13px;
-              font-variation-settings:
-              'FILL' 1,
-              'wght' 600,
-              'GRAD' 0,
-              'opsz' 16;
-            "
-          >
+          <span class="material-symbols-outlined">
             remove_circle
           </span>
 
@@ -450,46 +274,28 @@
 
       </div>
 
-    </div>
+    </article>
 
-  </div>
+  </section>
 
 
-  <!-- =======================================================
-       DETALLE DEL ROL
-  ======================================================== -->
+  <!-- DETALLE DEL ROL -->
 
   <div class="section-label">
     Detalle del rol
   </div>
 
-  <!-- Alertas de Validación y Auditoría -->
-  <div *ngIf="mensajeExito" style="padding: 12px 16px; margin-bottom: 16px; background: #e6fcf5; border-left: 4px solid #0ca678; color: #095c43; border-radius: 8px; font-size: 14px; font-weight: 500;">
-    {{ mensajeExito }} <br>
-    <small style="font-weight: 400; opacity: 0.85; font-size: 12px;">Auditoría: {{ ultimoRegistroAuditoria }}</small>
-  </div>
 
-  <div *ngIf="mensajeError" style="padding: 12px 16px; margin-bottom: 16px; background: #fff5f5; border-left: 4px solid #fa5252; color: #c92a2a; border-radius: 8px; font-size: 14px; font-weight: 500;">
-    {{ mensajeError }}
-  </div>
+  <div
+    *ngIf="selectedRoleObject"
+    class="detail-panel"
+  >
 
+    <!-- INFORMACIÓN -->
 
-  <div class="detail-panel" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start;">
-  
+    <section class="detail-info-card">
 
-    <!-- =====================================================
-         INFORMACIÓN DEL ROL
-    ====================================================== -->
-    <div style="display: flex; flex-direction: column; gap: 20px;">
-
-      <div class="detail-info-card" style="margin-bottom: 0;">
-
-      <!-- ICONO -->
-
-      <div
-        class="detail-icon-wrap"
-        [style.background]="selectedRoleObject.color"
-      >
+      <div class="detail-icon-wrap">
 
         <span class="material-symbols-outlined">
           {{ selectedRoleObject.icon }}
@@ -498,19 +304,12 @@
       </div>
 
 
-      <!-- NOMBRE -->
-
       <div class="detail-role-name">
         {{ selectedRoleObject.name }}
       </div>
 
 
-      <!-- USUARIOS -->
-
-      <div
-        class="detail-user-count"
-        [style.color]="selectedRoleObject.color"
-      >
+      <div class="detail-user-count">
 
         <span class="material-symbols-outlined">
           group
@@ -525,42 +324,25 @@
       </div>
 
 
-      <!-- DESCRIPCIÓN -->
-
       <p class="detail-desc">
         {{ selectedRoleObject.description }}
       </p>
 
 
-      <!-- ESTADÍSTICAS -->
-
       <div class="detail-stats">
 
-        <!-- PERMITIDOS -->
+        <div class="stat-box allowed">
 
-        <div
-          class="stat-box allowed"
-          [style.background]="selectedRoleObject.color + '0d'"
-        >
-
-          <div
-            class="stat-box-num"
-            [style.color]="selectedRoleObject.color"
-          >
+          <div class="stat-box-num">
             {{ getAllowedCount(selectedRoleObject) }}
           </div>
 
-          <div
-            class="stat-box-label"
-            [style.color]="selectedRoleObject.color"
-          >
+          <div class="stat-box-label">
             Permitidos
           </div>
 
         </div>
 
-
-        <!-- RESTRINGIDOS -->
 
         <div class="stat-box restricted">
 
@@ -576,205 +358,180 @@
 
       </div>
 
-    </div>
+    </section>
 
-    <!-- SECCIÓN DE USUARIOS ASOCIADOS Y FILTROS -->
-      <div class="perm-list-card" style="padding: 20px; background: #ffffff; border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
-        
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-          <span style="font-weight: 600; font-size: 15px; color: #1e293b;">
-            Usuarios asociados
-          </span>
-          
-          <!-- FILTRAR POR ESTADO -->
-          <select [(ngModel)]="filtroEstadoUsuario" style="padding: 6px 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 13px; background: #f8fafc; color: #334155; outline: none; cursor: pointer;">
-            <option value="todos">Todos los estados</option>
-            <option value="activo">Activos</option>
-            <option value="inactivo">Inactivos</option>
-          </select>
-        </div>
 
-        <!-- SI NO HAY USUARIOS -->
-        <div *ngIf="usuariosFiltrados.length === 0" style="padding: 20px; text-align: center; color: #64748b; font-size: 13px; background: #f8fafc; border-radius: 8px; border: 1px dashed #cbd5e1;">
-          No hay usuarios asociados a este rol con el estado seleccionado.
-        </div>
+    <!-- USUARIOS -->
 
-        <!-- LISTA DE USUARIOS -->
-        <div style="display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto;">
-          <div *ngFor="let user of usuariosFiltrados" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #f8fafc; border-radius: 8px; border: 1px solid #f1f5f9;">
-            
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <div style="width: 34px; height: 34px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12px; color: #475569;">
-                {{ user.avatar }}
-              </div>
-              <div>
-                <div style="font-size: 13px; font-weight: 600; color: #1e293b;">{{ user.name }}</div>
-                <div style="font-size: 11px; color: #64748b;">{{ user.email }}</div>
-              </div>
+    <section class="perm-list-card users-card">
+
+      <div class="users-header">
+
+        <span class="perm-list-title">
+          Usuarios asociados
+        </span>
+
+        <select
+          [(ngModel)]="filtroEstadoUsuario"
+          aria-label="Filtrar usuarios por estado"
+        >
+          <option value="Todos">
+            Todos los estados
+          </option>
+
+          <option value="activo">
+            Activos
+          </option>
+
+          <option value="inactivo">
+            Inactivos
+          </option>
+        </select>
+
+      </div>
+
+
+      <div
+        *ngIf="usuariosFiltrados.length === 0"
+        class="empty-state"
+      >
+        No hay usuarios asociados a este rol con el estado seleccionado.
+      </div>
+
+
+      <div
+        *ngIf="usuariosFiltrados.length > 0"
+        class="user-list"
+      >
+
+        <div
+          *ngFor="let user of usuariosFiltrados"
+          class="user-item"
+        >
+
+          <div class="user-data">
+
+            <div class="user-avatar">
+              {{ user.avatar }}
             </div>
 
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span [style.background]="user.estado === 'activo' ? '#d3f9d8' : '#ffe3e3'" 
-                    [style.color]="user.estado === 'activo' ? '#2b8a3e' : '#c92a2a'" 
-                    style="font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 600; text-transform: uppercase;">
-                {{ user.estado }}
-              </span>
-              <!-- BOTÓN VER DETALLE -->
-              <button (click)="verDetalleUsuario(user)" style="padding: 5px 10px; background: #3b5bdb; color: white; border: none; border-radius: 6px; font-size: 11px; font-weight: 500; cursor: pointer;">
-                Ver detalle
-              </button>
+            <div>
+
+              <div class="user-name">
+                {{ user.name }}
+              </div>
+
+              <div class="user-email">
+                {{ user.email }}
+              </div>
+
             </div>
 
           </div>
+
+
+          <div class="user-actions">
+
+            <span
+              class="user-status"
+              [class.active]="user.estado === 'activo'"
+              [class.inactive]="user.estado === 'inactivo'"
+            >
+              {{ user.estado }}
+            </span>
+
+            <button
+              type="button"
+              class="small-button"
+              (click)="verDetalleUsuario(user)"
+            >
+              Ver detalle
+            </button>
+
+          </div>
+
         </div>
 
       </div>
 
-    </div>
+    </section>
 
-    <!-- =====================================================
-         LISTA DE PERMISOS
-    ====================================================== -->
 
-    <div class="perm-list-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+    <!-- PERMISOS -->
 
-    <div>
-      <!-- HEADER -->
+    <section class="perm-list-card permission-card">
 
-      <div class="perm-list-header">
+      <div>
 
-        <span class="perm-list-title">
-          Permisos del rol
-        </span>
+        <div class="perm-list-header">
 
-        <span class="perm-list-hint">
-
-          <span class="material-symbols-outlined">
-            touch_app
+          <span class="perm-list-title">
+            Permisos del rol
           </span>
 
-          Haz clic para activar o desactivar
+          <span class="perm-list-hint">
 
-        </span>
+            <span class="material-symbols-outlined">
+              touch_app
+            </span>
 
-      </div>
+            Haz clic para activar o desactivar
+
+          </span>
+
+        </div>
 
 
-      <!-- FILAS -->
+        <div class="perm-rows">
 
-      <div class="perm-rows">
-
-        <div
-          *ngFor="let permiso of selectedRoleObject.perms"
-          class="perm-row"
-          role="button"
-          tabindex="0"
-
-          [attr.aria-label]="
-            'Alternar permiso: ' + permiso.label
-          "
-
-          (click)="
-            togglePermiso(
-              selectedRoleObject,
-              permiso
-            )
-          "
-
-          (keydown.enter)="
-            togglePermiso(
-              selectedRoleObject,
-              permiso
-            )
-          "
-
-          (keydown.space)="
-            $event.preventDefault();
-            togglePermiso(
-              selectedRoleObject,
-              permiso
-            )
-          "
-        >
-
-          <!-- ICONO -->
-
-          <span
-            class="perm-row-icon"
-
-            [class.granted]="permiso.granted"
-
-            [class.denied]="!permiso.granted"
-
-            [style.--role-color]="
-              selectedRoleObject.color
+          <div
+            *ngFor="let permiso of selectedRoleObject.perms"
+            class="perm-row"
+            role="button"
+            tabindex="0"
+            [attr.aria-label]="'Alternar permiso: ' + permiso.label"
+            (click)="togglePermiso(selectedRoleObject, permiso)"
+            (keydown.enter)="togglePermiso(selectedRoleObject, permiso)"
+            (keydown.space)="
+              $event.preventDefault();
+              togglePermiso(selectedRoleObject, permiso)
             "
           >
 
-            <span class="material-symbols-outlined">
+            <span
+              class="perm-row-icon"
+              [class.granted]="permiso.granted"
+              [class.denied]="!permiso.granted"
+            >
 
-              {{
-                permiso.granted
-                  ? 'lock_open'
-                  : 'lock'
-              }}
+              <span class="material-symbols-outlined">
+                {{ permiso.granted ? 'lock_open' : 'lock' }}
+              </span>
 
             </span>
 
-          </span>
+
+            <span class="perm-row-label">
+              {{ permiso.label }}
+            </span>
 
 
-          <!-- NOMBRE -->
-
-          <span class="perm-row-label">
-            {{ permiso.label }}
-          </span>
-
-
-          <!-- ESTADO -->
-
-          <span
-            class="perm-status-badge"
-
-            [class.granted]="permiso.granted"
-
-            [class.denied]="!permiso.granted"
-
-            [style.background]="
-              permiso.granted
-                ? selectedRoleObject.color + '12'
-                : ''
-            "
-
-            [style.color]="
-              permiso.granted
-                ? selectedRoleObject.color
-                : ''
-            "
-          >
-
-            {{
-              permiso.granted
-                ? 'Permitido'
-                : 'Restringido'
-            }}
-
-          </span>
+            <span
+              class="perm-status-badge"
+              [class.granted]="permiso.granted"
+              [class.denied]="!permiso.granted"
+            >
+              {{ permiso.granted ? 'Permitido' : 'Restringido' }}
+            </span>
 
 
-          <!-- TOGGLE -->
-
-          <div
-            class="toggle"
-
-            [class.on]="permiso.granted"
-
-            [style.--role-color]="
-              selectedRoleObject.color
-            "
-          >
-
-            <div class="toggle-track"></div>
+            <div
+              class="toggle"
+              [class.on]="permiso.granted"
+              aria-hidden="true"
+            >
+              <div class="toggle-track"></div>
+            </div>
 
           </div>
 
@@ -782,52 +539,85 @@
 
       </div>
 
-    </div>
 
-    <!-- BOTÓN GUARDAR PERMISOS -->
-      <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end;">
-        <button (click)="guardarPermisosRol()" style="display: flex; align-items: center; gap: 8px; background: #3b5bdb; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; box-shadow: 0 4px 12px rgba(59, 91, 219, 0.25);">
-          <span class="material-symbols-outlined" style="font-size: 18px;">save</span>
+      <div class="permission-actions">
+
+        <button
+          type="button"
+          class="primary-button"
+          (click)="guardarPermisosRol()"
+        >
+
+          <span class="material-symbols-outlined">
+            save
+          </span>
+
           Guardar permisos
+
         </button>
+
       </div>
+
+    </section>
+
+  </div>
+
+
+  <!-- MENSAJES -->
+
+  <div
+    *ngIf="mensajeExito"
+    class="message success-message"
+  >
+    <span class="material-symbols-outlined">
+      check_circle
+    </span>
+
+    <div>
+
+      <strong>
+        {{ mensajeExito }}
+      </strong>
+
+      <small>
+        Auditoría: {{ ultimoRegistroAuditoria }}
+      </small>
 
     </div>
 
   </div>
 
 
-  <!-- =======================================================
-       MATRIZ DE PERMISOS
-  ======================================================== -->
+  <div
+    *ngIf="mensajeError"
+    class="message error-message"
+  >
+
+    <span class="material-symbols-outlined">
+      error
+    </span>
+
+    {{ mensajeError }}
+
+  </div>
+
+
+  <!-- MATRIZ -->
 
   <div class="section-label">
     Matriz de permisos
   </div>
 
 
-  <div
+  <section
     class="matrix-section"
     role="region"
     aria-label="Matriz de permisos"
   >
 
-    <!-- HEADER -->
-
     <div class="matrix-header">
 
-      <span
-        class="material-symbols-outlined"
-        style="
-          color:var(--primary);
-          font-size:20px;
-          font-variation-settings:
-          'FILL' 1,
-          'wght' 500,
-          'GRAD' 0,
-          'opsz' 20;
-        "
-      >
+      <span class="material-symbols-outlined matrix-header-icon">
         grid_view
       </span>
 
@@ -836,13 +626,11 @@
       </span>
 
       <span class="matrix-subtitle">
-        Haz clic en una fila del panel de detalle para modificar permisos
+        Permisos configurados para cada rol
       </span>
 
     </div>
 
-
-    <!-- TABLA -->
 
     <div class="matrix-table-wrap">
 
@@ -865,7 +653,7 @@
 
                 <div
                   class="matrix-role-dot"
-                  [style.background]="role.color"
+                  [style.--role-color]="role.color"
                 ></div>
 
                 {{ role.name }}
@@ -887,37 +675,20 @@
               {{ label }}
             </td>
 
-
             <td *ngFor="let role of roles">
 
               <div
                 class="matrix-icon"
-
-                [class.granted]="
-                  hasPermission(role, label)
-                "
-
-                [class.denied]="
-                  !hasPermission(role, label)
-                "
+                [class.granted]="hasPermission(role, label)"
+                [class.denied]="!hasPermission(role, label)"
               >
 
-                <span
-                  class="material-symbols-outlined"
-
-                  [style.color]="
-                    hasPermission(role, label)
-                      ? role.color
-                      : ''
-                  "
-                >
-
+                <span class="material-symbols-outlined">
                   {{
                     hasPermission(role, label)
                       ? 'check_circle'
                       : 'remove_circle'
                   }}
-
                 </span>
 
               </div>
@@ -932,6 +703,7 @@
 
     </div>
 
-  </div>
+  </section>
 
 </main>
+

@@ -1,13 +1,3 @@
-/* =========================================================
-   RESET DEL COMPONENTE
-========================================================= */
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
 
 /* =========================================================
    HOST
@@ -16,442 +6,479 @@
 :host {
   display: block;
   width: 100%;
-  min-height: 100vh;
+  min-height: 100%;
   background: var(--bg-primary);
   color: var(--text-primary);
-
   font-family: var(--font-family-base);
-  font-size: var(--font-size-sm);
-  line-height: 1.5;
 }
 
 
 /* =========================================================
-   MAIN
-   IMPORTNTE:
-   El Layout ya controla el Sidebar y Header.
-   Este componente NO debe volver a aplicar margin-left.
+   CONTENEDOR PRINCIPAL
 ========================================================= */
 
 .main {
   width: 100%;
   min-height: calc(100vh - var(--web-header-height));
-
-  margin: 0;
-
   padding:
     var(--web-content-padding-top)
     var(--web-content-padding-x)
     var(--web-content-padding-bottom);
-
-  background: var(--bg-primary);
 }
 
 
 /* =========================================================
-   PAGE HEADER
+   CABECERA
 ========================================================= */
 
 .page-header {
-  width: 100%;
   margin-bottom: var(--spacing-lg);
 }
 
 .page-title {
   margin: 0;
-
-  color: var(--text-primary);
-
   font-family: var(--font-heading-family);
   font-size: var(--font-size-h1);
   font-weight: var(--font-weight-bold);
-
-  letter-spacing: -0.5px;
   line-height: 1.15;
 }
 
 .page-subtitle {
-  margin:
-    var(--spacing-xs)
-    0
-    0;
-
+  margin: var(--spacing-xs) 0 0;
   color: var(--text-secondary);
-
   font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-regular);
 }
 
 
 /* =========================================================
-   SECTION LABEL
+   TÍTULOS DE SECCIÓN
 ========================================================= */
 
 .section-label {
   display: flex;
   align-items: center;
-
-  width: 100%;
-
   gap: var(--spacing-xs);
-
+  width: 100%;
   margin-bottom: var(--spacing-sm);
-
   color: var(--text-secondary);
-
   font-family: var(--font-heading-family);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
-
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: .8px;
 }
 
 .section-label::after {
   content: '';
-
   flex: 1;
-
   height: 1px;
-
   background: var(--border-color);
 }
 
 
 /* =========================================================
-   ROLE CARDS
+   BOTONES
+========================================================= */
+
+.role-actions,
+.form-actions,
+.permission-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+}
+
+.role-actions {
+  margin-bottom: var(--spacing-md);
+}
+
+.primary-button,
+.secondary-button,
+.small-button,
+.close-button {
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-family-base);
+  transition:
+    background .2s ease,
+    transform .2s ease,
+    box-shadow .2s ease;
+}
+
+.primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  min-height: 40px;
+  padding: 0 var(--spacing-md);
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--bg-surface);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.primary-button:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.primary-button .material-symbols-outlined {
+  font-size: var(--icon-size-sm);
+}
+
+.secondary-button {
+  min-height: 40px;
+  padding: 0 var(--spacing-md);
+  border-radius: var(--radius-md);
+  background: var(--bg-neutral-light);
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.secondary-button:hover {
+  background: var(--border-color);
+}
+
+.small-button {
+  padding: var(--spacing-2xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+  color: var(--bg-surface);
+  font-size: var(--font-size-xs);
+}
+
+.close-button {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: var(--bg-neutral-light);
+  color: var(--text-secondary);
+}
+
+.close-button:hover {
+  background: var(--border-color);
+}
+
+.close-button .material-symbols-outlined {
+  font-size: var(--icon-size-sm);
+}
+
+
+/* =========================================================
+   FORMULARIO NUEVO ROL
+========================================================= */
+
+.new-role-card {
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.new-role-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.new-role-header h3 {
+  margin: 0 0 var(--spacing-2xs);
+  font-family: var(--font-heading-family);
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-bold);
+}
+
+.new-role-header p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xs);
+}
+
+.form-field label {
+  color: var(--text-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.form-field input,
+.users-header select {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  outline: none;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+}
+
+.form-field input:focus,
+.users-header select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(59, 91, 219, .12);
+}
+
+.permissions-form h4 {
+  margin: 0 0 var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.permission-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-xs);
+}
+
+.permission-option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-neutral-light);
+  color: var(--text-primary);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+}
+
+.permission-option input {
+  margin: 0;
+}
+
+
+/* =========================================================
+   TARJETAS DE ROLES
 ========================================================= */
 
 .role-cards {
   display: grid;
-
-  width: 100%;
-
   grid-template-columns: repeat(3, minmax(0, 1fr));
-
   gap: var(--spacing-md);
-
   margin-bottom: var(--spacing-lg);
 }
 
 .role-card {
   position: relative;
-
   min-width: 0;
-
   padding: var(--spacing-lg);
-
   overflow: hidden;
-
   background: var(--bg-surface);
-
   border: 2px solid var(--border-color);
   border-radius: var(--radius-lg);
-
   cursor: pointer;
-
   transition:
-    border-color 0.18s ease,
-    box-shadow 0.18s ease,
-    transform 0.18s ease;
+    border-color .18s ease,
+    box-shadow .18s ease,
+    transform .18s ease;
 }
 
 .role-card::before {
   content: '';
-
   position: absolute;
-
-  top: 0;
-  left: 0;
-  right: 0;
-
+  inset: 0 0 auto;
   height: 4px;
+  background: var(--role-color, var(--color-primary));
+}
 
-  background: var(
-    --role-color,
-    var(--color-primary)
-  );
-
-  border-radius:
-    var(--radius-sm)
-    var(--radius-sm)
-    0
-    0;
+.role-card:hover,
+.role-card.selected {
+  border-color: var(--role-color, var(--color-primary));
+  box-shadow: var(--shadow-md);
 }
 
 .role-card:hover {
-  border-color: var(
-    --role-color,
-    var(--color-primary)
-  );
-
-  box-shadow: var(--shadow-md);
-
   transform: translateY(-2px);
 }
-
-.role-card.selected {
-  border-color: var(
-    --role-color,
-    var(--color-primary)
-  );
-
-  box-shadow:
-    0 0 0 3px rgba(59, 91, 219, 0.12),
-    var(--shadow-md);
-}
-
-
-/* =========================================================
-   ROLE CARD HEADER
-========================================================= */
 
 .role-card-header {
   display: flex;
   align-items: center;
-
   gap: var(--spacing-sm);
-
   margin-bottom: var(--spacing-sm);
 }
 
 .role-icon-wrap {
   width: 44px;
   height: 44px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   flex-shrink: 0;
-
   border-radius: var(--radius-md);
+  background: var(--role-color, var(--color-primary));
 }
 
 .role-icon-wrap .material-symbols-outlined {
-  color: #FFFFFF;
-
+  color: var(--bg-surface);
   font-size: var(--icon-size-md);
-
-  font-variation-settings:
-    'FILL' 1,
-    'wght' 500,
-    'GRAD' 0,
-    'opsz' 24;
 }
 
 .role-card-meta {
-  flex: 1;
-
   min-width: 0;
+  flex: 1;
 }
 
 .role-card-name {
-  margin: 0;
-
   color: var(--text-primary);
-
   font-family: var(--font-heading-family);
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-bold);
-
-  line-height: 1.2;
 }
 
 .role-user-count {
   display: flex;
   align-items: center;
-
   gap: var(--spacing-2xs);
-
   margin-top: var(--spacing-2xs);
-
   color: var(--text-secondary);
-
   font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
 }
 
 .role-user-count .material-symbols-outlined {
   font-size: var(--icon-size-sm);
 }
 
-
-/* =========================================================
-   ROLE DESCRIPTION
-========================================================= */
-
 .role-card-desc {
-  margin:
-    0
-    0
-    var(--spacing-sm);
-
+  margin: 0 0 var(--spacing-sm);
   color: var(--text-secondary);
-
   font-size: var(--font-size-xs);
   line-height: 1.5;
 }
 
+.selected-check {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--role-color, var(--color-primary));
+}
+
+.selected-check .material-symbols-outlined {
+  color: var(--bg-surface);
+  font-size: var(--icon-size-sm);
+}
+
 
 /* =========================================================
-   PERMISSION BADGES
+   RESUMEN DE PERMISOS
 ========================================================= */
 
 .role-perm-summary {
   display: flex;
-  align-items: center;
-
   flex-wrap: wrap;
-
   gap: var(--spacing-xs);
 }
 
 .perm-badge {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-
   gap: var(--spacing-2xs);
-
-  padding:
-    var(--spacing-2xs)
-    var(--spacing-xs);
-
+  padding: var(--spacing-2xs) var(--spacing-xs);
   border-radius: var(--radius-full);
-
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
 }
 
 .perm-badge.allowed {
-  background: rgba(59, 91, 219, 0.08);
+  background: rgba(59, 91, 219, .08);
   color: var(--color-primary);
 }
 
 .perm-badge.restricted {
-  background: rgba(108, 117, 125, 0.1);
+  background: var(--bg-neutral-light);
   color: var(--text-secondary);
 }
 
-
-/* =========================================================
-   CHECK SELECCIONADO
-========================================================= */
-
-.selected-check {
-  position: absolute;
-
-  top: var(--spacing-sm);
-  right: var(--spacing-sm);
-
-  width: 22px;
-  height: 22px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: var(--radius-full);
-}
-
-.selected-check .material-symbols-outlined {
-  color: #FFFFFF;
-
+.perm-badge .material-symbols-outlined {
   font-size: var(--icon-size-sm);
-
-  font-variation-settings:
-    'FILL' 1,
-    'wght' 600,
-    'GRAD' 0,
-    'opsz' 20;
 }
 
 
 /* =========================================================
-   DETAIL PANEL
+   PANEL DE DETALLE
 ========================================================= */
 
 .detail-panel {
   display: grid;
-
-  width: 100%;
-
-  grid-template-columns:
-    minmax(0, 2fr)
-    minmax(0, 3fr);
-
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--spacing-md);
-
   margin-bottom: var(--spacing-lg);
 }
 
-
-/* =========================================================
-   DETAIL INFO CARD
-========================================================= */
-
-.detail-info-card {
-  display: flex;
-  flex-direction: column;
-
+.detail-info-card,
+.perm-list-card {
   min-width: 0;
-
-  padding: var(--spacing-lg);
-
   background: var(--bg-surface);
-
   border: 1.5px solid var(--border-color);
   border-radius: var(--radius-lg);
+}
+
+.detail-info-card {
+  padding: var(--spacing-lg);
 }
 
 .detail-icon-wrap {
   width: 56px;
   height: 56px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   margin-bottom: var(--spacing-md);
-
   border-radius: var(--radius-lg);
+  background: var(--color-primary);
 }
 
 .detail-icon-wrap .material-symbols-outlined {
-  color: #FFFFFF;
-
+  color: var(--bg-surface);
   font-size: var(--icon-size-lg);
-
-  font-variation-settings:
-    'FILL' 1,
-    'wght' 500,
-    'GRAD' 0,
-    'opsz' 30;
 }
 
 .detail-role-name {
-  margin:
-    0
-    0
-    var(--spacing-2xs);
-
-  color: var(--text-primary);
-
+  margin-bottom: var(--spacing-2xs);
   font-family: var(--font-heading-family);
   font-size: var(--font-size-h3);
   font-weight: var(--font-weight-bold);
-
-  letter-spacing: -0.3px;
 }
 
 .detail-user-count {
   display: flex;
   align-items: center;
-
   gap: var(--spacing-2xs);
-
   margin-bottom: var(--spacing-sm);
-
+  color: var(--color-primary);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
 }
@@ -461,107 +488,176 @@
 }
 
 .detail-desc {
-  margin:
-    0
-    0
-    var(--spacing-lg);
-
+  margin: 0 0 var(--spacing-lg);
   padding-bottom: var(--spacing-lg);
-
   color: var(--text-secondary);
-
   font-size: var(--font-size-xs);
   line-height: 1.6;
-
   border-bottom: 1px solid var(--border-color);
 }
 
-
-/* =========================================================
-   STATS
-========================================================= */
-
 .detail-stats {
   display: grid;
-
   grid-template-columns: repeat(2, minmax(0, 1fr));
-
   gap: var(--spacing-sm);
 }
 
 .stat-box {
   padding: var(--spacing-sm);
-
   border-radius: var(--radius-md);
-
   text-align: center;
 }
 
 .stat-box.allowed {
-  background: rgba(59, 91, 219, 0.06);
+  background: rgba(59, 91, 219, .06);
 }
 
 .stat-box.restricted {
-  background: rgba(108, 117, 125, 0.07);
+  background: var(--bg-neutral-light);
 }
 
 .stat-box-num {
   margin-bottom: var(--spacing-2xs);
-
   font-family: var(--font-heading-family);
   font-size: 28px;
   font-weight: var(--font-weight-bold);
-
-  line-height: 1;
 }
 
 .stat-box-label {
+  color: var(--text-secondary);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
-
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.stat-box.restricted .stat-box-label {
-  color: var(--text-secondary);
 }
 
 
 /* =========================================================
-   PERMISSION LIST
+   USUARIOS
 ========================================================= */
 
-.perm-list-card {
+.users-card {
+  padding: var(--spacing-lg);
+}
+
+.users-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.users-header select {
+  width: auto;
+  min-width: 150px;
+}
+
+.empty-state {
+  padding: var(--spacing-lg);
+  text-align: center;
+  color: var(--text-secondary);
+  background: var(--bg-neutral-light);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+}
+
+.user-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  background: var(--bg-neutral-light);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.user-data,
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.user-data {
   min-width: 0;
+}
 
+.user-avatar {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  background: var(--border-color);
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.user-name {
+  color: var(--text-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.user-email {
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.user-status {
+  padding: var(--spacing-2xs) var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+}
+
+.user-status.active {
+  background: #d3f9d8;
+  color: #2b8a3e;
+}
+
+.user-status.inactive {
+  background: #ffe3e3;
+  color: #c92a2a;
+}
+
+
+/* =========================================================
+   PERMISOS
+========================================================= */
+
+.permission-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   overflow: hidden;
-
-  background: var(--bg-surface);
-
-  border: 1.5px solid var(--border-color);
-  border-radius: var(--radius-lg);
 }
 
 .perm-list-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   gap: var(--spacing-sm);
-
-  padding:
-    var(--spacing-md)
-    var(--spacing-lg);
-
+  padding: var(--spacing-md) var(--spacing-lg);
   border-bottom: 1px solid var(--border-color);
 }
 
 .perm-list-title {
-  margin: 0;
-
   color: var(--text-primary);
-
   font-family: var(--font-heading-family);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
@@ -570,11 +666,8 @@
 .perm-list-hint {
   display: flex;
   align-items: center;
-
   gap: var(--spacing-2xs);
-
   color: var(--text-secondary);
-
   font-size: var(--font-size-xs);
 }
 
@@ -582,176 +675,140 @@
   font-size: var(--icon-size-sm);
 }
 
-
-/* =========================================================
-   PERMISSION ROWS
-========================================================= */
-
 .perm-rows {
-  padding:
-    var(--spacing-xs)
-    0;
+  padding: var(--spacing-xs) 0;
 }
 
 .perm-row {
   display: flex;
   align-items: center;
-
   gap: var(--spacing-sm);
-
   min-width: 0;
-
-  padding:
-    var(--spacing-sm)
-    var(--spacing-lg);
-
+  padding: var(--spacing-sm) var(--spacing-lg);
   cursor: pointer;
   user-select: none;
-
-  transition:
-    background 0.15s ease;
+  transition: background .15s ease;
 }
 
 .perm-row:hover {
   background: var(--bg-primary);
 }
 
-.perm-row-icon {
-  flex-shrink: 0;
-}
-
 .perm-row-icon .material-symbols-outlined {
   font-size: 20px;
-
-  font-variation-settings:
-    'FILL' 0,
-    'wght' 400,
-    'GRAD' 0,
-    'opsz' 20;
 }
 
 .perm-row-icon.granted .material-symbols-outlined {
-  color: var(
-    --role-color,
-    var(--color-primary)
-  );
-
-  font-variation-settings:
-    'FILL' 1,
-    'wght' 500,
-    'GRAD' 0,
-    'opsz' 20;
+  color: var(--color-primary);
 }
 
 .perm-row-icon.denied .material-symbols-outlined {
   color: var(--text-secondary);
-
-  opacity: 0.5;
+  opacity: .5;
 }
 
 .perm-row-label {
   flex: 1;
-
   min-width: 0;
-
   color: var(--text-primary);
-
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
 }
 
-
-/* =========================================================
-   STATUS
-========================================================= */
-
 .perm-status-badge {
-  flex-shrink: 0;
-
-  padding:
-    var(--spacing-2xs)
-    var(--spacing-sm);
-
+  padding: var(--spacing-2xs) var(--spacing-sm);
   border-radius: var(--radius-full);
-
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
-
   text-transform: uppercase;
-  letter-spacing: 0.4px;
 }
 
 .perm-status-badge.granted {
-  background: rgba(59, 91, 219, 0.09);
-
+  background: rgba(59, 91, 219, .09);
   color: var(--color-primary);
 }
 
 .perm-status-badge.denied {
-  background: rgba(108, 117, 125, 0.1);
-
+  background: var(--bg-neutral-light);
   color: var(--text-secondary);
 }
 
-
-/* =========================================================
-   TOGGLE
-========================================================= */
-
 .toggle {
   position: relative;
-
   width: 40px;
   height: 22px;
-
   flex-shrink: 0;
 }
 
 .toggle-track {
   position: absolute;
-
   inset: 0;
-
   border-radius: 11px;
-
   background: var(--border-color);
-
-  cursor: pointer;
-
-  transition:
-    background 0.2s ease;
+  transition: background .2s ease;
 }
 
 .toggle-track::after {
   content: '';
-
   position: absolute;
-
   top: 3px;
   left: 3px;
-
   width: 16px;
   height: 16px;
-
   border-radius: var(--radius-full);
-
-  background: #FFFFFF;
-
+  background: var(--bg-surface);
   box-shadow: var(--shadow-sm);
-
-  transition:
-    transform 0.2s ease;
+  transition: transform .2s ease;
 }
 
 .toggle.on .toggle-track {
-  background: var(
-    --role-color,
-    var(--color-primary)
-  );
+  background: var(--color-primary);
 }
 
 .toggle.on .toggle-track::after {
   transform: translateX(18px);
+}
+
+.permission-actions {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-top: 1px solid var(--border-color);
+}
+
+
+/* =========================================================
+   MENSAJES
+========================================================= */
+
+.message {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+}
+
+.message .material-symbols-outlined {
+  font-size: var(--icon-size-md);
+}
+
+.message small {
+  display: block;
+  margin-top: var(--spacing-2xs);
+  opacity: .8;
+}
+
+.success-message {
+  background: #e6fcf5;
+  color: #095c43;
+  border-left: 4px solid #0ca678;
+}
+
+.error-message {
+  background: #fff5f5;
+  color: #c92a2a;
+  border-left: 4px solid #fa5252;
 }
 
 
@@ -761,11 +818,8 @@
 
 .matrix-section {
   width: 100%;
-
   overflow: hidden;
-
   background: var(--bg-surface);
-
   border: 1.5px solid var(--border-color);
   border-radius: var(--radius-lg);
 }
@@ -773,21 +827,18 @@
 .matrix-header {
   display: flex;
   align-items: center;
-
   gap: var(--spacing-sm);
-
-  padding:
-    var(--spacing-md)
-    var(--spacing-lg);
-
+  padding: var(--spacing-md) var(--spacing-lg);
   border-bottom: 1px solid var(--border-color);
 }
 
+.matrix-header-icon {
+  color: var(--color-primary);
+  font-size: var(--icon-size-md);
+}
+
 .matrix-title {
-  margin: 0;
-
   color: var(--text-primary);
-
   font-family: var(--font-heading-family);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
@@ -795,78 +846,48 @@
 
 .matrix-subtitle {
   margin-left: auto;
-
   color: var(--text-secondary);
-
   font-size: var(--font-size-xs);
 }
 
-
-/* =========================================================
-   TABLA
-========================================================= */
-
 .matrix-table-wrap {
   width: 100%;
-
   overflow-x: auto;
 }
 
 .matrix-table {
   width: 100%;
-
   border-collapse: collapse;
 }
 
 .matrix-table th {
-  padding:
-    var(--spacing-sm)
-    var(--spacing-md);
-
+  padding: var(--spacing-sm) var(--spacing-md);
   background: var(--bg-neutral-light);
-
   border-bottom: 1px solid var(--border-color);
-
   text-align: center;
-
   font-family: var(--font-heading-family);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
-
   white-space: nowrap;
 }
 
 .matrix-table th:first-child {
   color: var(--text-secondary);
-
   text-align: left;
-
   font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 .matrix-table td {
-  padding:
-    var(--spacing-sm)
-    var(--spacing-md);
-
-  border-bottom:
-    1px solid
-    rgba(233, 236, 239, 0.7);
-
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
   text-align: center;
-
   font-size: var(--font-size-xs);
 }
 
 .matrix-table td:first-child {
   color: var(--text-primary);
-
   text-align: left;
-
   font-weight: var(--font-weight-medium);
 }
 
@@ -878,52 +899,42 @@
   background: var(--bg-primary);
 }
 
-
-/* =========================================================
-   ICONOS MATRIZ
-========================================================= */
-
-.matrix-icon .material-symbols-outlined {
-  font-size: var(--icon-size-md);
-
-  font-variation-settings:
-    'FILL' 1,
-    'wght' 500,
-    'GRAD' 0,
-    'opsz' 22;
-}
-
-.matrix-icon.denied .material-symbols-outlined {
-  color: var(--border-color);
-}
-
 .matrix-role-label {
   display: flex;
   align-items: center;
   justify-content: center;
-
   gap: var(--spacing-xs);
 }
 
 .matrix-role-dot {
   width: 8px;
   height: 8px;
-
   flex-shrink: 0;
-
   border-radius: var(--radius-full);
+  background: var(--role-color, var(--color-primary));
+}
+
+.matrix-icon .material-symbols-outlined {
+  font-size: var(--icon-size-md);
+}
+
+.matrix-icon.granted .material-symbols-outlined {
+  color: var(--color-primary);
+}
+
+.matrix-icon.denied .material-symbols-outlined {
+  color: var(--border-color);
 }
 
 
 /* =========================================================
-   RESPONSIVE - TABLET
+   RESPONSIVE
 ========================================================= */
 
 @media (max-width: 1100px) {
 
   .role-cards {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .detail-panel {
@@ -931,10 +942,6 @@
   }
 }
 
-
-/* =========================================================
-   RESPONSIVE - 800px
-========================================================= */
 
 @media (max-width: 800px) {
 
@@ -946,23 +953,19 @@
   }
 
   .page-title {
-    font-size: 27px;
+    font-size: var(--font-size-h2);
+  }
+
+  .form-grid,
+  .permission-options {
+    grid-template-columns: 1fr;
   }
 
   .role-cards {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
-  }
-
-  .detail-panel {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-
-/* =========================================================
-   RESPONSIVE - 600px
-========================================================= */
 
 @media (max-width: 600px) {
 
@@ -973,37 +976,45 @@
       var(--spacing-xl);
   }
 
-  .page-title {
-    font-size: var(--font-size-h2);
-  }
-
   .page-subtitle {
     font-size: var(--font-size-xs);
   }
 
   .role-cards {
     grid-template-columns: 1fr;
-
-    gap: var(--spacing-md);
   }
 
-  .role-card {
+  .role-card,
+  .detail-info-card,
+  .users-card {
     padding: var(--spacing-md);
   }
 
-  .detail-panel {
-    grid-template-columns: 1fr;
+  .users-header {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
-  .detail-info-card {
-    padding: var(--spacing-md);
+  .users-header select {
+    width: 100%;
+  }
+
+  .user-item {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .user-actions {
+    width: 100%;
+    justify-content: space-between;
   }
 
   .perm-list-header {
     padding: var(--spacing-md);
   }
 
-  .perm-list-hint {
+  .perm-list-hint,
+  .perm-status-badge {
     display: none;
   }
 
@@ -1011,12 +1022,6 @@
     padding:
       var(--spacing-sm)
       var(--spacing-md);
-
-    gap: var(--spacing-xs);
-  }
-
-  .perm-status-badge {
-    display: none;
   }
 
   .matrix-header {
@@ -1034,3 +1039,4 @@
       var(--spacing-sm);
   }
 }
+
