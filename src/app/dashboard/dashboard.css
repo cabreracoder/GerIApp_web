@@ -159,6 +159,12 @@
   margin-bottom: var(--spacing-md);
 }
 
+.stat-card,
+.care-stat,
+.health-item,
+.alert-stat {
+  border: 1px solid var(--border-color);
+}
 
 /* =========================================================
    BANNER DE BIENVENIDA
