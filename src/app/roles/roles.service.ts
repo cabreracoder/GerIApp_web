@@ -14,7 +14,7 @@ export interface RolApi {
 })
 export class RolesService {
 
-  private apiUrl = 'http://localhost:8000/api/roles/';
+  private apiUrl = 'https://geriapp-web-1.onrender.com/api/roles/';
 
   constructor(private http: HttpClient) {}
 
