@@ -1,5 +1,3 @@
-css
-
 :host {
   display: block;
   box-sizing: border-box;
@@ -11,10 +9,7 @@ css
   box-sizing: border-box;
 }
 
-
-/* =========================================================
-   CONTENEDOR
-========================================================= */
+/* CONTENEDOR */
 
 .canvas {
   width: 100%;
@@ -28,10 +23,7 @@ css
   font-family: var(--font-family-base);
 }
 
-
-/* =========================================================
-   ENCABEZADO
-========================================================= */
+/* ENCABEZADO */
 
 .page-header {
   display: flex;
@@ -63,10 +55,7 @@ css
   line-height: 1.5;
 }
 
-
-/* =========================================================
-   BOTÓN PRINCIPAL
-========================================================= */
+/* BOTÓN PRINCIPAL */
 
 .btn-primary {
   display: inline-flex;
@@ -108,10 +97,7 @@ css
   font-size: var(--icon-size-md);
 }
 
-
-/* =========================================================
-   BUSCADOR
-========================================================= */
+/* BUSCADOR */
 
 .search-card {
   position: relative;
@@ -171,10 +157,7 @@ css
   font-size: var(--font-size-xs);
 }
 
-
-/* =========================================================
-   HERO CARD
-========================================================= */
+/* HERO CARD */
 
 .hero-card {
   position: relative;
@@ -249,10 +232,7 @@ css
   font-size: var(--icon-size-sm);
 }
 
-
-/* =========================================================
-   HERO CONTENT
-========================================================= */
+/* HERO CONTENT */
 
 .hero-content {
   position: relative;
@@ -384,10 +364,7 @@ css
   font-size: var(--icon-size-sm);
 }
 
-
-/* =========================================================
-   SECCIÓN
-========================================================= */
+/* SECCIÓN */
 
 .section-hdr {
   display: flex;
@@ -435,10 +412,7 @@ css
   font-weight: var(--font-weight-bold);
 }
 
-
-/* =========================================================
-   TABLA
-========================================================= */
+/* TABLA */
 
 .table-card {
   width: 100%;
@@ -509,10 +483,7 @@ tbody tr:hover {
   background: var(--bg-neutral-light);
 }
 
-
-/* =========================================================
-   CELDA ENCARGADO
-========================================================= */
+/* CELDA ENCARGADO */
 
 .cell-enc {
   display: flex;
@@ -576,21 +547,12 @@ tbody tr:hover {
 
   white-space: nowrap;
 
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Monaco,
-    Consolas,
-    monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   font-size: var(--font-size-xs);
 }
 
-
-/* =========================================================
-   ESTADO
-========================================================= */
+/* ESTADO */
 
 .status-badge {
   display: inline-flex;
@@ -633,10 +595,7 @@ tbody tr:hover {
   background: var(--text-secondary);
 }
 
-
-/* =========================================================
-   ACCIONES
-========================================================= */
+/* ACCIONES */
 
 .action-btns {
   display: flex;
@@ -676,10 +635,7 @@ tbody tr:hover {
     border-color 0.2s ease;
 }
 
-
-/* =========================================================
-   BOTÓN VER DETALLE
-========================================================= */
+/* BOTÓN VER DETALLE */
 
 .action-btn.details {
   color: var(--color-primary);
@@ -697,10 +653,7 @@ tbody tr:hover {
   color: var(--bg-surface);
 }
 
-
-/* =========================================================
-   BOTÓN EDITAR
-========================================================= */
+/* BOTÓN EDITAR */
 
 .action-btn:hover {
   background: var(--color-secondary);
@@ -710,10 +663,7 @@ tbody tr:hover {
   color: var(--bg-surface);
 }
 
-
-/* =========================================================
-   BOTÓN CAMBIAR ESTADO
-========================================================= */
+/* BOTÓN CAMBIAR ESTADO */
 
 .action-btn.warn:hover {
   background: var(--color-warning);
@@ -723,10 +673,7 @@ tbody tr:hover {
   color: var(--bg-surface);
 }
 
-
-/* =========================================================
-   BOTÓN ELIMINAR
-========================================================= */
+/* BOTÓN ELIMINAR= */
 
 .action-btn.danger:hover {
   background: var(--color-danger);
@@ -736,19 +683,13 @@ tbody tr:hover {
   color: var(--bg-surface);
 }
 
-
-/* =========================================================
-   ICONOS DE LOS BOTONES
-========================================================= */
+/* ICONOS DE LOS BOTONES */
 
 .action-btn .material-symbols-outlined {
   font-size: var(--icon-size-sm);
 }
 
-
-/* =========================================================
-   COLUMNA DE ACCIONES
-========================================================= */
+/* COLUMNA DE ACCIONES= */
 
 .table-card table th:last-child,
 .table-card table td:last-child {
@@ -759,10 +700,7 @@ tbody tr:hover {
   white-space: nowrap;
 }
 
-
-/* =========================================================
-   ESTADO VACÍO
-========================================================= */
+/* ESTADO VACÍO */
 
 .empty-state {
   display: flex;
@@ -806,10 +744,7 @@ tbody tr:hover {
   font-size: var(--font-size-xs);
 }
 
-
-/* =========================================================
-   MODAL OVERLAY
-========================================================= */
+/* MODAL OVERLAY */
 
 .modal-overlay {
   position: fixed;
@@ -841,10 +776,7 @@ tbody tr:hover {
   pointer-events: auto;
 }
 
-
-/* =========================================================
-   MODAL
-========================================================= */
+/* MODAL */
 
 .modal {
   display: flex;
@@ -870,10 +802,7 @@ tbody tr:hover {
   transform: translateY(0) scale(1);
 }
 
-
-/* =========================================================
-   MODAL HEADER
-========================================================= */
+/* MODAL HEADER */
 
 .modal-header {
   display: flex;
@@ -951,10 +880,7 @@ tbody tr:hover {
   color: var(--text-primary);
 }
 
-
-/* =========================================================
-   MODAL BODY
-========================================================= */
+/* MODAL BODY= */
 
 .modal-body {
   flex: 1;
@@ -998,10 +924,7 @@ tbody tr:hover {
   font-size: var(--icon-size-sm);
 }
 
-
-/* =========================================================
-   FORMULARIO
-========================================================= */
+/* FORMULARIO */
 
 .form-row {
   display: grid;
@@ -1086,14 +1009,10 @@ tbody tr:hover {
 .form-textarea:focus {
   border-color: var(--color-secondary);
 
-  box-shadow:
-    0 0 0 3px rgba(77, 171, 247, 0.15);
+  box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.15);
 }
 
-
-/* =========================================================
-   ERRORES
-========================================================= */
+/* ERRORES */
 
 .form-err-msg {
   display: none;
@@ -1116,10 +1035,7 @@ tbody tr:hover {
   font-size: var(--icon-size-sm);
 }
 
-
-/* =========================================================
-   MODAL FOOTER
-========================================================= */
+/* MODAL FOOTER */
 
 .modal-footer {
   display: flex;
@@ -1190,10 +1106,7 @@ tbody tr:hover {
   font-size: var(--icon-size-sm);
 }
 
-
-/* =========================================================
-   SPINNER
-========================================================= */
+/* SPINNER */
 
 .spinner {
   width: 15px;
@@ -1213,10 +1126,7 @@ tbody tr:hover {
   }
 }
 
-
-/* =========================================================
-   TOAST
-========================================================= */
+/* TOAST */
 
 .toast-wrap {
   position: fixed;
@@ -1291,18 +1201,7 @@ tbody tr:hover {
   }
 }
 
-
-/* =========================================================
-   PERFIL DEL ENCARGADO
-   Estilos exclusivos para el modal de detalles
-========================================================= */
-
-
-/* =========================================================
-   MODAL DE DETALLES
-   Hace que el perfil tenga más espacio horizontal
-   y una apariencia más limpia y organizada.
-========================================================= */
+/* MODAL DE DETALLES */
 
 .detalles-overlay {
   z-index: 1100;
@@ -1320,12 +1219,7 @@ tbody tr:hover {
   box-shadow: var(--shadow-lg);
 }
 
-
-/* =========================================================
-   CUERPO DEL PERFIL
-   Separamos visualmente el contenido del encabezado
-   y permitimos desplazamiento independiente.
-========================================================= */
+/* CUERPO DEL PERFIL */
 
 .detalles-body {
   padding: var(--spacing-lg);
@@ -1335,11 +1229,7 @@ tbody tr:hover {
   background: var(--bg-surface);
 }
 
-
-/* =========================================================
-   PERFIL PRINCIPAL
-   Contenedor superior con avatar e información básica.
-========================================================= */
+/* PERFIL PRINCIPAL */
 
 .perfil-detalle {
   display: flex;
@@ -1362,11 +1252,7 @@ tbody tr:hover {
   box-shadow: var(--shadow-sm);
 }
 
-
-/* =========================================================
-   AVATAR DEL PERFIL
-   Presentación visual del encargado.
-========================================================= */
+/* AVATAR DEL PERFIL */
 
 .perfil-avatar {
   display: flex;
@@ -1404,10 +1290,7 @@ tbody tr:hover {
   object-fit: cover;
 }
 
-
-/* =========================================================
-   INFORMACIÓN BÁSICA DEL PERFIL
-========================================================= */
+/* INFORMACIÓN BÁSICA DEL PERFIL */
 
 .perfil-info {
   display: flex;
@@ -1420,10 +1303,7 @@ tbody tr:hover {
   gap: var(--spacing-2xs);
 }
 
-
-/* =========================================================
-   NOMBRE DEL ENCARGADO
-========================================================= */
+/* NOMBRE DEL ENCARGADO */
 
 .perfil-nombre {
   color: var(--text-primary);
@@ -1437,10 +1317,7 @@ tbody tr:hover {
   line-height: 1.2;
 }
 
-
-/* =========================================================
-   CARGO
-========================================================= */
+/* CARGO */
 
 .perfil-cargo {
   color: var(--text-secondary);
@@ -1450,10 +1327,7 @@ tbody tr:hover {
   font-weight: var(--font-weight-bold);
 }
 
-
-/* =========================================================
-   ÁREA
-========================================================= */
+/* ÁREA */
 
 .perfil-area {
   display: inline-flex;
@@ -1472,21 +1346,13 @@ tbody tr:hover {
   font-size: var(--icon-size-sm);
 }
 
-
-/* =========================================================
-   ESTADO DENTRO DEL PERFIL
-========================================================= */
+/* ESTADO DENTRO DEL PERFIL */
 
 .detalle-status {
   margin-top: var(--spacing-xs);
 }
 
-
-/* =========================================================
-   SECCIONES DE INFORMACIÓN
-   Cada bloque funciona como una tarjeta independiente,
-   siguiendo el patrón limpio del formulario.
-========================================================= */
+/* SECCIONES DE INFORMACIÓN */
 
 .detalle-section {
   width: 100%;
@@ -1506,10 +1372,7 @@ tbody tr:hover {
   margin-bottom: 0;
 }
 
-
-/* =========================================================
-   TÍTULO DE CADA SECCIÓN
-========================================================= */
+/* TÍTULO DE CADA SECCIÓN */
 
 .detalle-section-title {
   display: flex;
@@ -1538,11 +1401,7 @@ tbody tr:hover {
   font-size: var(--icon-size-md);
 }
 
-
-/* =========================================================
-   GRID DE INFORMACIÓN
-   Dos columnas en escritorio para aprovechar el espacio.
-========================================================= */
+/* GRID DE INFORMACIÓN */
 
 .detalle-grid {
   display: grid;
@@ -1552,11 +1411,7 @@ tbody tr:hover {
   gap: var(--spacing-sm);
 }
 
-
-/* =========================================================
-   ITEM DE INFORMACIÓN
-   Cada dato funciona como una pequeña tarjeta.
-========================================================= */
+/* ITEM DE INFORMACIÓN */
 
 .detalle-item {
   display: flex;
@@ -1577,10 +1432,7 @@ tbody tr:hover {
   border-radius: var(--radius-md);
 }
 
-
-/* =========================================================
-   ETIQUETA DEL DATO
-========================================================= */
+/* ETIQUETA DEL DATO */
 
 .detalle-label {
   display: block;
@@ -1596,10 +1448,7 @@ tbody tr:hover {
   line-height: 1.3;
 }
 
-
-/* =========================================================
-   VALOR DEL DATO
-========================================================= */
+/* VALOR DEL DATO */
 
 .detalle-value {
   display: flex;
@@ -1628,10 +1477,7 @@ tbody tr:hover {
   font-size: var(--icon-size-sm);
 }
 
-
-/* =========================================================
-   DESCRIPCIÓN DEL CARGO
-========================================================= */
+/* DESCRIPCIÓN DEL CARGO */
 
 .detalle-description {
   width: 100%;
@@ -1655,249 +1501,7 @@ tbody tr:hover {
   white-space: pre-line;
 }
 
-
-/* =========================================================
-   CABECERA DE PACIENTES
-========================================================= */
-
-.pacientes-title {
-  justify-content: space-between;
-}
-
-.pacientes-title-left {
-  display: flex;
-  align-items: center;
-
-  gap: var(--spacing-xs);
-}
-
-
-/* =========================================================
-   CONTADOR DE PACIENTES
-========================================================= */
-
-.pacientes-count {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  min-width: 28px;
-  height: 24px;
-
-  padding: 0 var(--spacing-xs);
-
-  border-radius: var(--radius-full);
-
-  background: var(--color-accent-beige);
-
-  color: var(--text-primary);
-
-  font-size: var(--font-size-xs);
-
-  font-weight: var(--font-weight-bold);
-}
-
-
-/* =========================================================
-   LISTA DE PACIENTES
-========================================================= */
-
-.pacientes-list {
-  display: flex;
-  flex-direction: column;
-
-  gap: var(--spacing-sm);
-
-  width: 100%;
-}
-
-
-/* =========================================================
-   TARJETA DE PACIENTE
-========================================================= */
-
-.paciente-card {
-  display: flex;
-  align-items: center;
-
-  gap: var(--spacing-sm);
-
-  width: 100%;
-
-  min-height: 68px;
-
-  padding: var(--spacing-sm);
-
-  background: var(--bg-neutral-light);
-
-  border: 1px solid var(--border-color);
-
-  border-radius: var(--radius-md);
-
-  transition:
-    border-color 0.2s ease,
-    background 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.paciente-card:hover {
-  background: var(--bg-surface);
-
-  border-color: var(--color-secondary);
-
-  box-shadow: var(--shadow-sm);
-}
-
-
-/* =========================================================
-   AVATAR DEL PACIENTE
-========================================================= */
-
-.paciente-avatar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 44px;
-  height: 44px;
-
-  flex-shrink: 0;
-
-  overflow: hidden;
-
-  border-radius: var(--radius-full);
-
-  background: var(--color-accent-beige);
-
-  color: var(--color-primary);
-
-  font-family: var(--font-heading-family);
-
-  font-size: var(--font-size-xs);
-
-  font-weight: var(--font-weight-bold);
-}
-
-.paciente-avatar img {
-  width: 100%;
-  height: 100%;
-
-  display: block;
-
-  object-fit: cover;
-}
-
-
-/* =========================================================
-   INFORMACIÓN DEL PACIENTE
-========================================================= */
-
-.paciente-info {
-  flex: 1;
-
-  min-width: 0;
-}
-
-.paciente-name {
-  color: var(--text-primary);
-
-  font-size: var(--font-size-sm);
-
-  font-weight: var(--font-weight-bold);
-
-  white-space: nowrap;
-
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-}
-
-.paciente-documento {
-  margin-top: var(--spacing-2xs);
-
-  color: var(--text-secondary);
-
-  font-size: var(--font-size-xs);
-}
-
-
-/* =========================================================
-   ESTADO DEL PACIENTE
-========================================================= */
-
-.paciente-status {
-  flex-shrink: 0;
-}
-
-
-/* =========================================================
-   ESTADO VACÍO DE PACIENTES
-========================================================= */
-
-.pacientes-empty {
-  display: flex;
-  align-items: center;
-
-  gap: var(--spacing-md);
-
-  width: 100%;
-
-  padding: var(--spacing-md);
-
-  background: var(--bg-neutral-light);
-
-  border: 1px dashed var(--border-color);
-
-  border-radius: var(--radius-md);
-}
-
-.pacientes-empty > .material-symbols-outlined {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 42px;
-  height: 42px;
-
-  flex-shrink: 0;
-
-  border-radius: var(--radius-full);
-
-  background: var(--color-accent-beige);
-
-  color: var(--color-primary);
-
-  font-size: var(--icon-size-md);
-}
-
-
-/* =========================================================
-   TEXTO DEL ESTADO VACÍO
-========================================================= */
-
-.pacientes-empty-title {
-  color: var(--text-primary);
-
-  font-size: var(--font-size-sm);
-
-  font-weight: var(--font-weight-bold);
-}
-
-.pacientes-empty-sub {
-  margin-top: var(--spacing-2xs);
-
-  color: var(--text-secondary);
-
-  font-size: var(--font-size-xs);
-
-  line-height: 1.5;
-}
-
-
-/* =========================================================
-   SCROLLBAR DEL PERFIL
-   Hace más limpio el desplazamiento del modal.
-========================================================= */
+/* SCROLLBAR DEL PERFIL */
 
 .detalles-body::-webkit-scrollbar {
   width: 8px;
@@ -1917,13 +1521,9 @@ tbody tr:hover {
   background: var(--text-secondary);
 }
 
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
+/* RESPONSIVE */
 
 @media (max-width: 900px) {
-
   .hero-content {
     padding-right: 0;
     align-items: flex-start;
@@ -1941,9 +1541,7 @@ tbody tr:hover {
   }
 }
 
-
 @media (max-width: 700px) {
-
   .canvas {
     padding: var(--spacing-md);
   }
@@ -1985,10 +1583,7 @@ tbody tr:hover {
     grid-template-columns: 1fr;
   }
 
-
-  /* =======================================================
-     PERFIL DEL ENCARGADO EN TABLET / MÓVIL
-  ======================================================= */
+  /* PERFIL DEL ENCARGADO EN TABLET / MÓVIL */
 
   .detalles-body {
     padding: var(--spacing-md);
@@ -2016,19 +1611,9 @@ tbody tr:hover {
   .detalle-grid {
     grid-template-columns: 1fr;
   }
-
-  .paciente-card {
-    align-items: flex-start;
-  }
-
-  .paciente-status {
-    margin-left: auto;
-  }
 }
 
-
 @media (max-width: 500px) {
-
   .canvas {
     padding: var(--spacing-sm);
   }
@@ -2080,10 +1665,7 @@ tbody tr:hover {
     min-width: 0;
   }
 
-
-  /* =======================================================
-     PERFIL DEL ENCARGADO EN PANTALLAS PEQUEÑAS
-  ======================================================= */
+  /* PERFIL DEL ENCARGADO EN PANTALLAS PEQUEÑAS */
 
   .modal-detalles {
     width: 100%;
@@ -2143,29 +1725,8 @@ tbody tr:hover {
   .detalle-item {
     min-height: 62px;
   }
-
-  .paciente-card {
-    flex-wrap: wrap;
-  }
-
-  .paciente-info {
-    width: calc(100% - 60px);
-  }
-
-  .paciente-status {
-    width: 100%;
-
-    margin-left: 0;
-  }
-
-  .pacientes-empty {
-    align-items: flex-start;
-  }
 }
-/* =========================================================
-   BOTONES DEL ENCABEZADO
-   Mantiene la misma estructura visual del botón principal.
-========================================================= */
+/* BOTONES DEL ENCABEZADO Mantiene la misma estructura visual del botón principal */
 
 .page-header-actions {
   display: flex;
@@ -2177,11 +1738,7 @@ tbody tr:hover {
   flex-wrap: wrap;
 }
 
-
-/* =========================================================
-   BOTÓN REGISTRO DE CAMBIOS
-   Utiliza únicamente las variables de color existentes.
-========================================================= */
+/* BOTÓN REGISTRO DE CAMBIOS.*/
 
 .btn-secondary {
   display: inline-flex;
@@ -2235,10 +1792,7 @@ tbody tr:hover {
   font-size: var(--icon-size-md);
 }
 
-
-/* =========================================================
-   CONTADOR DEL BOTÓN REGISTRO DE CAMBIOS
-========================================================= */
+/* CONTADOR DEL BOTÓN REGISTRO DE CAMBIOS */
 
 .header-count {
   display: inline-flex;
@@ -2261,11 +1815,7 @@ tbody tr:hover {
   line-height: 1;
 }
 
-
-/* =========================================================
-   MODAL REGISTRO DE CAMBIOS
-   Modal independiente para el historial.
-========================================================= */
+/* MODAL REGISTRO DE CAMBIOS para el historial. */
 
 .registro-overlay {
   z-index: 1200;
@@ -2282,10 +1832,7 @@ tbody tr:hover {
   box-shadow: var(--shadow-lg);
 }
 
-
-/* =========================================================
-   CUERPO DEL REGISTRO
-========================================================= */
+/* CUERPO DEL REGISTRO */
 
 .registro-body {
   display: flex;
@@ -2300,10 +1847,7 @@ tbody tr:hover {
   background: var(--bg-surface);
 }
 
-
-/* =========================================================
-   RESUMEN DEL REGISTRO
-========================================================= */
+/* RESUMEN DEL REGISTRO */
 
 .registro-resumen {
   display: flex;
@@ -2362,10 +1906,7 @@ tbody tr:hover {
   line-height: 1.5;
 }
 
-
-/* =========================================================
-   ESTADO SIN REGISTROS
-========================================================= */
+/* ESTADO SIN REGISTROS */
 
 .registro-empty {
   display: flex;
@@ -2412,10 +1953,7 @@ tbody tr:hover {
   line-height: 1.5;
 }
 
-
-/* =========================================================
-   LISTA DE REGISTROS
-========================================================= */
+/* LISTA DE REGISTROS */
 
 .registro-list {
   display: flex;
@@ -2426,10 +1964,7 @@ tbody tr:hover {
   width: 100%;
 }
 
-
-/* =========================================================
-   TARJETA DE CADA CAMBIO
-========================================================= */
+/* TARJETA DE CADA CAMBIO */
 
 .registro-item {
   display: flex;
@@ -2463,10 +1998,7 @@ tbody tr:hover {
   transform: translateY(-1px);
 }
 
-
-/* =========================================================
-   ICONO DEL CAMBIO
-========================================================= */
+/* ICONO DEL CAMBIO */
 
 .registro-icon {
   display: flex;
@@ -2488,11 +2020,7 @@ tbody tr:hover {
   font-size: var(--icon-size-md);
 }
 
-
-/* =========================================================
-   COLORES SEMÁNTICOS DEL HISTORIAL
-   Se apoyan en la paleta ya definida por el componente.
-========================================================= */
+/* COLORES DEL HISTORIAL */
 
 .registro-icon.creacion {
   background: var(--color-accent-beige);
@@ -2515,14 +2043,11 @@ tbody tr:hover {
 }
 
 .registro-icon.eliminacion {
-  background: rgba(220, 53, 69, 0.10);
+  background: rgba(220, 53, 69, 0.1);
   color: var(--color-danger);
 }
 
-
-/* =========================================================
-   CONTENIDO DEL REGISTRO
-========================================================= */
+/* CONTENIDO DEL REGISTRO */
 
 .registro-content {
   flex: 1;
@@ -2530,10 +2055,7 @@ tbody tr:hover {
   min-width: 0;
 }
 
-
-/* =========================================================
-   PARTE SUPERIOR: ACCIÓN + FECHA
-========================================================= */
+/* PARTE SUPERIOR: ACCIÓN + FECHA */
 
 .registro-top {
   display: flex;
@@ -2545,10 +2067,7 @@ tbody tr:hover {
   width: 100%;
 }
 
-
-/* =========================================================
-   ETIQUETA DE ACCIÓN
-========================================================= */
+/* ETIQUETA DE ACCIÓN */
 
 .registro-accion {
   display: inline-flex;
@@ -2591,14 +2110,11 @@ tbody tr:hover {
 }
 
 .registro-accion.eliminacion {
-  background: rgba(220, 53, 69, 0.10);
+  background: rgba(220, 53, 69, 0.1);
   color: var(--color-danger);
 }
 
-
-/* =========================================================
-   FECHA DEL CAMBIO
-========================================================= */
+/* FECHA DEL CAMBIO */
 
 .registro-fecha {
   display: inline-flex;
@@ -2617,10 +2133,7 @@ tbody tr:hover {
   font-size: var(--icon-size-sm);
 }
 
-
-/* =========================================================
-   ENCARGADO AFECTADO
-========================================================= */
+/* ENCARGADO AFECTADO */
 
 .registro-encargado {
   display: flex;
@@ -2647,10 +2160,7 @@ tbody tr:hover {
   overflow-wrap: anywhere;
 }
 
-
-/* =========================================================
-   DESCRIPCIÓN DEL CAMBIO
-========================================================= */
+/* DESCRIPCIÓN DEL CAMBIO */
 
 .registro-descripcion {
   margin-top: var(--spacing-xs);
@@ -2663,10 +2173,7 @@ tbody tr:hover {
   overflow-wrap: anywhere;
 }
 
-
-/* =========================================================
-   USUARIO QUE REALIZÓ EL CAMBIO
-========================================================= */
+/* USUARIO QUE REALIZÓ EL CAMBIO */
 
 .registro-usuario {
   display: flex;
@@ -2694,10 +2201,7 @@ tbody tr:hover {
   color: var(--text-primary);
 }
 
-
-/* =========================================================
-   SCROLLBAR DEL REGISTRO
-========================================================= */
+/* SCROLLBAR DEL REGISTRO */
 
 .registro-body::-webkit-scrollbar {
   width: 8px;
@@ -2717,13 +2221,9 @@ tbody tr:hover {
   background: var(--text-secondary);
 }
 
-
-/* =========================================================
-   RESPONSIVE DEL REGISTRO
-========================================================= */
+/* RESPONSIVE DEL REGISTRO */
 
 @media (max-width: 700px) {
-
   .page-header-actions {
     width: 100%;
 
@@ -2765,9 +2265,7 @@ tbody tr:hover {
   }
 }
 
-
 @media (max-width: 500px) {
-
   .page-header-actions {
     flex-direction: column;
   }
@@ -2815,8 +2313,3 @@ tbody tr:hover {
     align-items: flex-start;
   }
 }
-
-
-
-
-
