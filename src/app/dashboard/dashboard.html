@@ -1,42 +1,44 @@
-<main class="canvas">
+<main class="contenedor-dashboard">
 
   <!-- =====================================================
        SALUDO
   ====================================================== -->
 
-  <section class="greet">
+  <section class="seccion-saludo">
 
-    <div class="gl">
+    <div class="texto-saludo">
 
-      <p class="mono" id="greet-date">—</p>
+      <p class="mono" id="greet-date">
+        {{ fechaActual }}
+      </p>
 
       <h2>
-        Buenos días, Jose Cabrera
+        Buenos días, {{ nombreAdministrador }}
       </h2>
 
       <span>
-        Fundación Años Maravilloos · Panel de Administración
+        {{ nombreFundacion }} · Panel de Administración
       </span>
 
     </div>
 
-    <div class="gr">
+    <div class="acciones-saludo">
 
-      <div class="gd">
+      <div class="informacion-saludo">
 
         <p>
-          Fundación Años Maravilloos
+          {{ nombreFundacion }}
         </p>
 
         <p id="greet-date2">
-          —
+          {{ fechaActual }}
         </p>
 
       </div>
 
-      <button class="bg" type="button">
+      <button class="boton-reportes" type="button">
 
-        <span class="ms">
+        <span class="icono-material">
           download
         </span>
 
@@ -55,9 +57,7 @@
 
   <section class="g12 mb4">
 
-    <!-- ===================================================
-         RESUMEN DE PACIENTES
-    ==================================================== -->
+    <!-- RESUMEN DE PACIENTES -->
 
     <article class="card c7">
 
@@ -76,7 +76,7 @@
           "
           id="mes-label">
 
-          Junio
+          {{ mesActual }}
 
         </span>
 
@@ -89,12 +89,14 @@
 
         <div class="ms-l">
 
-          <span class="ml">ENE</span>
-          <span class="ml">FEB</span>
-          <span class="ml">MAR</span>
-          <span class="ml">ABR</span>
-          <span class="ml">MAY</span>
-          <span class="ml a">JUN</span>
+          <span
+            *ngFor="let mes of meses"
+            class="ml"
+            [class.a]="mes.activo">
+
+            {{ mes.nombre }}
+
+          </span>
 
         </div>
 
@@ -102,12 +104,12 @@
 
           <div
             class="mf"
-            style="width: 100%;">
+            [style.width.%]="progresoMes">
           </div>
 
           <div
             class="mt"
-            style="left: 100%;">
+            [style.left.%]="progresoMes">
           </div>
 
         </div>
@@ -126,7 +128,7 @@
           </span>
 
           <span class="mono fb primary-text">
-            80% · 160/200
+            {{ porcentajeOcupacion }}% · {{ pacientesActuales }}/{{ capacidadMaxima }}
           </span>
 
         </div>
@@ -135,7 +137,7 @@
 
           <div
             class="pf"
-            style="width: 80%;">
+            [style.width.%]="porcentajeOcupacion">
           </div>
 
         </div>
@@ -147,20 +149,18 @@
 
       <div class="stats-grid mb4">
 
-        <!-- Total -->
-
         <div class="stat-card patients">
 
           <div class="stat-icon">
 
-            <span class="ms">
+            <span class="icono-material">
               groups
             </span>
 
           </div>
 
           <div class="stat-number">
-            160
+            {{ totalPacientes }}
           </div>
 
           <div class="stat-label">
@@ -168,26 +168,24 @@
           </div>
 
           <div class="stat-percent">
-            80%
+            {{ porcentajeOcupacion }}%
           </div>
 
         </div>
 
 
-        <!-- Estables -->
-
         <div class="stat-card stable">
 
           <div class="stat-icon">
 
-            <span class="ms">
+            <span class="icono-material">
               check_circle
             </span>
 
           </div>
 
           <div class="stat-number">
-            105
+            {{ pacientesEstables }}
           </div>
 
           <div class="stat-label">
@@ -195,26 +193,24 @@
           </div>
 
           <div class="stat-percent">
-            66%
+            {{ porcentajeEstables }}%
           </div>
 
         </div>
 
 
-        <!-- Críticos -->
-
         <div class="stat-card critical">
 
           <div class="stat-icon">
 
-            <span class="ms">
+            <span class="icono-material">
               warning
             </span>
 
           </div>
 
           <div class="stat-number">
-            12
+            {{ pacientesCriticos }}
           </div>
 
           <div class="stat-label">
@@ -222,26 +218,24 @@
           </div>
 
           <div class="stat-percent">
-            8%
+            {{ porcentajeCriticos }}%
           </div>
 
         </div>
 
 
-        <!-- Altas -->
-
         <div class="stat-card discharged">
 
           <div class="stat-icon">
 
-            <span class="ms">
+            <span class="icono-material">
               logout
             </span>
 
           </div>
 
           <div class="stat-number">
-            9
+            {{ altasDelMes }}
           </div>
 
           <div class="stat-label">
@@ -249,7 +243,7 @@
           </div>
 
           <div class="stat-percent">
-            18%
+            {{ porcentajeAltas }}%
           </div>
 
         </div>
@@ -266,191 +260,45 @@
 
       <div class="sy2">
 
-        <!-- Martha -->
+        <div
+          *ngFor="let paciente of pacientesRecientes"
+          class="fila-paciente">
 
-        <div class="pr">
+          <div
+            class="avatar-paciente"
+            [ngClass]="paciente.avatarClass">
 
-          <div class="av primary-avatar">
-            MA
+            {{ paciente.iniciales }}
+
           </div>
 
           <div class="f1">
 
             <div class="patient-name fs">
-              Martha Arango
+              {{ paciente.nombre }}
             </div>
 
             <div class="txs tm">
-              Hab. 102-A · Doc. 1023847
+              Hab. {{ paciente.habitacion }} · Doc. {{ paciente.documento }}
             </div>
 
           </div>
 
-          <span class="badge bs">
+          <span
+            class="badge"
+            [ngClass]="paciente.badgeClass">
 
             <span
               class="bd"
-              style="background: #7D5A4F;">
+              [style.background]="paciente.colorEstado">
             </span>
 
-            ESTABLE
+            {{ paciente.estado }}
 
           </span>
 
           <div class="txs tm">
-            Ana Torres
-          </div>
-
-        </div>
-
-
-        <!-- Beatriz -->
-
-        <div class="pr">
-
-          <div class="av error-avatar">
-            BR
-          </div>
-
-          <div class="f1">
-
-            <div class="patient-name fs">
-              Beatriz Arango
-            </div>
-
-            <div class="txs tm">
-              Hab. 108-C · Doc. 9283746
-            </div>
-
-          </div>
-
-          <span class="badge bc">
-
-            <span
-              class="bd"
-              style="background: var(--bg-surface);">
-            </span>
-
-            CRÍTICO
-
-          </span>
-
-          <div class="txs tm">
-            Carlos Rivas
-          </div>
-
-        </div>
-
-
-        <!-- Ricardo -->
-
-        <div class="pr">
-
-          <div class="av blue-avatar">
-            RS
-          </div>
-
-          <div class="f1">
-
-            <div class="patient-name fs">
-              Ricardo Soto
-            </div>
-
-            <div class="txs tm">
-              Hab. 103-B · Doc. 3847291
-            </div>
-
-          </div>
-
-          <span class="badge bo">
-
-            <span
-              class="bd"
-              style="background: var(--bg-surface);">
-            </span>
-
-            OBSERVACIÓN
-
-          </span>
-
-          <div class="txs tm">
-            Lucia Medina
-          </div>
-
-        </div>
-
-
-        <!-- Marta -->
-
-        <div class="pr">
-
-          <div class="av primary-avatar">
-            ML
-          </div>
-
-          <div class="f1">
-
-            <div class="patient-name fs">
-              Marta López
-            </div>
-
-            <div class="txs tm">
-              Hab. 105-A · Doc. 7364819
-            </div>
-
-          </div>
-
-          <span class="badge bs">
-
-            <span
-              class="bd"
-              style="background: #7D5A4F;">
-            </span>
-
-            ESTABLE
-
-          </span>
-
-          <div class="txs tm">
-            Pedro Salazar
-          </div>
-
-        </div>
-
-
-        <!-- Juan -->
-
-        <div class="pr">
-
-          <div class="av primary-avatar">
-            JV
-          </div>
-
-          <div class="f1">
-
-            <div class="patient-name fs">
-              Juan Vega
-            </div>
-
-            <div class="txs tm">
-              Hab. 110-B · Doc. 5647382
-            </div>
-
-          </div>
-
-          <span class="badge bs">
-
-            <span
-              class="bd"
-              style="background: #7D5A4F;">
-            </span>
-
-            ESTABLE
-
-          </span>
-
-          <div class="txs tm">
-            Rosa Gómez
+            {{ paciente.cuidador }}
           </div>
 
         </div>
@@ -460,9 +308,7 @@
     </article>
 
 
-    <!-- ===================================================
-         GESTIÓN DE CUIDADORES
-    ==================================================== -->
+    <!-- GESTIÓN DE CUIDADORES -->
 
     <article class="card c5 caregiver-card">
 
@@ -473,7 +319,7 @@
         </span>
 
         <span class="badge bi">
-          24 registrados
+          {{ totalCuidadores }} registrados
         </span>
 
       </div>
@@ -481,16 +327,14 @@
 
       <div class="g3 mb4">
 
-        <!-- En turno -->
-
         <div class="care-stat blue">
 
-          <span class="ms">
+          <span class="icono-material">
             health_and_safety
           </span>
 
           <div class="care-number">
-            4
+            {{ cuidadoresEnTurno }}
           </div>
 
           <div class="care-label">
@@ -500,16 +344,14 @@
         </div>
 
 
-        <!-- Libres -->
-
         <div class="care-stat beige">
 
-          <span class="ms">
+          <span class="icono-material">
             weekend
           </span>
 
           <div class="care-number">
-            1
+            {{ cuidadoresLibres }}
           </div>
 
           <div class="care-label">
@@ -519,16 +361,14 @@
         </div>
 
 
-        <!-- Ingresos -->
-
         <div class="care-stat primary">
 
-          <span class="ms">
+          <span class="icono-material">
             person_add
           </span>
 
           <div class="care-number">
-            8
+            {{ ingresosCuidadores }}
           </div>
 
           <div class="care-label">
@@ -542,204 +382,47 @@
 
       <div class="sy2 f1">
 
-        <!-- Ana -->
-
-        <div class="cr">
+        <div
+          *ngFor="let cuidador of cuidadores"
+          class="fila-cuidador">
 
           <div class="rel fs0">
 
-            <div class="caregiver-avatar">
-              AT
+            <div class="avatar-cuidador">
+              {{ cuidador.iniciales }}
             </div>
 
-            <span class="cst on"></span>
+            <span
+              class="indicador-estado-cuidador"
+              [ngClass]="cuidador.estadoClase">
+            </span>
 
           </div>
 
           <div class="f1">
 
             <div class="fs">
-              Ana Torres
+              {{ cuidador.nombre }}
             </div>
 
             <div class="txs tm">
-              Cuidado integral
+              {{ cuidador.especialidad }}
             </div>
 
           </div>
 
           <div class="care-status">
 
-            <span class="badge caregiver-on">
-              En turno
+            <span
+              class="badge"
+              [ngClass]="cuidador.badgeClass">
+
+              {{ cuidador.estado }}
+
             </span>
 
             <span class="txs tm mono">
-              Mañana · 10 pac.
-            </span>
-
-          </div>
-
-        </div>
-
-
-        <!-- Carlos -->
-
-        <div class="cr">
-
-          <div class="rel fs0">
-
-            <div class="caregiver-avatar">
-              CR
-            </div>
-
-            <span class="cst on"></span>
-
-          </div>
-
-          <div class="f1">
-
-            <div class="fs">
-              Carlos Rivas
-            </div>
-
-            <div class="txs tm">
-              Fisioterapia
-            </div>
-
-          </div>
-
-          <div class="care-status">
-
-            <span class="badge caregiver-on">
-              En turno
-            </span>
-
-            <span class="txs tm mono">
-              Tarde · 8 pac.
-            </span>
-
-          </div>
-
-        </div>
-
-
-        <!-- Lucia -->
-
-        <div class="cr">
-
-          <div class="rel fs0">
-
-            <div class="caregiver-avatar">
-              LM
-            </div>
-
-            <span class="cst on"></span>
-
-          </div>
-
-          <div class="f1">
-
-            <div class="fs">
-              Lucia Medina
-            </div>
-
-            <div class="txs tm">
-              Geriatría
-            </div>
-
-          </div>
-
-          <div class="care-status">
-
-            <span class="badge caregiver-on">
-              En turno
-            </span>
-
-            <span class="txs tm mono">
-              Noche · 12 pac.
-            </span>
-
-          </div>
-
-        </div>
-
-
-        <!-- Pedro -->
-
-        <div class="cr">
-
-          <div class="rel fs0">
-
-            <div class="caregiver-avatar">
-              PS
-            </div>
-
-            <span class="cst off"></span>
-
-          </div>
-
-          <div class="f1">
-
-            <div class="fs">
-              Pedro Salazar
-            </div>
-
-            <div class="txs tm">
-              Cuidado integral
-            </div>
-
-          </div>
-
-          <div class="care-status">
-
-            <span class="badge caregiver-off">
-              Libre
-            </span>
-
-            <span class="txs tm mono">
-              Mañana · 9 pac.
-            </span>
-
-          </div>
-
-        </div>
-
-
-        <!-- Rosa -->
-
-        <div class="cr">
-
-          <div class="rel fs0">
-
-            <div class="caregiver-avatar">
-              RG
-            </div>
-
-            <span class="cst on"></span>
-
-          </div>
-
-          <div class="f1">
-
-            <div class="fs">
-              Rosa Gómez
-            </div>
-
-            <div class="txs tm">
-              Enfermería
-            </div>
-
-          </div>
-
-          <div class="care-status">
-
-            <span class="badge caregiver-on">
-              En turno
-            </span>
-
-            <span class="txs tm mono">
-              Tarde · 11 pac.
+              {{ cuidador.turno }} · {{ cuidador.pacientes }} pac.
             </span>
 
           </div>
@@ -756,7 +439,7 @@
         </span>
 
         <span class="mono fb ratio">
-          1 : 7
+          {{ ratioCuidadorPaciente }}
         </span>
 
       </div>
@@ -768,14 +451,11 @@
 
   <!-- =====================================================
        ROW 2
-       OCUPACIÓN | ANÁLISIS | ALERTAS
   ====================================================== -->
 
   <section class="dashboard-grid">
 
-    <!-- ===================================================
-         OCUPACIÓN
-    ==================================================== -->
+    <!-- OCUPACIÓN -->
 
     <section class="card occupation-card">
 
@@ -788,7 +468,7 @@
           </h2>
 
           <p class="cs">
-            Progreso de capacidad · Junio
+            Progreso de capacidad · {{ mesActual }}
           </p>
 
         </div>
@@ -798,7 +478,7 @@
 
       <div class="occupation-content">
 
-        <div class="ow">
+        <div class="contenedor-grafico-ocupacion">
 
           <svg
             viewBox="0 0 100 100"
@@ -821,16 +501,16 @@
               stroke="var(--color-primary)"
               stroke-width="10"
               stroke-linecap="round"
-              stroke-dasharray="211 264">
+              [attr.stroke-dasharray]="ocupacionDashArray">
             </circle>
 
           </svg>
 
 
-          <div class="oc">
+          <div class="centro-grafico-ocupacion">
 
             <strong class="occupation-percent">
-              80%
+              {{ porcentajeOcupacion }}%
             </strong>
 
             <span class="occupation-label">
@@ -844,12 +524,12 @@
 
         <div class="occupation-meta">
 
-          <span class="ms">
+          <span class="icono-material">
             trending_up
           </span>
 
           <span>
-            Meta: 85% · Junio
+            Meta: {{ metaOcupacion }}% · {{ mesActual }}
           </span>
 
         </div>
@@ -866,11 +546,11 @@
         <div class="shift-row">
 
           <span>
-            Turno día
+            Turno {{ turnoActual.nombre }}
           </span>
 
           <strong>
-            07:00 – 19:00
+            {{ turnoActual.horaInicio }} – {{ turnoActual.horaFin }}
           </strong>
 
         </div>
@@ -882,7 +562,7 @@
           </span>
 
           <strong>
-            4 cuidadores
+            {{ turnoActual.cuidadores }} cuidadores
           </strong>
 
         </div>
@@ -892,9 +572,7 @@
     </section>
 
 
-    <!-- ===================================================
-         COLUMNA CENTRAL
-    ==================================================== -->
+    <!-- COLUMNA CENTRAL -->
 
     <div class="analysis-column">
 
@@ -911,12 +589,12 @@
             </h2>
 
             <p class="cs">
-              Estados clínicos · Junio
+              Estados clínicos · {{ mesActual }}
             </p>
 
           </div>
 
-          <span class="ms card-icon">
+          <span class="icono-material card-icon">
             monitor_heart
           </span>
 
@@ -925,12 +603,15 @@
 
         <div class="health-grid">
 
-          <div class="health-item critical-health">
+          <div
+            *ngFor="let estado of estadosSalud"
+            class="health-item"
+            [ngClass]="estado.clase">
 
             <div class="health-icon">
 
-              <span class="ms">
-                emergency
+              <span class="icono-material">
+                {{ estado.icono }}
               </span>
 
             </div>
@@ -938,86 +619,11 @@
             <div>
 
               <strong class="health-number">
-                8
+                {{ estado.cantidad }}
               </strong>
 
               <span>
-                Cuidado crítico
-              </span>
-
-            </div>
-
-          </div>
-
-
-          <div class="health-item nominal-health">
-
-            <div class="health-icon">
-
-              <span class="ms">
-                check_circle
-              </span>
-
-            </div>
-
-            <div>
-
-              <strong class="health-number">
-                20
-              </strong>
-
-              <span>
-                Nominales
-              </span>
-
-            </div>
-
-          </div>
-
-
-          <div class="health-item observation-health">
-
-            <div class="health-icon">
-
-              <span class="ms">
-                visibility
-              </span>
-
-            </div>
-
-            <div>
-
-              <strong class="health-number">
-                34
-              </strong>
-
-              <span>
-                Observación
-              </span>
-
-            </div>
-
-          </div>
-
-
-          <div class="health-item discharged-health">
-
-            <div class="health-icon">
-
-              <span class="ms">
-                logout
-              </span>
-
-            </div>
-
-            <div>
-
-              <strong class="health-number">
-                9
-              </strong>
-
-              <span>
-                Altas del mes
+                {{ estado.nombre }}
               </span>
 
             </div>
@@ -1040,7 +646,7 @@
           </span>
 
           <span class="trend-badge">
-            +12 vs Enero
+            {{ tendenciaTexto }}
           </span>
 
         </div>
@@ -1104,28 +710,13 @@
 
 
             <path
-              d="
-                M0,75
-                L80,66
-                L160,55
-                L240,45
-                L320,34
-                L400,18
-                L400,100
-                L0,100
-                Z"
+              [attr.d]="tendenciaAreaPath"
               fill="url(#trendGradient)">
             </path>
 
 
             <path
-              d="
-                M0,75
-                L80,66
-                L160,55
-                L240,45
-                L320,34
-                L400,18"
+              [attr.d]="tendenciaLinePath"
               fill="none"
               stroke="var(--color-primary)"
               stroke-width="4"
@@ -1135,52 +726,11 @@
 
 
             <circle
-              cx="0"
-              cy="75"
+              *ngFor="let punto of puntosTendencia"
+              [attr.cx]="punto.x"
+              [attr.cy]="punto.y"
               r="5"
               class="trend-point">
-            </circle>
-
-            <circle
-              cx="80"
-              cy="66"
-              r="5"
-              class="trend-point">
-            </circle>
-
-            <circle
-              cx="160"
-              cy="55"
-              r="5"
-              class="trend-point">
-            </circle>
-
-            <circle
-              cx="240"
-              cy="45"
-              r="5"
-              class="trend-point">
-            </circle>
-
-            <circle
-              cx="320"
-              cy="34"
-              r="5"
-              class="trend-point">
-            </circle>
-
-            <circle
-              cx="400"
-              cy="18"
-              r="9"
-              class="trend-last-shadow">
-            </circle>
-
-            <circle
-              cx="400"
-              cy="18"
-              r="6"
-              class="trend-last">
             </circle>
 
           </svg>
@@ -1190,28 +740,13 @@
 
         <div class="sl">
 
-          <span class="slb">
-            ENE
-          </span>
+          <span
+            *ngFor="let mes of mesesTendencia"
+            class="slb"
+            [class.tp]="mes.activo">
 
-          <span class="slb">
-            FEB
-          </span>
+            {{ mes.nombre }}
 
-          <span class="slb">
-            MAR
-          </span>
-
-          <span class="slb">
-            ABR
-          </span>
-
-          <span class="slb">
-            MAY
-          </span>
-
-          <span class="slb tp">
-            JUN
           </span>
 
         </div>
@@ -1222,26 +757,34 @@
         </div>
 
 
-        <!-- Medicación -->
-
-        <div class="indicator mb3">
+        <div
+          *ngFor="let indicador of indicadoresBienestar"
+          class="indicator mb3">
 
           <div class="flex jb ic mb1">
 
             <div class="flex ic g2p">
 
-              <span class="ms indicator-blue">
-                medication
+              <span
+                class="icono-material"
+                [ngClass]="indicador.iconoClase">
+
+                {{ indicador.icono }}
+
               </span>
 
               <span class="txs">
-                Adherencia medicación
+                {{ indicador.nombre }}
               </span>
 
             </div>
 
-            <strong class="indicator-value primary-text">
-              92%
+            <strong
+              class="indicator-value"
+              [ngClass]="indicador.valorClase">
+
+              {{ indicador.porcentaje }}%
+
             </strong>
 
           </div>
@@ -1250,79 +793,8 @@
 
             <div
               class="pf"
-              style="width: 92%;">
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <!-- Fisioterapia -->
-
-        <div class="indicator mb3">
-
-          <div class="flex jb ic mb1">
-
-            <div class="flex ic g2p">
-
-              <span class="ms indicator-light-blue">
-                self_improvement
-              </span>
-
-              <span class="txs">
-                Asistencia fisioterapia
-              </span>
-
-            </div>
-
-            <strong class="indicator-value light-blue-text">
-              78%
-            </strong>
-
-          </div>
-
-          <div class="pt small-progress">
-
-            <div
-              class="pf light-blue-progress"
-              style="width: 78%;">
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <!-- Incidentes -->
-
-        <div class="indicator">
-
-          <div class="flex jb ic mb1">
-
-            <div class="flex ic g2p">
-
-              <span class="ms indicator-red">
-                emergency
-              </span>
-
-              <span class="txs">
-                Incidentes / total
-              </span>
-
-            </div>
-
-            <strong class="indicator-value error-text">
-              5%
-            </strong>
-
-          </div>
-
-          <div class="pt small-progress">
-
-            <div
-              class="pf error-progress"
-              style="width: 5%;">
+              [ngClass]="indicador.progresoClase"
+              [style.width.%]="indicador.porcentaje">
             </div>
 
           </div>
@@ -1334,9 +806,7 @@
     </div>
 
 
-    <!-- ===================================================
-         ALERTAS
-    ==================================================== -->
+    <!-- ALERTAS -->
 
     <section class="card alerts-card">
 
@@ -1349,24 +819,24 @@
           </h2>
 
           <p class="cs">
-            3 sin leer · 7 total
+            {{ alertasSinLeer }} sin leer · {{ totalAlertas }} total
           </p>
 
         </div>
 
 
-        <div class="alert-icon-container">
+        <div class="contenedor-icono-alertas">
 
-          <div class="alert-icon">
+          <div class="icono-alertas">
 
-            <span class="ms">
+            <span class="icono-material">
               notifications_active
             </span>
 
           </div>
 
-          <span class="alert-count">
-            3
+          <span class="contador-alertas">
+            {{ alertasSinLeer }}
           </span>
 
         </div>
@@ -1380,12 +850,12 @@
 
         <div class="alert-stat critical-alert">
 
-          <span class="ms">
+          <span class="icono-material">
             emergency
           </span>
 
           <div>
-            2
+            {{ alertasCriticas }}
           </div>
 
           <span>
@@ -1397,12 +867,12 @@
 
         <div class="alert-stat warning-alert">
 
-          <span class="ms">
+          <span class="icono-material">
             warning
           </span>
 
           <div>
-            2
+            {{ alertasAvisos }}
           </div>
 
           <span>
@@ -1414,12 +884,12 @@
 
         <div class="alert-stat info-alert">
 
-          <span class="ms">
+          <span class="icono-material">
             info
           </span>
 
           <div>
-            3
+            {{ alertasInfo }}
           </div>
 
           <span>
@@ -1433,198 +903,36 @@
 
       <!-- Lista -->
 
-      <div class="alerts-list sy2">
+      <div class="lista-alertas sy2">
 
-        <!-- Crítica -->
+        <div
+          *ngFor="let alerta of alertas"
+          class="item-alerta"
+          [ngClass]="alerta.clase">
 
-        <div class="ni ncr">
-
-          <span class="ms alert-symbol">
-            emergency
+          <span class="icono-material simbolo-alerta">
+            {{ alerta.icono }}
           </span>
 
-          <div class="alert-content">
+          <div class="contenido-alerta">
 
-            <div class="alert-title">
-              Estado Crítico: Beatriz Arango
+            <div class="titulo-alerta">
+              {{ alerta.titulo }}
             </div>
 
-            <div class="alert-description">
-              SpO₂ bajo 88%. Requiere atención inmediata.
+            <div class="descripcion-alerta">
+              {{ alerta.descripcion }}
             </div>
 
           </div>
 
-          <span class="alert-time">
-            Hace 4 min
+          <span class="hora-alerta">
+            {{ alerta.tiempo }}
           </span>
 
-          <span class="unread-dot"></span>
-
-        </div>
-
-
-        <!-- Medicación -->
-
-        <div class="ni nw">
-
-          <span class="ms alert-symbol">
-            medication
-          </span>
-
-          <div class="alert-content">
-
-            <div class="alert-title">
-              Medicación pendiente – Sala 108-C
-            </div>
-
-            <div class="alert-description">
-              Marta Soto: Metformina 850mg aún no suministrada.
-            </div>
-
-          </div>
-
-          <span class="alert-time">
-            Hace 12 min
-          </span>
-
-          <span class="unread-dot"></span>
-
-        </div>
-
-
-        <!-- Turno -->
-
-        <div class="ni nif">
-
-          <span class="ms alert-symbol">
-            calendar_month
-          </span>
-
-          <div class="alert-content">
-
-            <div class="alert-title">
-              Turno confirmado: Dra. Martha Luz
-            </div>
-
-            <div class="alert-description">
-              Guardia nocturna 20:00 – 06:00 confirmada.
-            </div>
-
-          </div>
-
-          <span class="alert-time">
-            Hace 30 min
-          </span>
-
-          <span class="unread-dot"></span>
-
-        </div>
-
-
-        <!-- Stock -->
-
-        <div class="ni nw nr">
-
-          <span class="ms alert-symbol">
-            inventory_2
-          </span>
-
-          <div class="alert-content">
-
-            <div class="alert-title">
-              Stock crítico: Gasas estériles
-            </div>
-
-            <div class="alert-description">
-              Quedan solo 12 unidades. Pedido sugerido.
-            </div>
-
-          </div>
-
-          <span class="alert-time">
-            Hace 1 hora
-          </span>
-
-        </div>
-
-
-        <!-- Nuevo cuidador -->
-
-        <div class="ni nif nr">
-
-          <span class="ms alert-symbol">
-            person_add
-          </span>
-
-          <div class="alert-content">
-
-            <div class="alert-title">
-              Nuevo cuidador registrado
-            </div>
-
-            <div class="alert-description">
-              Juan Vela fue incorporado al sistema.
-            </div>
-
-          </div>
-
-          <span class="alert-time">
-            Hace 2 horas
-          </span>
-
-        </div>
-
-
-        <!-- Reporte -->
-
-        <div class="ni nif nr">
-
-          <span class="ms alert-symbol">
-            description
-          </span>
-
-          <div class="alert-content">
-
-            <div class="alert-title">
-              Reporte mensual generado
-            </div>
-
-            <div class="alert-description">
-              #REP-0922 listo para descarga.
-            </div>
-
-          </div>
-
-          <span class="alert-time">
-            Hace 3 horas
-          </span>
-
-        </div>
-
-
-        <!-- Caída -->
-
-        <div class="ni ncr nr">
-
-          <span class="ms alert-symbol">
-            warning
-          </span>
-
-          <div class="alert-content">
-
-            <div class="alert-title">
-              Alerta caída: Ricardo Mendoza S.
-            </div>
-
-            <div class="alert-description">
-              Sensor de movimiento activado en Hab. 104.
-            </div>
-
-          </div>
-
-          <span class="alert-time">
-            Ayer 22:41
+          <span
+            *ngIf="alerta.noLeida"
+            class="punto-alerta-no-leida">
           </span>
 
         </div>

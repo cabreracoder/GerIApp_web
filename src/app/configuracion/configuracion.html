@@ -1,382 +1,383 @@
-
-<main class="configuracion-page">
+<main class="pagina-configuracion">
 
   <!-- =====================================================
        CABECERA
   ====================================================== -->
 
-  <header class="configuracion-header">
+  <header class="encabezado-configuracion">
 
-    <div class="configuracion-header-content">
 
-      <h2 class="configuracion-title">
-        Configuración
-      </h2>
+<div class="contenido-encabezado-configuracion">
 
-      <p class="configuracion-subtitle">
-        Preferencias del sistema y cuenta de administrador
-      </p>
+  <h2 class="titulo-configuracion">
+    Configuración
+  </h2>
 
-    </div>
+  <p class="subtitulo-configuracion">
+    Preferencias del sistema y cuenta de administrador
+  </p>
+
+</div>
 
   </header>
-
 
   <!-- =====================================================
        PERFIL DE ADMINISTRADOR
   ====================================================== -->
 
-  <section class="configuracion-card">
+  <section class="tarjeta-configuracion">
 
-    <div class="configuracion-section-title">
 
-      <span class="material-symbols-outlined">
-        manage_accounts
-      </span>
+<div class="titulo-seccion-configuracion">
 
-      <h3>
-        Perfil de Administrador
-      </h3>
+  <span class="material-symbols-outlined">
+    manage_accounts
+  </span>
 
+  <h3>
+    Perfil de Administrador
+  </h3>
+
+</div>
+
+
+<!-- PERFIL -->
+
+<div class="fila-perfil-configuracion">
+
+  <div class="avatar-administrador">
+    {{ inicialesUsuario }}
+  </div>
+
+  <div class="informacion-perfil">
+
+    <div class="nombre-perfil">
+      {{ nombreUsuario }}
     </div>
 
-
-    <!-- PERFIL -->
-
-    <div class="configuracion-profile-row">
-
-      <div class="configuracion-avatar-lg">
-        JC
-      </div>
-
-      <div class="configuracion-profile-info">
-
-        <div class="configuracion-profile-name">
-          Jose Cabrera
-        </div>
-
-        <div class="configuracion-profile-meta">
-          Administrador General · j.cabrera@fundacion.org
-        </div>
-
-      </div>
-
-      <button
-        type="button"
-        class="configuracion-btn-secondary">
-        Cambiar foto
-      </button>
-
+    <div class="datos-perfil">
+      {{ cargoUsuario }} · {{ correoUsuario }}
     </div>
 
+  </div>
 
-    <!-- CAMPOS -->
+  <button
+    type="button"
+    class="boton-secundario-configuracion">
+    Cambiar foto
+  </button>
 
-    <div class="configuracion-form-grid">
-
-      <div class="configuracion-form-field">
-
-        <label for="configuracionNombre">
-          Nombre Completo
-        </label>
-
-        <input
-          id="configuracionNombre"
-          type="text"
-          value="Jose Cabrera">
-
-      </div>
+</div>
 
 
-      <div class="configuracion-form-field">
+<!-- CAMPOS -->
 
-        <label for="configuracionEmail">
-          Correo Electrónico
-        </label>
+<div class="cuadricula-formulario-configuracion">
 
-        <input
-          id="configuracionEmail"
-          type="email"
-          value="j.cabrera@fundacion.org">
+  <div class="campo-formulario-configuracion">
 
-      </div>
+    <label for="configuracionNombre">
+      Nombre Completo
+    </label>
 
+    <input
+      id="configuracionNombre"
+      type="text"
+      [(ngModel)]="nombreUsuario">
 
-      <div class="configuracion-form-field">
-
-        <label for="configuracionTelefono">
-          Teléfono
-        </label>
-
-        <input
-          id="configuracionTelefono"
-          type="tel"
-          value="+502 5555 0001">
-
-      </div>
+  </div>
 
 
-      <div class="configuracion-form-field">
+  <div class="campo-formulario-configuracion">
 
-        <label for="configuracionCargo">
-          Cargo
-        </label>
+    <label for="configuracionEmail">
+      Correo Electrónico
+    </label>
 
-        <input
-          id="configuracionCargo"
-          type="text"
-          value="Administrador General">
+    <input
+      id="configuracionEmail"
+      type="email"
+      [(ngModel)]="correoUsuario">
 
-      </div>
-
-    </div>
+  </div>
 
 
-    <!-- FOOTER -->
+  <div class="campo-formulario-configuracion">
 
-    <div class="configuracion-card-footer">
+    <label for="configuracionTelefono">
+      Teléfono
+    </label>
 
-      <div class="configuracion-success-msg">
+    <input
+      id="configuracionTelefono"
+      type="tel"
+      [(ngModel)]="telefonoUsuario">
 
-        <span class="material-symbols-outlined">
-          check_circle
-        </span>
-
-        Cambios guardados correctamente
-
-      </div>
+  </div>
 
 
-      <button
-        type="button"
-        class="configuracion-btn-primary">
+  <div class="campo-formulario-configuracion">
 
-        <span class="configuracion-spinner"></span>
+    <label for="configuracionCargo">
+      Cargo
+    </label>
 
-        <span class="configuracion-btn-label">
-          Guardar cambios
-        </span>
+    <input
+      id="configuracionCargo"
+      type="text"
+      [(ngModel)]="cargoUsuario">
 
-      </button>
+  </div>
 
-    </div>
+</div>
+
+
+<!-- FOOTER -->
+
+<div class="pie-tarjeta-configuracion">
+
+  <div class="mensaje-exito-configuracion">
+
+    <span class="material-symbols-outlined">
+      check_circle
+    </span>
+
+    Cambios guardados correctamente
+
+  </div>
+
+
+  <button
+    type="button"
+    class="boton-principal-configuracion">
+
+    <span class="indicador-carga-configuracion"></span>
+
+    <span class="texto-boton-configuracion">
+      Guardar cambios
+    </span>
+
+  </button>
+
+</div>
+
 
   </section>
-
 
   <!-- =====================================================
        PREFERENCIAS DE NOTIFICACIONES
   ====================================================== -->
 
-  <section class="configuracion-card">
+  <section class="tarjeta-configuracion">
 
-    <div class="configuracion-section-title">
 
-      <span class="material-symbols-outlined">
-        notifications_active
-      </span>
+<div class="titulo-seccion-configuracion">
 
-      <h3>
-        Preferencias de Notificaciones
-      </h3>
+  <span class="material-symbols-outlined">
+    notifications_active
+  </span>
+
+  <h3>
+    Preferencias de Notificaciones
+  </h3>
+
+</div>
+
+
+<div class="lista-interruptores-configuracion">
+
+  <!-- CORREO -->
+
+  <div class="fila-interruptor-configuracion">
+
+    <div class="informacion-interruptor">
+
+      <div class="etiqueta-interruptor">
+        Notificaciones por correo
+      </div>
+
+      <div class="descripcion-interruptor">
+        Recibir alertas en el correo registrado
+      </div>
+
+    </div>
+
+
+    <label class="interruptor-configuracion">
+
+      <input
+        type="checkbox"
+        [(ngModel)]="notificacionesCorreo">
+
+      <span class="pista-interruptor"></span>
+
+      <span class="perilla-interruptor"></span>
+
+    </label>
+
+  </div>
+
+
+  <!-- SMS -->
+
+  <div class="fila-interruptor-configuracion">
+
+    <div class="informacion-interruptor">
+
+      <div class="etiqueta-interruptor">
+        Notificaciones por SMS
+      </div>
+
+      <div class="descripcion-interruptor">
+        Recibir alertas en el teléfono registrado
+      </div>
 
     </div>
 
 
-    <div class="configuracion-toggle-list">
+    <label class="interruptor-configuracion">
 
-      <!-- CORREO -->
+      <input
+        type="checkbox"
+        [(ngModel)]="notificacionesSms">
 
-      <div class="configuracion-toggle-row">
+      <span class="pista-interruptor"></span>
 
-        <div class="configuracion-toggle-info">
+      <span class="perilla-interruptor"></span>
 
-          <div class="configuracion-toggle-label">
-            Notificaciones por correo
-          </div>
+    </label>
 
-          <div class="configuracion-toggle-desc">
-            Recibir alertas en el correo registrado
-          </div>
-
-        </div>
+  </div>
 
 
-        <label class="configuracion-toggle-switch">
+  <!-- ALERTAS CRÍTICAS -->
 
-          <input
-            type="checkbox"
-            checked>
+  <div class="fila-interruptor-configuracion">
 
-          <span class="configuracion-toggle-track"></span>
+    <div class="informacion-interruptor">
 
-          <span class="configuracion-toggle-knob"></span>
-
-        </label>
-
+      <div class="etiqueta-interruptor">
+        Alertas críticas en tiempo real
       </div>
 
-
-      <!-- SMS -->
-
-      <div class="configuracion-toggle-row">
-
-        <div class="configuracion-toggle-info">
-
-          <div class="configuracion-toggle-label">
-            Notificaciones por SMS
-          </div>
-
-          <div class="configuracion-toggle-desc">
-            Recibir alertas en el teléfono registrado
-          </div>
-
-        </div>
-
-
-        <label class="configuracion-toggle-switch">
-
-          <input
-            type="checkbox">
-
-          <span class="configuracion-toggle-track"></span>
-
-          <span class="configuracion-toggle-knob"></span>
-
-        </label>
-
-      </div>
-
-
-      <!-- ALERTAS CRÍTICAS -->
-
-      <div class="configuracion-toggle-row">
-
-        <div class="configuracion-toggle-info">
-
-          <div class="configuracion-toggle-label">
-            Alertas críticas en tiempo real
-          </div>
-
-          <div class="configuracion-toggle-desc">
-            Notificación inmediata ante estado crítico
-          </div>
-
-        </div>
-
-
-        <label class="configuracion-toggle-switch">
-
-          <input
-            type="checkbox"
-            checked>
-
-          <span class="configuracion-toggle-track"></span>
-
-          <span class="configuracion-toggle-knob"></span>
-
-        </label>
-
+      <div class="descripcion-interruptor">
+        Notificación inmediata ante estado crítico
       </div>
 
     </div>
+
+
+    <label class="interruptor-configuracion">
+
+      <input
+        type="checkbox"
+        [(ngModel)]="alertasCriticas">
+
+      <span class="pista-interruptor"></span>
+
+      <span class="perilla-interruptor"></span>
+
+    </label>
+
+  </div>
+
+</div>
+
 
   </section>
-
 
   <!-- =====================================================
        SEGURIDAD
   ====================================================== -->
 
-  <section class="configuracion-card">
-
-    <div class="configuracion-section-title">
-
-      <span class="material-symbols-outlined">
-        lock
-      </span>
-
-      <h3>
-        Seguridad
-      </h3>
-
-    </div>
+  <section class="tarjeta-configuracion">
 
 
-    <div class="configuracion-security-grid">
+<div class="titulo-seccion-configuracion">
 
-      <!-- CONTRASEÑA ACTUAL -->
+  <span class="material-symbols-outlined">
+    lock
+  </span>
 
-      <div class="configuracion-form-field">
+  <h3>
+    Seguridad
+  </h3>
 
-        <label for="configuracionPasswordActual">
-          Contraseña actual
-        </label>
-
-        <input
-          id="configuracionPasswordActual"
-          type="password"
-          placeholder="••••••••">
-
-      </div>
+</div>
 
 
-      <!-- ESPACIO -->
+<div class="cuadricula-seguridad-configuracion">
 
-      <div
-        class="configuracion-form-field configuracion-form-field-empty">
-      </div>
+  <!-- CONTRASEÑA ACTUAL -->
 
+  <div class="campo-formulario-configuracion">
 
-      <!-- NUEVA CONTRASEÑA -->
+    <label for="configuracionPasswordActual">
+      Contraseña actual
+    </label>
 
-      <div class="configuracion-form-field">
+    <input
+      id="configuracionPasswordActual"
+      type="password"
+      placeholder="••••••••">
 
-        <label for="configuracionPasswordNueva">
-          Nueva contraseña
-        </label>
-
-        <input
-          id="configuracionPasswordNueva"
-          type="password"
-          placeholder="••••••••">
-
-      </div>
+  </div>
 
 
-      <!-- CONFIRMAR CONTRASEÑA -->
+  <!-- ESPACIO -->
 
-      <div class="configuracion-form-field">
-
-        <label for="configuracionPasswordConfirmar">
-          Confirmar contraseña
-        </label>
-
-        <input
-          id="configuracionPasswordConfirmar"
-          type="password"
-          placeholder="••••••••">
-
-      </div>
-
-    </div>
+  <div class="campo-formulario-vacio"></div>
 
 
-    <!-- FOOTER SEGURIDAD -->
+  <!-- NUEVA CONTRASEÑA -->
 
-    <div class="configuracion-security-footer">
+  <div class="campo-formulario-configuracion">
 
-      <button
-        type="button"
-        class="configuracion-btn-primary-outline">
+    <label for="configuracionPasswordNueva">
+      Nueva contraseña
+    </label>
 
-        Actualizar contraseña
+    <input
+      id="configuracionPasswordNueva"
+      type="password"
+      placeholder="••••••••">
 
-      </button>
+  </div>
 
-    </div>
+
+  <!-- CONFIRMAR CONTRASEÑA -->
+
+  <div class="campo-formulario-configuracion">
+
+    <label for="configuracionPasswordConfirmar">
+      Confirmar contraseña
+    </label>
+
+    <input
+      id="configuracionPasswordConfirmar"
+      type="password"
+      placeholder="••••••••">
+
+  </div>
+
+</div>
+
+
+<!-- FOOTER SEGURIDAD -->
+
+<div class="pie-seguridad-configuracion">
+
+  <button
+    type="button"
+    class="boton-outline-configuracion">
+
+    Actualizar contraseña
+
+  </button>
+
+</div>
+
 
   </section>
 
 </main>
-

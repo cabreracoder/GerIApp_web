@@ -1,10 +1,4 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
+
 from django.db import models
 
 
@@ -23,7 +17,7 @@ class Actividades(models.Model):
 
 class AplicacionMedicamento(models.Model):
     id_aplicacion = models.AutoField(primary_key=True)
-    id_medicamento_medicamento = models.ForeignKey('TratamientoMedicamento', models.DO_NOTHING, db_column='id_medicamento_medicamento', blank=True, null=True)
+    id_medicamento_medicamento = models.IntegerField(blank=True, null=True)
     id_inventario = models.ForeignKey('Inventario', models.DO_NOTHING, db_column='id_inventario', blank=True, null=True)
     id_usuario = models.ForeignKey('Usuarios', models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
     fecha_hora = models.DateTimeField()
@@ -165,7 +159,7 @@ class EntregaMedica(models.Model):
 class EventosAdversos(models.Model):
     id_evento_adverso = models.AutoField(primary_key=True)
     id_bitacora = models.ForeignKey(Bitacora, models.DO_NOTHING, db_column='id_bitacora', blank=True, null=True)
-    id_evento = models.ForeignKey('TipoEvento', models.DO_NOTHING, db_column='id_evento', blank=True, null=True)
+    id_evento = models.CharField(blank=True, null=True)
     id_tipo_emergencia = models.ForeignKey('TipoEmergencia', models.DO_NOTHING, db_column='id_tipo_emergencia', blank=True, null=True)
     fecha_hora = models.DateTimeField()
     descripcion = models.CharField()
@@ -295,6 +289,26 @@ class Pacientes(models.Model):
         db_table = 'pacientes'
 
 
+class Permisos(models.Model):
+    id_permisos = models.AutoField(primary_key=True)
+    nombre = models.CharField()
+    descripcion = models.CharField()
+
+    class Meta:
+        managed = False
+        db_table = 'permisos'
+
+
+class PermisosRol(models.Model):
+    id_permisos_rol = models.AutoField(primary_key=True)
+    id_permisos = models.ForeignKey(Permisos, models.DO_NOTHING, db_column='id_permisos', blank=True, null=True)
+    id_rol = models.ForeignKey('Roles', models.DO_NOTHING, db_column='id_rol', blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'permisos_rol'
+
+
 class Roles(models.Model):
     id_rol = models.AutoField(primary_key=True)
     nombre = models.CharField()
@@ -337,10 +351,10 @@ class TipoEmergencia(models.Model):
 
 
 class TipoEvento(models.Model):
-    id_evento = models.CharField(primary_key=True)
+    id_tipo_evento = models.AutoField(primary_key=True)
     nombre = models.CharField()
     descripcion = models.CharField()
-    estado = models.BooleanField()
+    estado = models.CharField()
 
     class Meta:
         managed = False
@@ -358,37 +372,34 @@ class TipoInsumo(models.Model):
         db_table = 'tipo_insumo'
 
 
-class Tratamiento(models.Model):
-    id_tratamiento = models.CharField(primary_key=True)
-    nombre = models.CharField()
-    descripcion = models.CharField()
-    dosis = models.CharField()
-    frecuencia = models.CharField(blank=True, null=True)
-    id_diagnostico = models.ForeignKey(Diagnosticos, models.DO_NOTHING, db_column='id_diagnostico', blank=True, null=True)
-    fecha_inicio = models.DateTimeField()
-    fecha_fin = models.DateTimeField()
-    indicaciones = models.CharField()
-
-    class Meta:
-        managed = False
-        db_table = 'tratamiento'
-
-
 class TratamientoMedicamento(models.Model):
-    id_medicamento_medicamento = models.AutoField(primary_key=True)
-    id_tratamiento = models.ForeignKey(Tratamiento, models.DO_NOTHING, db_column='id_tratamiento', blank=True, null=True)
+    id_tratamiento_medicamento = models.AutoField(primary_key=True)
+    id_tratamiento = models.ForeignKey('Tratamientos', models.DO_NOTHING, db_column='id_tratamiento', blank=True, null=True)
     id_medicamentos = models.ForeignKey(Medicamentos, models.DO_NOTHING, db_column='id_medicamentos', blank=True, null=True)
-    dosis = models.CharField()
+    dosis = models.IntegerField()
     frecuencia = models.CharField()
     via_administracion = models.CharField()
     duracion = models.CharField()
-    cantidad_prescrita = models.IntegerField()
+    cantidad_prescrita = models.CharField()
     observaciones = models.CharField()
-    estado = models.BooleanField()
+    estado = models.CharField()
 
     class Meta:
         managed = False
         db_table = 'tratamiento_medicamento'
+
+
+class Tratamientos(models.Model):
+    id_tratamiento = models.AutoField(primary_key=True)
+    id_diagnostico = models.ForeignKey(Diagnosticos, models.DO_NOTHING, db_column='id_diagnostico', blank=True, null=True)
+    fecha_inicio = models.TimeField()
+    fecha_fin = models.TimeField()
+    indicaciones = models.CharField()
+    estado = models.CharField()
+
+    class Meta:
+        managed = False
+        db_table = 'tratamientos'
 
 
 class Turnos(models.Model):

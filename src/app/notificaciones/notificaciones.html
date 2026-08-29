@@ -1,713 +1,761 @@
-<div class="canvas">
+<div class="contenedor-principal">
 
-  <!-- =========================================================
-       ENCABEZADO
-  ========================================================== -->
-  <div class="page-header">
+  <!-- ENCABEZADO -->
 
-    <div class="page-title-block">
+  <div class="encabezado-pagina">
 
-      <div class="title-row">
-        <div class="title-icon">
-          <i class="fa-regular fa-bell"></i>
-        </div>
 
-        <h2 class="page-title">
-          Centro de Notificaciones y Alertas
-        </h2>
-      </div>
+<div class="bloque-titulo">
 
-      <p class="page-subtitle">
-        Panel administrativo para control de avisos, alertas críticas y canales de difusión.
-      </p>
+  <div class="fila-titulo">
 
+    <h2 class="titulo-pagina">
+      Centro de Notificaciones y Alertas
+    </h2>
+
+  </div>
+
+  <p class="subtitulo-pagina">
+    Panel administrativo para control de avisos, alertas críticas y canales de difusión.
+  </p>
+
+</div>
+
+
+<!-- PESTAÑAS -->
+<div class="pestanas">
+
+  <button
+    type="button"
+    class="boton-pestana"
+    [class.active]="pestanaActual === 'bandeja'"
+    (click)="cambiarPestana('bandeja')">
+    Bandeja
+  </button>
+
+  <button
+    type="button"
+    class="boton-pestana"
+    [class.active]="pestanaActual === 'enviar'"
+    (click)="cambiarPestana('enviar')">
+    Enviar Aviso
+  </button>
+
+  <button
+    type="button"
+    class="boton-pestana"
+    [class.active]="pestanaActual === 'historial'"
+    (click)="cambiarPestana('historial')">
+    Historial
+  </button>
+
+  <button
+    type="button"
+    class="boton-pestana"
+    [class.active]="pestanaActual === 'configuracion'"
+    (click)="cambiarPestana('configuracion')">
+    Canales &amp; Sistema
+  </button>
+
+</div>
+
+
+  </div>
+
+  <!-- BANDEJA -->
+
+  <div
+    *ngIf="pestanaActual === 'bandeja'"
+    class="contenido-pestana">
+
+
+<!-- RESUMEN -->
+
+<div class="resumen-grid">
+
+  <div class="tarjeta-resumen">
+
+    <div class="icono-resumen informacion">
+      <i class="fa-regular fa-bell"></i>
     </div>
 
-    <!-- TABS -->
-    <div class="tabs">
-
-      <button
-        type="button"
-        class="tab-button"
-        [class.active]="tabActivo === 'bandeja'"
-        (click)="cambiarTab('bandeja')">
-        Bandeja
-      </button>
-
-      <button
-        type="button"
-        class="tab-button"
-        [class.active]="tabActivo === 'enviar'"
-        (click)="cambiarTab('enviar')">
-        Enviar Aviso
-      </button>
-
-      <button
-        type="button"
-        class="tab-button"
-        [class.active]="tabActivo === 'historial'"
-        (click)="cambiarTab('historial')">
-        Historial
-      </button>
-
-      <button
-        type="button"
-        class="tab-button"
-        [class.active]="tabActivo === 'configuracion'"
-        (click)="cambiarTab('configuracion')">
-        Canales &amp; Sistema
-      </button>
-
+    <div class="informacion-resumen">
+      <p>Total Notificaciones</p>
+      <strong>{{ totalNotificaciones }}</strong>
     </div>
 
   </div>
 
 
-  <!-- =========================================================
-       BANDEJA
-  ========================================================== -->
+  <div class="tarjeta-resumen">
+
+    <div class="icono-resumen informacion">
+      <i class="fa-regular fa-envelope"></i>
+    </div>
+
+    <div class="informacion-resumen">
+      <p>No leídas</p>
+      <strong>{{ totalNoLeidas }}</strong>
+    </div>
+
+  </div>
+
+
+  <div class="tarjeta-resumen">
+
+    <div class="icono-resumen critica">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+    </div>
+
+    <div class="informacion-resumen">
+      <p>Críticas (Alertas)</p>
+      <strong>{{ totalCriticas }}</strong>
+    </div>
+
+  </div>
+
+
+  <div class="tarjeta-resumen">
+
+    <div class="icono-resumen advertencia">
+      <i class="fa-solid fa-circle-exclamation"></i>
+    </div>
+
+    <div class="informacion-resumen">
+      <p>Advertencias</p>
+      <strong>{{ totalAdvertencias }}</strong>
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- BÚSQUEDA -->
+
+<div class="barra-herramientas">
+
+  <div class="buscador">
+
+    <i class="fa-solid fa-magnifying-glass"></i>
+
+    <input
+      type="text"
+      [(ngModel)]="textoBusqueda"
+      placeholder="Buscar notificaciones...">
+
+  </div>
+
+
+  <button
+    type="button"
+    class="boton-marcar-todas"
+    (click)="marcarTodasLeidas()"
+    [disabled]="totalNoLeidas === 0">
+
+    <i class="fa-solid fa-check"></i>
+    Marcar todas leídas
+
+  </button>
+
+</div>
+
+
+<!-- FILTROS -->
+
+<div class="lista-filtros">
+
+  <button
+    type="button"
+    class="boton-filtro"
+    [class.active]="tipoFiltro === 'todos'"
+    (click)="tipoFiltro = 'todos'">
+    Todos
+  </button>
+
+  <button
+    type="button"
+    class="boton-filtro critica"
+    [class.active]="tipoFiltro === 'critica'"
+    (click)="tipoFiltro = 'critica'">
+    Críticas
+  </button>
+
+  <button
+    type="button"
+    class="boton-filtro advertencia"
+    [class.active]="tipoFiltro === 'advertencia'"
+    (click)="tipoFiltro = 'advertencia'">
+    Advertencias
+  </button>
+
+  <button
+    type="button"
+    class="boton-filtro informacion"
+    [class.active]="tipoFiltro === 'informacion'"
+    (click)="tipoFiltro = 'informacion'">
+    Informativas
+  </button>
+
+</div>
+
+
+<!-- LISTA DE NOTIFICACIONES -->
+
+<div class="lista-notificaciones">
+
   <div
-    *ngIf="tabActivo === 'bandeja'"
-    class="tab-content">
-
-    <!-- RESUMEN -->
-    <div class="summary-grid">
-
-      <div class="summary-box">
-        <div class="summary-box-icon info">
-          <i class="fa-regular fa-bell"></i>
-        </div>
-
-        <div class="summary-box-info">
-          <p>Total Notificaciones</p>
-          <strong>{{ totalNotificaciones }}</strong>
-        </div>
-      </div>
+    *ngFor="let notificacion of notificacionesFiltradas"
+    class="elemento-notificacion"
+    [class.tipo-critico]="notificacion.tipo === 'critica'"
+    [class.tipo-advertencia]="notificacion.tipo === 'advertencia'"
+    [class.tipo-informacion]="notificacion.tipo === 'informacion'"
+    [class.leida]="notificacion.leida">
 
 
-      <div class="summary-box">
-        <div class="summary-box-icon info">
-          <i class="fa-regular fa-envelope"></i>
-        </div>
+    <!-- ICONO -->
 
-        <div class="summary-box-info">
-          <p>No leídas</p>
-          <strong>{{ totalNoLeidas }}</strong>
-        </div>
-      </div>
+    <div class="contenedor-icono-notificacion">
 
-
-      <div class="summary-box">
-        <div class="summary-box-icon critical">
-          <i class="fa-solid fa-triangle-exclamation"></i>
-        </div>
-
-        <div class="summary-box-info">
-          <p>Críticas (Alertas)</p>
-          <strong>{{ totalCriticas }}</strong>
-        </div>
-      </div>
-
-
-      <div class="summary-box">
-        <div class="summary-box-icon warning">
-          <i class="fa-solid fa-circle-exclamation"></i>
-        </div>
-
-        <div class="summary-box-info">
-          <p>Advertencias</p>
-          <strong>{{ totalAdvertencias }}</strong>
-        </div>
-      </div>
+      <i [ngClass]="notificacion.icono"></i>
 
     </div>
 
 
-    <!-- BÚSQUEDA + MARCAR TODAS -->
-    <div class="toolbar">
+    <!-- CONTENIDO -->
 
-      <div class="search-box">
-        <i class="fa-solid fa-magnifying-glass"></i>
+    <div class="contenido-notificacion">
 
-        <input
-          type="text"
-          [(ngModel)]="filtroTexto"
-          placeholder="Buscar notificaciones...">
+      <div class="fila-titulo-notificacion">
+
+        <h3 class="titulo-notificacion">
+          {{ notificacion.titulo }}
+        </h3>
+
+        <span
+          class="insignia-tipo"
+          [class.critica]="notificacion.tipo === 'critica'"
+          [class.advertencia]="notificacion.tipo === 'advertencia'"
+          [class.informacion]="notificacion.tipo === 'informacion'">
+
+          {{ notificacion.tipo }}
+
+        </span>
+
+
+        <span
+          *ngIf="notificacion.destinatario"
+          class="insignia-destinatario">
+
+          Para: {{ notificacion.destinatario }}
+
+        </span>
+
       </div>
+
+
+      <p class="descripcion-notificacion">
+        {{ notificacion.mensaje }}
+      </p>
+
+
+      <p class="tiempo-notificacion">
+
+        <i class="fa-regular fa-clock"></i>
+
+        {{ notificacion.tiempo }}
+
+      </p>
+
+    </div>
+
+
+    <!-- ACCIONES -->
+
+    <div class="acciones-notificacion">
+
+      <span
+        *ngIf="!notificacion.leida"
+        class="indicador-no-leida">
+      </span>
+
 
       <button
         type="button"
-        class="btn-mark-all"
-        (click)="marcarTodasLeidas()"
-        [disabled]="totalNoLeidas === 0">
+        class="boton-marcar-leida"
+        (click)="marcarLeida(notificacion.id)"
+        title="Marcar leída">
 
         <i class="fa-solid fa-check"></i>
-        Marcar todas leídas
 
       </button>
 
-    </div>
-
-
-    <!-- FILTROS -->
-    <div class="filter-list">
 
       <button
         type="button"
-        class="filter-button"
-        [class.active]="filtroTipoSeleccionado === 'todos'"
-        (click)="filtroTipoSeleccionado = 'todos'">
-        Todos
+        class="boton-eliminar"
+        (click)="eliminarNotificacion(notificacion.id)"
+        title="Eliminar">
+
+        <i class="fa-regular fa-trash-can"></i>
+
       </button>
-
-      <button
-        type="button"
-        class="filter-button critical"
-        [class.active]="filtroTipoSeleccionado === 'critica'"
-        (click)="filtroTipoSeleccionado = 'critica'">
-        Críticas
-      </button>
-
-      <button
-        type="button"
-        class="filter-button warning"
-        [class.active]="filtroTipoSeleccionado === 'advertencia'"
-        (click)="filtroTipoSeleccionado = 'advertencia'">
-        Advertencias
-      </button>
-
-      <button
-        type="button"
-        class="filter-button info"
-        [class.active]="filtroTipoSeleccionado === 'informacion'"
-        (click)="filtroTipoSeleccionado = 'informacion'">
-        Informativas
-      </button>
-
-    </div>
-
-
-    <!-- LISTA DE NOTIFICACIONES -->
-    <div class="notif-list">
-
-      <div
-        *ngFor="let item of notificacionesFiltradas"
-        class="notif-item"
-        [class.type-critical]="item.tipo === 'critica'"
-        [class.type-warning]="item.tipo === 'advertencia'"
-        [class.type-info]="item.tipo === 'informacion'"
-        [class.is-read]="item.leida">
-
-        <!-- ICONO -->
-        <div class="notif-icon-wrap">
-
-          <i [ngClass]="item.icono"></i>
-
-        </div>
-
-
-        <!-- CONTENIDO -->
-        <div class="notif-body">
-
-          <div class="notif-title-row">
-
-            <h3 class="notif-title">
-              {{ item.titulo }}
-            </h3>
-
-            <span
-              class="type-badge"
-              [class.critical]="item.tipo === 'critica'"
-              [class.warning]="item.tipo === 'advertencia'"
-              [class.info]="item.tipo === 'informacion'">
-
-              {{ item.tipo }}
-
-            </span>
-
-            <span
-              *ngIf="item.destinatario"
-              class="recipient-badge">
-
-              Para: {{ item.destinatario }}
-
-            </span>
-
-          </div>
-
-
-          <p class="notif-desc">
-            {{ item.mensaje }}
-          </p>
-
-
-          <p class="notif-time">
-
-            <i class="fa-regular fa-clock"></i>
-
-            {{ item.tiempo }}
-
-          </p>
-
-        </div>
-
-
-        <!-- ACCIONES -->
-        <div class="notif-actions">
-
-          <span
-            *ngIf="!item.leida"
-            class="unread-dot">
-          </span>
-
-          <button
-            type="button"
-            class="notif-read"
-            (click)="marcarLeida(item.id)"
-            title="Marcar leída">
-
-            <i class="fa-solid fa-check"></i>
-
-          </button>
-
-          <button
-            type="button"
-            class="notif-close"
-            (click)="eliminarNotificacion(item.id)"
-            title="Eliminar">
-
-            <i class="fa-regular fa-trash-can"></i>
-
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <!-- ESTADO VACÍO -->
-      <div
-        *ngIf="notificacionesFiltradas.length === 0"
-        class="empty-state">
-
-        <i class="fa-regular fa-folder-open"></i>
-
-        <h3 class="empty-title">
-          No hay notificaciones registradas
-        </h3>
-
-        <p>
-          El sistema no muestra elementos bajo los criterios seleccionados.
-        </p>
-
-      </div>
 
     </div>
 
   </div>
 
 
-  <!-- =========================================================
-       ENVIAR AVISO
-  ========================================================== -->
+  <!-- ESTADO VACÍO -->
+
   <div
-    *ngIf="tabActivo === 'enviar'"
-    class="form-card">
+    *ngIf="notificacionesFiltradas.length === 0"
+    class="estado-vacio">
 
-    <div class="form-card-header">
+    <i class="fa-regular fa-folder-open"></i>
 
-      <h3>
-        Redactar y Enviar Notificación / Alerta
-      </h3>
+    <h3 class="titulo-estado-vacio">
+      No hay notificaciones registradas
+    </h3>
 
-      <p>
-        Informe eventos importantes relacionados con la atención
-        de los pacientes o avisos operativos.
-      </p>
+    <p>
+      El sistema no muestra elementos bajo los criterios seleccionados.
+    </p>
+
+  </div>
+
+</div>
+
+
+  </div>
+
+  <!-- ENVIAR AVISO -->
+
+  <div
+    *ngIf="pestanaActual === 'enviar'"
+    class="tarjeta-formulario">
+
+```
+<div class="encabezado-formulario">
+
+  <h3>
+    Redactar y Enviar Notificación / Alerta
+  </h3>
+
+  <p>
+    Informe eventos importantes relacionados con la atención
+    de los pacientes o avisos operativos.
+  </p>
+
+</div>
+
+
+<form
+  class="formulario-notificacion"
+  (ngSubmit)="enviarNotificacionManual()">
+
+
+  <!-- DESTINATARIO Y TIPO -->
+
+  <div class="fila-formulario">
+
+    <div class="campo-formulario">
+
+      <label>
+        Destinatario Principal *
+      </label>
+
+      <select
+        [(ngModel)]="destinatarioSeleccionado"
+        name="destinatario">
+
+        <option value="">
+          Seleccione un destinatario...
+        </option>
+
+        <option value="Cuidadores">
+          Todos los Cuidadores
+        </option>
+
+        <option value="Trabajadora Social">
+          Trabajadora Social
+        </option>
+
+        <option value="Enfermería">
+          Personal de Enfermería
+        </option>
+
+        <option value="Todos">
+          Todo el Personal del Geriátrico
+        </option>
+
+      </select>
 
     </div>
 
 
-    <form
-      class="notification-form"
-      (ngSubmit)="enviarNotificacionManual()">
+    <div class="campo-formulario">
 
-      <!-- FILA -->
-      <div class="form-row">
+      <label>
+        Nivel de Prioridad / Tipo *
+      </label>
 
-        <div class="form-field">
+      <select
+        [(ngModel)]="tipoNotificacion"
+        name="tipo">
 
-          <label>
-            Destinatario Principal *
-          </label>
+        <option value="informacion">
+          Informativo General
+        </option>
 
-          <select
-            [(ngModel)]="nuevoDestinatario"
-            name="destinatario">
+        <option value="advertencia">
+          Advertencia
+        </option>
 
-            <option value="">
-              Seleccione un destinatario...
-            </option>
+        <option value="critica">
+          Crítica (Alerta Inmediata)
+        </option>
 
-            <option value="Cuidadores">
-              Todos los Cuidadores
-            </option>
+      </select>
 
-            <option value="Trabajadora Social">
-              Trabajadora Social
-            </option>
-
-            <option value="Enfermería">
-              Personal de Enfermería
-            </option>
-
-            <option value="Todos">
-              Todo el Personal del Geriátrico
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <div class="form-field">
-
-          <label>
-            Nivel de Prioridad / Tipo *
-          </label>
-
-          <select
-            [(ngModel)]="nuevoTipo"
-            name="tipo">
-
-            <option value="informacion">
-              Informativo General
-            </option>
-
-            <option value="advertencia">
-              Advertencia
-            </option>
-
-            <option value="critica">
-              Crítica (Alerta Inmediata)
-            </option>
-
-          </select>
-
-        </div>
-
-      </div>
-
-
-      <!-- MENSAJE -->
-      <div class="form-field">
-
-        <div class="message-label-row">
-
-          <label>
-            Contenido del Mensaje *
-          </label>
-
-          <span
-            [class.warning]="caracteresRestantes < 20">
-
-            {{ caracteresRestantes }} caracteres restantes
-
-          </span>
-
-        </div>
-
-        <textarea
-          [(ngModel)]="nuevoMensaje"
-          name="mensaje"
-          rows="5"
-          maxlength="300"
-          placeholder="Escriba aquí los detalles del evento que requiere atención...">
-        </textarea>
-
-      </div>
-
-
-      <!-- ERROR -->
-      <div
-        *ngIf="mensajeError"
-        class="form-message error">
-
-        <i class="fa-solid fa-circle-exclamation"></i>
-
-        {{ mensajeError }}
-
-      </div>
-
-
-      <!-- ÉXITO -->
-      <div
-        *ngIf="mensajeExito"
-        class="form-message success">
-
-        <i class="fa-solid fa-circle-check"></i>
-
-        {{ mensajeExito }}
-
-      </div>
-
-
-      <!-- BOTÓN -->
-      <div class="form-actions">
-
-        <button
-          type="submit"
-          class="btn-primary">
-
-          <i class="fa-solid fa-paper-plane"></i>
-
-          Enviar Notificación
-
-        </button>
-
-      </div>
-
-    </form>
+    </div>
 
   </div>
 
 
-  <!-- =========================================================
-       HISTORIAL
-  ========================================================== -->
-  <div
-    *ngIf="tabActivo === 'historial'"
-    class="history-card">
+  <!-- TÍTULO -->
 
-    <div class="history-header">
+  <div class="campo-formulario">
 
-      <div>
+    <label>
+      Título de la Notificación *
+    </label>
 
-        <h3>
-          Historial de Notificaciones y Alertas
-        </h3>
+    <input
+      type="text"
+      [(ngModel)]="tituloNotificacion"
+      name="titulo"
+      maxlength="100"
+      placeholder="Escriba el título de la notificación...">
 
-        <p>
-          Consulta ordenada estrictamente por fecha y hora de emisión.
-        </p>
+  </div>
 
-      </div>
 
-      <span class="history-count">
-        Total Registros: {{ listaNotificaciones.length }}
+  <!-- MENSAJE -->
+
+  <div class="campo-formulario">
+
+    <div class="fila-etiqueta-mensaje">
+
+      <label>
+        Contenido del Mensaje *
+      </label>
+
+      <span [class.advertencia]="caracteresRestantes < 20">
+        {{ caracteresRestantes }} caracteres restantes
       </span>
 
     </div>
 
 
-    <div class="table-wrapper">
-
-      <table class="history-table">
-
-        <thead>
-
-          <tr>
-
-            <th>FECHA / HORA</th>
-            <th>TÍTULO</th>
-            <th>DESTINATARIO</th>
-            <th>TIPO</th>
-            <th>ACCIÓN</th>
-
-          </tr>
-
-        </thead>
-
-        <tbody>
-
-          <tr
-            *ngFor="let item of listaNotificaciones">
-
-            <td class="time-cell">
-              {{ item.tiempo }}
-            </td>
-
-            <td class="title-cell">
-              {{ item.titulo }}
-            </td>
-
-            <td>
-              {{ item.destinatario || 'General' }}
-            </td>
-
-            <td>
-
-              <span
-                class="type-badge"
-                [class.critical]="item.tipo === 'critica'"
-                [class.warning]="item.tipo === 'advertencia'"
-                [class.info]="item.tipo === 'informacion'">
-
-                {{ item.tipo }}
-
-              </span>
-
-            </td>
-
-            <td class="action-cell">
-
-              <button
-                type="button"
-                class="btn-detail"
-                (click)="verDetalle(item)">
-
-                Detalle
-
-              </button>
-
-            </td>
-
-          </tr>
-
-        </tbody>
-
-      </table>
-
-    </div>
+    <textarea
+      [(ngModel)]="mensajeNotificacion"
+      name="mensaje"
+      rows="5"
+      maxlength="300"
+      placeholder="Escriba aquí los detalles del evento que requiere atención...">
+    </textarea>
 
   </div>
 
 
-  <!-- =========================================================
-       CONFIGURACIÓN DE CANALES
-  ========================================================== -->
+  <!-- ERROR -->
+
   <div
-    *ngIf="tabActivo === 'configuracion'"
-    class="form-card">
+    *ngIf="mensajeError"
+    class="mensaje-formulario error">
 
-    <div class="form-card-header">
+    <i class="fa-solid fa-circle-exclamation"></i>
 
-      <h3>
-        Configuración de Canales y Activación General
-      </h3>
-
-      <p>
-        Habilite o deshabilite el motor de notificaciones y
-        seleccione los medios de distribución.
-      </p>
-
-    </div>
-
-
-    <div class="settings-list">
-
-      <!-- SISTEMA -->
-      <div class="setting-row">
-
-        <div class="setting-info">
-
-          <p>
-            Sistema Global de Notificaciones
-          </p>
-
-          <span>
-            Control maestro para activar o pausar
-            el envío automático de avisos.
-          </span>
-
-        </div>
-
-
-        <label class="switch">
-
-          <input
-            type="checkbox"
-            [(ngModel)]="sistemaActivo">
-
-          <span class="slider"></span>
-
-        </label>
-
-      </div>
-
-
-      <!-- CANALES -->
-      <div class="channels-section">
-
-        <p class="channels-title">
-          Canales de Envío Autorizados
-        </p>
-
-
-        <label class="checkbox-row">
-
-          <input
-            type="checkbox"
-            [(ngModel)]="canalEmail">
-
-          <span>
-            Correo Electrónico (Email Institucional)
-          </span>
-
-        </label>
-
-
-        <label class="checkbox-row">
-
-          <input
-            type="checkbox"
-            [(ngModel)]="canalSms">
-
-          <span>
-            SMS (Mensajería de Texto a Cuidadores)
-          </span>
-
-        </label>
-
-
-        <label class="checkbox-row">
-
-          <input
-            type="checkbox"
-            [(ngModel)]="canalPush">
-
-          <span>
-            Aplicación Móvil (Notificaciones Push directas)
-          </span>
-
-        </label>
-
-      </div>
-
-    </div>
-
-
-    <!-- MENSAJE -->
-    <div
-      *ngIf="mensajeConfigExito"
-      class="form-message success">
-
-      <i class="fa-solid fa-circle-check"></i>
-
-      {{ mensajeConfigExito }}
-
-    </div>
-
-
-    <!-- GUARDAR -->
-    <div class="form-actions">
-
-      <button
-        type="button"
-        class="btn-primary"
-        (click)="guardarConfiguracionCanales()">
-
-        <i class="fa-solid fa-floppy-disk"></i>
-
-        Guardar Configuración
-
-      </button>
-
-    </div>
+    {{ mensajeError }}
 
   </div>
 
+
+  <!-- ÉXITO -->
+
+  <div
+    *ngIf="mensajeExito"
+    class="mensaje-formulario exito">
+
+    <i class="fa-solid fa-circle-check"></i>
+
+    {{ mensajeExito }}
+
+  </div>
+
+
+  <!-- BOTÓN -->
+
+  <div class="acciones-formulario">
+
+    <button
+      type="submit"
+      class="boton-principal">
+
+      <i class="fa-solid fa-paper-plane"></i>
+
+      Enviar Notificación
+
+    </button>
+
+  </div>
+
+</form>
+
+
+  </div>
+
+  <!-- HISTORIAL -->
+
+  <div
+    *ngIf="pestanaActual === 'historial'"
+    class="tarjeta-historial">
+
+
+<div class="encabezado-historial">
+
+  <div>
+
+    <h3>
+      Historial de Notificaciones y Alertas
+    </h3>
+
+    <p>
+      Consulta ordenada por fecha y hora de emisión.
+    </p>
+
+  </div>
+
+
+  <span class="contador-historial">
+    Total Registros: {{ notificaciones.length }}
+  </span>
 
 </div>
 
 
+<div class="contenedor-tabla">
+
+  <table class="tabla-historial">
+
+    <thead>
+
+      <tr>
+        <th>FECHA / HORA</th>
+        <th>TÍTULO</th>
+        <th>DESTINATARIO</th>
+        <th>TIPO</th>
+        <th>ACCIÓN</th>
+      </tr>
+
+    </thead>
+
+
+    <tbody>
+
+      <tr
+        *ngFor="let notificacion of notificaciones">
+
+        <td class="celda-tiempo">
+          {{ notificacion.tiempo }}
+        </td>
+
+        <td class="celda-titulo">
+          {{ notificacion.titulo }}
+        </td>
+
+        <td>
+          {{ notificacion.destinatario || 'General' }}
+        </td>
+
+        <td>
+
+          <span
+            class="insignia-tipo"
+            [class.critica]="notificacion.tipo === 'critica'"
+            [class.advertencia]="notificacion.tipo === 'advertencia'"
+            [class.informacion]="notificacion.tipo === 'informacion'">
+
+            {{ notificacion.tipo }}
+
+          </span>
+
+        </td>
+
+
+        <td class="celda-accion">
+
+          <button
+            type="button"
+            class="boton-detalle"
+            (click)="verDetalle(notificacion)">
+
+            Detalle
+
+          </button>
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>
+
+
+  </div>
+
+  <!-- CONFIGURACIÓN -->
+
+  <div
+    *ngIf="pestanaActual === 'configuracion'"
+    class="tarjeta-formulario">
+
+
+<div class="encabezado-formulario">
+
+  <h3>
+    Configuración de Canales y Activación General
+  </h3>
+
+  <p>
+    Habilite o deshabilite el motor de notificaciones y
+    seleccione los medios de distribución.
+  </p>
+
+</div>
+
+
+<div class="lista-configuracion">
+
+
+  <!-- SISTEMA -->
+
+  <div class="fila-configuracion">
+
+    <div class="informacion-configuracion">
+
+      <p>
+        Sistema Global de Notificaciones
+      </p>
+
+      <span>
+        Control maestro para activar o pausar
+        el envío automático de avisos.
+      </span>
+
+    </div>
+
+
+    <label class="interruptor">
+
+      <input
+        type="checkbox"
+        [(ngModel)]="notificacionesActivas">
+
+      <span class="control-interruptor"></span>
+
+    </label>
+
+  </div>
+
+
+  <!-- CANALES -->
+
+  <div class="seccion-canales">
+
+    <p class="titulo-canales">
+      Canales de Envío Autorizados
+    </p>
+
+
+    <label class="fila-checkbox">
+
+      <input
+        type="checkbox"
+        [(ngModel)]="emailActivo">
+
+      <span>
+        Correo Electrónico (Email Institucional)
+      </span>
+
+    </label>
+
+
+    <label class="fila-checkbox">
+
+      <input
+        type="checkbox"
+        [(ngModel)]="smsActivo">
+
+      <span>
+        SMS (Mensajería de Texto a Cuidadores)
+      </span>
+
+    </label>
+
+
+    <label class="fila-checkbox">
+
+      <input
+        type="checkbox"
+        [(ngModel)]="notificacionesPushActivas">
+
+      <span>
+        Aplicación Móvil (Notificaciones Push directas)
+      </span>
+
+    </label>
+
+  </div>
+
+</div>
+
+
+<!-- MENSAJE -->
+
+<div
+  *ngIf="mensajeConfiguracion"
+  class="mensaje-formulario exito">
+
+  <i class="fa-solid fa-circle-check"></i>
+
+  {{ mensajeConfiguracion }}
+
+</div>
+
+
+<!-- GUARDAR -->
+
+<div class="acciones-formulario">
+
+  <button
+    type="button"
+    class="boton-principal"
+    (click)="guardarConfiguracion()">
+
+    <i class="fa-solid fa-floppy-disk"></i>
+
+    Guardar Configuración
+
+  </button>
+
+</div>
+
+
+  </div>
+
+</div>

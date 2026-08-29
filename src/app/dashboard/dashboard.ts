@@ -1,128 +1,247 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 
-interface Patient {
-  id: number;
-  doc: string;
-  name: string;
-  age: number;
-  room: string;
-  status: 'Estable' | 'Atención' | 'Crítico';
-  lastCheck: string;
-  adherence: number;
+interface Mes {
+  nombre: string;
+  activo: boolean;
 }
 
-interface Staff {
-  id: number;
-  name: string;
-  role: string;
-  shift: 'Mañana' | 'Tarde' | 'Noche';
-  status: 'En Turno' | 'Libre';
-  tasksCompleted: number;
+interface PacienteReciente {
+  iniciales: string;
+  nombre: string;
+  habitacion: string;
+  documento: string;
+  estado: string;
+  badgeClass: string;
+  avatarClass: string;
+  colorEstado: string;
+  cuidador: string;
+}
+
+interface Cuidador {
+  iniciales: string;
+  nombre: string;
+  especialidad: string;
+  estado: string;
+  estadoClase: string;
+  badgeClass: string;
+  turno: string;
+  pacientes: number;
+}
+
+interface EstadoSalud {
+  nombre: string;
+  cantidad: number;
+  icono: string;
+  clase: string;
+}
+
+interface MesTendencia {
+  nombre: string;
+  activo: boolean;
+}
+
+interface PuntoTendencia {
+  x: number;
+  y: number;
+}
+
+interface IndicadorBienestar {
+  nombre: string;
+  icono: string;
+  iconoClase: string;
+  porcentaje: number;
+  valorClase: string;
+  progresoClase: string;
+}
+
+interface Alerta {
+  titulo: string;
+  descripcion: string;
+  tiempo: string;
+  icono: string;
+  clase: string;
+  noLeida: boolean;
+}
+
+interface Turno {
+  nombre: string;
+  horaInicio: string;
+  horaFin: string;
+  cuidadores: number;
 }
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   templateUrl: './dashboard.html',
-  styleUrls: ['./dashboard.css']
+  styleUrl: './dashboard.css'
 })
 export class DashboardComponent implements OnInit {
-  currentUser = { name: 'Jose Cabrera', role: 'ADMINISTRADOR', initials: 'JC' };
-  searchTerm: string = '';
-  unreadAlertsCount: number = 3;
 
-  startDate: string = '2026-08-01';
-  endDate: string = '2026-08-22';
-  selectedStaffFilter: string = 'TODOS';
+  /* =====================================================
+     INFORMACIÓN DEL DASHBOARD
+  ===================================================== */
 
-  showReportModal: boolean = false;
-  reportType: 'pacientes' | 'personal' = 'pacientes';
-  previewData: any[] = [];
-  isExporting: boolean = false;
-  exportError: string | null = null;
+  fechaActual = '';
+  nombreAdministrador = '';
+  nombreFundacion = '';
 
-  patients: Patient[] = [
-    { id: 1, doc: '104523891', name: 'Rosa Elena Gómez', age: 82, room: '101-A', status: 'Estable', lastCheck: '08:00 AM', adherence: 95 },
-    { id: 2, doc: '109823411', name: 'Carlos Alberto Ríos', age: 78, room: '102-B', status: 'Atención', lastCheck: '07:30 AM', adherence: 60 },
-    { id: 3, doc: '982341231', name: 'María Inés Zapata', age: 85, room: '104-A', status: 'Crítico', lastCheck: '08:15 AM', adherence: 40 },
-    { id: 4, doc: '128491022', name: 'Hernán Martínez', age: 74, room: '201-B', status: 'Estable', lastCheck: '06:45 AM', adherence: 100 }
-  ];
+  mesActual = '';
 
-  filteredPatients: Patient[] = [];
+  /* =====================================================
+     PACIENTES
+  ===================================================== */
 
-  staffMembers: Staff[] = [
-    { id: 1, name: 'Ana Isabel Pérez', role: 'Enfermera Jefa', shift: 'Mañana', status: 'En Turno', tasksCompleted: 18 },
-    { id: 2, name: 'David Fernando Mina', role: 'Cuidador principal', shift: 'Mañana', status: 'En Turno', tasksCompleted: 14 },
-    { id: 3, name: 'Yuleidi Mosquera', role: 'Fisioterapeuta', shift: 'Tarde', status: 'Libre', tasksCompleted: 8 },
-    { id: 4, name: 'Yeison Javier López', role: 'Cuidador nocturno', shift: 'Noche', status: 'Libre', tasksCompleted: 12 }
-  ];
+  totalPacientes = 0;
+  pacientesActuales = 0;
+  capacidadMaxima = 0;
 
-  filteredStaff: Staff[] = [];
+  pacientesEstables = 0;
+  pacientesCriticos = 0;
+  altasDelMes = 0;
+
+  porcentajeOcupacion = 0;
+  porcentajeEstables = 0;
+  porcentajeCriticos = 0;
+  porcentajeAltas = 0;
+
+  progresoMes = 0;
+
+  meses: Mes[] = [];
+
+  pacientesRecientes: PacienteReciente[] = [];
+
+  /* =====================================================
+     CUIDADORES
+  ===================================================== */
+
+  totalCuidadores = 0;
+  cuidadoresEnTurno = 0;
+  cuidadoresLibres = 0;
+  ingresosCuidadores = 0;
+
+  cuidadores: Cuidador[] = [];
+
+  ratioCuidadorPaciente = '—';
+
+  /* =====================================================
+     OCUPACIÓN
+  ===================================================== */
+
+  metaOcupacion = 0;
+
+  turnoActual: Turno = {
+    nombre: '',
+    horaInicio: '',
+    horaFin: '',
+    cuidadores: 0
+  };
+
+  ocupacionDashArray = '0 263.89';
+
+  /* =====================================================
+     ANÁLISIS DE SALUD
+  ===================================================== */
+
+  estadosSalud: EstadoSalud[] = [];
+
+  /* =====================================================
+     TENDENCIA
+  ===================================================== */
+
+  tendenciaTexto = '—';
+
+  mesesTendencia: MesTendencia[] = [];
+
+  puntosTendencia: PuntoTendencia[] = [];
+
+  tendenciaLinePath = '';
+
+  tendenciaAreaPath = '';
+
+  /* =====================================================
+     INDICADORES DE BIENESTAR
+  ===================================================== */
+
+  indicadoresBienestar: IndicadorBienestar[] = [];
+
+  /* =====================================================
+     ALERTAS
+  ===================================================== */
+
+  alertasSinLeer = 0;
+  totalAlertas = 0;
+
+  alertasCriticas = 0;
+  alertasAvisos = 0;
+  alertasInfo = 0;
+
+  alertas: Alerta[] = [];
+
+  /* =====================================================
+     INICIO
+  ===================================================== */
 
   ngOnInit(): void {
-    this.applyFilters();
+    this.cargarFechaActual();
+    this.calcularOcupacion();
   }
 
-  onSearch(): void {
-    const term = this.searchTerm.toLowerCase().trim();
-    this.filteredPatients = this.patients.filter(p => 
-      p.name.toLowerCase().includes(term) || p.doc.includes(term)
-    );
+  /* =====================================================
+     FECHA ACTUAL
+  ===================================================== */
+
+  private cargarFechaActual(): void {
+    const fecha = new Date();
+
+    this.fechaActual = fecha.toLocaleDateString('es-CO', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
+    });
+
+    this.mesActual = fecha.toLocaleDateString('es-CO', {
+      month: 'long'
+    });
+
+    this.mesActual =
+      this.mesActual.charAt(0).toUpperCase() +
+      this.mesActual.slice(1);
   }
 
-  applyFilters(): void {
-    this.filteredPatients = [...this.patients];
-    if (this.selectedStaffFilter === 'TODOS') {
-      this.filteredStaff = [...this.staffMembers];
-    } else {
-      this.filteredStaff = this.staffMembers.filter(s => s.shift === this.selectedStaffFilter);
-    }
-  }
+  /* =====================================================
+     CÁLCULO DE OCUPACIÓN
+  ===================================================== */
 
-  openReportModal(type: 'pacientes' | 'personal'): void {
-    this.reportType = type;
-    this.exportError = null;
-    this.showReportModal = true;
-    this.generatePreview();
-  }
+  private calcularOcupacion(): void {
 
-  closeReportModal(): void {
-    this.showReportModal = false;
-  }
-
-  generatePreview(): void {
-    if (this.reportType === 'pacientes') {
-      this.previewData = [...this.filteredPatients];
-    } else {
-      this.previewData = [...this.filteredStaff];
-    }
-  }
-
-  exportData(format: 'PDF' | 'EXCEL'): void {
-    if (this.previewData.length === 0) {
-      this.exportError = 'No hay datos disponibles para exportar en el rango seleccionado.';
+    if (this.capacidadMaxima <= 0) {
+      this.porcentajeOcupacion = 0;
+      this.ocupacionDashArray = '0 263.89';
       return;
     }
 
-    this.isExporting = true;
-    this.exportError = null;
+    this.porcentajeOcupacion = Math.round(
+      (this.pacientesActuales / this.capacidadMaxima) * 100
+    );
 
-    setTimeout(() => {
-      this.isExporting = false;
-      const fileName = `Reporte_${this.reportType.toUpperCase()}_${this.startDate}_al_${this.endDate}.${format.toLowerCase() === 'pdf' ? 'pdf' : 'xlsx'}`;
-      alert(`¡Exportación exitosa! Se ha descargado el archivo: ${fileName}`);
-      this.closeReportModal();
-    }, 1200);
-  }
+    const radio = 42;
+    const circunferencia = 2 * Math.PI * radio;
 
-  get totalPatientsCount(): number { return this.patients.length; }
-  get criticalPatientsCount(): number { return this.patients.filter(p => p.status === 'Crítico').length; }
-  get activeStaffCount(): number { return this.staffMembers.filter(s => s.status === 'En Turno').length; }
-  get averageAdherence(): number {
-    const sum = this.patients.reduce((acc, p) => acc + p.adherence, 0);
-    return Math.round(sum / (this.patients.length || 1));
+    const porcentaje = Math.min(
+      Math.max(this.porcentajeOcupacion, 0),
+      100
+    );
+
+    const ocupado =
+      (porcentaje / 100) * circunferencia;
+
+    const restante =
+      circunferencia - ocupado;
+
+    this.ocupacionDashArray =
+      `${ocupado} ${restante}`;
   }
 }

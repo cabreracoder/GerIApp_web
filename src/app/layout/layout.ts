@@ -6,6 +6,12 @@ import {
   RouterOutlet
 } from '@angular/router';
 
+interface OpcionMenu {
+  nombre: string;
+  icono: string;
+  ruta: string;
+}
+
 @Component({
   selector: 'app-layout',
   standalone: true,
@@ -22,7 +28,21 @@ import {
 })
 export class Layout {
 
-  menu = [
+  nombreAplicacion = 'GerIApp';
+
+  textoNuevoRegistro = 'Nuevo Registro';
+
+  textoCerrarSesion = 'Cerrar sesión';
+
+  nombreUsuario = 'Jose Cabrera';
+
+  rolUsuario = 'ADMINISTRADOR';
+
+  inicialesUsuario = 'JC';
+
+  placeholderBuscador = 'Buscar por nombre o documento...';
+
+  menu: OpcionMenu[] = [
 
     {
       nombre: 'Dashboard',
@@ -62,7 +82,7 @@ export class Layout {
 
   ];
 
-  configuracion = {
+  configuracion: OpcionMenu = {
     nombre: 'Configuración',
     icono: 'settings',
     ruta: '/configuracion'
