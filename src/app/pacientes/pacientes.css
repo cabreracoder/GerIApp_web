@@ -1,3 +1,4 @@
+
 :host {
   display: block;
   width: 100%;
@@ -16,16 +17,7 @@
    CONTENIDO PRINCIPAL
 ========================================================= */
 
-/*
-   IMPORTANTE:
-   El layout.css ya proporciona el padding general
-   mediante .content.
-
-   Por eso este componente NO agrega margin-left,
-   margin-top ni desplazamientos adicionales.
-*/
-
-.page-content {
+.contenido-pacientes {
   width: 100%;
   min-width: 0;
   min-height: 100%;
@@ -37,10 +29,10 @@
 
 
 /* =========================================================
-   HEADER DE PÁGINA
+   ENCABEZADO
 ========================================================= */
 
-.page-hdr {
+.encabezado-pagina {
   width: 100%;
 
   display: flex;
@@ -52,7 +44,7 @@
   margin: 0 0 var(--spacing-lg);
 }
 
-.page-hdr h2 {
+.encabezado-pagina h2 {
   margin: 0;
 
   color: var(--text-primary);
@@ -67,7 +59,7 @@
   line-height: 1.2;
 }
 
-.page-hdr p {
+.encabezado-pagina p {
   margin: 6px 0 0;
 
   color: var(--text-secondary);
@@ -85,7 +77,7 @@
    BOTÓN PRINCIPAL
 ========================================================= */
 
-.btn-primary {
+.boton-principal {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -100,7 +92,7 @@
   border-radius: var(--radius-md);
 
   background: var(--color-primary);
-  color: #FFFFFF;
+  color: #ffffff;
 
   font-family: var(--font-family-base);
   font-size: var(--font-size-sm);
@@ -115,13 +107,12 @@
     transform 0.15s ease;
 }
 
-.btn-primary:hover {
+.boton-principal:hover {
   background: var(--color-primary-hover);
   transform: translateY(-1px);
 }
 
-.btn-primary .ms,
-.btn-primary .material-symbols-outlined {
+.boton-principal .material-symbols-outlined {
   font-size: var(--icon-size-md);
 }
 
@@ -130,7 +121,7 @@
    FILTROS
 ========================================================= */
 
-.filters {
+.contenedor-filtros {
   width: 100%;
 
   display: flex;
@@ -142,7 +133,7 @@
   margin-bottom: var(--spacing-lg);
 }
 
-.filter-group {
+.grupo-filtro {
   display: flex;
   flex-direction: column;
 
@@ -151,7 +142,7 @@
   min-width: 190px;
 }
 
-.filter-label {
+.etiqueta-filtro {
   color: var(--text-secondary);
 
   font-family: var(--font-family-base);
@@ -160,7 +151,7 @@
   font-weight: var(--font-weight-bold);
 }
 
-.filter-group select {
+.grupo-filtro select {
   width: 100%;
   height: 40px;
 
@@ -180,7 +171,7 @@
   cursor: pointer;
 }
 
-.filter-group select:focus {
+.grupo-filtro select:focus {
   border-color: var(--color-primary);
 
   box-shadow:
@@ -192,20 +183,20 @@
    ESTADÍSTICAS
 ========================================================= */
 
-.stats {
+.contenedor-estadisticas {
   width: 100%;
 
   display: grid;
 
-  grid-template-columns:
-    repeat(4, minmax(0, 1fr));
+  /* 4 TARJETAS HORIZONTALES */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 
   gap: var(--spacing-md);
 
   margin-bottom: var(--spacing-lg);
 }
 
-.stat-card {
+.tarjeta-estadistica {
   min-width: 0;
   min-height: 150px;
 
@@ -223,7 +214,7 @@
   box-shadow: var(--shadow-sm);
 }
 
-.stat-card-top {
+.encabezado-estadistica {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -231,11 +222,12 @@
   gap: var(--spacing-sm);
 }
 
-.stat-icon {
+.icono-estadistica {
+  font-family: 'Material Symbols Outlined';
   font-size: var(--icon-size-lg);
 }
 
-.stat-badge {
+.etiqueta-estadistica {
   padding: 5px 9px;
 
   border-radius: var(--radius-full);
@@ -248,72 +240,72 @@
 
 
 /* =========================================================
-   TOTAL
+   TARJETA TOTAL
 ========================================================= */
 
-.total-card {
+.tarjeta-total {
   background: var(--color-primary);
   border-color: var(--color-primary);
 
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
-.total-card .stat-icon {
-  color: #FFFFFF;
+.tarjeta-total .icono-estadistica {
+  color: #ffffff;
 }
 
-.total-badge {
+.etiqueta-total {
   background: rgba(255, 255, 255, 0.15);
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
-.white-text {
-  color: #FFFFFF !important;
+.texto-blanco {
+  color: #ffffff !important;
 }
 
-.white-muted {
+.texto-blanco-secundario {
   color: rgba(255, 255, 255, 0.75) !important;
 }
 
 
 /* =========================================================
-   CAPACIDAD
+   TARJETA CAPACIDAD
 ========================================================= */
 
-.capacity-card {
+.tarjeta-capacidad {
   background: var(--bg-surface);
 }
 
-.capacity-badge {
+.etiqueta-capacidad {
   background: var(--bg-neutral-light);
   color: var(--color-secondary);
 }
 
 
 /* =========================================================
-   SALUD
+   TARJETA SALUD
 ========================================================= */
 
-.health-card {
+.tarjeta-salud {
   background: var(--bg-surface);
 }
 
-.health-badge {
+.etiqueta-salud {
   background: var(--color-accent-beige);
-  color: #7D5A4F;
+  color: #7d5a4f;
 }
 
 
 /* =========================================================
-   ALERTA
+   TARJETA ALERTA
 ========================================================= */
 
-.alert-card {
+.tarjeta-alerta {
   background: var(--bg-surface);
 }
 
-.alert-badge {
-  background: #F8D7DA;
+.etiqueta-alerta {
+  background: #f8d7da;
   color: var(--color-danger);
 }
 
@@ -322,7 +314,7 @@
    VALORES DE ESTADÍSTICAS
 ========================================================= */
 
-.stat-val {
+.valor-estadistica {
   margin-bottom: var(--spacing-xs);
 
   color: var(--text-primary);
@@ -335,7 +327,7 @@
   font-weight: var(--font-weight-bold);
 }
 
-.stat-lbl {
+.descripcion-estadistica {
   color: var(--text-secondary);
 
   font-size: var(--font-size-xs);
@@ -347,27 +339,27 @@
    COLORES AUXILIARES
 ========================================================= */
 
-.beige-text {
-  color: #7D5A4F;
+.texto-beige {
+  color: #7d5a4f;
 }
 
-.beige-muted {
+.texto-beige-secundario {
   color: var(--text-secondary);
 }
 
-.critical-text {
+.texto-critico {
   color: var(--color-danger);
 }
 
-.critical-muted {
+.texto-critico-secundario {
   color: var(--text-secondary);
 }
 
-.beige-icon {
-  color: #7D5A4F;
+.icono-beige {
+  color: #7d5a4f;
 }
 
-.error-icon {
+.icono-error {
   color: var(--color-danger);
 }
 
@@ -376,7 +368,7 @@
    TABLA
 ========================================================= */
 
-.tbl-wrap {
+.contenedor-tabla {
   width: 100%;
 
   overflow: hidden;
@@ -389,7 +381,7 @@
   box-shadow: var(--shadow-sm);
 }
 
-.tbl-scroll {
+.desplazamiento-tabla {
   width: 100%;
 
   overflow-x: auto;
@@ -450,10 +442,10 @@ tbody tr:hover {
 
 
 /* =========================================================
-   PACIENTE
+   INFORMACIÓN DEL PACIENTE
 ========================================================= */
 
-.pat-cell {
+.informacion-paciente {
   display: flex;
   align-items: center;
 
@@ -462,7 +454,7 @@ tbody tr:hover {
   min-width: 210px;
 }
 
-.av-lg {
+.avatar-paciente {
   width: 42px;
   height: 42px;
 
@@ -475,21 +467,21 @@ tbody tr:hover {
   border-radius: var(--radius-full);
 
   background: var(--color-accent-beige);
-  color: #7D5A4F;
+  color: #7d5a4f;
 
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
 }
 
-.pat-info {
+.datos-paciente {
   min-width: 0;
 }
 
-.pat-info p {
+.datos-paciente p {
   margin: 0;
 }
 
-.pat-info p:first-child {
+.datos-paciente p:first-child {
   margin-bottom: var(--spacing-2xs);
 
   color: var(--text-primary);
@@ -497,13 +489,13 @@ tbody tr:hover {
   font-weight: var(--font-weight-bold);
 }
 
-.pat-info p:last-child {
+.datos-paciente p:last-child {
   color: var(--text-secondary);
 
   font-size: var(--font-size-xs);
 }
 
-.document-cell {
+.documento-paciente {
   color: var(--text-secondary);
 
   font-family: 'JetBrains Mono', monospace;
@@ -518,17 +510,17 @@ tbody tr:hover {
    ENCARGADO
 ========================================================= */
 
-.guardian-cell p {
+.informacion-encargado p {
   margin: 0;
 }
 
-.guardian-cell p:first-child {
+.informacion-encargado p:first-child {
   margin-bottom: 3px;
 
   font-weight: var(--font-weight-semibold);
 }
 
-.guardian-cell p:last-child {
+.informacion-encargado p:last-child {
   color: var(--text-secondary);
 
   font-size: var(--font-size-xs);
@@ -539,7 +531,7 @@ tbody tr:hover {
    CUIDADOR
 ========================================================= */
 
-.care-cell {
+.informacion-cuidador {
   display: flex;
   align-items: center;
 
@@ -548,7 +540,7 @@ tbody tr:hover {
   white-space: nowrap;
 }
 
-.care-dot {
+.indicador-cuidador {
   width: 7px;
   height: 7px;
 
@@ -564,9 +556,9 @@ tbody tr:hover {
    ESTADOS
 ========================================================= */
 
-.badge-stable,
-.badge-critical,
-.badge-observation {
+.estado-estable,
+.estado-critico,
+.estado-observacion {
   display: inline-flex;
   align-items: center;
 
@@ -585,30 +577,30 @@ tbody tr:hover {
 }
 
 
-/* PACIENTE ESTABLE */
+/* ESTABLE */
 
-.badge-stable {
+.estado-estable {
   background: var(--color-accent-beige);
-  color: #7D5A4F;
+  color: #7d5a4f;
 }
 
 
-/* PACIENTE CRÍTICO */
+/* CRÍTICO */
 
-.badge-critical {
-  background: #F8D7DA;
+.estado-critico {
+  background: #f8d7da;
   color: var(--color-danger);
 }
 
 
-/* PACIENTE EN OBSERVACIÓN */
+/* OBSERVACIÓN */
 
-.badge-observation {
-  background: #FEF3C7;
+.estado-observacion {
+  background: #fef3c7;
   color: var(--color-warning);
 }
 
-.badge-dot {
+.punto-estado {
   width: 6px;
   height: 6px;
 
@@ -617,23 +609,23 @@ tbody tr:hover {
   border-radius: var(--radius-full);
 }
 
-.stable-dot {
-  background: #7D5A4F;
+.punto-estable {
+  background: #7d5a4f;
 }
 
-.critical-dot {
+.punto-critico {
   background: var(--color-danger);
 }
 
-.observation-dot {
+.punto-observacion {
   background: var(--color-warning);
 }
 
-.ping {
-  animation: pulse 1.5s infinite;
+.animacion-pulso {
+  animation: pulso 1.5s infinite;
 }
 
-@keyframes pulse {
+@keyframes pulso {
   0%,
   100% {
     opacity: 1;
@@ -646,10 +638,10 @@ tbody tr:hover {
 
 
 /* =========================================================
-   ACCIONES
+   BOTONES DE ACCIÓN
 ========================================================= */
 
-.action-btns {
+.contenedor-acciones {
   display: flex;
   align-items: center;
 
@@ -658,7 +650,7 @@ tbody tr:hover {
   white-space: nowrap;
 }
 
-.action-btn {
+.boton-accion {
   width: 32px;
   height: 32px;
 
@@ -684,10 +676,7 @@ tbody tr:hover {
     border-color 0.2s ease;
 }
 
-
-/* BOTÓN NORMAL */
-
-.action-btn:hover {
+.boton-accion:hover {
   background: var(--bg-neutral-light);
 
   border-color: var(--color-secondary);
@@ -695,41 +684,32 @@ tbody tr:hover {
   color: var(--color-primary);
 }
 
-
-/* BOTÓN ACTIVAR / DESACTIVAR */
-
-.action-btn.warn:hover {
-  background: #FEF3C7;
+.boton-advertencia:hover {
+  background: #fef3c7;
 
   border-color: var(--color-warning);
 
   color: var(--color-warning);
 }
 
-
-/* BOTÓN ELIMINAR */
-
-.action-btn.danger:hover {
-  background: #F8D7DA;
+.boton-peligro:hover {
+  background: #f8d7da;
 
   border-color: var(--color-danger);
 
   color: var(--color-danger);
 }
 
-
-/* ICONOS */
-
-.action-btn .material-symbols-outlined {
+.boton-accion .material-symbols-outlined {
   font-size: var(--icon-size-sm);
 }
 
 
 /* =========================================================
-   VACÍO
+   MENSAJE VACÍO
 ========================================================= */
 
-.empty {
+.mensaje-vacio {
   padding: 50px !important;
 
   color: var(--text-secondary);
@@ -741,10 +721,10 @@ tbody tr:hover {
 
 
 /* =========================================================
-   FOOTER DE TABLA
+   PIE DE TABLA
 ========================================================= */
 
-.tbl-footer {
+.pie-tabla {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -758,7 +738,7 @@ tbody tr:hover {
   background: var(--bg-surface);
 }
 
-.tbl-footer p {
+.pie-tabla p {
   margin: 0;
 
   color: var(--text-secondary);
@@ -766,14 +746,14 @@ tbody tr:hover {
   font-size: var(--font-size-xs);
 }
 
-.pag {
+.paginacion {
   display: flex;
   align-items: center;
 
   gap: 5px;
 }
 
-.pag-btn {
+.boton-paginacion {
   min-width: 32px;
   height: 32px;
 
@@ -795,21 +775,21 @@ tbody tr:hover {
   cursor: pointer;
 }
 
-.pag-btn:hover:not(:disabled) {
+.boton-paginacion:hover:not(:disabled) {
   border-color: var(--color-primary);
 
   color: var(--color-primary);
 }
 
-.pag-btn.active {
+.boton-paginacion.activo {
   background: var(--color-primary);
 
   border-color: var(--color-primary);
 
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
-.pag-btn:disabled {
+.boton-paginacion:disabled {
   opacity: 0.4;
 
   cursor: not-allowed;
@@ -817,10 +797,10 @@ tbody tr:hover {
 
 
 /* =========================================================
-   MODAL
+   FONDO DEL MODAL
 ========================================================= */
 
-.overlay {
+.fondo-modal {
   position: fixed;
   inset: 0;
 
@@ -838,11 +818,16 @@ tbody tr:hover {
   backdrop-filter: blur(3px);
 }
 
-.overlay.open {
+.fondo-modal.abierto {
   display: flex;
 }
 
-.modal {
+
+/* =========================================================
+   VENTANA DEL MODAL
+========================================================= */
+
+.ventana-modal {
   width: min(850px, 100%);
 
   max-height: 90vh;
@@ -861,10 +846,10 @@ tbody tr:hover {
 
 
 /* =========================================================
-   MODAL HEADER
+   ENCABEZADO DEL MODAL
 ========================================================= */
 
-.modal-hdr {
+.encabezado-modal {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -876,7 +861,7 @@ tbody tr:hover {
   border-bottom: 1px solid var(--border-color);
 }
 
-.modal-hdr h3 {
+.encabezado-modal h3 {
   margin: 0;
 
   color: var(--text-primary);
@@ -887,7 +872,7 @@ tbody tr:hover {
   font-weight: var(--font-weight-bold);
 }
 
-.close-btn {
+.boton-cerrar {
   width: 34px;
   height: 34px;
 
@@ -907,7 +892,7 @@ tbody tr:hover {
   cursor: pointer;
 }
 
-.close-btn:hover {
+.boton-cerrar:hover {
   background: var(--bg-neutral-light);
 
   color: var(--text-primary);
@@ -915,16 +900,16 @@ tbody tr:hover {
 
 
 /* =========================================================
-   MODAL BODY
+   CUERPO DEL MODAL
 ========================================================= */
 
-.modal-body {
+.cuerpo-modal {
   padding: var(--spacing-lg);
 
   overflow-y: auto;
 }
 
-.form-section {
+.seccion-formulario {
   margin: var(--spacing-xs) 0 var(--spacing-sm);
 
   padding-bottom: var(--spacing-xs);
@@ -937,40 +922,39 @@ tbody tr:hover {
   font-weight: var(--font-weight-bold);
 }
 
-.form-section:first-child {
+.seccion-formulario:first-child {
   margin-top: 0;
 }
 
-.form-grid {
+.rejilla-formulario {
   display: grid;
 
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 
   gap: var(--spacing-md);
 
   margin-bottom: var(--spacing-lg);
 }
 
-.form-field {
+.campo-formulario {
   display: flex;
   flex-direction: column;
 
   gap: var(--spacing-xs);
 }
 
-.form-field.full {
+.campo-formulario.campo-completo {
   grid-column: 1 / -1;
 }
 
-.form-label {
+.etiqueta-formulario {
   color: var(--text-primary);
 
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
 }
 
-.form-input {
+.campo-entrada {
   width: 100%;
   min-height: 40px;
 
@@ -995,29 +979,29 @@ tbody tr:hover {
     box-shadow 0.15s ease;
 }
 
-textarea.form-input {
+textarea.campo-entrada {
   min-height: 90px;
 
   resize: vertical;
 }
 
-.form-input:focus {
+.campo-entrada:focus {
   border-color: var(--color-primary);
 
   box-shadow:
     0 0 0 3px rgba(59, 91, 219, 0.1);
 }
 
-.form-input::placeholder {
+.campo-entrada::placeholder {
   color: var(--text-secondary);
 }
 
 
 /* =========================================================
-   MODAL FOOTER
+   PIE DEL MODAL
 ========================================================= */
 
-.modal-footer {
+.pie-modal {
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -1031,8 +1015,8 @@ textarea.form-input {
   background: var(--bg-primary);
 }
 
-.btn-cancel,
-.btn-save {
+.boton-cancelar,
+.boton-guardar {
   min-height: 40px;
 
   padding: 0 17px;
@@ -1051,7 +1035,7 @@ textarea.form-input {
 
 /* CANCELAR */
 
-.btn-cancel {
+.boton-cancelar {
   border: 1px solid var(--border-color);
 
   background: var(--bg-surface);
@@ -1059,22 +1043,22 @@ textarea.form-input {
   color: var(--text-primary);
 }
 
-.btn-cancel:hover {
+.boton-cancelar:hover {
   background: var(--bg-neutral-light);
 }
 
 
 /* GUARDAR */
 
-.btn-save {
+.boton-guardar {
   border: 1px solid var(--color-primary);
 
   background: var(--color-primary);
 
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
-.btn-save:hover {
+.boton-guardar:hover {
   background: var(--color-primary-hover);
 }
 
@@ -1085,9 +1069,8 @@ textarea.form-input {
 
 @media (max-width: 1100px) {
 
-  .stats {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+  .contenedor-estadisticas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
 }
@@ -1095,23 +1078,23 @@ textarea.form-input {
 
 @media (max-width: 800px) {
 
-  .page-hdr {
+  .encabezado-pagina {
     align-items: flex-start;
 
     flex-direction: column;
   }
 
-  .btn-primary {
+  .boton-principal {
     width: 100%;
   }
 
-  .filters {
+  .contenedor-filtros {
     justify-content: flex-start;
 
     flex-wrap: wrap;
   }
 
-  .filter-group {
+  .grupo-filtro {
     flex: 1;
 
     min-width: 170px;
@@ -1122,21 +1105,21 @@ textarea.form-input {
 
 @media (max-width: 768px) {
 
-  .page-hdr {
+  .encabezado-pagina {
     gap: var(--spacing-md);
   }
 
-  .tbl-footer {
+  .pie-tabla {
     align-items: flex-start;
 
     flex-direction: column;
   }
 
-  .form-grid {
+  .rejilla-formulario {
     grid-template-columns: 1fr;
   }
 
-  .form-field.full {
+  .campo-formulario.campo-completo {
     grid-column: auto;
   }
 
@@ -1145,17 +1128,17 @@ textarea.form-input {
 
 @media (max-width: 600px) {
 
-  .stats {
+  .contenedor-estadisticas {
     grid-template-columns: 1fr;
   }
 
-  .filters {
+  .contenedor-filtros {
     flex-direction: column;
 
     align-items: stretch;
   }
 
-  .filter-group {
+  .grupo-filtro {
     width: 100%;
   }
 
@@ -1164,22 +1147,23 @@ textarea.form-input {
 
 @media (max-width: 520px) {
 
-  .page-hdr h2 {
+  .encabezado-pagina h2 {
     font-size: 25px;
   }
 
-  .modal {
+  .ventana-modal {
     max-height: 95vh;
 
     border-radius: var(--radius-md);
   }
 
-  .modal-body {
+  .cuerpo-modal {
     padding: 17px;
   }
 
-  .modal-footer {
+  .pie-modal {
     padding: 13px 17px;
   }
 
 }
+

@@ -1,15 +1,12 @@
 <!-- =========================================================
      CONTENIDO DE PACIENTES
-     El Sidebar y Header pertenecen al Layout
-     ========================================================= -->
+========================================================= -->
 
-<section class="page-content">
+<section class="contenido-pacientes">
 
-  <!-- =======================================================
-       ENCABEZADO DE LA PÁGINA
-       ======================================================= -->
+  <!-- ENCABEZADO -->
 
-  <div class="page-hdr">
+  <div class="encabezado-pagina">
 
     <div>
 
@@ -23,7 +20,11 @@
 
     </div>
 
-    <button class="btn-primary" type="button" (click)="openModal('new')">
+    <button
+      class="boton-principal"
+      type="button"
+      (click)="openModal('new')"
+    >
 
       <span class="material-symbols-outlined">
         add
@@ -36,19 +37,20 @@
   </div>
 
 
-  <!-- =======================================================
-       FILTROS
-       ======================================================= -->
+  <!-- FILTROS -->
 
-  <div class="filters">
+  <div class="contenedor-filtros">
 
-    <div class="filter-group">
+    <div class="grupo-filtro">
 
-      <span class="filter-label">
+      <span class="etiqueta-filtro">
         Pabellón
       </span>
 
-      <select [(ngModel)]="pavilionFilter" (change)="filterTable()">
+      <select
+        [(ngModel)]="pavilionFilter"
+        (change)="filterTable()"
+      >
 
         <option value="">
           Todos los pabellones
@@ -71,13 +73,16 @@
     </div>
 
 
-    <div class="filter-group">
+    <div class="grupo-filtro">
 
-      <span class="filter-label">
+      <span class="etiqueta-filtro">
         Estado
       </span>
 
-      <select [(ngModel)]="statusFilter" (change)="filterTable()">
+      <select
+        [(ngModel)]="statusFilter"
+        (change)="filterTable()"
+      >
 
         <option value="">
           Todos
@@ -102,23 +107,21 @@
   </div>
 
 
-  <!-- =======================================================
-       TARJETAS DE ESTADÍSTICAS
-       ======================================================= -->
+  <!-- ESTADÍSTICAS -->
 
-  <div class="stats">
+  <div class="contenedor-estadisticas">
 
     <!-- TOTAL -->
 
-    <div class="stat-card total-card">
+    <div class="tarjeta-estadistica tarjeta-total">
 
-      <div class="stat-card-top">
+      <div class="encabezado-estadistica">
 
-        <span class="ms stat-icon">
-          groups
+        <span class="icono-estadistica">
+          person
         </span>
 
-        <span class="stat-badge total-badge">
+        <span class="etiqueta-estadistica etiqueta-total">
           Total
         </span>
 
@@ -126,11 +129,11 @@
 
       <div>
 
-        <div class="stat-val white-text">
+        <div class="valor-estadistica texto-blanco">
           {{ totalActive }}
         </div>
 
-        <div class="stat-lbl white-muted">
+        <div class="descripcion-estadistica texto-blanco-secundario">
           Residentes Activos
         </div>
 
@@ -141,15 +144,15 @@
 
     <!-- CAPACIDAD -->
 
-    <div class="stat-card capacity-card">
+    <div class="tarjeta-estadistica tarjeta-capacidad">
 
-      <div class="stat-card-top">
+      <div class="encabezado-estadistica">
 
-        <span class="ms stat-icon beige-icon">
-          bed
+        <span class="icono-estadistica icono-beige">
+          hotel
         </span>
 
-        <span class="stat-badge capacity-badge">
+        <span class="etiqueta-estadistica etiqueta-capacidad">
           Capacidad
         </span>
 
@@ -157,11 +160,11 @@
 
       <div>
 
-        <div class="stat-val">
+        <div class="valor-estadistica">
           {{ occupancy }}%
         </div>
 
-        <div class="stat-lbl">
+        <div class="descripcion-estadistica">
           Ocupación General
         </div>
 
@@ -172,15 +175,15 @@
 
     <!-- SALUD -->
 
-    <div class="stat-card health-card">
+    <div class="tarjeta-estadistica tarjeta-salud">
 
-      <div class="stat-card-top">
+      <div class="encabezado-estadistica">
 
-        <span class="ms stat-icon beige-icon">
+        <span class="icono-estadistica icono-beige">
           check_circle
         </span>
 
-        <span class="stat-badge health-badge">
+        <span class="etiqueta-estadistica etiqueta-salud">
           Salud
         </span>
 
@@ -188,11 +191,11 @@
 
       <div>
 
-        <div class="stat-val beige-text">
+        <div class="valor-estadistica texto-beige">
           {{ stablePatients }}
         </div>
 
-        <div class="stat-lbl beige-muted">
+        <div class="descripcion-estadistica texto-beige-secundario">
           Pacientes Estables
         </div>
 
@@ -203,15 +206,15 @@
 
     <!-- ALERTA -->
 
-    <div class="stat-card alert-card">
+    <div class="tarjeta-estadistica tarjeta-alerta">
 
-      <div class="stat-card-top">
+      <div class="encabezado-estadistica">
 
-        <span class="ms stat-icon error-icon">
+        <span class="icono-estadistica icono-error">
           warning
         </span>
 
-        <span class="stat-badge alert-badge">
+        <span class="etiqueta-estadistica etiqueta-alerta">
           Alerta
         </span>
 
@@ -219,11 +222,11 @@
 
       <div>
 
-        <div class="stat-val critical-text">
+        <div class="valor-estadistica texto-critico">
           {{ criticalPatients }}
         </div>
 
-        <div class="stat-lbl critical-muted">
+        <div class="descripcion-estadistica texto-critico-secundario">
           Estado Crítico
         </div>
 
@@ -234,13 +237,11 @@
   </div>
 
 
-  <!-- =======================================================
-       TABLA
-       ======================================================= -->
+  <!-- TABLA -->
 
-  <div class="tbl-wrap">
+  <div class="contenedor-tabla">
 
-    <div class="tbl-scroll">
+    <div class="desplazamiento-tabla">
 
       <table>
 
@@ -248,33 +249,13 @@
 
           <tr>
 
-            <th>
-              Paciente
-            </th>
-
-            <th>
-              Documento
-            </th>
-
-            <th>
-              Edad
-            </th>
-
-            <th>
-              Encargado
-            </th>
-
-            <th>
-              Cuidador
-            </th>
-
-            <th>
-              Estado
-            </th>
-
-            <th>
-              Acciones
-            </th>
+            <th>Paciente</th>
+            <th>Documento</th>
+            <th>Edad</th>
+            <th>Encargado</th>
+            <th>Cuidador</th>
+            <th>Estado</th>
+            <th>Acciones</th>
 
           </tr>
 
@@ -287,10 +268,8 @@
 
           <tr *ngIf="filteredPatients.length === 0">
 
-            <td colspan="7" class="empty">
-
+            <td colspan="7" class="mensaje-vacio">
               No se encontraron pacientes.
-
             </td>
 
           </tr>
@@ -304,17 +283,16 @@
 
             <td>
 
-              <div class="pat-cell">
+              <div class="informacion-paciente">
 
-                <div class="av-lg" [style.background]="
-                    getAvatarColor(patient.status)
-                  ">
-
+                <div
+                  class="avatar-paciente"
+                  [style.background]="getAvatarColor(patient.status)"
+                >
                   {{ patient.name.charAt(0) }}
-
                 </div>
 
-                <div class="pat-info">
+                <div class="datos-paciente">
 
                   <p>
                     {{ patient.name }}
@@ -333,19 +311,15 @@
 
             <!-- DOCUMENTO -->
 
-            <td class="document-cell">
-
+            <td class="documento-paciente">
               {{ patient.doc }}
-
             </td>
 
 
             <!-- EDAD -->
 
             <td>
-
               {{ patient.age }} años
-
             </td>
 
 
@@ -353,7 +327,7 @@
 
             <td>
 
-              <div class="guardian-cell">
+              <div class="informacion-encargado">
 
                 <p>
                   {{ patient.guardian }}
@@ -372,9 +346,9 @@
 
             <td>
 
-              <div class="care-cell">
+              <div class="informacion-cuidador">
 
-                <span class="care-dot"></span>
+                <span class="indicador-cuidador"></span>
 
                 {{ patient.caregiver }}
 
@@ -387,30 +361,36 @@
 
             <td>
 
-              <span *ngIf="patient.status === 'stable'" class="badge-stable">
+              <span
+                *ngIf="patient.status === 'stable'"
+                class="estado-estable"
+              >
 
-                <span class="badge-dot stable-dot">
-                </span>
+                <span class="punto-estado punto-estable"></span>
 
                 ESTABLE
 
               </span>
 
 
-              <span *ngIf="patient.status === 'critical'" class="badge-critical">
+              <span
+                *ngIf="patient.status === 'critical'"
+                class="estado-critico"
+              >
 
-                <span class="badge-dot critical-dot ping">
-                </span>
+                <span class="punto-estado punto-critico animacion-pulso"></span>
 
                 CRÍTICO
 
               </span>
 
 
-              <span *ngIf="patient.status === 'observation'" class="badge-observation">
+              <span
+                *ngIf="patient.status === 'observation'"
+                class="estado-observacion"
+              >
 
-                <span class="badge-dot observation-dot">
-                </span>
+                <span class="punto-estado punto-observacion"></span>
 
                 OBSERVACIÓN
 
@@ -419,73 +399,78 @@
             </td>
 
 
-           <!-- ACCIONES -->
+            <!-- ACCIONES -->
 
-<td>
+            <td>
 
-  <div class="action-btns">
+              <div class="contenedor-acciones">
 
-        <!-- Boton agregado para ver datos de paciente -->
-    <button
-      class="action-btn view"
-      type="button"
-      title="Ver datos del paciente"
-      (click)="viewPatient(patient.id)"
-    >
+                <!-- VER -->
 
-      <span class="material-symbols-outlined">
-        visibility
-      </span>
+                <button
+                  class="boton-accion boton-ver"
+                  type="button"
+                  title="Ver datos del paciente"
+                  (click)="viewPatient(patient.id)"
+                >
 
-    </button>
+                  <span class="material-symbols-outlined">
+                    visibility
+                  </span>
 
-    <!-- EDITAR -->
-    <button
-      class="action-btn"
-      type="button"
-      title="Editar"
-      (click)="openModal('edit', patient.id)"
-    >
-
-      <span class="material-symbols-outlined">
-        edit
-      </span>
-
-    </button>
+                </button>
 
 
-    <!-- CAMBIAR ESTADO -->
-    <button
-      class="action-btn warn"
-      type="button"
-      title="Cambiar estado"
-      (click)="toggleStatus(patient.id)"
-    >
+                <!-- EDITAR -->
 
-      <span class="material-symbols-outlined">
-        toggle_on
-      </span>
+                <button
+                  class="boton-accion"
+                  type="button"
+                  title="Editar"
+                  (click)="openModal('edit', patient.id)"
+                >
 
-    </button>
+                  <span class="material-symbols-outlined">
+                    edit
+                  </span>
+
+                </button>
 
 
-    <!-- ELIMINAR -->
-    <button
-      class="action-btn danger"
-      type="button"
-      title="Eliminar"
-      (click)="deletePatient(patient.id)"
-    >
+                <!-- CAMBIAR ESTADO -->
 
-      <span class="material-symbols-outlined">
-        delete
-      </span>
+                <button
+                  class="boton-accion boton-advertencia"
+                  type="button"
+                  title="Cambiar estado"
+                  (click)="toggleStatus(patient.id)"
+                >
 
-    </button>
+                  <span class="material-symbols-outlined">
+                    toggle_on
+                  </span>
 
-  </div>
+                </button>
 
-</td>
+
+                <!-- ELIMINAR -->
+
+                <button
+                  class="boton-accion boton-peligro"
+                  type="button"
+                  title="Eliminar"
+                  (click)="deletePatient(patient.id)"
+                >
+
+                  <span class="material-symbols-outlined">
+                    delete
+                  </span>
+
+                </button>
+
+              </div>
+
+            </td>
 
           </tr>
 
@@ -496,56 +481,63 @@
     </div>
 
 
-    <!-- =====================================================
-         FOOTER
-         ===================================================== -->
+    <!-- PIE DE TABLA -->
 
-    <div class="tbl-footer">
+    <div class="pie-tabla">
 
       <p>
 
         Mostrando
-
         {{ firstShown }}
-
         -
-
         {{ lastShown }}
-
         de
-
         {{ filteredPatients.length }}
-
         pacientes registrados
 
       </p>
 
 
-      <div class="pag">
+      <div class="paginacion">
 
-        <button class="pag-btn" type="button" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
+        <button
+          class="boton-paginacion"
+          type="button"
+          (click)="changePage(currentPage - 1)"
+          [disabled]="currentPage === 1"
+        >
 
-          <span class="ms">
+          <span class="material-symbols-outlined">
             chevron_left
           </span>
 
         </button>
 
 
-        <button *ngFor="
+        <button
+          *ngFor="
             let page of [].constructor(totalPages);
             let i = index
-          " class="pag-btn" type="button" [class.active]="currentPage === i + 1" (click)="changePage(i + 1)">
+          "
+          class="boton-paginacion"
+          type="button"
+          [class.activo]="currentPage === i + 1"
+          (click)="changePage(i + 1)"
+        >
 
           {{ i + 1 }}
 
         </button>
 
 
-        <button class="pag-btn" type="button" (click)="changePage(currentPage + 1)"
-          [disabled]="currentPage === totalPages">
+        <button
+          class="boton-paginacion"
+          type="button"
+          (click)="changePage(currentPage + 1)"
+          [disabled]="currentPage === totalPages"
+        >
 
-          <span class="ms">
+          <span class="material-symbols-outlined">
             chevron_right
           </span>
 
@@ -562,25 +554,34 @@
 
 <!-- =========================================================
      MODAL NUEVO / EDITAR
-     ========================================================= -->
+========================================================= -->
 
-<div class="overlay" [class.open]="modalOpen" (click)="closeOnBackdrop($event)">
+<div
+  class="fondo-modal"
+  [class.abierto]="modalOpen"
+  (click)="closeOnBackdrop($event)"
+>
 
-  <div class="modal" (click)="$event.stopPropagation()">
+  <div
+    class="ventana-modal"
+    (click)="$event.stopPropagation()"
+  >
 
+    <!-- ENCABEZADO -->
 
-    <!-- HEADER MODAL -->
-
-    <div class="modal-hdr">
+    <div class="encabezado-modal">
 
       <h3>
         {{ modalTitle }}
       </h3>
 
+      <button
+        class="boton-cerrar"
+        type="button"
+        (click)="closeModal()"
+      >
 
-      <button class="close-btn" type="button" (click)="closeModal()">
-
-        <span class="ms">
+        <span class="material-symbols-outlined">
           close
         </span>
 
@@ -589,82 +590,91 @@
     </div>
 
 
-    <!-- BODY -->
+    <!-- CUERPO -->
 
-    <div class="modal-body">
+    <div class="cuerpo-modal">
 
-      <div class="form-section">
+      <div class="seccion-formulario">
         Datos Personales
       </div>
 
-      <div class="form-grid">
+      <div class="rejilla-formulario">
 
-        <div class="form-field">
+        <div class="campo-formulario">
 
-          <label class="form-label">
+          <label class="etiqueta-formulario">
             Nombres y Apellidos
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             type="text"
             [(ngModel)]="form.nombre"
-            placeholder="Ej: Ricardo Mendoza">
+            placeholder="Ej: Ricardo Mendoza"
+          >
 
         </div>
 
-        <div class="form-field">
 
-          <label class="form-label">
+        <div class="campo-formulario">
+
+          <label class="etiqueta-formulario">
             Documento de Identidad
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             type="text"
             [(ngModel)]="form.documento"
-            placeholder="Ej: 10.455.672">
+            placeholder="Ej: 10.455.672"
+          >
 
         </div>
 
-        <div class="form-field">
 
-          <label class="form-label">
+        <div class="campo-formulario">
+
+          <label class="etiqueta-formulario">
             Fecha de nacimiento
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             type="date"
-            [(ngModel)]="form.nacimiento">
+            [(ngModel)]="form.nacimiento"
+          >
 
         </div>
 
-        <div class="form-field">
 
-          <label class="form-label">
+        <div class="campo-formulario">
+
+          <label class="etiqueta-formulario">
             Edad
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             type="number"
             [(ngModel)]="form.edad"
             placeholder="Ej: 82"
             min="50"
-            max="120">
+            max="120"
+          >
 
         </div>
 
-        <div class="form-field">
 
-          <label class="form-label">
+        <div class="campo-formulario">
+
+          <label class="etiqueta-formulario">
             Género
           </label>
 
           <select
-            class="form-input"
-            [(ngModel)]="form.genero">
+            class="campo-entrada"
+            [(ngModel)]="form.genero"
+          >
 
             <option value="">Seleccione</option>
             <option value="Masculino">Masculino</option>
@@ -675,15 +685,17 @@
 
         </div>
 
-        <div class="form-field">
 
-          <label class="form-label">
+        <div class="campo-formulario">
+
+          <label class="etiqueta-formulario">
             Tipo de sangre
           </label>
 
           <select
-            class="form-input"
-            [(ngModel)]="form.tipoSangre">
+            class="campo-entrada"
+            [(ngModel)]="form.tipoSangre"
+          >
 
             <option value="">Seleccione</option>
             <option value="A+">A+</option>
@@ -699,114 +711,128 @@
 
         </div>
 
-        <div class="form-field">
 
-          <label class="form-label">
+        <div class="campo-formulario">
+
+          <label class="etiqueta-formulario">
             Fecha de ingreso
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             type="date"
-            [(ngModel)]="form.fechaIngreso">
+            [(ngModel)]="form.fechaIngreso"
+          >
 
         </div>
 
       </div>
 
-      <div class="form-section">
+
+      <div class="seccion-formulario">
         Información Médica
       </div>
 
-      <div class="form-grid">
+      <div class="rejilla-formulario">
 
-        <div class="form-field">
+        <div class="campo-formulario">
 
-          <label class="form-label">
+          <label class="etiqueta-formulario">
             Diagnóstico
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             type="text"
             [(ngModel)]="form.diagnostico"
-            placeholder="Ej: Hipertensión arterial">
+            placeholder="Ej: Hipertensión arterial"
+          >
 
         </div>
 
-        <div class="form-field">
 
-          <label class="form-label">
+        <div class="campo-formulario">
+
+          <label class="etiqueta-formulario">
             EPS
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             type="text"
             [(ngModel)]="form.eps"
-            placeholder="Ej: Nueva EPS">
+            placeholder="Ej: Nueva EPS"
+          >
 
         </div>
 
-        <div class="form-field">
 
-          <label class="form-label">
+        <div class="campo-formulario">
+
+          <label class="etiqueta-formulario">
             Sede
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             type="text"
             [(ngModel)]="form.sede"
-            placeholder="Ej: Sede Principal">
+            placeholder="Ej: Sede Principal"
+          >
 
         </div>
 
-        <div class="form-field">
 
-          <label class="form-label">
+        <div class="campo-formulario">
+
+          <label class="etiqueta-formulario">
             Medicamentos
           </label>
 
           <textarea
-            class="form-input"
+            class="campo-entrada"
             [(ngModel)]="form.medicamentos"
             rows="3"
-            placeholder="Ej: Losartán 50 mg, Metformina 500 mg..."></textarea>
+            placeholder="Ej: Losartán 50 mg, Metformina 500 mg..."
+          ></textarea>
 
         </div>
 
       </div>
 
-      <div class="form-section">
+
+      <div class="seccion-formulario">
         Ubicación y asignación
       </div>
 
-      <div class="form-grid">
+      <div class="rejilla-formulario">
 
-        <div class="form-field">
+        <div class="campo-formulario">
 
-          <label class="form-label">
+          <label class="etiqueta-formulario">
             Habitación
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             type="text"
             [(ngModel)]="form.habitacion"
-            placeholder="Ej: 104">
+            placeholder="Ej: 104"
+          >
 
         </div>
 
-        <div class="form-field">
 
-          <label class="form-label">
+        <div class="campo-formulario">
+
+          <label class="etiqueta-formulario">
             Estado clínico
           </label>
 
           <select
-            class="form-input"
-            [(ngModel)]="form.estado">
+            class="campo-entrada"
+            [(ngModel)]="form.estado"
+          >
 
             <option value="stable">Estable</option>
             <option value="observation">Observación</option>
@@ -816,15 +842,17 @@
 
         </div>
 
-        <div class="form-field">
 
-          <label class="form-label">
+        <div class="campo-formulario">
+
+          <label class="etiqueta-formulario">
             Cuidador asignado
           </label>
 
           <select
-            class="form-input"
-            [(ngModel)]="form.cuidador">
+            class="campo-entrada"
+            [(ngModel)]="form.cuidador"
+          >
 
             <option value="Enf. Carlos Ruiz">
               Enf. Carlos Ruiz
@@ -850,15 +878,17 @@
 
         </div>
 
-        <div class="form-field">
 
-          <label class="form-label">
+        <div class="campo-formulario">
+
+          <label class="etiqueta-formulario">
             Pabellón
           </label>
 
           <select
-            class="form-input"
-            [(ngModel)]="form.pabellon">
+            class="campo-entrada"
+            [(ngModel)]="form.pabellon"
+          >
 
             <option value="Ala Norte">Ala Norte</option>
             <option value="Ala Sur">Ala Sur</option>
@@ -870,101 +900,113 @@
 
       </div>
 
-      <div class="form-section">
+
+      <div class="seccion-formulario">
         Encargado familiar
       </div>
 
-      <div class="form-grid">
+      <div class="rejilla-formulario">
 
-        <div class="form-field">
+        <div class="campo-formulario">
 
-          <label class="form-label">
+          <label class="etiqueta-formulario">
             Nombre encargado
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             type="text"
             [(ngModel)]="form.encargado"
-            placeholder="Ej: Elena Mendoza">
+            placeholder="Ej: Elena Mendoza"
+          >
 
         </div>
 
-        <div class="form-field">
 
-          <label class="form-label">
+        <div class="campo-formulario">
+
+          <label class="etiqueta-formulario">
             Relación
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             type="text"
             [(ngModel)]="form.relacion"
-            placeholder="Ej: Hija">
+            placeholder="Ej: Hija"
+          >
 
         </div>
 
-        <div class="form-field">
 
-          <label class="form-label">
+        <div class="campo-formulario">
+
+          <label class="etiqueta-formulario">
             Teléfono
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             type="tel"
             [(ngModel)]="form.telefono"
-            placeholder="Ej: 312 456 7890">
+            placeholder="Ej: 312 456 7890"
+          >
 
         </div>
 
-        <div class="form-field">
 
-          <label class="form-label">
+        <div class="campo-formulario">
+
+          <label class="etiqueta-formulario">
             Email
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             type="email"
             [(ngModel)]="form.email"
-            placeholder="correo@mail.com">
+            placeholder="correo@mail.com"
+          >
 
         </div>
 
-        <div class="form-field full">
 
-          <label class="form-label">
+        <div class="campo-formulario campo-completo">
+
+          <label class="etiqueta-formulario">
             Dirección
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             type="text"
             [(ngModel)]="form.direccion"
-            placeholder="Ej: Calle 10 # 5-20">
+            placeholder="Ej: Calle 10 # 5-20"
+          >
 
         </div>
 
       </div>
 
-      <div class="form-section">
+
+      <div class="seccion-formulario">
         Notas clínicas
       </div>
 
-      <div class="form-grid">
+      <div class="rejilla-formulario">
 
-        <div class="form-field full">
+        <div class="campo-formulario campo-completo">
 
-          <label class="form-label">
+          <label class="etiqueta-formulario">
             Observaciones
           </label>
 
           <textarea
-            class="form-input"
+            class="campo-entrada"
             [(ngModel)]="form.notas"
             rows="3"
-            placeholder="Condiciones, alergias, indicaciones especiales..."></textarea>
+            placeholder="Condiciones, alergias, indicaciones especiales..."
+          ></textarea>
 
         </div>
 
@@ -973,21 +1015,25 @@
     </div>
 
 
-    <!-- FOOTER -->
+    <!-- PIE -->
 
-    <div class="modal-footer">
+    <div class="pie-modal">
 
-      <button class="btn-cancel" type="button" (click)="closeModal()">
-
+      <button
+        class="boton-cancelar"
+        type="button"
+        (click)="closeModal()"
+      >
         Cancelar
-
       </button>
 
 
-      <button class="btn-save" type="button" (click)="savePatient()">
-
+      <button
+        class="boton-guardar"
+        type="button"
+        (click)="savePatient()"
+      >
         {{ saveButtonText }}
-
       </button>
 
     </div>
@@ -996,38 +1042,38 @@
 
 </div>
 
+
 <!-- =========================================================
      MODAL CONSULTAR PACIENTE
-     Agregado para visualizar información del paciente
-     ========================================================= -->
+========================================================= -->
 
 <div
-  class="overlay"
-  [class.open]="viewModalOpen"
+  class="fondo-modal"
+  [class.abierto]="viewModalOpen"
   (click)="closeViewModal()"
 >
 
   <div
-    class="modal"
+    class="ventana-modal"
     (click)="$event.stopPropagation()"
     *ngIf="selectedPatient"
   >
 
-    <!-- HEADER -->
+    <!-- ENCABEZADO -->
 
-    <div class="modal-hdr">
+    <div class="encabezado-modal">
 
       <h3>
         Datos del paciente
       </h3>
 
       <button
-        class="close-btn"
+        class="boton-cerrar"
         type="button"
         (click)="closeViewModal()"
       >
 
-        <span class="ms">
+        <span class="material-symbols-outlined">
           close
         </span>
 
@@ -1036,24 +1082,24 @@
     </div>
 
 
-    <!-- BODY -->
+    <!-- CUERPO -->
 
-    <div class="modal-body">
+    <div class="cuerpo-modal">
 
-      <div class="form-section">
+      <div class="seccion-formulario">
         Información personal
       </div>
 
-      <div class="form-grid">
+      <div class="rejilla-formulario">
 
-        <div class="form-field">
+        <div class="campo-formulario">
 
-          <label class="form-label">
+          <label class="etiqueta-formulario">
             Nombre completo
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             [value]="selectedPatient.name"
             readonly
           >
@@ -1061,14 +1107,14 @@
         </div>
 
 
-        <div class="form-field">
+        <div class="campo-formulario">
 
-          <label class="form-label">
+          <label class="etiqueta-formulario">
             Documento
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             [value]="selectedPatient.doc"
             readonly
           >
@@ -1076,14 +1122,14 @@
         </div>
 
 
-        <div class="form-field">
+        <div class="campo-formulario">
 
-          <label class="form-label">
+          <label class="etiqueta-formulario">
             Edad
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             [value]="selectedPatient.age + ' años'"
             readonly
           >
@@ -1091,14 +1137,14 @@
         </div>
 
 
-        <div class="form-field">
+        <div class="campo-formulario">
 
-          <label class="form-label">
+          <label class="etiqueta-formulario">
             Fecha de nacimiento
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             [value]="selectedPatient.birthDate"
             readonly
           >
@@ -1106,14 +1152,14 @@
         </div>
 
 
-        <div class="form-field">
+        <div class="campo-formulario">
 
-          <label class="form-label">
+          <label class="etiqueta-formulario">
             Género
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             [value]="selectedPatient.gender || 'No registrado'"
             readonly
           >
@@ -1121,14 +1167,14 @@
         </div>
 
 
-        <div class="form-field">
+        <div class="campo-formulario">
 
-          <label class="form-label">
+          <label class="etiqueta-formulario">
             Tipo de sangre
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             [value]="selectedPatient.bloodType || 'No registrado'"
             readonly
           >
@@ -1138,20 +1184,20 @@
       </div>
 
 
-      <div class="form-section">
+      <div class="seccion-formulario">
         Información médica
       </div>
 
-      <div class="form-grid">
+      <div class="rejilla-formulario">
 
-        <div class="form-field">
+        <div class="campo-formulario">
 
-          <label class="form-label">
+          <label class="etiqueta-formulario">
             Diagnóstico
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             [value]="selectedPatient.diagnosis || 'No registrado'"
             readonly
           >
@@ -1159,14 +1205,14 @@
         </div>
 
 
-        <div class="form-field">
+        <div class="campo-formulario">
 
-          <label class="form-label">
+          <label class="etiqueta-formulario">
             EPS
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             [value]="selectedPatient.eps || 'No registrado'"
             readonly
           >
@@ -1174,14 +1220,14 @@
         </div>
 
 
-        <div class="form-field">
+        <div class="campo-formulario">
 
-          <label class="form-label">
+          <label class="etiqueta-formulario">
             Medicamentos
           </label>
 
           <textarea
-            class="form-input"
+            class="campo-entrada"
             [value]="selectedPatient.medications || 'No registrado'"
             readonly
             rows="3"
@@ -1192,20 +1238,20 @@
       </div>
 
 
-      <div class="form-section">
+      <div class="seccion-formulario">
         Ubicación y asignación
       </div>
 
-      <div class="form-grid">
+      <div class="rejilla-formulario">
 
-        <div class="form-field">
+        <div class="campo-formulario">
 
-          <label class="form-label">
+          <label class="etiqueta-formulario">
             Habitación
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             [value]="selectedPatient.room"
             readonly
           >
@@ -1213,14 +1259,14 @@
         </div>
 
 
-        <div class="form-field">
+        <div class="campo-formulario">
 
-          <label class="form-label">
+          <label class="etiqueta-formulario">
             Pabellón
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             [value]="selectedPatient.pavilion"
             readonly
           >
@@ -1228,14 +1274,14 @@
         </div>
 
 
-        <div class="form-field">
+        <div class="campo-formulario">
 
-          <label class="form-label">
+          <label class="etiqueta-formulario">
             Estado
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             [value]="selectedPatient.status"
             readonly
           >
@@ -1243,14 +1289,14 @@
         </div>
 
 
-        <div class="form-field">
+        <div class="campo-formulario">
 
-          <label class="form-label">
+          <label class="etiqueta-formulario">
             Cuidador
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             [value]="selectedPatient.caregiver"
             readonly
           >
@@ -1260,20 +1306,20 @@
       </div>
 
 
-      <div class="form-section">
+      <div class="seccion-formulario">
         Encargado familiar
       </div>
 
-      <div class="form-grid">
+      <div class="rejilla-formulario">
 
-        <div class="form-field">
+        <div class="campo-formulario">
 
-          <label class="form-label">
+          <label class="etiqueta-formulario">
             Nombre
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             [value]="selectedPatient.guardian"
             readonly
           >
@@ -1281,14 +1327,14 @@
         </div>
 
 
-        <div class="form-field">
+        <div class="campo-formulario">
 
-          <label class="form-label">
+          <label class="etiqueta-formulario">
             Relación
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             [value]="selectedPatient.guardianRel"
             readonly
           >
@@ -1296,14 +1342,14 @@
         </div>
 
 
-        <div class="form-field">
+        <div class="campo-formulario">
 
-          <label class="form-label">
+          <label class="etiqueta-formulario">
             Teléfono
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             [value]="selectedPatient.phone"
             readonly
           >
@@ -1311,14 +1357,14 @@
         </div>
 
 
-        <div class="form-field">
+        <div class="campo-formulario">
 
-          <label class="form-label">
+          <label class="etiqueta-formulario">
             Email
           </label>
 
           <input
-            class="form-input"
+            class="campo-entrada"
             [value]="selectedPatient.email"
             readonly
           >
@@ -1328,16 +1374,16 @@
       </div>
 
 
-      <div class="form-section">
+      <div class="seccion-formulario">
         Observaciones
       </div>
 
-      <div class="form-grid">
+      <div class="rejilla-formulario">
 
-        <div class="form-field full">
+        <div class="campo-formulario campo-completo">
 
           <textarea
-            class="form-input"
+            class="campo-entrada"
             [value]="selectedPatient.notes || 'Sin observaciones'"
             readonly
             rows="3"
@@ -1350,12 +1396,12 @@
     </div>
 
 
-    <!-- FOOTER -->
+    <!-- PIE -->
 
-    <div class="modal-footer">
+    <div class="pie-modal">
 
       <button
-        class="btn-cancel"
+        class="boton-cancelar"
         type="button"
         (click)="closeViewModal()"
       >
