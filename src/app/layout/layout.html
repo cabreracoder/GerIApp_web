@@ -1,28 +1,33 @@
-<div class="app-container">
+<div class="layout-container">
 
   <!-- =====================================================
-       SIDEBAR
+       BARRA LATERAL
        ===================================================== -->
-  <aside class="sidebar">
+  <aside class="layout-sidebar">
 
-    <!-- LOGO -->
-    <div class="logo-container">
-      <div class="logo">
+    <!-- LOGOTIPO -->
+    <div class="layout-logo-container">
+
+      <div class="layout-logo">
+
         <span class="material-symbols-outlined">
           health_and_safety
         </span>
+
       </div>
+
     </div>
 
+
     <!-- MENÚ PRINCIPAL -->
-    <nav class="menu">
+    <nav class="layout-menu">
 
       <a
         *ngFor="let item of menu"
         [routerLink]="item.ruta"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
-        class="menu-button"
+        class="layout-menu-button"
         [attr.title]="item.nombre"
       >
 
@@ -30,7 +35,7 @@
           {{ item.icono }}
         </span>
 
-        <span class="menu-tooltip">
+        <span class="layout-menu-tooltip">
           {{ item.nombre }}
         </span>
 
@@ -38,15 +43,16 @@
 
     </nav>
 
+
     <!-- MENÚ INFERIOR -->
-    <div class="sidebar-footer">
+    <div class="layout-sidebar-footer">
 
       <!-- CONFIGURACIÓN -->
       <a
         [routerLink]="configuracion.ruta"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
-        class="menu-button"
+        class="layout-menu-button"
         [attr.title]="configuracion.nombre"
       >
 
@@ -54,17 +60,18 @@
           {{ configuracion.icono }}
         </span>
 
-        <span class="menu-tooltip">
+        <span class="layout-menu-tooltip">
           {{ configuracion.nombre }}
         </span>
 
       </a>
 
+
       <!-- CERRAR SESIÓN -->
       <button
         type="button"
-        class="menu-button logout-button"
-        title="Cerrar sesión"
+        class="layout-menu-button layout-logout-button"
+        [attr.title]="textoCerrarSesion"
         (click)="cerrarSesion()"
       >
 
@@ -72,8 +79,8 @@
           logout
         </span>
 
-        <span class="menu-tooltip">
-          Cerrar sesión
+        <span class="layout-menu-tooltip">
+          {{ textoCerrarSesion }}
         </span>
 
       </button>
@@ -86,28 +93,31 @@
   <!-- =====================================================
        CONTENIDO PRINCIPAL
        ===================================================== -->
-  <div class="main-container">
+  <div class="layout-main-container">
 
-    <!-- HEADER -->
-    <header class="header">
 
-      <!-- IZQUIERDA -->
-      <div class="header-left">
+    <!-- ENCABEZADO -->
+    <header class="layout-header">
+
+
+      <!-- PARTE IZQUIERDA -->
+      <div class="layout-header-left">
 
         <h1>
-          GerIApp
+          {{ nombreAplicacion }}
         </h1>
 
-        <!-- BUSCADOR -->
-        <div class="search-container">
 
-          <span class="material-symbols-outlined search-icon">
+        <!-- BUSCADOR -->
+        <div class="layout-search-container">
+
+          <span class="material-symbols-outlined layout-search-icon">
             search
           </span>
 
           <input
             type="text"
-            placeholder="Buscar por nombre o documento..."
+            [placeholder]="placeholderBuscador"
           >
 
         </div>
@@ -115,13 +125,14 @@
       </div>
 
 
-      <!-- DERECHA -->
-      <div class="header-right">
+      <!-- PARTE DERECHA -->
+      <div class="layout-header-right">
+
 
         <!-- NOTIFICACIONES -->
         <button
           type="button"
-          class="header-button"
+          class="layout-header-button"
           title="Notificaciones"
           routerLink="/notificaciones"
         >
@@ -130,55 +141,33 @@
             notifications
           </span>
 
-          <span class="notification-dot"></span>
-
-        </button>
-
-
-        <!-- CALENDARIO -->
-        <button
-          type="button"
-          class="header-button"
-          title="Calendario"
-        >
-
-          <span class="material-symbols-outlined">
-            calendar_today
-          </span>
+          <span class="layout-notification-dot"></span>
 
         </button>
 
 
         <!-- DIVISOR -->
-        <div class="header-divider"></div>
-
-
-        <!-- NUEVO REGISTRO -->
-        <button
-          type="button"
-          class="new-register"
-        >
-          Nuevo Registro
-        </button>
+        <div class="layout-header-divider"></div>
 
 
         <!-- USUARIO -->
-        <div class="user">
+        <div class="layout-user">
 
-          <div class="user-info">
+          <div class="layout-user-info">
 
             <strong>
-              Jose Cabrera
+              {{ nombreUsuario }}
             </strong>
 
             <span>
-              ADMINISTRADOR
+              {{ rolUsuario }}
             </span>
 
           </div>
 
-          <div class="avatar">
-            JC
+
+          <div class="layout-avatar">
+            {{ inicialesUsuario }}
           </div>
 
         </div>
@@ -191,7 +180,7 @@
     <!-- =====================================================
          CONTENIDO DE LAS PÁGINAS
          ===================================================== -->
-    <main class="content">
+    <main class="layout-content">
 
       <router-outlet></router-outlet>
 
