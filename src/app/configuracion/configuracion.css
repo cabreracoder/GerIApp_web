@@ -22,19 +22,16 @@ box-sizing: border-box;
 CONTENEDOR PRINCIPAL
 ========================================================================== */
 
-.configuracion-page {
+.pagina-configuracion {
 width: 100%;
 min-height: 100%;
 padding:
 var(--web-content-padding-top)
 var(--web-content-padding-x)
 var(--web-content-padding-bottom);
-
 margin: 0;
-
 background: var(--bg-primary);
 color: var(--text-primary);
-
 display: flex;
 flex-direction: column;
 gap: var(--spacing-lg);
@@ -44,13 +41,13 @@ gap: var(--spacing-lg);
 CABECERA
 ========================================================================== */
 
-.configuracion-page .configuracion-header {
+.encabezado-configuracion {
 width: 100%;
 max-width: none;
 margin: 0 0 4px;
 }
 
-.configuracion-page .configuracion-title {
+.titulo-configuracion {
 margin: 0;
 color: var(--text-primary);
 font-family: var(--font-heading-family);
@@ -60,7 +57,7 @@ letter-spacing: -0.6px;
 line-height: 1.1;
 }
 
-.configuracion-page .configuracion-subtitle {
+.subtitulo-configuracion {
 margin: 6px 0 0;
 color: var(--text-secondary);
 font-family: var(--font-family-base);
@@ -73,12 +70,11 @@ line-height: 1.5;
 TARJETAS
 ========================================================================== */
 
-.configuracion-page .configuracion-card {
+.tarjeta-configuracion {
 width: 100%;
 max-width: none;
 margin: 0;
 padding: var(--spacing-lg);
-
 background: var(--bg-surface);
 border: 1px solid var(--border-color);
 border-radius: var(--radius-lg);
@@ -89,19 +85,16 @@ box-shadow: var(--shadow-sm);
 TÍTULO DE SECCIÓN
 ========================================================================== */
 
-.configuracion-page .configuracion-section-title {
+.titulo-seccion-configuracion {
 display: flex;
 align-items: center;
 gap: var(--spacing-xs);
 margin-bottom: var(--spacing-lg);
 }
 
-.configuracion-page
-.configuracion-section-title
-.material-symbols-outlined {
+.titulo-seccion-configuracion .material-symbols-outlined {
 font-size: var(--icon-size-md);
 color: var(--color-primary);
-
 font-variation-settings:
 'FILL' 1,
 'wght' 500,
@@ -109,9 +102,7 @@ font-variation-settings:
 'opsz' 24;
 }
 
-.configuracion-page
-.configuracion-section-title
-h3 {
+.titulo-seccion-configuracion h3 {
 margin: 0;
 color: var(--color-primary);
 font-family: var(--font-heading-family);
@@ -124,45 +115,38 @@ line-height: 1.3;
 PERFIL
 ========================================================================== */
 
-.configuracion-page .configuracion-profile-row {
+.fila-perfil-configuracion {
 display: flex;
 align-items: center;
 gap: var(--spacing-sm);
-
 padding: var(--spacing-md);
 margin-bottom: var(--spacing-lg);
-
 background: var(--bg-primary);
 border: 1px solid var(--border-color);
 border-radius: var(--radius-md);
 }
 
-.configuracion-page .configuracion-avatar-lg {
+.avatar-administrador {
 width: 48px;
 height: 48px;
-
 flex-shrink: 0;
-
 display: flex;
 align-items: center;
 justify-content: center;
-
 background: var(--color-primary);
 color: #ffffff;
-
 border-radius: 50%;
-
 font-family: var(--font-heading-family);
 font-size: 17px;
 font-weight: var(--font-weight-bold);
 }
 
-.configuracion-page .configuracion-profile-info {
+.informacion-perfil {
 flex: 1;
 min-width: 0;
 }
 
-.configuracion-page .configuracion-profile-name {
+.nombre-perfil {
 color: var(--text-primary);
 font-family: var(--font-heading-family);
 font-size: var(--font-size-sm);
@@ -170,7 +154,7 @@ font-weight: var(--font-weight-bold);
 line-height: 1.3;
 }
 
-.configuracion-page .configuracion-profile-meta {
+.datos-perfil {
 margin-top: 2px;
 color: var(--text-secondary);
 font-family: var(--font-family-base);
@@ -182,27 +166,23 @@ line-height: 1.4;
 BOTÓN SECUNDARIO
 ========================================================================== */
 
-.configuracion-page .configuracion-btn-secondary {
+.boton-secundario-configuracion {
 padding: var(--spacing-xs) var(--spacing-sm);
-
 background: var(--bg-surface);
 border: 1px solid var(--border-color);
 border-radius: var(--radius-md);
-
 color: var(--text-primary);
 font-family: var(--font-family-base);
 font-size: var(--font-size-xs);
 font-weight: 500;
-
 cursor: pointer;
 white-space: nowrap;
-
 transition:
 background 0.15s ease,
 border-color 0.15s ease;
 }
 
-.configuracion-page .configuracion-btn-secondary:hover {
+.boton-secundario-configuracion:hover {
 background: var(--bg-primary);
 }
 
@@ -210,26 +190,21 @@ background: var(--bg-primary);
 FORMULARIOS
 ========================================================================== */
 
-.configuracion-page
-.configuracion-form-grid,
-
-.configuracion-page
-.configuracion-security-grid {
+.cuadricula-formulario-configuracion,
+.cuadricula-seguridad-configuracion {
 display: grid;
 grid-template-columns: repeat(2, minmax(0, 1fr));
 gap: var(--spacing-md);
 margin-bottom: var(--spacing-lg);
 }
 
-.configuracion-page .configuracion-form-field {
+.campo-formulario-configuracion {
 display: flex;
 flex-direction: column;
 gap: var(--spacing-xs);
 }
 
-.configuracion-page
-.configuracion-form-field
-label {
+.campo-formulario-configuracion label {
 color: var(--text-secondary);
 font-family: var(--font-family-base);
 font-size: var(--font-size-xs);
@@ -238,40 +213,28 @@ text-transform: uppercase;
 letter-spacing: 0.5px;
 }
 
-.configuracion-page
-.configuracion-form-field
-input {
+.campo-formulario-configuracion input {
 width: 100%;
 padding: 9px 13px;
-
 background: var(--bg-primary);
 border: 1px solid var(--border-color);
 border-radius: var(--radius-md);
-
 color: var(--text-primary);
-
 font-family: var(--font-family-base);
 font-size: var(--font-size-sm);
-
 outline: none;
-
 transition:
 border-color 0.15s ease,
 box-shadow 0.15s ease;
 }
 
-.configuracion-page
-.configuracion-form-field
-input:focus {
+.campo-formulario-configuracion input:focus {
 border-color: var(--color-primary);
-
 box-shadow:
 0 0 0 3px rgba(59, 91, 219, 0.12);
 }
 
-.configuracion-page
-.configuracion-form-field
-input::placeholder {
+.campo-formulario-configuracion input::placeholder {
 color: var(--text-secondary);
 }
 
@@ -279,15 +242,14 @@ color: var(--text-secondary);
 SEGURIDAD
 ========================================================================== */
 
-.configuracion-page
-.configuracion-security-grid
-.configuracion-form-field
+.cuadricula-seguridad-configuracion
+.campo-formulario-configuracion
 input[type="password"] {
 font-family: monospace;
 letter-spacing: 2px;
 }
 
-.configuracion-page .configuracion-form-field-empty {
+.campo-formulario-vacio {
 min-height: 1px;
 }
 
@@ -295,15 +257,12 @@ min-height: 1px;
 FOOTER DE TARJETA
 ========================================================================== */
 
-.configuracion-page .configuracion-card-footer {
+.pie-tarjeta-configuracion {
 display: flex;
 align-items: center;
 justify-content: space-between;
-
 gap: var(--spacing-md);
-
 padding-top: var(--spacing-md);
-
 border-top: 1px solid var(--border-color);
 }
 
@@ -311,24 +270,19 @@ border-top: 1px solid var(--border-color);
 MENSAJE DE ÉXITO
 ========================================================================== */
 
-.configuracion-page .configuracion-success-msg {
+.mensaje-exito-configuracion {
 display: flex;
 align-items: center;
 gap: var(--spacing-xs);
-
 color: var(--color-success);
-
 font-family: var(--font-family-base);
 font-size: var(--font-size-sm);
 font-weight: 500;
-
 opacity: 0;
 transition: opacity 0.3s ease;
 }
 
-.configuracion-page
-.configuracion-success-msg
-.material-symbols-outlined {
+.mensaje-exito-configuracion .material-symbols-outlined {
 font-size: var(--icon-size-sm);
 }
 
@@ -336,67 +290,55 @@ font-size: var(--icon-size-sm);
 BOTÓN PRINCIPAL
 ========================================================================== */
 
-.configuracion-page .configuracion-btn-primary {
+.boton-principal-configuracion {
 display: flex;
 align-items: center;
 justify-content: center;
 gap: var(--spacing-xs);
-
 min-width: 160px;
 padding: 10px 22px;
-
 background: var(--color-primary);
 border: none;
 border-radius: var(--radius-md);
-
 color: #ffffff;
-
 font-family: var(--font-heading-family);
 font-size: var(--font-size-sm);
 font-weight: var(--font-weight-bold);
-
 cursor: pointer;
-
 transition:
 background 0.15s ease,
 opacity 0.15s ease;
 }
 
-.configuracion-page
-.configuracion-btn-primary:hover {
+.boton-principal-configuracion:hover {
 opacity: 0.9;
 }
 
-.configuracion-page
-.configuracion-btn-primary:disabled {
+.boton-principal-configuracion:disabled {
 opacity: 0.7;
 cursor: not-allowed;
 }
 
 /* ==========================================================================
-SPINNER
+INDICADOR DE CARGA
 ========================================================================== */
 
-.configuracion-page .configuracion-spinner {
+.indicador-carga-configuracion {
 display: none;
-
 width: 16px;
 height: 16px;
-
 border: 2px solid rgba(255, 255, 255, 0.4);
 border-top-color: #ffffff;
 border-radius: 50%;
-
-animation: configuracion-spin 0.7s linear infinite;
+animation: girar-configuracion 0.7s linear infinite;
 }
 
-.configuracion-page
-.configuracion-btn-primary.loading
-.configuracion-spinner {
+.boton-principal-configuracion.loading
+.indicador-carga-configuracion {
 display: block;
 }
 
-@keyframes configuracion-spin {
+@keyframes girar-configuracion {
 to {
 transform: rotate(360deg);
 }
@@ -406,121 +348,94 @@ transform: rotate(360deg);
 PREFERENCIAS
 ========================================================================== */
 
-.configuracion-page .configuracion-toggle-list {
+.lista-interruptores-configuracion {
 display: flex;
 flex-direction: column;
 gap: 0;
 }
 
-.configuracion-page .configuracion-toggle-row {
+.fila-interruptor-configuracion {
 display: flex;
 align-items: center;
 justify-content: space-between;
-
 gap: var(--spacing-md);
-
 padding: var(--spacing-md) 0;
-
 border-bottom: 1px solid var(--border-color);
 }
 
-.configuracion-page
-.configuracion-toggle-row:last-child {
+.fila-interruptor-configuracion:last-child {
 border-bottom: none;
 }
 
-.configuracion-page .configuracion-toggle-info {
+.informacion-interruptor {
 flex: 1;
 min-width: 0;
 }
 
-.configuracion-page .configuracion-toggle-label {
+.etiqueta-interruptor {
 color: var(--text-primary);
 font-family: var(--font-heading-family);
 font-size: var(--font-size-sm);
 font-weight: var(--font-weight-bold);
 }
 
-.configuracion-page .configuracion-toggle-desc {
+.descripcion-interruptor {
 margin-top: 2px;
-
 color: var(--text-secondary);
-
 font-family: var(--font-family-base);
 font-size: var(--font-size-xs);
 line-height: 1.4;
 }
 
 /* ==========================================================================
-SWITCH
+INTERRUPTOR
 ========================================================================== */
 
-.configuracion-page .configuracion-toggle-switch {
+.interruptor-configuracion {
 position: relative;
-
 width: 44px;
 height: 24px;
-
 flex-shrink: 0;
 }
 
-.configuracion-page
-.configuracion-toggle-switch
-input {
+.interruptor-configuracion input {
 position: absolute;
-
 width: 0;
 height: 0;
-
 opacity: 0;
 }
 
-.configuracion-page
-.configuracion-toggle-track {
+.pista-interruptor {
 position: absolute;
 inset: 0;
-
 background: var(--border-color);
-
 border-radius: var(--radius-full);
-
 cursor: pointer;
-
 transition: background 0.25s ease;
 }
 
-.configuracion-page
-.configuracion-toggle-switch
+.interruptor-configuracion
 input:checked
-~ .configuracion-toggle-track {
+~ .pista-interruptor {
 background: var(--color-primary);
 }
 
-.configuracion-page
-.configuracion-toggle-knob {
+.perilla-interruptor {
 position: absolute;
-
 top: 3px;
 left: 3px;
-
 width: 18px;
 height: 18px;
-
 background: #ffffff;
-
 border-radius: 50%;
-
 box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-
 transition: transform 0.25s ease;
-
 pointer-events: none;
 }
 
-.configuracion-page
-.configuracion-toggle-switch
+.interruptor-configuracion
 input:checked
-~ .configuracion-toggle-knob {
+~ .perilla-interruptor {
 transform: translateX(20px);
 }
 
@@ -528,35 +443,26 @@ transform: translateX(20px);
 BOTÓN OUTLINE
 ========================================================================== */
 
-.configuracion-page
-.configuracion-btn-primary-outline {
+.boton-outline-configuracion {
 padding: 10px 22px;
-
 background: var(--bg-surface);
-
 border: 1.5px solid var(--color-primary);
 border-radius: var(--radius-md);
-
 color: var(--color-primary);
-
 font-family: var(--font-heading-family);
 font-size: var(--font-size-sm);
 font-weight: var(--font-weight-bold);
-
 cursor: pointer;
-
 transition: background 0.15s ease;
 }
 
-.configuracion-page
-.configuracion-btn-primary-outline:hover {
+.boton-outline-configuracion:hover {
 background: rgba(59, 91, 219, 0.07);
 }
 
-.configuracion-page .configuracion-security-footer {
+.pie-seguridad-configuracion {
 display: flex;
 justify-content: flex-end;
-
 padding-top: var(--spacing-xs);
 }
 
@@ -566,7 +472,7 @@ RESPONSIVE
 
 @media (max-width: 800px) {
 
-.configuracion-page {
+.pagina-configuracion {
 padding:
 var(--spacing-lg)
 var(--spacing-lg)
@@ -581,18 +487,16 @@ TABLET / MÓVIL
 
 @media (max-width: 700px) {
 
-.configuracion-page .configuracion-card {
+.tarjeta-configuracion {
 padding: var(--spacing-md);
 }
 
-.configuracion-page
-.configuracion-profile-row {
+.fila-perfil-configuracion {
 align-items: flex-start;
 flex-wrap: wrap;
 }
 
-.configuracion-page
-.configuracion-btn-secondary {
+.boton-secundario-configuracion {
 margin-left: 62px;
 }
 
@@ -604,91 +508,76 @@ MÓVIL PEQUEÑO
 
 @media (max-width: 500px) {
 
-.configuracion-page {
+.pagina-configuracion {
 padding: var(--spacing-md);
 }
 
-.configuracion-page .configuracion-title {
+.titulo-configuracion {
 font-size: var(--font-size-h2);
 }
 
-.configuracion-page .configuracion-subtitle {
+.subtitulo-configuracion {
 font-size: var(--font-size-xs);
 }
 
-.configuracion-page .configuracion-card {
+.tarjeta-configuracion {
 padding: var(--spacing-md);
 border-radius: var(--radius-lg);
 }
 
-.configuracion-page
-.configuracion-form-grid,
-
-.configuracion-page
-.configuracion-security-grid {
+.cuadricula-formulario-configuracion,
+.cuadricula-seguridad-configuracion {
 grid-template-columns: 1fr;
 gap: var(--spacing-sm);
 }
 
-.configuracion-page
-.configuracion-form-field-empty {
+.campo-formulario-vacio {
 display: none;
 }
 
-.configuracion-page
-.configuracion-profile-row {
+.fila-perfil-configuracion {
 flex-wrap: wrap;
 }
 
-.configuracion-page
-.configuracion-profile-info {
+.informacion-perfil {
 width: calc(100% - 62px);
 }
 
-.configuracion-page
-.configuracion-btn-secondary {
+.boton-secundario-configuracion {
 width: 100%;
 margin-left: 0;
 }
 
-.configuracion-page
-.configuracion-card-footer {
+.pie-tarjeta-configuracion {
 align-items: stretch;
 flex-direction: column;
 }
 
-.configuracion-page
-.configuracion-success-msg {
+.mensaje-exito-configuracion {
 justify-content: center;
 }
 
-.configuracion-page
-.configuracion-btn-primary {
+.boton-principal-configuracion {
 width: 100%;
 }
 
-.configuracion-page
-.configuracion-security-footer {
+.pie-seguridad-configuracion {
 justify-content: stretch;
 }
 
-.configuracion-page
-.configuracion-btn-primary-outline {
+.boton-outline-configuracion {
 width: 100%;
 }
 
-.configuracion-page
-.configuracion-toggle-row {
+.fila-interruptor-configuracion {
 padding: 14px 0;
 }
 
-.configuracion-page
-.configuracion-toggle-label {
+.etiqueta-interruptor {
 font-size: var(--font-size-sm);
 }
 
-.configuracion-page
-.configuracion-toggle-desc {
+.descripcion-interruptor {
 font-size: var(--font-size-xs);
 }
 
