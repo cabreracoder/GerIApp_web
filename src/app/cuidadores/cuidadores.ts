@@ -2,1613 +2,754 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-
-/* =====================================================
-   INTERFAZ CUIDADOR
-===================================================== */
-
 interface Cuidador {
-
-  id: number;
-
-  nombre: string;
-
-  nid: string;
-
-  telefono: string;
-
-  email: string;
-
-  nacimiento: string;
-
-  especialidad: string;
-
-  licencia: string;
-
-  experiencia: number | null;
-
-  institucion: string;
-
-  turno: string;
-
-  pacientes: number;
-
-  estado: 'active' | 'off';
-
-  dias: string[];
-
-  disponible: boolean;
-
+id: number;
+nombre: string;
+documento: string;
+telefono: string;
+correo: string;
+fechaNacimiento: string;
+especialidad: string;
+licencia: string;
+experiencia: number | null;
+institucion: string;
+turno: string;
+pacientes: number;
+estado: 'activo' | 'inactivo';
+diasDisponibles: string[];
+disponible: boolean;
 }
-
-
-/* =====================================================
-   FORMULARIO
-===================================================== */
 
 interface FormularioCuidador {
+nombre: string;
+documento: string;
+telefono: string;
+correo: string;
+fechaNacimiento: string;
+especialidad: string;
+licencia: string;
+experiencia: number | null;
+institucion: string;
+}
 
-  nombre: string;
+type TipoArchivo =
+| 'cedula'
+| 'tarjetaProfesional'
+| 'antecedentes'
+| 'hojaVida';
 
-  nid: string;
+@Component({
+selector: 'app-cuidadores',
+standalone: true,
+imports: [
+CommonModule,
+FormsModule
+],
+templateUrl: './cuidadores.html',
+styleUrl: './cuidadores.css'
+})
+export class Cuidadores {
 
-  telefono: string;
+/* =====================================================
+DATOS
+===================================================== */
 
-  email: string;
+cuidadores: Cuidador[] = [];
 
-  nacimiento: string;
+cuidadoresFiltrados: Cuidador[] = [];
 
-  especialidad: string;
+/* =====================================================
+CONFIGURACIÓN DE LA INTERFAZ
+===================================================== */
 
-  licencia: string;
+readonly diasSemana: string[] = [
+'Lunes',
+'Martes',
+'Miércoles',
+'Jueves',
+'Viernes',
+'Sábado',
+'Domingo'
+];
 
-  experiencia: number | null;
+readonly turnosDisponibles = [
+{
+nombre: 'Mañana',
+horario: '06:00 - 14:00'
+},
+{
+nombre: 'Tarde',
+horario: '14:00 - 22:00'
+},
+{
+nombre: 'Noche',
+horario: '22:00 - 06:00'
+}
+];
 
-  institucion: string;
+readonly coloresAvatar: string[] = [
+'#3B5BDB',
+'#4DABF7',
+'#7950F2',
+'#F03E3E',
+'#2F9E44',
+'#E67700',
+'#C2255C'
+];
+
+/* =====================================================
+FILTROS
+===================================================== */
+
+textoBusqueda = '';
+
+estadoSeleccionado = '';
+
+ordenNombre: 'asc' | 'desc' = 'asc';
+
+/* =====================================================
+DROPDOWN
+===================================================== */
+
+menuAbiertoId: number | null = null;
+
+/* =====================================================
+MODAL FORMULARIO
+===================================================== */
+
+formularioAbierto = false;
+
+modoFormulario: 'crear' | 'editar' = 'crear';
+
+cuidadorEditandoId: number | null = null;
+
+/* =====================================================
+MODAL DETALLE
+===================================================== */
+
+detalleAbierto = false;
+
+cuidadorSeleccionado: Cuidador | null = null;
+
+/* =====================================================
+MODAL CONFIRMACIÓN
+===================================================== */
+
+confirmacionAbierta = false;
+
+cuidadorEliminarId: number | null = null;
+
+/* =====================================================
+FORMULARIO
+===================================================== */
+
+formulario: FormularioCuidador = this.crearFormularioVacio();
+
+turnoSeleccionado = '';
+
+diasSeleccionados: string[] = [];
+
+erroresFormulario: Record<string, boolean> = {};
+
+guardando = false;
+
+/* =====================================================
+ARCHIVOS
+===================================================== */
+
+archivos: Record<TipoArchivo, File | null> = {
+cedula: null,
+tarjetaProfesional: null,
+antecedentes: null,
+hojaVida: null
+};
+
+/* =====================================================
+CONSTRUCTOR
+===================================================== */
+
+constructor() {
+this.cuidadoresFiltrados = [];
+}
+
+/* =====================================================
+FORMULARIO VACÍO
+===================================================== */
+
+crearFormularioVacio(): FormularioCuidador {
+return {
+nombre: '',
+documento: '',
+telefono: '',
+correo: '',
+fechaNacimiento: '',
+especialidad: '',
+licencia: '',
+experiencia: null,
+institucion: ''
+};
+}
+
+/* =====================================================
+ESTADÍSTICAS
+===================================================== */
+
+get totalCuidadores(): number {
+return this.cuidadores.length;
+}
+
+get cuidadoresActivos(): number {
+return this.cuidadores.filter(
+cuidador => cuidador.estado === 'activo'
+).length;
+}
+
+get cuidadoresInactivos(): number {
+return this.cuidadores.filter(
+cuidador => cuidador.estado === 'inactivo'
+).length;
+}
+
+get cuidadoresDisponibles(): number {
+return this.cuidadores.filter(
+cuidador =>
+cuidador.estado === 'activo' &&
+cuidador.disponible
+).length;
+}
+
+/* =====================================================
+FILTROS
+===================================================== */
+
+buscarCuidadores(): void {
+this.aplicarFiltros();
+}
+
+filtrarCuidadores(): void {
+this.aplicarFiltros();
+}
+
+ordenarCuidadores(): void {
+this.ordenNombre =
+this.ordenNombre === 'asc'
+? 'desc'
+: 'asc';
+
+
+this.aplicarFiltros();
+
 
 }
 
+private aplicarFiltros(): void {
+let resultado = [...this.cuidadores];
+
+
+const texto = this.textoBusqueda
+  .trim()
+  .toLowerCase();
+
+if (texto) {
+  resultado = resultado.filter(
+    cuidador =>
+      cuidador.documento
+        .toLowerCase()
+        .includes(texto)
+  );
+}
+
+if (this.estadoSeleccionado) {
+  resultado = resultado.filter(
+    cuidador =>
+      cuidador.estado === this.estadoSeleccionado
+  );
+}
+
+resultado.sort((primerCuidador, segundoCuidador) => {
+  const nombreA =
+    primerCuidador.nombre.toLowerCase();
+
+  const nombreB =
+    segundoCuidador.nombre.toLowerCase();
+
+  const comparacion =
+    nombreA.localeCompare(
+      nombreB,
+      'es',
+      {
+        sensitivity: 'base'
+      }
+    );
+
+  return this.ordenNombre === 'asc'
+    ? comparacion
+    : -comparacion;
+});
+
+this.cuidadoresFiltrados = resultado;
+
+
+}
 
 /* =====================================================
-   ARCHIVOS
+AVATAR
 ===================================================== */
 
-type TipoArchivo =
-  | 'cedula'
-  | 'tarjeta'
-  | 'antecedentes'
-  | 'hojaVida';
+obtenerIniciales(nombre: string): string {
+if (!nombre?.trim()) {
+return '??';
+}
 
 
-@Component({
-
-  selector: 'app-cuidador',
-
-  standalone: true,
-
-  imports: [
-    CommonModule,
-    FormsModule
-  ],
-
-  templateUrl: './cuidadores.html',
-
-  styleUrl: './cuidadores.css'
-
-})
-
-
-export class Cuidadores {
-
-
-  /* =====================================================
-     COLORES PARA AVATARES
-  ===================================================== */
-
-  readonly avatarPalette: string[] = [
-
-    '#3B5BDB',
-    '#4DABF7',
-    '#7950F2',
-    '#F03E3E',
-    '#2F9E44',
-    '#E67700',
-    '#C2255C'
-
-  ];
-
-
-  /* =====================================================
-     DATOS DE CUIDADORES
-  ===================================================== */
-
-  cuidadores: Cuidador[] = [
-
-    {
-
-      id: 1,
-
-      nombre: 'Carlos Ruiz',
-
-      nid: '1001234567',
-
-      telefono: '300 123 4567',
-
-      email: 'carlos.ruiz@email.com',
-
-      nacimiento: '1988-05-12',
-
-      especialidad: 'Aux. Enfermería',
-
-      licencia: 'L-48592',
-
-      experiencia: 8,
-
-      institucion: 'Institución de Salud San José',
-
-      turno: 'Mañana',
-
-      pacientes: 12,
-
-      estado: 'active',
-
-      dias: [
-        'Lunes',
-        'Martes',
-        'Miércoles',
-        'Jueves',
-        'Viernes'
-      ],
-
-      disponible: true
-
-    },
-
-
-    {
-
-      id: 2,
-
-      nombre: 'Martha Luz',
-
-      nid: '1002345678',
-
-      telefono: '301 234 5678',
-
-      email: 'martha.luz@email.com',
-
-      nacimiento: '1985-08-20',
-
-      especialidad: 'Geriatría Especializada',
-
-      licencia: 'L-31204',
-
-      experiencia: 10,
-
-      institucion: 'Centro Geriátrico Vida',
-
-      turno: 'Tarde',
-
-      pacientes: 8,
-
-      estado: 'active',
-
-      dias: [
-        'Lunes',
-        'Miércoles',
-        'Viernes'
-      ],
-
-      disponible: false
-
-    },
-
-
-    {
-
-      id: 3,
-
-      nombre: 'Laura Paz',
-
-      nid: '1003456789',
-
-      telefono: '302 345 6789',
-
-      email: 'laura.paz@email.com',
-
-      nacimiento: '1990-03-15',
-
-      especialidad: 'Fisioterapia',
-
-      licencia: 'L-60091',
-
-      experiencia: 6,
-
-      institucion: 'Clínica San Rafael',
-
-      turno: 'Mañana',
-
-      pacientes: 10,
-
-      estado: 'active',
-
-      dias: [
-        'Lunes',
-        'Martes',
-        'Jueves',
-        'Viernes'
-      ],
-
-      disponible: true
-
-    },
-
-
-    {
-
-      id: 4,
-
-      nombre: 'Ana Reyes',
-
-      nid: '1004567890',
-
-      telefono: '303 456 7890',
-
-      email: 'ana.reyes@email.com',
-
-      nacimiento: '1982-11-02',
-
-      especialidad: 'Cuidados Intensivos',
-
-      licencia: 'L-55500',
-
-      experiencia: 12,
-
-      institucion: 'Hospital Universitario',
-
-      turno: 'Noche',
-
-      pacientes: 6,
-
-      estado: 'off',
-
-      dias: [
-        'Sábado',
-        'Domingo'
-      ],
-
-      disponible: false
-
-    },
-
-
-    {
-
-      id: 5,
-
-      nombre: 'Juan Vela',
-
-      nid: '1005678901',
-
-      telefono: '304 567 8901',
-
-      email: 'juan.vela@email.com',
-
-      nacimiento: '1987-07-25',
-
-      especialidad: 'Aux. Enfermería',
-
-      licencia: 'L-72100',
-
-      experiencia: 9,
-
-      institucion: 'Clínica San José',
-
-      turno: 'Tarde',
-
-      pacientes: 11,
-
-      estado: 'active',
-
-      dias: [
-        'Lunes',
-        'Martes',
-        'Miércoles',
-        'Jueves',
-        'Viernes'
-      ],
-
-      disponible: true
-
-    }
-
-  ];
-
-
-  nextId = 6;
-
-
-  /* =====================================================
-     FILTROS Y BÚSQUEDA
-  ===================================================== */
-
-  busquedaDocumento = '';
-
-  filtroEstado = '';
-
-  ordenNombre: 'asc' | 'desc' = 'asc';
-
-
-  /* =====================================================
-     CUIDADORES FILTRADOS
-  ===================================================== */
-
-  cuidadoresFiltrados: Cuidador[] = [];
-
-
-  /* =====================================================
-     DROPDOWN
-  ===================================================== */
-
-  activeDropdown: number | null = null;
-
-
-  /* =====================================================
-     MODAL
-  ===================================================== */
-
-  modalAbierto = false;
-
-  modoModal: 'new' | 'edit' = 'new';
-
-  editId: number | null = null;
-
-
-  /* =====================================================
-     MODAL DETALLE
-  ===================================================== */
-
-  detalleAbierto = false;
-
-  cuidadorSeleccionado: Cuidador | null = null;
-
-
-  /* =====================================================
-     CONFIRMACIÓN
-  ===================================================== */
-
-  confirmAbierto = false;
-
-  pendingDeleteId: number | null = null;
-
-
-  /* =====================================================
-     FORMULARIO
-  ===================================================== */
-
-  formulario: FormularioCuidador =
-    this.formularioVacio();
-
-  turnoSeleccionado = '';
-
-  diasSeleccionados: string[] = [];
-
-  guardando = false;
-
-  errores: Record<string, boolean> = {};
-
-
-  /* =====================================================
-     ARCHIVOS
-  ===================================================== */
-
-  archivos: Record<TipoArchivo, File | null> = {
-
-    cedula: null,
-
-    tarjeta: null,
-
-    antecedentes: null,
-
-    hojaVida: null
-
+return nombre
+  .trim()
+  .split(/\s+/)
+  .map(palabra => palabra.charAt(0))
+  .join('')
+  .toUpperCase()
+  .slice(0, 2);
+
+
+}
+
+obtenerColorAvatar(id: number): string {
+if (!this.coloresAvatar.length) {
+return '#3B5BDB';
+}
+
+return this.coloresAvatar[
+  Math.abs(id - 1) % this.coloresAvatar.length
+];
+
+
+}
+
+/* =====================================================
+DETALLE
+===================================================== */
+
+verDetalle(cuidador: Cuidador): void {
+this.cuidadorSeleccionado = cuidador;
+this.detalleAbierto = true;
+}
+
+cerrarDetalle(): void {
+this.detalleAbierto = false;
+this.cuidadorSeleccionado = null;
+}
+
+cerrarDetallePorOverlay(evento: MouseEvent): void {
+if (
+evento.target ===
+evento.currentTarget
+) {
+this.cerrarDetalle();
+}
+}
+
+/* =====================================================
+DROPDOWN
+===================================================== */
+
+abrirMenuAcciones(
+evento: MouseEvent,
+id: number
+): void {
+evento.stopPropagation();
+
+
+this.menuAbiertoId =
+  this.menuAbiertoId === id
+    ? null
+    : id;
+
+
+}
+
+cerrarMenuAcciones(): void {
+this.menuAbiertoId = null;
+}
+
+/* =====================================================
+FORMULARIO
+===================================================== */
+
+abrirFormulario(
+modo: 'crear' | 'editar',
+id?: number
+): void {
+this.cerrarMenuAcciones();
+
+
+this.limpiarFormulario();
+
+this.modoFormulario = modo;
+
+if (
+  modo === 'editar' &&
+  id !== undefined
+) {
+  const cuidador =
+    this.cuidadores.find(
+      elemento => elemento.id === id
+    );
+
+  if (!cuidador) {
+    return;
+  }
+
+  this.cuidadorEditandoId = id;
+
+  this.formulario = {
+    nombre: cuidador.nombre,
+    documento: cuidador.documento,
+    telefono: cuidador.telefono,
+    correo: cuidador.correo,
+    fechaNacimiento: cuidador.fechaNacimiento,
+    especialidad: cuidador.especialidad,
+    licencia: cuidador.licencia,
+    experiencia: cuidador.experiencia,
+    institucion: cuidador.institucion
   };
 
+  this.turnoSeleccionado =
+    cuidador.turno;
 
-  /* =====================================================
-     DÍAS
-  ===================================================== */
+  this.diasSeleccionados =
+    [...cuidador.diasDisponibles];
+}
 
-  readonly dias: string[] = [
+this.formularioAbierto = true;
 
-    'Lunes',
-    'Martes',
-    'Miércoles',
-    'Jueves',
-    'Viernes',
-    'Sábado',
-    'Domingo'
 
+}
+
+cerrarFormulario(): void {
+this.formularioAbierto = false;
+this.limpiarFormulario();
+}
+
+cerrarFormularioPorOverlay(
+evento: MouseEvent
+): void {
+if (
+evento.target ===
+evento.currentTarget
+) {
+this.cerrarFormulario();
+}
+}
+
+limpiarFormulario(): void {
+this.formulario =
+this.crearFormularioVacio();
+
+
+this.turnoSeleccionado = '';
+
+this.diasSeleccionados = [];
+
+this.erroresFormulario = {};
+
+this.guardando = false;
+
+this.cuidadorEditandoId = null;
+
+this.archivos = {
+  cedula: null,
+  tarjetaProfesional: null,
+  antecedentes: null,
+  hojaVida: null
+};
+
+
+}
+
+/* =====================================================
+VALIDACIÓN
+===================================================== */
+
+validarFormulario(): boolean {
+this.erroresFormulario = {};
+
+
+let formularioValido = true;
+
+const camposObligatorios:
+  Array<keyof FormularioCuidador> = [
+    'nombre',
+    'documento',
+    'telefono',
+    'correo',
+    'especialidad',
+    'licencia'
   ];
 
-
-  /* =====================================================
-     TURNOS
-  ===================================================== */
-
-  readonly turnos = [
-
-    {
-      nombre: 'Mañana',
-      horario: '06:00 – 14:00'
-    },
-
-    {
-      nombre: 'Tarde',
-      horario: '14:00 – 22:00'
-    },
-
-    {
-      nombre: 'Noche',
-      horario: '22:00 – 06:00'
-    }
-
-  ];
-
-
-  /* =====================================================
-     CONSTRUCTOR
-  ===================================================== */
-
-  constructor() {
-
-    this.cuidadoresFiltrados =
-      [...this.cuidadores];
-
-    this.aplicarFiltros();
-
-  }
-
-
-  /* =====================================================
-     FORMULARIO VACÍO
-  ===================================================== */
-
-  formularioVacio(): FormularioCuidador {
-
-    return {
-
-      nombre: '',
-
-      nid: '',
-
-      telefono: '',
-
-      email: '',
-
-      nacimiento: '',
-
-      especialidad: '',
-
-      licencia: '',
-
-      experiencia: null,
-
-      institucion: ''
-
-    };
-
-  }
-
-
-  /* =====================================================
-     ESTADÍSTICAS
-  ===================================================== */
-
-  get totalCuidadores(): number {
-
-    return this.cuidadores.length;
-
-  }
-
-
-  get cuidadoresActivos(): number {
-
-    return this.cuidadores.filter(
-
-      cuidador =>
-        cuidador.estado === 'active'
-
-    ).length;
-
-  }
-
-
-  get cuidadoresFueraTurno(): number {
-
-    return this.cuidadores.filter(
-
-      cuidador =>
-        cuidador.estado === 'off'
-
-    ).length;
-
-  }
-
-
-  get cuidadoresDisponibles(): number {
-
-    return this.cuidadores.filter(
-
-      cuidador =>
-        cuidador.estado === 'active' &&
-        cuidador.disponible
-
-    ).length;
-
-  }
-
-
-  /* =====================================================
-     BÚSQUEDA POR DOCUMENTO
-  ===================================================== */
-
-  buscarCuidadores(): void {
-
-    this.aplicarFiltros();
-
-  }
-
-
-  /* =====================================================
-     FILTRAR POR ESTADO
-  ===================================================== */
-
-  filtrarCuidadores(): void {
-
-    this.aplicarFiltros();
-
-  }
-
-
-  /* =====================================================
-     ORDENAR
-  ===================================================== */
-
-  ordenarCuidadores(): void {
-
-    this.aplicarFiltros();
-
-  }
-
-
-  /* =====================================================
-     APLICAR FILTROS
-  ===================================================== */
-
-  private aplicarFiltros(): void {
-
-    let resultado =
-      [...this.cuidadores];
-
-
-    /* =========================
-       DOCUMENTO
-    ========================= */
-
-    const documento =
-      this.busquedaDocumento
-        .trim()
-        .toLowerCase();
-
-
-    if (documento) {
-
-      resultado =
-        resultado.filter(
-
-          cuidador =>
-
-            cuidador.nid
-              .toLowerCase()
-              .includes(documento)
-
-        );
-
-    }
-
-
-    /* =========================
-       ESTADO
-    ========================= */
-
-    if (this.filtroEstado) {
-
-      resultado =
-        resultado.filter(
-
-          cuidador => {
-
-            if (
-              this.filtroEstado === 'active'
-            ) {
-
-              return cuidador.estado === 'active';
-
-            }
-
-            if (
-              this.filtroEstado === 'inactive'
-            ) {
-
-              return cuidador.estado === 'off';
-
-            }
-
-            return true;
-
-          }
-
-        );
-
-    }
-
-
-    /* =========================
-       ORDEN ALFABÉTICO
-    ========================= */
-
-    resultado.sort(
-
-      (a, b) => {
-
-        const nombreA =
-          a.nombre.toLowerCase();
-
-        const nombreB =
-          b.nombre.toLowerCase();
-
-
-        const comparacion =
-          nombreA.localeCompare(
-            nombreB,
-            'es',
-            {
-              sensitivity: 'base'
-            }
-          );
-
-
-        return this.ordenNombre === 'asc'
-
-          ? comparacion
-
-          : -comparacion;
-
-      }
-
-    );
-
-
-    this.cuidadoresFiltrados =
-      resultado;
-
-  }
-
-
-  /* =====================================================
-     AVATARES
-  ===================================================== */
-
-  iniciales(nombre: string): string {
-
-    if (!nombre?.trim()) {
-
-      return '??';
-
-    }
-
-
-    return nombre
-
-      .trim()
-
-      .split(/\s+/)
-
-      .map(
-        palabra =>
-          palabra.charAt(0)
-      )
-
-      .join('')
-
-      .toUpperCase()
-
-      .slice(0, 2);
-
-  }
-
-
-  avatarColor(id: number): string {
-
-    const index =
-
-      Math.abs(id - 1) %
-      this.avatarPalette.length;
-
-
-    return this.avatarPalette[index];
-
-  }
-
-
-  /* =====================================================
-     VER DETALLE
-  ===================================================== */
-
-  verDetalle(
-    cuidador: Cuidador
-  ): void {
-
-    this.cuidadorSeleccionado =
-      cuidador;
-
-    this.detalleAbierto = true;
-
-  }
-
-
-  /* =====================================================
-     CERRAR DETALLE
-  ===================================================== */
-
-  cerrarDetalle(): void {
-
-    this.detalleAbierto = false;
-
-    this.cuidadorSeleccionado = null;
-
-  }
-
-
-  /* =====================================================
-     CERRAR DETALLE POR OVERLAY
-  ===================================================== */
-
-  cerrarDetallePorOverlay(
-    event: MouseEvent
-  ): void {
+camposObligatorios.forEach(
+  campo => {
+    const valor =
+      this.formulario[campo];
 
     if (
-      event.target ===
-      event.currentTarget
+      typeof valor !== 'string' ||
+      !valor.trim()
     ) {
+      this.erroresFormulario[campo] =
+        true;
 
-      this.cerrarDetalle();
-
+      formularioValido = false;
     }
-
   }
+);
 
+return formularioValido;
 
-  /* =====================================================
-     DROPDOWN
-  ===================================================== */
 
-  toggleDropdown(
-    event: MouseEvent,
-    id: number
-  ): void {
+}
 
-    event.stopPropagation();
+tieneError(campo: string): boolean {
+return this.erroresFormulario[campo] === true;
+}
 
+/* =====================================================
+GUARDAR
+===================================================== */
 
-    this.activeDropdown =
+guardarCuidador(): void {
+if (this.guardando) {
+return;
+}
 
-      this.activeDropdown === id
 
-        ? null
+if (!this.validarFormulario()) {
+  return;
+}
 
-        : id;
+/*
+  ESTE MÉTODO QUEDA PREPARADO
+  PARA CONECTAR EL SERVICE.
 
-  }
+  Cuando creemos CuidadoresService,
+  aquí se realizará el POST o PUT
+  correspondiente a la API.
+*/
 
+console.log(
+  'Datos preparados para enviar a la API:',
+  this.formulario
+);
 
-  closeDropdown(): void {
+console.log(
+  'Turno:',
+  this.turnoSeleccionado
+);
 
-    this.activeDropdown = null;
+console.log(
+  'Días:',
+  this.diasSeleccionados
+);
 
-  }
+console.log(
+  'Archivos:',
+  this.archivos
+);
 
+}
 
-  /* =====================================================
-     ABRIR MODAL
-  ===================================================== */
+/* =====================================================
+TURNOS
+===================================================== */
 
-  openModal(
+seleccionarTurno(turno: string): void {
+this.turnoSeleccionado = turno;
+}
 
-    mode: 'new' | 'edit',
+/* =====================================================
+DÍAS
+===================================================== */
 
-    id?: number
+cambiarDia(dia: string): void {
+if (
+this.diasSeleccionados.includes(dia)
+) {
+this.diasSeleccionados =
+this.diasSeleccionados.filter(
+elemento => elemento !== dia
+);
 
-  ): void {
 
-    this.closeDropdown();
+  return;
+}
 
-    this.clearForm();
+this.diasSeleccionados.push(dia);
 
-    this.modoModal = mode;
+}
 
+estaSeleccionadoElDia(
+dia: string
+): boolean {
+return this.diasSeleccionados.includes(dia);
+}
 
-    if (
-      mode === 'edit' &&
-      id !== undefined
-    ) {
+/* =====================================================
+ARCHIVOS
+===================================================== */
 
+seleccionarArchivo(
+evento: Event,
+tipo: TipoArchivo
+): void {
+const input =
+evento.target as HTMLInputElement;
 
-      const cuidador =
 
-        this.cuidadores.find(
+if (
+  input.files &&
+  input.files.length > 0
+) {
+  this.archivos[tipo] =
+    input.files[0];
+}
 
-          item =>
-            item.id === id
 
-        );
+}
 
+archivoSeleccionado(
+tipo: TipoArchivo
+): boolean {
+return this.archivos[tipo] !== null;
+}
 
-      if (!cuidador) {
+obtenerNombreArchivo(
+tipo: TipoArchivo
+): string {
+return this.archivos[tipo]?.name ?? '';
+}
 
-        return;
+/* =====================================================
+ESTADO
+===================================================== */
 
-      }
+cambiarEstado(id: number): void {
+const cuidador =
+this.cuidadores.find(
+elemento => elemento.id === id
+);
 
 
-      this.editId = id;
+if (!cuidador) {
+  return;
+}
 
+cuidador.estado =
+  cuidador.estado === 'activo'
+    ? 'inactivo'
+    : 'activo';
 
-      this.formulario = {
+if (
+  cuidador.estado === 'inactivo'
+) {
+  cuidador.disponible = false;
+}
 
-        ...this.formulario,
+this.aplicarFiltros();
 
-        nombre:
-          cuidador.nombre,
+this.cerrarMenuAcciones();
 
-        nid:
-          cuidador.nid,
 
-        telefono:
-          cuidador.telefono,
+}
 
-        email:
-          cuidador.email,
+/* =====================================================
+DISPONIBILIDAD
+===================================================== */
 
-        nacimiento:
-          cuidador.nacimiento,
+cambiarDisponibilidad(id: number): void {
+const cuidador =
+this.cuidadores.find(
+elemento => elemento.id === id
+);
 
-        especialidad:
-          cuidador.especialidad,
 
-        licencia:
-          cuidador.licencia,
+if (!cuidador) {
+  return;
+}
 
-        experiencia:
-          cuidador.experiencia,
+if (
+  cuidador.estado === 'inactivo'
+) {
+  cuidador.disponible = false;
+  return;
+}
 
-        institucion:
-          cuidador.institucion
+cuidador.disponible =
+  !cuidador.disponible;
 
-      };
+this.aplicarFiltros();
 
 
-      this.turnoSeleccionado =
-        cuidador.turno;
+}
 
+/* =====================================================
+ELIMINAR
+===================================================== */
 
-      this.diasSeleccionados =
+solicitarEliminacion(id: number): void {
+this.cerrarMenuAcciones();
 
-        [...cuidador.dias];
 
+this.cuidadorEliminarId = id;
 
-    }
+this.confirmacionAbierta = true;
 
-    else {
 
-      this.editId = null;
+}
 
-    }
+cerrarConfirmacion(): void {
+this.confirmacionAbierta = false;
+this.cuidadorEliminarId = null;
+}
 
+confirmarEliminacion(): void {
+if (
+this.cuidadorEliminarId === null
+) {
+return;
+}
 
-    this.modalAbierto = true;
 
-  }
+/*
+  ESTE MÉTODO QUEDA PREPARADO
+  PARA EL DELETE DE LA API.
 
+  Cuando conectemos el service:
+  this.cuidadoresService.eliminar(...)
+*/
 
-  /* =====================================================
-     CERRAR MODAL
-  ===================================================== */
+this.cerrarConfirmacion();
 
-  closeModal(): void {
+}
 
-    this.modalAbierto = false;
+obtenerNombreCuidadorEliminar(): string {
+if (
+this.cuidadorEliminarId === null
+) {
+return '';
+}
 
-    this.clearForm();
 
-  }
+const cuidador =
+  this.cuidadores.find(
+    elemento =>
+      elemento.id ===
+      this.cuidadorEliminarId
+  );
 
+return cuidador?.nombre ?? '';
 
-  cerrarModalPorOverlay(
-    event: MouseEvent
-  ): void {
+}
 
-    if (
-      event.target ===
-      event.currentTarget
-    ) {
-
-      this.closeModal();
-
-    }
-
-  }
-
-
-  /* =====================================================
-     LIMPIAR FORMULARIO
-  ===================================================== */
-
-  clearForm(): void {
-
-    this.formulario =
-      this.formularioVacio();
-
-
-    this.turnoSeleccionado =
-      '';
-
-
-    this.diasSeleccionados =
-      [];
-
-
-    this.errores = {};
-
-
-    this.guardando =
-      false;
-
-
-    this.archivos = {
-
-      cedula: null,
-
-      tarjeta: null,
-
-      antecedentes: null,
-
-      hojaVida: null
-
-    };
-
-  }
-
-
-  /* =====================================================
-     VALIDACIÓN
-  ===================================================== */
-
-  validateForm(): boolean {
-
-    this.errores = {};
-
-
-    let valido = true;
-
-
-    const camposRequeridos:
-
-      Array<
-        keyof FormularioCuidador
-      > = [
-
-        'nombre',
-
-        'nid',
-
-        'telefono',
-
-        'email',
-
-        'especialidad',
-
-        'licencia'
-
-      ];
-
-
-    camposRequeridos.forEach(
-
-      campo => {
-
-        const valor =
-          this.formulario[campo];
-
-
-        if (
-
-          typeof valor !== 'string' ||
-
-          !valor.trim()
-
-        ) {
-
-          this.errores[campo] =
-            true;
-
-          valido = false;
-
-        }
-
-      }
-
-    );
-
-
-    return valido;
-
-  }
-
-
-  tieneError(
-    campo: string
-  ): boolean {
-
-    return this.errores[campo] === true;
-
-  }
-
-
-  /* =====================================================
-     GUARDAR CUIDADOR
-  ===================================================== */
-
-  saveCaregiver(): void {
-
-    if (this.guardando) {
-
-      return;
-
-    }
-
-
-    if (!this.validateForm()) {
-
-      return;
-
-    }
-
-
-    this.guardando = true;
-
-
-    setTimeout(() => {
-
-
-      const nombre =
-        this.formulario.nombre.trim();
-
-
-      const licencia =
-        this.formulario.licencia.trim();
-
-
-      const especialidad =
-
-        this.formulario.especialidad
-          .trim() ||
-
-        'Sin especialidad';
-
-
-      const turno =
-
-        this.turnoSeleccionado ||
-
-        'Mañana';
-
-
-      const dias = [
-
-        ...this.diasSeleccionados
-
-      ];
-
-
-      /* =========================
-         EDITAR
-      ========================= */
-
-      if (
-        this.editId !== null
-      ) {
-
-
-        const index =
-
-          this.cuidadores.findIndex(
-
-            cuidador =>
-
-              cuidador.id ===
-              this.editId
-
-          );
-
-
-        if (index !== -1) {
-
-
-          this.cuidadores[index] = {
-
-            ...this.cuidadores[index],
-
-            nombre,
-
-            nid:
-              this.formulario.nid.trim(),
-
-            telefono:
-              this.formulario.telefono.trim(),
-
-            email:
-              this.formulario.email.trim(),
-
-            nacimiento:
-              this.formulario.nacimiento,
-
-            especialidad,
-
-            licencia,
-
-            experiencia:
-              this.formulario.experiencia,
-
-            institucion:
-              this.formulario.institucion.trim(),
-
-            turno,
-
-            dias
-
-          };
-
-        }
-
-      }
-
-
-      /* =========================
-         NUEVO
-      ========================= */
-
-      else {
-
-
-        const nuevoCuidador:
-          Cuidador = {
-
-
-          id:
-            this.nextId++,
-
-
-          nombre,
-
-
-          nid:
-            this.formulario.nid.trim(),
-
-
-          telefono:
-            this.formulario.telefono.trim(),
-
-
-          email:
-            this.formulario.email.trim(),
-
-
-          nacimiento:
-            this.formulario.nacimiento,
-
-
-          especialidad,
-
-
-          licencia,
-
-
-          experiencia:
-            this.formulario.experiencia,
-
-
-          institucion:
-            this.formulario.institucion.trim(),
-
-
-          turno,
-
-
-          pacientes: 0,
-
-
-          estado: 'active',
-
-
-          dias,
-
-
-          disponible: true
-
-        };
-
-
-        this.cuidadores.push(
-
-          nuevoCuidador
-
-        );
-
-      }
-
-
-      this.aplicarFiltros();
-
-
-      this.guardando = false;
-
-
-      this.closeModal();
-
-
-    }, 700);
-
-  }
-
-
-  /* =====================================================
-     TURNOS
-  ===================================================== */
-
-  selectTurno(
-    turno: string
-  ): void {
-
-    this.turnoSeleccionado =
-      turno;
-
-  }
-
-
-  /* =====================================================
-     DÍAS
-  ===================================================== */
-
-  toggleDay(
-    dia: string
-  ): void {
-
-
-    if (
-      this.diasSeleccionados
-        .includes(dia)
-    ) {
-
-
-      this.diasSeleccionados =
-
-        this.diasSeleccionados
-          .filter(
-            item =>
-              item !== dia
-          );
-
-
-    }
-
-    else {
-
-
-      this.diasSeleccionados.push(
-        dia
-      );
-
-    }
-
-  }
-
-
-  isDaySelected(
-    dia: string
-  ): boolean {
-
-    return this.diasSeleccionados
-      .includes(dia);
-
-  }
-
-
-  /* =====================================================
-     ARCHIVOS
-  ===================================================== */
-
-  handleUpload(
-
-    event: Event,
-
-    tipo: TipoArchivo
-
-  ): void {
-
-
-    const input =
-
-      event.target as
-      HTMLInputElement;
-
-
-    if (
-
-      input.files &&
-
-      input.files.length > 0
-
-    ) {
-
-
-      this.archivos[tipo] =
-        input.files[0];
-
-    }
-
-  }
-
-
-  archivoSeleccionado(
-    tipo: TipoArchivo
-  ): boolean {
-
-    return this.archivos[tipo] !== null;
-
-  }
-
-
-  nombreArchivo(
-    tipo: TipoArchivo
-  ): string {
-
-    return (
-
-      this.archivos[tipo]?.name
-      ?? ''
-
-    );
-
-  }
-
-
-  /* =====================================================
-     CAMBIAR ESTADO
-  ===================================================== */
-
-  toggleStatus(
-    id: number
-  ): void {
-
-
-    const cuidador =
-
-      this.cuidadores.find(
-
-        item =>
-          item.id === id
-
-      );
-
-
-    if (!cuidador) {
-
-      return;
-
-    }
-
-
-    cuidador.estado =
-
-      cuidador.estado === 'active'
-
-        ? 'off'
-
-        : 'active';
-
-
-    /*
-      Si pasa a inactivo,
-      automáticamente deja de estar
-      disponible para asignaciones.
-    */
-
-    if (
-      cuidador.estado === 'off'
-    ) {
-
-      cuidador.disponible = false;
-
-    }
-
-
-    this.aplicarFiltros();
-
-
-    this.closeDropdown();
-
-  }
-
-
-  /* =====================================================
-     CAMBIAR DISPONIBILIDAD
-  ===================================================== */
-
-  toggleDisponibilidad(
-    id: number
-  ): void {
-
-
-    const cuidador =
-
-      this.cuidadores.find(
-
-        item =>
-          item.id === id
-
-      );
-
-
-    if (!cuidador) {
-
-      return;
-
-    }
-
-
-    /*
-      Un cuidador inactivo no puede
-      quedar disponible.
-    */
-
-    if (
-      cuidador.estado === 'off'
-    ) {
-
-      cuidador.disponible = false;
-
-      return;
-
-    }
-
-
-    cuidador.disponible =
-      !cuidador.disponible;
-
-
-    this.aplicarFiltros();
-
-  }
-
-
-  /* =====================================================
-     ELIMINAR
-  ===================================================== */
-
-  confirmDelete(
-    id: number
-  ): void {
-
-
-    this.closeDropdown();
-
-
-    this.pendingDeleteId =
-      id;
-
-
-    this.confirmAbierto =
-      true;
-
-  }
-
-
-  closeConfirm(): void {
-
-    this.confirmAbierto =
-      false;
-
-
-    this.pendingDeleteId =
-      null;
-
-  }
-
-
-  deleteCaregiver(): void {
-
-
-    if (
-      this.pendingDeleteId ===
-      null
-    ) {
-
-      return;
-
-    }
-
-
-    this.cuidadores =
-
-      this.cuidadores.filter(
-
-        cuidador =>
-
-          cuidador.id !==
-          this.pendingDeleteId
-
-      );
-
-
-    this.aplicarFiltros();
-
-
-    this.closeConfirm();
-
-  }
-
-
-  nombrePendienteEliminar(): string {
-
-
-    if (
-      this.pendingDeleteId ===
-      null
-    ) {
-
-      return '';
-
-    }
-
-
-    const cuidador =
-
-      this.cuidadores.find(
-
-        item =>
-
-          item.id ===
-          this.pendingDeleteId
-
-      );
-
-
-    return cuidador?.nombre ?? '';
-
-  }
-
-
-  /* =====================================================
-     CANCELAR
-  ===================================================== */
-
-  cancelar(): void {
-
-    this.closeModal();
-
-  }
-
+cancelarFormulario(): void {
+this.cerrarFormulario();
+}
 }

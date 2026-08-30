@@ -1,47 +1,81 @@
-<main class="canvas">
-  <!-- ENCABEZADO -->
 
-  <section class="page-header">
-    <div>
-      <h1 class="page-title">Gestión Encargado</h1>
+<main class="contenedor-encargados">
 
-      <p class="page-sub">
+  <!-- =====================================================
+       ENCABEZADO
+  ====================================================== -->
+
+  <section class="encabezado-pagina">
+
+    <div class="informacion-encabezado">
+
+      <h1 class="titulo-pagina">
+        Gestión Encargados
+      </h1>
+
+      <p class="subtitulo-pagina">
         Responsables de la dirección y administración de la Fundación Geriátrica
       </p>
+
     </div>
 
-    <div class="page-header-actions">
+    <div class="acciones-encabezado">
+
       <!-- REGISTRO DE CAMBIOS -->
 
       <button
-        class="btn-secondary"
+        class="boton-secundario"
         type="button"
         (click)="abrirRegistroCambios()"
         title="Ver registro de cambios"
       >
-        <span class="material-symbols-outlined"> history </span>
+
+        <span class="material-symbols-outlined">
+          history
+        </span>
 
         Registro de cambios
 
-        <span class="header-count" *ngIf="registrosCambios.length > 0">
+        <span
+          class="contador-encabezado"
+          *ngIf="registrosCambios.length > 0"
+        >
           {{ registrosCambios.length }}
         </span>
+
       </button>
+
 
       <!-- NUEVO ENCARGADO -->
 
-      <button class="btn-primary" type="button" (click)="openModal('new')">
-        <span class="material-symbols-outlined"> add </span>
+      <button
+        class="boton-principal"
+        type="button"
+        (click)="openModal('new')"
+      >
+
+        <span class="material-symbols-outlined">
+          add
+        </span>
 
         Nuevo Encargado
+
       </button>
+
     </div>
+
   </section>
 
-  <!-- BUSCADOR -->
 
-  <section class="search-card">
-    <span class="material-symbols-outlined search-icon"> search </span>
+  <!-- =====================================================
+       BUSCADOR
+  ====================================================== -->
+
+  <section class="tarjeta-buscador">
+
+    <span class="material-symbols-outlined icono-busqueda">
+      search
+    </span>
 
     <input
       type="search"
@@ -53,854 +87,1578 @@
       (keyup.enter)="filtrarEncargados()"
     />
 
-    <span class="search-count" *ngIf="busqueda">
+    <span
+      class="contador-resultados"
+      *ngIf="busqueda"
+    >
       {{ encargadosFiltrados.length }}
-
       resultado{{ encargadosFiltrados.length === 1 ? '' : 's' }}
     </span>
+
   </section>
 
-  <!-- ENCARGADO PRINCIPAL -->
 
-  <section class="hero-card" role="region" aria-label="Encargado Principal">
-   
+  <!-- =====================================================
+       ENCARGADO PRINCIPAL
+  ====================================================== -->
+
+  <section
+    class="tarjeta-encargado-principal"
+    role="region"
+    aria-label="Encargado Principal"
+    *ngIf="encargadoPrincipal"
+  >
 
     <button
-      class="hero-edit-btn"
+      class="boton-editar-principal"
       type="button"
       (click)="openModal('editPrincipal')"
       title="Editar encargado principal"
     >
-      <span class="material-symbols-outlined"> edit </span>
+
+      <span class="material-symbols-outlined">
+        edit
+      </span>
 
       Editar
+
     </button>
 
-    <div class="hero-content">
-      <div class="hero-avatar">
-        <ng-container *ngIf="encargadoPrincipal.foto; else inicialesPrincipal">
-          <img [src]="encargadoPrincipal.foto" [alt]="'Foto de ' + encargadoPrincipal.nombre" />
+
+    <div class="contenido-encargado-principal">
+
+      <!-- AVATAR -->
+
+      <div class="avatar-encargado-principal">
+
+        <ng-container
+          *ngIf="encargadoPrincipal.foto; else inicialesEncargadoPrincipal"
+        >
+
+          <img
+            [src]="encargadoPrincipal.foto"
+            [alt]="'Foto de ' + encargadoPrincipal.nombre"
+          />
+
         </ng-container>
 
-        <ng-template #inicialesPrincipal>
+        <ng-template #inicialesEncargadoPrincipal>
+
           {{ encargadoPrincipal.iniciales }}
+
         </ng-template>
+
       </div>
 
-      <div class="hero-info">
-        <div class="hero-badge">
-          <span class="material-symbols-outlined"> workspace_premium </span>
+
+      <!-- INFORMACIÓN -->
+
+      <div class="informacion-encargado-principal">
+
+        <div class="insignia-encargado-principal">
+
+          <span class="material-symbols-outlined">
+            workspace_premium
+          </span>
 
           ENCARGADO PRINCIPAL
+
         </div>
 
-        <div class="hero-name">
+
+        <div class="nombre-encargado-principal">
+
           {{ encargadoPrincipal.nombre }}
+
         </div>
 
-        <div class="hero-role">
+
+        <div class="cargo-encargado-principal">
+
           {{ encargadoPrincipal.cargo }}
 
-          ·
+          <span>·</span>
 
           {{ encargadoPrincipal.area }}
+
         </div>
 
-        <div class="hero-desc">
+
+        <div class="descripcion-encargado-principal">
+
           {{ encargadoPrincipal.descripcion }}
+
         </div>
 
-        <div class="hero-contacts">
-          <div class="hero-contact">
-            <span class="material-symbols-outlined"> phone </span>
+
+        <!-- CONTACTO -->
+
+        <div class="contactos-encargado-principal">
+
+          <div class="contacto-encargado">
+
+            <span class="material-symbols-outlined">
+              phone
+            </span>
 
             <span>
               {{ encargadoPrincipal.telefono }}
             </span>
+
           </div>
 
-          <div class="hero-contact">
-            <span class="material-symbols-outlined"> mail </span>
+
+          <div class="contacto-encargado">
+
+            <span class="material-symbols-outlined">
+              mail
+            </span>
 
             <span>
               {{ encargadoPrincipal.email }}
             </span>
+
           </div>
 
-          <div class="hero-contact">
-            <span class="material-symbols-outlined"> calendar_month </span>
+
+          <div class="contacto-encargado">
+
+            <span class="material-symbols-outlined">
+              calendar_month
+            </span>
 
             <span>
               {{ encargadoPrincipal.ingresoTexto }}
             </span>
+
           </div>
+
         </div>
+
       </div>
+
     </div>
+
   </section>
 
-  <!-- OTROS ENCARGADOS -->
 
-  <section class="section-hdr">
-    <div class="section-title">
-      <span class="material-symbols-outlined"> group </span>
+  <!-- =====================================================
+       OTROS ENCARGADOS
+  ====================================================== -->
 
-      <span> Otros Encargados </span>
+  <section class="encabezado-seccion">
+
+    <div class="titulo-seccion">
+
+      <span class="material-symbols-outlined">
+        group
+      </span>
+
+      <span>
+        Otros Encargados
+      </span>
+
     </div>
 
-    <span class="count-pill">
+    <span class="contador-seccion">
+
       {{ encargadosFiltrados.length }}
+
     </span>
+
   </section>
 
-  <!-- ESTADO VACÍO -->
 
-  <section class="empty-state" *ngIf="encargadosFiltrados.length === 0">
-    <span class="material-symbols-outlined"> group_off </span>
+  <!-- =====================================================
+       ESTADO VACÍO
+  ====================================================== -->
 
-    <div class="empty-title">
-      {{ busqueda ? 'No se encontró ningún encargado' : 'No hay otros encargados' }}
+  <section
+    class="estado-vacio"
+    *ngIf="encargadosFiltrados.length === 0"
+  >
+
+    <span class="material-symbols-outlined">
+      group_off
+    </span>
+
+    <div class="titulo-estado-vacio">
+
+      {{
+        busqueda
+          ? 'No se encontró ningún encargado'
+          : 'No hay otros encargados'
+      }}
+
     </div>
 
-    <div class="empty-sub">
+    <div class="subtitulo-estado-vacio">
+
       {{
         busqueda
           ? 'Verifica el número de documento, nombre o criterio de búsqueda.'
-          : 'Los encargados adicionales aparecerán aquí.'
+          : 'Los encargados adicionales aparecerán aquí cuando sean registrados.'
       }}
+
     </div>
+
   </section>
 
-  <!-- TABLA -->
 
-  <section class="table-card" *ngIf="encargadosFiltrados.length > 0">
-    <div class="table-wrapper">
+  <!-- =====================================================
+       TABLA DE ENCARGADOS
+  ====================================================== -->
+
+  <section
+    class="tarjeta-tabla"
+    *ngIf="encargadosFiltrados.length > 0"
+  >
+
+    <div class="contenedor-tabla">
+
       <table>
+
         <thead>
+
           <tr>
-            <th>Encargado</th>
 
-            <th>Cargo</th>
+            <th>
+              Encargado
+            </th>
 
-            <th>Área</th>
+            <th>
+              Cargo
+            </th>
 
-            <th>Teléfono</th>
+            <th>
+              Área
+            </th>
 
-            <th>Estado</th>
+            <th>
+              Teléfono
+            </th>
 
-            <th>Acciones</th>
+            <th>
+              Estado
+            </th>
+
+            <th>
+              Acciones
+            </th>
+
           </tr>
+
         </thead>
 
+
         <tbody>
-          <tr *ngFor="let encargado of encargadosFiltrados">
+
+          <tr
+            *ngFor="let encargado of encargadosFiltrados"
+          >
+
+            <!-- ENCARGADO -->
+
             <td>
-              <div class="cell-enc">
-                <div class="tbl-avatar">
-                  <ng-container *ngIf="encargado.foto; else inicialesTabla">
-                    <img [src]="encargado.foto" [alt]="'Foto de ' + encargado.nombre" />
+
+              <div class="celda-encargado">
+
+                <div class="avatar-tabla">
+
+                  <ng-container
+                    *ngIf="encargado.foto; else inicialesTabla"
+                  >
+
+                    <img
+                      [src]="encargado.foto"
+                      [alt]="'Foto de ' + encargado.nombre"
+                    />
+
                   </ng-container>
 
                   <ng-template #inicialesTabla>
+
                     {{ encargado.iniciales }}
+
                   </ng-template>
+
                 </div>
 
-                <div class="tbl-info">
-                  <div class="tbl-name">
+
+                <div class="informacion-tabla">
+
+                  <div class="nombre-tabla">
+
                     {{ encargado.nombre }}
+
                   </div>
 
-                  <div class="tbl-email">
+                  <div class="correo-tabla">
+
                     {{ encargado.email }}
+
                   </div>
+
                 </div>
+
               </div>
+
             </td>
 
+
+            <!-- CARGO -->
+
             <td>
+
               {{ encargado.cargo }}
+
             </td>
 
+
+            <!-- ÁREA -->
+
             <td>
+
               {{ encargado.area }}
+
             </td>
 
+
+            <!-- TELÉFONO -->
+
             <td>
-              <span class="tbl-phone">
+
+              <span class="telefono-tabla">
+
                 {{ encargado.telefono }}
+
               </span>
+
             </td>
 
+
+            <!-- ESTADO -->
+
             <td>
+
               <span
-                class="status-badge"
+                class="insignia-estado"
                 [class.activo]="encargado.estado === 'Activo'"
                 [class.inactivo]="encargado.estado === 'Inactivo'"
               >
-                <span class="status-dot"></span>
+
+                <span class="punto-estado"></span>
 
                 {{ encargado.estado }}
+
               </span>
+
             </td>
 
+
+            <!-- ACCIONES -->
+
             <td>
-              <div class="action-btns">
+
+              <div class="botones-acciones">
+
                 <!-- VER DETALLES -->
 
                 <button
-                  class="action-btn details"
+                  class="boton-accion detalles"
                   type="button"
-                  title="Ver detalles de encargado"
-                  aria-label="Ver detalles de encargado"
+                  title="Ver detalles del encargado"
+                  aria-label="Ver detalles del encargado"
                   (click)="verDetalles(encargado)"
                 >
-                  <span class="material-symbols-outlined"> visibility </span>
+
+                  <span class="material-symbols-outlined">
+                    visibility
+                  </span>
+
                 </button>
+
 
                 <!-- EDITAR -->
 
                 <button
-                  class="action-btn"
+                  class="boton-accion"
                   type="button"
-                  title="Editar"
+                  title="Editar encargado"
                   aria-label="Editar encargado"
                   (click)="openModal('edit', encargado)"
                 >
-                  <span class="material-symbols-outlined"> edit </span>
+
+                  <span class="material-symbols-outlined">
+                    edit
+                  </span>
+
                 </button>
+
 
                 <!-- CAMBIAR ESTADO -->
 
                 <button
-                  class="action-btn warn"
+                  class="boton-accion advertencia"
                   type="button"
                   [title]="
-                    encargado.estado === 'Activo' ? 'Desactivar encargado' : 'Activar encargado'
+                    encargado.estado === 'Activo'
+                      ? 'Desactivar encargado'
+                      : 'Activar encargado'
                   "
                   [attr.aria-label]="
-                    encargado.estado === 'Activo' ? 'Desactivar encargado' : 'Activar encargado'
+                    encargado.estado === 'Activo'
+                      ? 'Desactivar encargado'
+                      : 'Activar encargado'
                   "
                   (click)="cambiarEstado(encargado)"
                 >
-                  <span class="material-symbols-outlined"> toggle_on </span>
+
+                  <span class="material-symbols-outlined">
+                    toggle_on
+                  </span>
+
                 </button>
+
 
                 <!-- ELIMINAR -->
 
                 <button
-                  class="action-btn danger"
+                  class="boton-accion peligro"
                   type="button"
-                  title="Eliminar"
+                  title="Eliminar encargado"
                   aria-label="Eliminar encargado"
                   (click)="eliminarEncargado(encargado.id)"
                 >
-                  <span class="material-symbols-outlined"> delete </span>
+
+                  <span class="material-symbols-outlined">
+                    delete
+                  </span>
+
                 </button>
+
               </div>
+
             </td>
+
           </tr>
+
         </tbody>
+
       </table>
+
     </div>
+
   </section>
+
 </main>
 
-<!-- MODAL NUEVO / EDITAR ENCARGADO -->
 
-<div class="modal-overlay" [class.open]="modalAbierto" (click)="cerrarAlClickarFondo($event)">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <div class="modal-header">
-      <div class="modal-hdr-icon">
-        <span class="material-symbols-outlined"> manage_accounts </span>
+<!-- =====================================================
+     MODAL NUEVO / EDITAR ENCARGADO
+====================================================== -->
+
+<div
+  class="modal-overlay"
+  [class.open]="modalAbierto"
+  (click)="cerrarAlClickarFondo($event)"
+>
+
+  <div
+    class="modal-encargado"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="titulo-modal-encargado"
+  >
+
+    <!-- ENCABEZADO -->
+
+    <div class="encabezado-modal">
+
+      <div class="icono-encabezado-modal">
+
+        <span class="material-symbols-outlined">
+          manage_accounts
+        </span>
+
       </div>
 
-      <div class="modal-hdr-content">
-        <div id="modal-title" class="modal-hdr-title">
-          {{ modoEdicion ? 'Editar Encargado' : 'Nuevo Encargado' }}
+
+      <div class="contenido-encabezado-modal">
+
+        <div
+          id="titulo-modal-encargado"
+          class="titulo-encabezado-modal"
+        >
+
+          {{
+            modoEdicion
+              ? 'Editar Encargado'
+              : 'Nuevo Encargado'
+          }}
+
         </div>
 
-        <div class="modal-hdr-sub">
+
+        <div class="subtitulo-encabezado-modal">
+
           {{
             modoEdicion
               ? 'Modifique los datos del encargado'
               : 'Complete los datos del nuevo encargado'
           }}
+
         </div>
+
       </div>
 
-      <button class="modal-close" type="button" (click)="closeModal()" aria-label="Cerrar modal">
-        <span class="material-symbols-outlined"> close </span>
+
+      <button
+        class="boton-cerrar-modal"
+        type="button"
+        (click)="closeModal()"
+        aria-label="Cerrar modal"
+      >
+
+        <span class="material-symbols-outlined">
+          close
+        </span>
+
       </button>
+
     </div>
 
-    <!-- CUERPO FORMULARIO -->
 
-    <div class="modal-body">
+    <!-- CUERPO -->
+
+    <div class="cuerpo-modal">
+
       <!-- DATOS PERSONALES -->
 
-      <section class="form-section">
-        <div class="form-sec-title">
-          <span class="material-symbols-outlined"> person </span>
+      <section class="seccion-formulario">
+
+        <div class="titulo-seccion-formulario">
+
+          <span class="material-symbols-outlined">
+            person
+          </span>
 
           Datos Personales
+
         </div>
 
-        <div class="form-row">
+
+        <div class="fila-formulario">
+
           <!-- NOMBRE -->
 
-          <div class="form-group">
-            <label class="form-label" for="f-nombre">
+          <div class="grupo-formulario">
+
+            <label
+              class="etiqueta-formulario"
+              for="nombre-encargado"
+            >
+
               Nombre completo
 
-              <span class="req"> * </span>
+              <span class="campo-obligatorio">
+                *
+              </span>
+
             </label>
 
+
             <input
-              id="f-nombre"
+              id="nombre-encargado"
               type="text"
-              class="form-input"
-              [class.is-invalid]="errores.nombre"
-              placeholder="Ej. Carlos Méndez"
+              class="campo-formulario"
+              [class.campo-invalido]="errores.nombre"
               autocomplete="off"
               [(ngModel)]="formulario.nombre"
             />
 
-            <div class="form-err-msg" [class.show]="errores.nombre">
-              <span class="material-symbols-outlined"> error </span>
+
+            <div
+              class="mensaje-error"
+              [class.mostrar]="errores.nombre"
+            >
+
+              <span class="material-symbols-outlined">
+                error
+              </span>
 
               Campo requerido
+
             </div>
+
           </div>
+
 
           <!-- DOCUMENTO -->
 
-          <div class="form-group">
-            <label class="form-label" for="f-documento">
+          <div class="grupo-formulario">
+
+            <label
+              class="etiqueta-formulario"
+              for="documento-encargado"
+            >
+
               Número de documento
 
-              <span class="req"> * </span>
+              <span class="campo-obligatorio">
+                *
+              </span>
+
             </label>
 
+
             <input
-              id="f-documento"
+              id="documento-encargado"
               type="text"
               inputmode="numeric"
-              class="form-input"
-              [class.is-invalid]="errores.documento"
-              placeholder="Ej. 42343534"
+              class="campo-formulario"
+              [class.campo-invalido]="errores.documento"
               autocomplete="off"
               [(ngModel)]="formulario.documento"
             />
 
-            <div class="form-err-msg" [class.show]="errores.documento">
-              <span class="material-symbols-outlined"> error </span>
+
+            <div
+              class="mensaje-error"
+              [class.mostrar]="errores.documento"
+            >
+
+              <span class="material-symbols-outlined">
+                error
+              </span>
 
               El número de documento es requerido o ya se encuentra registrado.
+
             </div>
+
           </div>
 
-          <!-- FECHA -->
 
-          <div class="form-group">
-            <label class="form-label" for="f-fecha"> Fecha de ingreso </label>
+          <!-- FECHA DE INGRESO -->
 
-            <input
-              id="f-fecha"
-              type="date"
-              class="form-input"
-              [(ngModel)]="formulario.fechaIngreso"
-            />
-          </div>
-        </div>
+          <div class="grupo-formulario">
 
-        <div class="form-row">
-          <!-- TELEFONO -->
+            <label
+              class="etiqueta-formulario"
+              for="fecha-ingreso"
+            >
 
-          <div class="form-group">
-            <label class="form-label" for="f-telefono">
-              Teléfono
+              Fecha de ingreso
 
-              <span class="req"> * </span>
             </label>
 
+
             <input
-              id="f-telefono"
+              id="fecha-ingreso"
+              type="date"
+              class="campo-formulario"
+              [(ngModel)]="formulario.fechaIngreso"
+            />
+
+          </div>
+
+        </div>
+
+
+        <div class="fila-formulario">
+
+          <!-- TELÉFONO -->
+
+          <div class="grupo-formulario">
+
+            <label
+              class="etiqueta-formulario"
+              for="telefono-encargado"
+            >
+
+              Teléfono
+
+              <span class="campo-obligatorio">
+                *
+              </span>
+
+            </label>
+
+
+            <input
+              id="telefono-encargado"
               type="tel"
               inputmode="numeric"
-              class="form-input"
-              [class.is-invalid]="errores.telefono"
-              placeholder="3000000000"
+              class="campo-formulario"
+              [class.campo-invalido]="errores.telefono"
               maxlength="10"
               autocomplete="off"
               [(ngModel)]="formulario.telefono"
               (input)="soloNumerosTelefono($event)"
             />
 
-            <div class="form-err-msg" [class.show]="errores.telefono">
-              <span class="material-symbols-outlined"> error </span>
+
+            <div
+              class="mensaje-error"
+              [class.mostrar]="errores.telefono"
+            >
+
+              <span class="material-symbols-outlined">
+                error
+              </span>
 
               El teléfono debe contener exactamente 10 números.
+
             </div>
+
           </div>
 
-          <!-- EMAIL -->
 
-          <div class="form-group">
-            <label class="form-label" for="f-email">
+          <!-- CORREO -->
+
+          <div class="grupo-formulario">
+
+            <label
+              class="etiqueta-formulario"
+              for="correo-encargado"
+            >
+
               Correo electrónico
 
-              <span class="req"> * </span>
+              <span class="campo-obligatorio">
+                *
+              </span>
+
             </label>
 
+
             <input
-              id="f-email"
+              id="correo-encargado"
               type="email"
-              name="email"
-              class="form-input"
-              [class.is-invalid]="errores.email || errores.emailInvalido"
-              placeholder="nombre@fundacion.org"
+              name="correo"
+              class="campo-formulario"
+              [class.campo-invalido]="
+                errores.email ||
+                errores.emailInvalido
+              "
               autocomplete="off"
               [(ngModel)]="formulario.email"
             />
 
-            <div class="form-err-msg" [class.show]="errores.email">
-              <span class="material-symbols-outlined"> error </span>
+
+            <div
+              class="mensaje-error"
+              [class.mostrar]="errores.email"
+            >
+
+              <span class="material-symbols-outlined">
+                error
+              </span>
 
               El correo electrónico es requerido.
+
             </div>
 
-            <div class="form-err-msg" [class.show]="errores.emailInvalido">
-              <span class="material-symbols-outlined"> error </span>
+
+            <div
+              class="mensaje-error"
+              [class.mostrar]="errores.emailInvalido"
+            >
+
+              <span class="material-symbols-outlined">
+                error
+              </span>
 
               Ingresa un correo electrónico válido.
+
             </div>
+
           </div>
+
         </div>
+
       </section>
+
 
       <!-- CARGO Y RESPONSABILIDADES -->
 
-      <section class="form-section">
-        <div class="form-sec-title">
-          <span class="material-symbols-outlined"> work </span>
+      <section class="seccion-formulario">
+
+        <div class="titulo-seccion-formulario">
+
+          <span class="material-symbols-outlined">
+            work
+          </span>
 
           Cargo y Responsabilidades
+
         </div>
 
-        <div class="form-row">
+
+        <div class="fila-formulario">
+
           <!-- CARGO -->
 
-          <div class="form-group">
-            <label class="form-label" for="f-cargo">
+          <div class="grupo-formulario">
+
+            <label
+              class="etiqueta-formulario"
+              for="cargo-encargado"
+            >
+
               Cargo
 
-              <span class="req"> * </span>
+              <span class="campo-obligatorio">
+                *
+              </span>
+
             </label>
 
+
             <select
-              id="f-cargo"
-              class="form-select"
-              [class.is-invalid]="errores.cargo"
+              id="cargo-encargado"
+              class="campo-select"
+              [class.campo-invalido]="errores.cargo"
               [(ngModel)]="formulario.cargo"
             >
-              <option value="">Seleccionar cargo</option>
 
-              <option value="Director General">Director General</option>
+              <option value="">
+                Seleccionar cargo
+              </option>
 
-              <option value="Subdirector">Subdirector</option>
+              <option
+                *ngFor="let cargo of cargosDisponibles"
+                [value]="cargo"
+              >
 
-              <option value="Coordinador Administrativo">Coordinador Administrativo</option>
+                {{ cargo }}
 
-              <option value="Jefe de Área Médica">Jefe de Área Médica</option>
+              </option>
 
-              <option value="Coordinador de RRHH">Coordinador de RRHH</option>
-
-              <option value="Gerente Financiero">Gerente Financiero</option>
-
-              <option value="Coordinador Operativo">Coordinador Operativo</option>
             </select>
 
-            <div class="form-err-msg" [class.show]="errores.cargo">
-              <span class="material-symbols-outlined"> error </span>
+
+            <div
+              class="mensaje-error"
+              [class.mostrar]="errores.cargo"
+            >
+
+              <span class="material-symbols-outlined">
+                error
+              </span>
 
               Seleccione un cargo
+
             </div>
+
           </div>
 
-          <!-- AREA -->
 
-          <div class="form-group">
-            <label class="form-label" for="f-area">
+          <!-- ÁREA -->
+
+          <div class="grupo-formulario">
+
+            <label
+              class="etiqueta-formulario"
+              for="area-encargado"
+            >
+
               Área
 
-              <span class="req"> * </span>
+              <span class="campo-obligatorio">
+                *
+              </span>
+
             </label>
 
+
             <select
-              id="f-area"
-              class="form-select"
-              [class.is-invalid]="errores.area"
+              id="area-encargado"
+              class="campo-select"
+              [class.campo-invalido]="errores.area"
               [(ngModel)]="formulario.area"
             >
-              <option value="">Seleccionar área</option>
 
-              <option value="Dirección">Dirección</option>
+              <option value="">
+                Seleccionar área
+              </option>
 
-              <option value="Administración">Administración</option>
+              <option
+                *ngFor="let area of areasDisponibles"
+                [value]="area"
+              >
 
-              <option value="Área Médica">Área Médica</option>
+                {{ area }}
 
-              <option value="Recursos Humanos">Recursos Humanos</option>
+              </option>
 
-              <option value="Finanzas">Finanzas</option>
-
-              <option value="Operaciones">Operaciones</option>
             </select>
 
-            <div class="form-err-msg" [class.show]="errores.area">
-              <span class="material-symbols-outlined"> error </span>
+
+            <div
+              class="mensaje-error"
+              [class.mostrar]="errores.area"
+            >
+
+              <span class="material-symbols-outlined">
+                error
+              </span>
 
               Seleccione un área
+
             </div>
+
           </div>
+
         </div>
 
-        <!-- DESCRIPCION -->
 
-        <div class="form-row full">
-          <div class="form-group">
-            <label class="form-label" for="f-desc"> Descripción del cargo </label>
+        <!-- DESCRIPCIÓN -->
+
+        <div class="fila-formulario completa">
+
+          <div class="grupo-formulario">
+
+            <label
+              class="etiqueta-formulario"
+              for="descripcion-encargado"
+            >
+
+              Descripción del cargo
+
+            </label>
+
 
             <textarea
-              id="f-desc"
-              class="form-textarea"
-              placeholder="Describa las principales responsabilidades del cargo..."
+              id="descripcion-encargado"
+              class="campo-textarea"
+              autocomplete="off"
               [(ngModel)]="formulario.descripcion"
             ></textarea>
+
           </div>
+
         </div>
+
       </section>
+
     </div>
 
-    <!-- FOOTER -->
 
-    <div class="modal-footer">
-      <button class="btn-cancel" type="button" (click)="closeModal()" [disabled]="guardando">
+    <!-- PIE DEL MODAL -->
+
+    <div class="pie-modal">
+
+      <button
+        class="boton-cancelar"
+        type="button"
+        (click)="closeModal()"
+        [disabled]="guardando"
+      >
+
         Cancelar
+
       </button>
 
-      <button class="btn-save" type="button" [disabled]="guardando" (click)="saveEncargado()">
-        <span *ngIf="!guardando" class="material-symbols-outlined"> save </span>
 
-        <span *ngIf="guardando" class="spinner"></span>
+      <button
+        class="boton-guardar"
+        type="button"
+        [disabled]="guardando"
+        (click)="saveEncargado()"
+      >
+
+        <span
+          *ngIf="!guardando"
+          class="material-symbols-outlined"
+        >
+          save
+        </span>
+
+
+        <span
+          *ngIf="guardando"
+          class="indicador-carga"
+        ></span>
+
 
         <span>
-          {{ guardando ? 'Guardando...' : 'Guardar' }}
+
+          {{
+            guardando
+              ? 'Guardando...'
+              : 'Guardar'
+          }}
+
         </span>
+
       </button>
+
     </div>
+
   </div>
+
 </div>
 
-<!-- MODAL VER DETALLES -->
+
+<!-- =====================================================
+     MODAL DETALLES
+====================================================== -->
 
 <div
   class="modal-overlay detalles-overlay"
   [class.open]="modalDetallesAbierto"
   (click)="cerrarModalDetallesPorFondo($event)"
 >
+
   <div
-    class="modal modal-detalles"
+    class="modal-encargado modal-detalles"
     role="dialog"
     aria-modal="true"
-    aria-labelledby="detalle-encargado-title"
+    aria-labelledby="titulo-detalle-encargado"
     *ngIf="encargadoSeleccionado"
   >
-    <div class="modal-header">
-      <div class="modal-hdr-icon">
-        <span class="material-symbols-outlined"> account_circle </span>
+
+    <!-- ENCABEZADO -->
+
+    <div class="encabezado-modal">
+
+      <div class="icono-encabezado-modal">
+
+        <span class="material-symbols-outlined">
+          account_circle
+        </span>
+
       </div>
 
-      <div class="modal-hdr-content">
-        <div id="detalle-encargado-title" class="modal-hdr-title">Perfil del Encargado</div>
 
-        <div class="modal-hdr-sub">Información completa del responsable</div>
+      <div class="contenido-encabezado-modal">
+
+        <div
+          id="titulo-detalle-encargado"
+          class="titulo-encabezado-modal"
+        >
+
+          Perfil del Encargado
+
+        </div>
+
+
+        <div class="subtitulo-encabezado-modal">
+
+          Información completa del responsable
+
+        </div>
+
       </div>
+
 
       <button
-        class="modal-close"
+        class="boton-cerrar-modal"
         type="button"
         (click)="cerrarModalDetalles()"
         aria-label="Cerrar detalles"
-        title="Cerrar"
       >
-        <span class="material-symbols-outlined"> close </span>
+
+        <span class="material-symbols-outlined">
+          close
+        </span>
+
       </button>
+
     </div>
 
-    <div class="modal-body detalles-body">
+
+    <!-- CUERPO -->
+
+    <div class="cuerpo-modal detalles-cuerpo">
+
       <!-- PERFIL -->
 
       <section class="perfil-detalle">
-        <div class="perfil-avatar">
-          <ng-container *ngIf="encargadoSeleccionado.foto; else avatarDetalles">
+
+        <div class="avatar-detalle">
+
+          <ng-container
+            *ngIf="encargadoSeleccionado.foto; else inicialesDetalle"
+          >
+
             <img
               [src]="encargadoSeleccionado.foto"
               [alt]="'Foto de ' + encargadoSeleccionado.nombre"
             />
+
           </ng-container>
 
-          <ng-template #avatarDetalles>
+
+          <ng-template #inicialesDetalle>
+
             <span>
+
               {{ encargadoSeleccionado.iniciales }}
+
             </span>
+
           </ng-template>
+
         </div>
 
-        <div class="perfil-info">
-          <div class="perfil-nombre">
+
+        <div class="informacion-perfil">
+
+          <div class="nombre-perfil">
+
             {{ encargadoSeleccionado.nombre }}
+
           </div>
 
-          <div class="perfil-cargo">
+
+          <div class="cargo-perfil">
+
             {{ encargadoSeleccionado.cargo }}
+
           </div>
 
-          <div class="perfil-area">
-            <span class="material-symbols-outlined"> business </span>
+
+          <div class="area-perfil">
+
+            <span class="material-symbols-outlined">
+              business
+            </span>
 
             {{ encargadoSeleccionado.area }}
+
           </div>
 
+
           <div
-            class="status-badge detalle-status"
+            class="insignia-estado estado-detalle"
             [class.activo]="encargadoSeleccionado.estado === 'Activo'"
             [class.inactivo]="encargadoSeleccionado.estado === 'Inactivo'"
           >
-            <span class="status-dot"></span>
+
+            <span class="punto-estado"></span>
 
             {{ encargadoSeleccionado.estado }}
+
           </div>
+
         </div>
+
       </section>
+
 
       <!-- DATOS PERSONALES -->
 
-      <section class="detalle-section">
-        <div class="detalle-section-title">
-          <span class="material-symbols-outlined"> person </span>
+      <section class="seccion-detalle">
+
+        <div class="titulo-seccion-detalle">
+
+          <span class="material-symbols-outlined">
+            person
+          </span>
 
           Datos personales
+
         </div>
 
-        <div class="detalle-grid">
-          <div class="detalle-item">
-            <span class="detalle-label"> Número de documento </span>
 
-            <span class="detalle-value">
-              {{ encargadoSeleccionado.documento }}
+        <div class="grid-detalle">
+
+          <div class="elemento-detalle">
+
+            <span class="etiqueta-detalle">
+              Número de documento
             </span>
+
+            <span class="valor-detalle">
+
+              {{ encargadoSeleccionado.documento }}
+
+            </span>
+
           </div>
 
-          <div class="detalle-item">
-            <span class="detalle-label"> Teléfono </span>
 
-            <span class="detalle-value">
-              <span class="material-symbols-outlined"> phone </span>
+          <div class="elemento-detalle">
+
+            <span class="etiqueta-detalle">
+              Teléfono
+            </span>
+
+            <span class="valor-detalle">
+
+              <span class="material-symbols-outlined">
+                phone
+              </span>
 
               {{ encargadoSeleccionado.telefono }}
+
             </span>
+
           </div>
 
-          <div class="detalle-item">
-            <span class="detalle-label"> Correo electrónico </span>
 
-            <span class="detalle-value">
-              <span class="material-symbols-outlined"> mail </span>
+          <div class="elemento-detalle">
+
+            <span class="etiqueta-detalle">
+              Correo electrónico
+            </span>
+
+            <span class="valor-detalle">
+
+              <span class="material-symbols-outlined">
+                mail
+              </span>
 
               {{ encargadoSeleccionado.email }}
+
             </span>
+
           </div>
 
-          <div class="detalle-item">
-            <span class="detalle-label"> Fecha de ingreso </span>
 
-            <span class="detalle-value">
-              <span class="material-symbols-outlined"> calendar_month </span>
+          <div class="elemento-detalle">
+
+            <span class="etiqueta-detalle">
+              Fecha de ingreso
+            </span>
+
+            <span class="valor-detalle">
+
+              <span class="material-symbols-outlined">
+                calendar_month
+              </span>
 
               {{ encargadoSeleccionado.fechaIngreso || 'No registrada' }}
+
             </span>
+
           </div>
+
         </div>
+
       </section>
+
 
       <!-- INFORMACIÓN LABORAL -->
 
-      <section class="detalle-section">
-        <div class="detalle-section-title">
-          <span class="material-symbols-outlined"> work </span>
+      <section class="seccion-detalle">
+
+        <div class="titulo-seccion-detalle">
+
+          <span class="material-symbols-outlined">
+            work
+          </span>
 
           Información laboral
+
         </div>
 
-        <div class="detalle-grid">
-          <div class="detalle-item">
-            <span class="detalle-label"> Cargo </span>
 
-            <span class="detalle-value">
+        <div class="grid-detalle">
+
+          <div class="elemento-detalle">
+
+            <span class="etiqueta-detalle">
+              Cargo
+            </span>
+
+            <span class="valor-detalle">
+
               {{ encargadoSeleccionado.cargo }}
+
             </span>
+
           </div>
 
-          <div class="detalle-item">
-            <span class="detalle-label"> Área </span>
 
-            <span class="detalle-value">
+          <div class="elemento-detalle">
+
+            <span class="etiqueta-detalle">
+              Área
+            </span>
+
+            <span class="valor-detalle">
+
               {{ encargadoSeleccionado.area }}
+
             </span>
+
           </div>
 
-          <div class="detalle-item">
-            <span class="detalle-label"> Antigüedad </span>
 
-            <span class="detalle-value">
+          <div class="elemento-detalle">
+
+            <span class="etiqueta-detalle">
+              Antigüedad
+            </span>
+
+            <span class="valor-detalle">
+
               {{ encargadoSeleccionado.ingresoTexto }}
+
             </span>
+
           </div>
 
-          <div class="detalle-item">
-            <span class="detalle-label"> Estado </span>
+
+          <div class="elemento-detalle">
+
+            <span class="etiqueta-detalle">
+              Estado
+            </span>
 
             <span
-              class="status-badge"
+              class="insignia-estado"
               [class.activo]="encargadoSeleccionado.estado === 'Activo'"
               [class.inactivo]="encargadoSeleccionado.estado === 'Inactivo'"
             >
-              <span class="status-dot"></span>
+
+              <span class="punto-estado"></span>
 
               {{ encargadoSeleccionado.estado }}
+
             </span>
+
           </div>
+
         </div>
+
       </section>
+
 
       <!-- DESCRIPCIÓN -->
 
-      <section class="detalle-section">
-        <div class="detalle-section-title">
-          <span class="material-symbols-outlined"> description </span>
+      <section class="seccion-detalle">
+
+        <div class="titulo-seccion-detalle">
+
+          <span class="material-symbols-outlined">
+            description
+          </span>
 
           Descripción del cargo
+
         </div>
 
-        <div class="detalle-description">
-          {{ encargadoSeleccionado.descripcion || 'Sin descripción registrada.' }}
+
+        <div class="descripcion-detalle">
+
+          {{
+            encargadoSeleccionado.descripcion ||
+            'Sin descripción registrada.'
+          }}
+
         </div>
+
       </section>
+
     </div>
 
-    <div class="modal-footer">
-      <button class="btn-cancel" type="button" (click)="cerrarModalDetalles()">
-        <span class="material-symbols-outlined"> close </span>
 
-        Cerrar
-      </button>
+    <!-- PIE -->
+
+    <div class="pie-modal">
 
       <button
-        class="btn-save"
+        class="boton-cancelar"
         type="button"
-        (click)="cerrarModalDetalles(); openModal('edit', encargadoSeleccionado)"
+        (click)="cerrarModalDetalles()"
       >
-        <span class="material-symbols-outlined"> edit </span>
+
+        <span class="material-symbols-outlined">
+          close
+        </span>
+
+        Cerrar
+
+      </button>
+
+
+      <button
+        class="boton-guardar"
+        type="button"
+        (click)="
+          cerrarModalDetalles();
+          openModal('edit', encargadoSeleccionado)
+        "
+      >
+
+        <span class="material-symbols-outlined">
+          edit
+        </span>
 
         Editar encargado
+
       </button>
+
     </div>
+
   </div>
+
 </div>
 
-<!-- MODAL REGISTRO DE CAMBIOS -->
+
+<!-- =====================================================
+     MODAL REGISTRO DE CAMBIOS
+====================================================== -->
 
 <div
   class="modal-overlay registro-overlay"
   [class.open]="modalRegistroCambiosAbierto"
   (click)="cerrarRegistroCambiosPorFondo($event)"
 >
+
   <div
-    class="modal modal-registro-cambios"
+    class="modal-encargado modal-registro-cambios"
     role="dialog"
     aria-modal="true"
-    aria-labelledby="registro-cambios-title"
+    aria-labelledby="titulo-registro-cambios"
   >
-    <div class="modal-header">
-      <div class="modal-hdr-icon">
-        <span class="material-symbols-outlined"> history </span>
+
+    <!-- ENCABEZADO -->
+
+    <div class="encabezado-modal">
+
+      <div class="icono-encabezado-modal">
+
+        <span class="material-symbols-outlined">
+          history
+        </span>
+
       </div>
 
-      <div class="modal-hdr-content">
-        <div id="registro-cambios-title" class="modal-hdr-title">Registro de cambios</div>
 
-        <div class="modal-hdr-sub">Historial de acciones realizadas sobre los encargados</div>
+      <div class="contenido-encabezado-modal">
+
+        <div
+          id="titulo-registro-cambios"
+          class="titulo-encabezado-modal"
+        >
+
+          Registro de cambios
+
+        </div>
+
+
+        <div class="subtitulo-encabezado-modal">
+
+          Historial de acciones realizadas sobre los encargados
+
+        </div>
+
       </div>
+
 
       <button
-        class="modal-close"
+        class="boton-cerrar-modal"
         type="button"
         (click)="cerrarRegistroCambios()"
         aria-label="Cerrar registro de cambios"
-        title="Cerrar"
       >
-        <span class="material-symbols-outlined"> close </span>
+
+        <span class="material-symbols-outlined">
+          close
+        </span>
+
       </button>
+
     </div>
 
-    <div class="modal-body registro-body">
+
+    <!-- CUERPO -->
+
+    <div class="cuerpo-modal registro-cuerpo">
+
       <!-- RESUMEN -->
 
-      <div class="registro-resumen">
-        <div class="registro-resumen-icon">
-          <span class="material-symbols-outlined"> manage_history </span>
+      <div class="resumen-registro">
+
+        <div class="icono-resumen-registro">
+
+          <span class="material-symbols-outlined">
+            manage_history
+          </span>
+
         </div>
 
-        <div class="registro-resumen-info">
-          <div class="registro-resumen-title">Historial de modificaciones</div>
 
-          <div class="registro-resumen-sub">
+        <div class="informacion-resumen-registro">
+
+          <div class="titulo-resumen-registro">
+
+            Historial de modificaciones
+
+          </div>
+
+
+          <div class="subtitulo-resumen-registro">
+
             {{ registrosCambios.length }}
 
             registro{{ registrosCambios.length === 1 ? '' : 's' }}
 
             realizado{{ registrosCambios.length === 1 ? '' : 's' }}
+
           </div>
+
         </div>
+
       </div>
+
 
       <!-- SIN REGISTROS -->
 
-      <div class="registro-empty" *ngIf="registrosCambios.length === 0">
-        <span class="material-symbols-outlined"> history_toggle_off </span>
+      <div
+        class="registro-vacio"
+        *ngIf="registrosCambios.length === 0"
+      >
 
-        <div class="registro-empty-title">No hay registros de cambios</div>
+        <span class="material-symbols-outlined">
+          history_toggle_off
+        </span>
 
-        <div class="registro-empty-sub">
-          Las acciones realizadas sobre los encargados aparecerán aquí automáticamente.
+
+        <div class="titulo-registro-vacio">
+
+          No hay registros de cambios
+
         </div>
+
+
+        <div class="subtitulo-registro-vacio">
+
+          Las acciones realizadas sobre los encargados aparecerán aquí automáticamente.
+
+        </div>
+
       </div>
 
-      <!-- LISTA -->
 
-      <div class="registro-list" *ngIf="registrosCambios.length > 0">
-        <div class="registro-item" *ngFor="let registro of registrosCambios">
+      <!-- LISTA DE REGISTROS -->
+
+      <div
+        class="lista-registros"
+        *ngIf="registrosCambios.length > 0"
+      >
+
+        <div
+          class="elemento-registro"
+          *ngFor="let registro of registrosCambios"
+        >
+
           <div
-            class="registro-icon"
+            class="icono-registro"
             [class.creacion]="registro.accion === 'Creación'"
             [class.actualizacion]="registro.accion === 'Actualización'"
             [class.activacion]="registro.accion === 'Activación'"
             [class.desactivacion]="registro.accion === 'Desactivación'"
             [class.eliminacion]="registro.accion === 'Eliminación'"
           >
+
             <span class="material-symbols-outlined">
+
               {{
                 registro.accion === 'Creación'
                   ? 'person_add'
@@ -912,75 +1670,111 @@
                         ? 'block'
                         : 'delete'
               }}
+
             </span>
+
           </div>
 
-          <div class="registro-content">
-            <div class="registro-top">
+
+          <div class="contenido-registro">
+
+            <div class="parte-superior-registro">
+
               <span
-                class="registro-accion"
+                class="accion-registro"
                 [class.creacion]="registro.accion === 'Creación'"
                 [class.actualizacion]="registro.accion === 'Actualización'"
                 [class.activacion]="registro.accion === 'Activación'"
                 [class.desactivacion]="registro.accion === 'Desactivación'"
                 [class.eliminacion]="registro.accion === 'Eliminación'"
               >
+
                 {{ registro.accion }}
+
               </span>
 
-              <span class="registro-fecha">
-                <span class="material-symbols-outlined"> schedule </span>
+
+              <span class="fecha-registro">
+
+                <span class="material-symbols-outlined">
+                  schedule
+                </span>
 
                 {{ registro.fecha }}
+
               </span>
+
             </div>
 
-            <div class="registro-encargado">
-              <span class="material-symbols-outlined"> person </span>
+
+            <div class="encargado-registro">
+
+              <span class="material-symbols-outlined">
+                person
+              </span>
 
               <strong>
+
                 {{ registro.encargado }}
+
               </strong>
+
             </div>
 
-            <div class="registro-descripcion">
+
+            <div class="descripcion-registro">
+
               {{ registro.descripcion }}
+
             </div>
 
-            <div class="registro-usuario">
-              <span class="material-symbols-outlined"> account_circle </span>
+
+            <div class="usuario-registro">
+
+              <span class="material-symbols-outlined">
+                account_circle
+              </span>
 
               Realizado por:
 
               <strong>
+
                 {{ registro.usuario }}
+
               </strong>
+
             </div>
+
           </div>
+
         </div>
+
       </div>
+
     </div>
 
-    <div class="modal-footer">
-      <button class="btn-cancel" type="button" (click)="cerrarRegistroCambios()">
-        <span class="material-symbols-outlined"> close </span>
+
+    <!-- PIE -->
+
+    <div class="pie-modal">
+
+      <button
+        class="boton-cancelar"
+        type="button"
+        (click)="cerrarRegistroCambios()"
+      >
+
+        <span class="material-symbols-outlined">
+          close
+        </span>
 
         Cerrar
+
       </button>
+
     </div>
+
   </div>
+
 </div>
 
-<!-- TOAST -->
-
-<div class="toast-wrap">
-  <div *ngIf="toast.mostrar" class="toast" [ngClass]="toast.tipo">
-    <span class="material-symbols-outlined t-icon">
-      {{ toast.tipo === 'ok' ? 'check_circle' : toast.tipo === 'del' ? 'delete' : 'info' }}
-    </span>
-
-    <span>
-      {{ toast.mensaje }}
-    </span>
-  </div>
-</div>
