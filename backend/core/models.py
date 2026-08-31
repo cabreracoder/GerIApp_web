@@ -319,7 +319,6 @@ class Roles(models.Model):
         managed = False
         db_table = 'roles'
 
-
 class SignosVitales(models.Model):
     id_signos_vitales = models.AutoField(primary_key=True)
     id_bitacora = models.ForeignKey(Bitacora, models.DO_NOTHING, db_column='id_bitacora', blank=True, null=True)

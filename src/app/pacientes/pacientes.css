@@ -1,4 +1,3 @@
-
 :host {
   display: block;
   width: 100%;
@@ -44,21 +43,27 @@
   margin: 0 0 var(--spacing-lg);
 }
 
-.encabezado-pagina h2 {
+/* =====================================================
+   TÍTULO PRINCIPAL
+===================================================== */
+
+.titulo-pagina {
   margin: 0;
-
   color: var(--text-primary);
-
   font-family: var(--font-heading-family);
-
   font-size: var(--font-size-h1);
   font-weight: var(--font-weight-bold);
-
   letter-spacing: -0.5px;
-
   line-height: 1.2;
 }
 
+.subtitulo-pagina {
+  margin: var(--spacing-2xs) 0 0;
+  color: var(--text-secondary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
 .encabezado-pagina p {
   margin: 6px 0 0;
 
@@ -188,7 +193,6 @@
 
   display: grid;
 
-  /* 4 TARJETAS HORIZONTALES */
   grid-template-columns: repeat(4, minmax(0, 1fr));
 
   gap: var(--spacing-md);
@@ -196,22 +200,29 @@
   margin-bottom: var(--spacing-lg);
 }
 
+
+/* =========================================================
+   TARJETAS DE ESTADÍSTICAS
+========================================================= */
+
 .tarjeta-estadistica {
-  min-width: 0;
-  min-height: 150px;
-
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  padding: var(--spacing-md);
-
+  align-items: center;
+  gap: var(--spacing-md);
+  min-height: 110px;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--bg-surface);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-
-  overflow: hidden;
-
   box-shadow: var(--shadow-sm);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.tarjeta-estadistica:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .encabezado-estadistica {
@@ -1061,109 +1072,3 @@ textarea.campo-entrada {
 .boton-guardar:hover {
   background: var(--color-primary-hover);
 }
-
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-
-@media (max-width: 1100px) {
-
-  .contenedor-estadisticas {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-}
-
-
-@media (max-width: 800px) {
-
-  .encabezado-pagina {
-    align-items: flex-start;
-
-    flex-direction: column;
-  }
-
-  .boton-principal {
-    width: 100%;
-  }
-
-  .contenedor-filtros {
-    justify-content: flex-start;
-
-    flex-wrap: wrap;
-  }
-
-  .grupo-filtro {
-    flex: 1;
-
-    min-width: 170px;
-  }
-
-}
-
-
-@media (max-width: 768px) {
-
-  .encabezado-pagina {
-    gap: var(--spacing-md);
-  }
-
-  .pie-tabla {
-    align-items: flex-start;
-
-    flex-direction: column;
-  }
-
-  .rejilla-formulario {
-    grid-template-columns: 1fr;
-  }
-
-  .campo-formulario.campo-completo {
-    grid-column: auto;
-  }
-
-}
-
-
-@media (max-width: 600px) {
-
-  .contenedor-estadisticas {
-    grid-template-columns: 1fr;
-  }
-
-  .contenedor-filtros {
-    flex-direction: column;
-
-    align-items: stretch;
-  }
-
-  .grupo-filtro {
-    width: 100%;
-  }
-
-}
-
-
-@media (max-width: 520px) {
-
-  .encabezado-pagina h2 {
-    font-size: 25px;
-  }
-
-  .ventana-modal {
-    max-height: 95vh;
-
-    border-radius: var(--radius-md);
-  }
-
-  .cuerpo-modal {
-    padding: 17px;
-  }
-
-  .pie-modal {
-    padding: 13px 17px;
-  }
-
-}
-

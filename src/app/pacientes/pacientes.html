@@ -2,19 +2,18 @@
      CONTENIDO DE PACIENTES
 ========================================================= -->
 
-<section class="contenido-pacientes">
+<section class="pagina">
 
   <!-- ENCABEZADO -->
 
   <div class="encabezado-pagina">
 
     <div>
-
-      <h2>
+      <h1>
         Gestión de Pacientes
-      </h2>
+      </h1>
 
-      <p>
+      <p class="subtitulo-pagina">
         Monitoreo y administración de residentes actuales
       </p>
 
@@ -33,76 +32,6 @@
       Nuevo Paciente
 
     </button>
-
-  </div>
-
-
-  <!-- FILTROS -->
-
-  <div class="contenedor-filtros">
-
-    <div class="grupo-filtro">
-
-      <span class="etiqueta-filtro">
-        Pabellón
-      </span>
-
-      <select
-        [(ngModel)]="pavilionFilter"
-        (change)="filterTable()"
-      >
-
-        <option value="">
-          Todos los pabellones
-        </option>
-
-        <option value="Ala Norte">
-          Ala Norte
-        </option>
-
-        <option value="Ala Sur">
-          Ala Sur
-        </option>
-
-        <option value="Ala Este">
-          Ala Este
-        </option>
-
-      </select>
-
-    </div>
-
-
-    <div class="grupo-filtro">
-
-      <span class="etiqueta-filtro">
-        Estado
-      </span>
-
-      <select
-        [(ngModel)]="statusFilter"
-        (change)="filterTable()"
-      >
-
-        <option value="">
-          Todos
-        </option>
-
-        <option value="stable">
-          Estable
-        </option>
-
-        <option value="critical">
-          Crítico
-        </option>
-
-        <option value="observation">
-          Observación
-        </option>
-
-      </select>
-
-    </div>
 
   </div>
 
