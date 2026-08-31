@@ -30,6 +30,8 @@ from .models import (
     AsignacionPacienteCuidador,
     Turnos,
     AsignacionTurnoUsuario,
+    Permisos,
+    PermisosRol,
 )
 
 from .serializers import (
@@ -62,6 +64,8 @@ from .serializers import (
     AsignacionPacienteCuidadorSerializer,
     TurnosSerializer,
     AsignacionTurnoUsuarioSerializer,
+    PermisosSerializer,
+    PermisosRolSerializer,
 )
 
 
@@ -208,3 +212,11 @@ class TurnosViewSet(viewsets.ModelViewSet):
 class AsignacionTurnoUsuarioViewSet(viewsets.ModelViewSet):
     queryset = AsignacionTurnoUsuario.objects.all()
     serializer_class = AsignacionTurnoUsuarioSerializer
+
+class PermisosViewSet(viewsets.ModelViewSet):
+    queryset =Permisos.objects.all()
+    serializer_class =PermisosSerializer
+
+class PermisosRolViewSet(viewsets.ModelViewSet):
+    queryset=PermisosRol.objects.all()
+    serializer_class=PermisosRolSerializer

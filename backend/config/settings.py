@@ -17,9 +17,10 @@ SECRET_KEY = 'django-insecure-b^anczzces*%l47j4s(+&+x3d0)$w0fa8+7thr+nrk*x+@$efr
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
     'geriapp-web-1.onrender.com',
 ]
-
 
 # Application definition
 
