@@ -7,6 +7,7 @@ from .views import DetalleEntregaMedicamentoViewSet, MovimientoMedicamentoViewSe
 from .views import InsumosViewSet, DetalleEntregaInsumoViewSet, EntregaInsumoViewSet, MovimientoInsumoViewSet, BitacoraViewSet
 from .views import ActividadesViewSet, SignosVitalesViewSet, TipoEventoViewSet, TipoEmergenciaViewSet, EventosAdversosViewSet, ImagenesEventoAdversoViewSet 
 from .views import AsignacionPacienteCuidadorViewSet,TurnosViewSet, AsignacionTurnoUsuarioViewSet, PermisosViewSet,PermisosRolViewSet
+from .views import FamiliarResponsableViewSet, PerfilProfesionalViewSet, DisponibilidadUsuarioViewSet
 
 router = DefaultRouter()
 
@@ -41,6 +42,9 @@ router.register(r'turnos',TurnosViewSet)
 router.register(r'asignacion_turno_usuario',AsignacionTurnoUsuarioViewSet)
 router.register(r'permisos',PermisosViewSet)
 router.register(r'permisos_rol',PermisosRolViewSet)
+router.register(r'familiar_responsable',FamiliarResponsableViewSet)
+router.register(r'perfil_profesional',PerfilProfesionalViewSet) 
+router.register(r'disponibilidad_usuario',DisponibilidadUsuarioViewSet)
 
 
 urlpatterns = [

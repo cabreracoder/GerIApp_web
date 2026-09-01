@@ -32,6 +32,9 @@ from .models import (
     AsignacionTurnoUsuario,
     Permisos,
     PermisosRol,
+    FamiliarResponsable,
+    PerfilProfesional,
+    DisponibilidadUsuario,
 )
 
 
@@ -216,4 +219,21 @@ class PermisosSerializer(serializers.ModelSerializer):
 class PermisosRolSerializer(serializers.ModelSerializer):
     class Meta:
         model = PermisosRol
+        fields = '__all__'
+
+class FamiliarResponsableSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FamiliarResponsable
+        fields = '__all__'
+
+
+class PerfilProfesionalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PerfilProfesional
+        fields = '__all__'
+
+
+class DisponibilidadUsuarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DisponibilidadUsuario
         fields = '__all__'

@@ -32,6 +32,9 @@ from .models import (
     AsignacionTurnoUsuario,
     Permisos,
     PermisosRol,
+    FamiliarResponsable,
+    PerfilProfesional,
+    DisponibilidadUsuario,
 )
 
 from .serializers import (
@@ -66,6 +69,9 @@ from .serializers import (
     AsignacionTurnoUsuarioSerializer,
     PermisosSerializer,
     PermisosRolSerializer,
+    FamiliarResponsableSerializer,
+    PerfilProfesionalSerializer,
+    DisponibilidadUsuarioSerializer,
 )
 
 
@@ -220,3 +226,17 @@ class PermisosViewSet(viewsets.ModelViewSet):
 class PermisosRolViewSet(viewsets.ModelViewSet):
     queryset=PermisosRol.objects.all()
     serializer_class=PermisosRolSerializer
+
+class FamiliarResponsableViewSet(viewsets.ModelViewSet):
+    queryset = FamiliarResponsable.objects.all()
+    serializer_class = FamiliarResponsableSerializer
+
+
+class PerfilProfesionalViewSet(viewsets.ModelViewSet):
+    queryset = PerfilProfesional.objects.all()
+    serializer_class = PerfilProfesionalSerializer
+
+
+class DisponibilidadUsuarioViewSet(viewsets.ModelViewSet):
+    queryset = DisponibilidadUsuario.objects.all()
+    serializer_class = DisponibilidadUsuarioSerializer
