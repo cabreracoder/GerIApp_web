@@ -13,7 +13,6 @@ export interface PermisoApi {
   id_permisos: number;
   nombre: string;
   descripcion: string;
-  estado: boolean;
 }
 
 export interface PermisoRolApi {
