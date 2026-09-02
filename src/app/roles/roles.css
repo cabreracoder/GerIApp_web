@@ -645,3 +645,11 @@
   color: #c92a2a;
   border-left: 4px solid #fa5252;
 }
+
+/* =========================================================
+   ICONOS DE BOTONES
+========================================================= */
+
+.role-card-actions .material-symbols-outlined {
+  font-size: 12px;
+}
