@@ -34,24 +34,29 @@
      BUSCADOR
 ========================================================= -->
 
-<div class="mb-5">
+<section class="tarjeta-buscador">
+
+    <span class="material-symbols-outlined icono-busqueda">
+        search
+    </span>
 
     <input
-        type="text"
+        type="search"
+        placeholder="Buscar por documento o nombre..."
+        aria-label="Buscar paciente"
+        autocomplete="off"
         [(ngModel)]="searchText"
-        placeholder="Buscar paciente por nombre o documento"
-        class="w-full max-w-md
-               px-4 py-3
-               border border-[#D9E0F2]
-               rounded-lg
-               bg-white
-               text-[#212529]
-               placeholder-[#6C757D]
-               focus:outline-none
-               focus:border-[#3B5BDB]"
     >
 
-</div>
+    <span
+        class="contador-resultados"
+        *ngIf="searchText"
+    >
+        {{ filteredPatients.length }}
+        resultado{{ filteredPatients.length === 1 ? '' : 's' }}
+    </span>
+
+</section>
 
 
 <!-- =========================================================

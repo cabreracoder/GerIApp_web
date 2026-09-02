@@ -251,6 +251,11 @@ export class Pacientes {
         patient.estado || patient.status || 'active'
     };
 
+    // Recalcular la edad a partir de la fecha de nacimiento
+    if (this.form.nacimiento) {
+      this.calcularEdad();
+    }
+
     this.modalOpen = true;
   }
 
