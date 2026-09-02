@@ -1,6 +1,9 @@
-
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import {
@@ -57,7 +60,6 @@ export class Roles implements OnInit {
       icon: string;
     }
   > = {
-
     Administrador: {
       color: 'var(--color-primary)',
       icon: 'admin_panel_settings'
@@ -72,7 +74,6 @@ export class Roles implements OnInit {
       color: 'var(--color-tertiary)',
       icon: 'supervisor_account'
     }
-
   };
 
   // =========================================================
@@ -81,15 +82,11 @@ export class Roles implements OnInit {
 
   roles: Rol[] = [];
 
-  usuariosGeneralesDisponibles: UsuarioAsociado[] = [];
-
   // =========================================================
   // SELECCIÓN
   // =========================================================
 
   selectedRole = '';
-
-  searchTerm = '';
 
   filtroEstadoUsuario:
     'Todos' |
@@ -101,6 +98,10 @@ export class Roles implements OnInit {
   // =========================================================
 
   mostrarFormularioRol = false;
+
+  modoFormulario: 'crear' | 'editar' = 'crear';
+
+  rolEditandoId: number | null = null;
 
   nuevoRol = {
     nombre: '',
@@ -123,7 +124,8 @@ export class Roles implements OnInit {
   // =========================================================
 
   constructor(
-    private readonly rolesService: RolesService
+    private readonly rolesService: RolesService,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   // =========================================================
@@ -131,9 +133,8 @@ export class Roles implements OnInit {
   // =========================================================
 
   ngOnInit(): void {
-
+    console.log('COMPONENTE ROLES INICIADO');
     this.cargarRoles();
-
   }
 
   // =========================================================
@@ -141,46 +142,47 @@ export class Roles implements OnInit {
   // =========================================================
 
   cargarRoles(): void {
+    console.log('CARGANDO ROLES...');
 
-    this.rolesService
-      .listarRoles()
-      .subscribe({
+    this.rolesService.listarRoles().subscribe({
+      next: (rolesApi: RolApi[]) => {
 
-        next: (rolesApi: RolApi[]) => {
+        console.log(
+          'ROLES RECIBIDOS DE LA API:',
+          rolesApi
+        );
 
-          this.roles =
-            rolesApi
-              .filter(
-                rol => rol.estado
-              )
-              .map(
-                rol =>
-                  this.convertirRol(rol)
-              );
+        this.roles = rolesApi.map(
+          rol => this.convertirRol(rol)
+        );
 
-          if (this.roles.length > 0) {
-
-            this.selectedRole =
-              this.roles[0].name;
-
-          }
-
-        },
-
-        error: (error: unknown) => {
-
-          console.error(
-            'Error al cargar los roles:',
-            error
-          );
-
-          this.mensajeError =
-            'No fue posible cargar los roles desde el servidor.';
-
+        if (this.roles.length > 0) {
+          this.selectedRole =
+            this.roles[0].name;
+        } else {
+          this.selectedRole = '';
         }
 
-      });
+        console.log(
+          'ROLES PARA MOSTRAR:',
+          this.roles
+        );
 
+        this.cdr.detectChanges();
+      },
+
+      error: (error: unknown) => {
+
+        console.error(
+          'Error al cargar los roles:',
+          error
+        );
+
+        this.mostrarError(
+          'No fue posible cargar los roles desde el servidor.'
+        );
+      }
+    });
   }
 
   // =========================================================
@@ -198,30 +200,14 @@ export class Roles implements OnInit {
       this.crearConfiguracionPorDefecto();
 
     return {
-
-      id:
-        rolApi.id_rol,
-
-      name:
-        rolApi.nombre,
-
-      color:
-        configuracion.color,
-
-      icon:
-        configuracion.icon,
-
-      userCount:
-        0,
-
-      description:
-        rolApi.descripcion,
-
-      usuariosAsociados:
-        []
-
+      id: rolApi.id_rol,
+      name: rolApi.nombre,
+      color: configuracion.color,
+      icon: configuracion.icon,
+      userCount: 0,
+      description: rolApi.descripcion,
+      usuariosAsociados: []
     };
-
   }
 
   // =========================================================
@@ -229,17 +215,10 @@ export class Roles implements OnInit {
   // =========================================================
 
   private crearConfiguracionPorDefecto() {
-
     return {
-
-      color:
-        'var(--color-primary)',
-
-      icon:
-        'badge'
-
+      color: 'var(--color-primary)',
+      icon: 'badge'
     };
-
   }
 
   // =========================================================
@@ -247,46 +226,10 @@ export class Roles implements OnInit {
   // =========================================================
 
   get selectedRoleObject(): Rol | undefined {
-
     return this.roles.find(
       role =>
-        role.name ===
-        this.selectedRole
+        role.name === this.selectedRole
     );
-
-  }
-
-  // =========================================================
-  // ROLES FILTRADOS
-  // =========================================================
-
-  get filteredRoles(): Rol[] {
-
-    const textoBusqueda =
-      this.searchTerm
-        .trim()
-        .toLowerCase();
-
-    if (!textoBusqueda) {
-
-      return this.roles;
-
-    }
-
-    return this.roles.filter(
-      role =>
-
-        role.name
-          .toLowerCase()
-          .includes(textoBusqueda)
-
-        ||
-
-        role.description
-          .toLowerCase()
-          .includes(textoBusqueda)
-    );
-
   }
 
   // =========================================================
@@ -297,16 +240,13 @@ export class Roles implements OnInit {
 
     const usuarios =
       this.selectedRoleObject
-        ?.usuariosAsociados ??
-      [];
+        ?.usuariosAsociados ?? [];
 
     if (
       this.filtroEstadoUsuario ===
       'Todos'
     ) {
-
       return usuarios;
-
     }
 
     return usuarios.filter(
@@ -314,7 +254,6 @@ export class Roles implements OnInit {
         usuario.estado ===
         this.filtroEstadoUsuario
     );
-
   }
 
   // =========================================================
@@ -332,27 +271,54 @@ export class Roles implements OnInit {
       'Todos';
 
     this.limpiarMensajes();
-
   }
 
   // =========================================================
-  // ABRIR FORMULARIO
+  // ABRIR FORMULARIO CREAR
   // =========================================================
 
   abrirNuevoRol(): void {
+
+    this.modoFormulario =
+      'crear';
+
+    this.rolEditandoId =
+      null;
 
     this.mostrarFormularioRol =
       true;
 
     this.nuevoRol = {
-
       nombre: '',
       descripcion: ''
-
     };
 
     this.limpiarMensajes();
+  }
 
+  // =========================================================
+  // ABRIR FORMULARIO EDITAR
+  // =========================================================
+
+  editarRol(
+    rol: Rol
+  ): void {
+
+    this.modoFormulario =
+      'editar';
+
+    this.rolEditandoId =
+      rol.id;
+
+    this.nuevoRol = {
+      nombre: rol.name,
+      descripcion: rol.description
+    };
+
+    this.mostrarFormularioRol =
+      true;
+
+    this.limpiarMensajes();
   }
 
   // =========================================================
@@ -364,6 +330,32 @@ export class Roles implements OnInit {
     this.mostrarFormularioRol =
       false;
 
+    this.rolEditandoId =
+      null;
+
+    this.modoFormulario =
+      'crear';
+
+    this.limpiarFormulario();
+  }
+
+  // =========================================================
+  // GUARDAR ROL
+  // =========================================================
+
+  guardarRol(): void {
+
+    if (
+      this.modoFormulario ===
+      'editar'
+    ) {
+
+      this.actualizarRol();
+
+      return;
+    }
+
+    this.crearRol();
   }
 
   // =========================================================
@@ -373,12 +365,10 @@ export class Roles implements OnInit {
   crearRol(): void {
 
     const nombre =
-      this.nuevoRol.nombre
-        .trim();
+      this.nuevoRol.nombre.trim();
 
     const descripcion =
-      this.nuevoRol.descripcion
-        .trim();
+      this.nuevoRol.descripcion.trim();
 
     // =====================================================
     // VALIDAR NOMBRE
@@ -391,7 +381,6 @@ export class Roles implements OnInit {
       );
 
       return;
-
     }
 
     // =====================================================
@@ -405,7 +394,6 @@ export class Roles implements OnInit {
       );
 
       return;
-
     }
 
     // =====================================================
@@ -415,8 +403,7 @@ export class Roles implements OnInit {
     const existe =
       this.roles.some(
         rol =>
-          rol.name
-            .toLowerCase() ===
+          rol.name.toLowerCase() ===
           nombre.toLowerCase()
       );
 
@@ -427,7 +414,6 @@ export class Roles implements OnInit {
       );
 
       return;
-
     }
 
     // =====================================================
@@ -435,13 +421,9 @@ export class Roles implements OnInit {
     // =====================================================
 
     const nuevoRolApi = {
-
       nombre,
-
       descripcion,
-
       estado: true
-
     };
 
     this.rolesService
@@ -450,36 +432,10 @@ export class Roles implements OnInit {
 
         next: (rolCreado: RolApi) => {
 
-          const configuracion =
-            this.CONFIGURACION_ROLES[
-              rolCreado.nombre
-            ] ??
-            this.crearConfiguracionPorDefecto();
-
-          const nuevoRol: Rol = {
-
-            id:
-              rolCreado.id_rol,
-
-            name:
-              rolCreado.nombre,
-
-            color:
-              configuracion.color,
-
-            icon:
-              configuracion.icon,
-
-            userCount:
-              0,
-
-            description:
-              rolCreado.descripcion,
-
-            usuariosAsociados:
-              []
-
-          };
+          const nuevoRol =
+            this.convertirRol(
+              rolCreado
+            );
 
           this.roles.push(
             nuevoRol
@@ -491,7 +447,6 @@ export class Roles implements OnInit {
           this.finalizarCreacionRol(
             nuevoRol
           );
-
         },
 
         error: (error: unknown) => {
@@ -504,11 +459,221 @@ export class Roles implements OnInit {
           this.mostrarError(
             'No fue posible crear el rol en el servidor.'
           );
-
         }
-
       });
+  }
 
+  // =========================================================
+  // ACTUALIZAR ROL
+  // =========================================================
+
+  actualizarRol(): void {
+
+    if (
+      this.rolEditandoId === null
+    ) {
+
+      this.mostrarError(
+        'No se encontró el rol que desea editar.'
+      );
+
+      return;
+    }
+
+    const nombre =
+      this.nuevoRol.nombre.trim();
+
+    const descripcion =
+      this.nuevoRol.descripcion.trim();
+
+    // =====================================================
+    // VALIDAR NOMBRE
+    // =====================================================
+
+    if (!nombre) {
+
+      this.mostrarError(
+        'Debe ingresar un nombre para el rol.'
+      );
+
+      return;
+    }
+
+    // =====================================================
+    // VALIDAR DESCRIPCIÓN
+    // =====================================================
+
+    if (!descripcion) {
+
+      this.mostrarError(
+        'Debe ingresar una descripción para el rol.'
+      );
+
+      return;
+    }
+
+    // =====================================================
+    // VERIFICAR NOMBRE DUPLICADO
+    // =====================================================
+
+    const existe =
+      this.roles.some(
+        rol =>
+          rol.id !== this.rolEditandoId &&
+          rol.name.toLowerCase() ===
+          nombre.toLowerCase()
+      );
+
+    if (existe) {
+
+      this.mostrarError(
+        'Ya existe otro rol con ese nombre.'
+      );
+
+      return;
+    }
+
+    // =====================================================
+    // ACTUALIZAR ROL EN LA BASE DE DATOS
+    // =====================================================
+
+    const rolActualizado = {
+      nombre,
+      descripcion
+    };
+
+    this.rolesService
+      .actualizarRol(
+        this.rolEditandoId,
+        rolActualizado
+      )
+      .subscribe({
+
+        next: (rolApi: RolApi) => {
+
+          const indice =
+            this.roles.findIndex(
+              rol =>
+                rol.id ===
+                this.rolEditandoId
+            );
+
+          if (indice !== -1) {
+
+            this.roles[indice] =
+              this.convertirRol(
+                rolApi
+              );
+          }
+
+          this.selectedRole =
+            rolApi.nombre;
+
+          this.finalizarActualizacionRol(
+            rolApi
+          );
+        },
+
+        error: (error: unknown) => {
+
+          console.error(
+            'Error al actualizar el rol:',
+            error
+          );
+
+          this.mostrarError(
+            'No fue posible actualizar el rol en el servidor.'
+          );
+        }
+      });
+  }
+
+  // =========================================================
+  // ELIMINAR ROL
+  // =========================================================
+
+  eliminarRol(
+    rol: Rol
+  ): void {
+
+    const confirmar =
+      confirm(
+        `¿Está seguro de eliminar el rol "${rol.name}"?`
+      );
+
+    if (!confirmar) {
+      return;
+    }
+
+    // =====================================================
+    // ELIMINAR ROL EN LA BASE DE DATOS
+    // =====================================================
+
+    this.rolesService
+      .eliminarRol(rol.id)
+      .subscribe({
+
+        next: () => {
+
+          const indice =
+            this.roles.findIndex(
+              item =>
+                item.id === rol.id
+            );
+
+          if (indice !== -1) {
+
+            this.roles.splice(
+              indice,
+              1
+            );
+          }
+
+          // ===============================================
+          // ACTUALIZAR ROL SELECCIONADO
+          // ===============================================
+
+          if (
+            this.selectedRole ===
+            rol.name
+          ) {
+
+            if (
+              this.roles.length > 0
+            ) {
+
+              this.selectedRole =
+                this.roles[0].name;
+
+            } else {
+
+              this.selectedRole =
+                '';
+            }
+          }
+
+          this.mostrarExito(
+            `El rol "${rol.name}" fue eliminado correctamente.`
+          );
+
+          this.ultimoRegistroAuditoria =
+            `Rol eliminado el ${this.obtenerFechaActual()}.`;
+
+          this.cdr.detectChanges();
+        },
+
+        error: (error: unknown) => {
+
+          console.error(
+            'Error al eliminar el rol:',
+            error
+          );
+
+          this.mostrarError(
+            'No fue posible eliminar el rol. Verifique si tiene usuarios asociados.'
+          );
+        }
+      });
   }
 
   // =========================================================
@@ -530,6 +695,29 @@ export class Roles implements OnInit {
 
     this.limpiarFormulario();
 
+    this.cdr.detectChanges();
+  }
+
+  // =========================================================
+  // FINALIZAR ACTUALIZACIÓN
+  // =========================================================
+
+  private finalizarActualizacionRol(
+    rolApi: RolApi
+  ): void {
+
+    this.cerrarFormularioRol();
+
+    this.mostrarExito(
+      `El rol "${rolApi.nombre}" fue actualizado correctamente.`
+    );
+
+    this.ultimoRegistroAuditoria =
+      `Rol actualizado el ${this.obtenerFechaActual()}.`;
+
+    this.limpiarFormulario();
+
+    this.cdr.detectChanges();
   }
 
   // =========================================================
@@ -541,40 +729,14 @@ export class Roles implements OnInit {
   ): void {
 
     alert(
-
       [
-
         'Detalle del usuario',
-
         '',
-
         `Nombre: ${usuario.name}`,
-
         `Correo: ${usuario.email}`,
-
         `Estado: ${usuario.estado.toUpperCase()}`
-
       ].join('\n')
-
     );
-
-  }
-
-  // =========================================================
-  // BÚSQUEDA
-  // =========================================================
-
-  onSearch(
-    event: Event
-  ): void {
-
-    const input =
-      event.target as
-      HTMLInputElement;
-
-    this.searchTerm =
-      input.value;
-
   }
 
   // =========================================================
@@ -590,7 +752,6 @@ export class Roles implements OnInit {
 
     this.mensajeExito =
       '';
-
   }
 
   // =========================================================
@@ -609,14 +770,11 @@ export class Roles implements OnInit {
 
     setTimeout(
       () => {
-
         this.mensajeExito =
           '';
-
       },
       4000
     );
-
   }
 
   // =========================================================
@@ -630,7 +788,6 @@ export class Roles implements OnInit {
 
     this.mensajeExito =
       '';
-
   }
 
   // =========================================================
@@ -640,12 +797,9 @@ export class Roles implements OnInit {
   private limpiarFormulario(): void {
 
     this.nuevoRol = {
-
       nombre: '',
       descripcion: ''
-
     };
-
   }
 
   // =========================================================
@@ -653,11 +807,6 @@ export class Roles implements OnInit {
   // =========================================================
 
   private obtenerFechaActual(): string {
-
-    return new Date()
-      .toLocaleString();
-
+    return new Date().toLocaleString();
   }
-
 }
-

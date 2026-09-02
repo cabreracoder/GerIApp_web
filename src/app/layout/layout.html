@@ -7,15 +7,11 @@
 
     <!-- LOGOTIPO -->
     <div class="layout-logo-container">
-
       <div class="layout-logo">
-
         <span class="material-symbols-outlined">
           health_and_safety
         </span>
-
       </div>
-
     </div>
 
 
@@ -30,7 +26,6 @@
         class="layout-menu-button"
         [attr.title]="item.nombre"
       >
-
         <span class="material-symbols-outlined">
           {{ item.icono }}
         </span>
@@ -38,7 +33,6 @@
         <span class="layout-menu-tooltip">
           {{ item.nombre }}
         </span>
-
       </a>
 
     </nav>
@@ -55,7 +49,6 @@
         class="layout-menu-button"
         [attr.title]="configuracion.nombre"
       >
-
         <span class="material-symbols-outlined">
           {{ configuracion.icono }}
         </span>
@@ -63,7 +56,6 @@
         <span class="layout-menu-tooltip">
           {{ configuracion.nombre }}
         </span>
-
       </a>
 
 
@@ -74,7 +66,6 @@
         [attr.title]="textoCerrarSesion"
         (click)="cerrarSesion()"
       >
-
         <span class="material-symbols-outlined">
           logout
         </span>
@@ -82,7 +73,6 @@
         <span class="layout-menu-tooltip">
           {{ textoCerrarSesion }}
         </span>
-
       </button>
 
     </div>
@@ -95,10 +85,8 @@
        ===================================================== -->
   <div class="layout-main-container">
 
-
     <!-- ENCABEZADO -->
     <header class="layout-header">
-
 
       <!-- PARTE IZQUIERDA -->
       <div class="layout-header-left">
@@ -128,7 +116,6 @@
       <!-- PARTE DERECHA -->
       <div class="layout-header-right">
 
-
         <!-- NOTIFICACIONES -->
         <button
           type="button"
@@ -136,13 +123,11 @@
           title="Notificaciones"
           routerLink="/notificaciones"
         >
-
           <span class="material-symbols-outlined">
             notifications
           </span>
 
           <span class="layout-notification-dot"></span>
-
         </button>
 
 
@@ -164,7 +149,6 @@
             </span>
 
           </div>
-
 
           <div class="layout-avatar">
             {{ inicialesUsuario }}

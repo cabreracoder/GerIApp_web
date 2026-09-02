@@ -377,6 +377,29 @@
   font-size: var(--icon-size-sm);
 }
 
+/* =========================================================
+   BOTONES DE ACCIONES DEL ROL
+========================================================= */
+
+.role-card-actions {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 12px;
+
+  margin-top: var(--spacing-md);
+
+}
+
+.role-card-actions .small-button {
+
+  margin: 0;
+
+}
 
 /* =========================================================
    PANEL DE DETALLE

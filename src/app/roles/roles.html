@@ -1,4 +1,3 @@
-
 <main class="pagina" role="main">
 
   <!-- ===================================================== -->
@@ -46,7 +45,7 @@
 
 
   <!-- ===================================================== -->
-  <!-- FORMULARIO CREAR ROL -->
+  <!-- FORMULARIO CREAR / EDITAR ROL -->
   <!-- ===================================================== -->
 
   <section
@@ -54,18 +53,20 @@
     class="new-role-card"
   >
 
-    <!-- CABECERA -->
-
     <div class="new-role-header">
 
       <div>
 
         <h3>
-          Crear nuevo rol
+          {{ modoFormulario === 'crear'
+            ? 'Crear nuevo rol'
+            : 'Editar rol' }}
         </h3>
 
         <p>
-          Define el nombre y la descripción del nuevo rol.
+          {{ modoFormulario === 'crear'
+            ? 'Define el nombre y la descripción del nuevo rol.'
+            : 'Modifica el nombre y la descripción del rol seleccionado.' }}
         </p>
 
       </div>
@@ -86,13 +87,9 @@
     </div>
 
 
-    <!-- =================================================== -->
     <!-- DATOS DEL ROL -->
-    <!-- =================================================== -->
 
     <div class="form-grid">
-
-      <!-- NOMBRE -->
 
       <div class="form-field">
 
@@ -109,8 +106,6 @@
 
       </div>
 
-
-      <!-- DESCRIPCIÓN -->
 
       <div class="form-field">
 
@@ -130,9 +125,7 @@
     </div>
 
 
-    <!-- =================================================== -->
     <!-- ACCIONES -->
-    <!-- =================================================== -->
 
     <div class="form-actions">
 
@@ -141,23 +134,23 @@
         class="secondary-button"
         (click)="cerrarFormularioRol()"
       >
-
         Cancelar
-
       </button>
 
 
       <button
         type="button"
         class="primary-button"
-        (click)="crearRol()"
+        (click)="guardarRol()"
       >
 
         <span class="material-symbols-outlined">
-          add
+          {{ modoFormulario === 'crear' ? 'add' : 'save' }}
         </span>
 
-        Crear rol
+        {{ modoFormulario === 'crear'
+          ? 'Crear rol'
+          : 'Guardar cambios' }}
 
       </button>
 
@@ -189,11 +182,11 @@
     >
 
       <!-- ================================================= -->
-      <!-- TARJETA DE ROL -->
+      <!-- TARJETAS DE ROLES -->
       <!-- ================================================= -->
 
       <article
-        *ngFor="let role of filteredRoles"
+        *ngFor="let role of roles"
         class="role-card"
         [class.selected]="role.name === selectedRole"
         [style.--role-color]="role.color"
@@ -266,6 +259,44 @@
           {{ role.description }}
         </p>
 
+
+        <!-- ================================================= -->
+        <!-- ACCIONES DEL ROL -->
+        <!-- ================================================= -->
+
+        <div class="role-card-actions">
+
+          <button
+            type="button"
+            class="small-button"
+            (click)="$event.stopPropagation(); editarRol(role)"
+          >
+
+            <span class="material-symbols-outlined">
+              edit
+            </span>
+
+            Editar
+
+          </button>
+
+
+          <button
+            type="button"
+            class="small-button delete-button"
+            (click)="$event.stopPropagation(); eliminarRol(role)"
+          >
+
+            <span class="material-symbols-outlined">
+              delete
+            </span>
+
+            Eliminar
+
+          </button>
+
+        </div>
+
       </article>
 
     </section>
@@ -285,9 +316,7 @@
       class="detail-panel"
     >
 
-      <!-- ================================================= -->
       <!-- INFORMACIÓN DEL ROL -->
-      <!-- ================================================= -->
 
       <section class="detail-info-card">
 
@@ -392,8 +421,6 @@
             class="user-item"
           >
 
-            <!-- DATOS DEL USUARIO -->
-
             <div class="user-data">
 
               <div class="user-avatar">
@@ -415,8 +442,6 @@
 
             </div>
 
-
-            <!-- ACCIONES -->
 
             <div class="user-actions">
 
@@ -503,4 +528,3 @@
   </ng-container>
 
 </main>
-
