@@ -30,6 +30,11 @@ from .models import (
     AsignacionPacienteCuidador,
     Turnos,
     AsignacionTurnoUsuario,
+    Permisos,
+    PermisosRol,
+    FamiliarResponsable,
+    PerfilProfesional,
+    DisponibilidadUsuario,
 )
 
 from .serializers import (
@@ -62,6 +67,11 @@ from .serializers import (
     AsignacionPacienteCuidadorSerializer,
     TurnosSerializer,
     AsignacionTurnoUsuarioSerializer,
+    PermisosSerializer,
+    PermisosRolSerializer,
+    FamiliarResponsableSerializer,
+    PerfilProfesionalSerializer,
+    DisponibilidadUsuarioSerializer,
 )
 
 
@@ -208,3 +218,25 @@ class TurnosViewSet(viewsets.ModelViewSet):
 class AsignacionTurnoUsuarioViewSet(viewsets.ModelViewSet):
     queryset = AsignacionTurnoUsuario.objects.all()
     serializer_class = AsignacionTurnoUsuarioSerializer
+
+class PermisosViewSet(viewsets.ModelViewSet):
+    queryset =Permisos.objects.all()
+    serializer_class =PermisosSerializer
+
+class PermisosRolViewSet(viewsets.ModelViewSet):
+    queryset=PermisosRol.objects.all()
+    serializer_class=PermisosRolSerializer
+
+class FamiliarResponsableViewSet(viewsets.ModelViewSet):
+    queryset = FamiliarResponsable.objects.all()
+    serializer_class = FamiliarResponsableSerializer
+
+
+class PerfilProfesionalViewSet(viewsets.ModelViewSet):
+    queryset = PerfilProfesional.objects.all()
+    serializer_class = PerfilProfesionalSerializer
+
+
+class DisponibilidadUsuarioViewSet(viewsets.ModelViewSet):
+    queryset = DisponibilidadUsuario.objects.all()
+    serializer_class = DisponibilidadUsuarioSerializer

@@ -35,20 +35,6 @@
   margin-bottom: var(--spacing-lg);
 }
 
-.page-title {
-  margin: 0;
-  font-family: var(--font-heading-family);
-  font-size: var(--font-size-h1);
-  font-weight: var(--font-weight-bold);
-  line-height: 1.15;
-}
-
-.page-subtitle {
-  margin: var(--spacing-xs) 0 0;
-  color: var(--text-secondary);
-  font-size: var(--font-size-sm);
-}
-
 
 /* =========================================================
    TÍTULOS DE SECCIÓN

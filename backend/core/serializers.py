@@ -30,6 +30,11 @@ from .models import (
     AsignacionPacienteCuidador,
     Turnos,
     AsignacionTurnoUsuario,
+    Permisos,
+    PermisosRol,
+    FamiliarResponsable,
+    PerfilProfesional,
+    DisponibilidadUsuario,
 )
 
 
@@ -204,4 +209,31 @@ class TurnosSerializer(serializers.ModelSerializer):
 class AsignacionTurnoUsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = AsignacionTurnoUsuario
+        fields = '__all__'
+
+class PermisosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Permisos
+        fields = '__all__'
+
+class PermisosRolSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PermisosRol
+        fields = '__all__'
+
+class FamiliarResponsableSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FamiliarResponsable
+        fields = '__all__'
+
+
+class PerfilProfesionalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PerfilProfesional
+        fields = '__all__'
+
+
+class DisponibilidadUsuarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DisponibilidadUsuario
         fields = '__all__'
