@@ -160,34 +160,28 @@ this.cargarRoles();
 // CARGAR PERMISOS
 // =========================================================
 
-cargarPermisos(): void {
+ cargarPermisos(): void {
 
+  console.log('Consultando permisos...');
 
-this.rolesService
-  .listarPermisos()
-  .subscribe({
+  this.rolesService.listarPermisos().subscribe({
 
     next: (permisos: PermisoApi[]) => {
 
-      this.permisosDisponibles =
-        permisos.filter(
-          permiso => permiso.estado
-        );
+      console.log('PERMISOS RECIBIDOS DESDE LA API:', permisos);
 
-      /*
-       * Si los roles ya fueron cargados antes
-       * que los permisos, volvemos a cargar
-       * los permisos del rol seleccionado.
-       */
+      this.permisosDisponibles = permisos;
 
-      const rol =
-        this.selectedRoleObject;
+      console.log(
+        'PERMISOS DISPONIBLES:',
+        this.permisosDisponibles
+      );
+
+      const rol = this.selectedRoleObject;
 
       if (rol) {
 
-        this.cargarPermisosDelRol(
-          rol.id
-        );
+        this.cargarPermisosDelRol(rol.id);
 
       }
 
@@ -196,17 +190,17 @@ this.rolesService
     error: (error: unknown) => {
 
       console.error(
-        'Error al cargar los permisos:',
+        'ERROR AL CARGAR PERMISOS:',
         error
       );
 
-      this.mensajeError =
-        'No fue posible cargar los permisos desde el servidor.';
+      this.mostrarError(
+        'No fue posible cargar los permisos desde el servidor.'
+      );
 
     }
 
   });
-
 
 }
 
@@ -544,30 +538,6 @@ this.mostrarFormularioRol =
 // =========================================================
 // SELECCIONAR PERMISO PARA NUEVO ROL
 // =========================================================
-
-togglePermisoNuevoRol(
-idPermiso: number
-): void {
-
-
-const indice =
-  this.nuevoRol.permisos
-    .indexOf(idPermiso);
-
-if (indice === -1) {
-
-  this.nuevoRol.permisos
-    .push(idPermiso);
-
-} else {
-
-  this.nuevoRol.permisos
-    .splice(indice, 1);
-
-}
-
-
-}
 
 toggleNuevoPermiso(idPermiso: number): void {
 
