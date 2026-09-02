@@ -1,1270 +1,1292 @@
-```html
-<div class="p-8">
+<div class="px-8 pt-4 pb-8">
 
-    <!-- =========================================================
-         ENCABEZADO
-    ========================================================= -->
+<!-- =========================================================
+     ENCABEZADO
+========================================================= -->
 
-    <div class="flex justify-between items-center mb-8">
+<div class="flex justify-between items-center mb-8">
 
-        <div>
-            <h1 class="text-3xl font-bold text-[#212529]">
-                Gestión de Pacientes
-            </h1>
+    <div>
+        <h1 class="text-3xl font-bold text-[#212529]">
+            Gestión de Pacientes
+        </h1>
 
-            <p class="text-[#6C757D] mt-1">
-                Administración y registro de pacientes
-            </p>
-        </div>
-
-        <button
-            type="button"
-            (click)="openModal('new')"
-            class="px-5 py-3 rounded-lg
-                   border border-[#3B5BDB]
-                   bg-[#3B5BDB] text-white
-                   hover:bg-[#324EC7] transition"
-        >
-            + Nuevo Paciente
-        </button>
-
-    </div>
-
-
-    <!-- =========================================================
-         CONTADOR
-    ========================================================= -->
-
-    <div class="mb-5">
-
-        <p class="text-sm text-[#6C757D]">
-            Pacientes registrados:
-
-            <span class="font-semibold text-[#212529]">
-                {{ filteredPatients.length }}
-            </span>
+        <p class="text-[#6C757D] mt-1">
+            Administración y registro de pacientes
         </p>
-
     </div>
 
+    <button
+        type="button"
+        (click)="openModal('new')"
+        class="px-5 py-3 rounded-lg
+               border border-[#3B5BDB]
+               bg-[#3B5BDB] text-white
+               hover:bg-[#324EC7] transition"
+    >
+        + Nuevo Paciente
+    </button>
 
-    <!-- =========================================================
-         TABLA
-    ========================================================= -->
-
-    <div class="overflow-x-auto">
-
-        <table class="w-full border-separate border-spacing-y-2">
-
-            <thead>
-
-                <tr class="bg-[#3B5BDB]">
-
-                    <th class="px-5 py-4 text-left text-sm font-semibold !text-white rounded-l-lg">
-                        Paciente
-                    </th>
-
-                    <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
-                        Documento
-                    </th>
-
-                    <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
-                        Edad
-                    </th>
-
-                    <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
-                        EPS
-                    </th>
-
-                    <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
-                        Fecha de ingreso
-                    </th>
-
-                    <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
-                        Estado
-                    </th>
-
-                    <th class="px-5 py-4 text-center text-sm font-semibold !text-white rounded-r-lg">
-                        Acciones
-                    </th>
-
-                </tr>
-
-            </thead>
+</div>
 
 
-            <tbody>
+<!-- =========================================================
+     BUSCADOR
+========================================================= -->
 
-                <tr *ngIf="filteredPatients.length === 0">
+<div class="mb-5">
 
-                    <td
-                        colspan="7"
-                        class="px-5 py-12 text-center text-[#6C757D]"
-                    >
-                        No se encontraron pacientes.
-                    </td>
-
-                </tr>
-
-
-                <tr
-                    *ngFor="let patient of filteredPatients"
-                    class="bg-[#F4F7FF]"
-                >
-
-                    <td class="px-5 py-4 rounded-l-lg">
-
-                        <div
-                            class="inline-flex items-center
-                                   px-4 py-2
-                                   bg-white
-                                   border border-[#D9E0F2]
-                                   rounded-lg
-                                   text-[#212529]
-                                   font-medium"
-                        >
-                            {{ patient.name }}
-                        </div>
-
-                    </td>
-
-
-                    <td class="px-5 py-4 text-sm text-[#495057]">
-                        {{ patient.doc }}
-                    </td>
-
-
-                    <td class="px-5 py-4 text-sm text-[#495057]">
-                        {{ patient.age }} años
-                    </td>
-
-
-                    <td class="px-5 py-4 text-sm text-[#495057]">
-                        -
-                    </td>
-
-
-                    <td class="px-5 py-4 text-sm text-[#495057]">
-                        -
-                    </td>
-
-
-                    <td class="px-5 py-4">
-
-                        <span
-                            class="inline-flex items-center
-                                   px-3 py-1
-                                   bg-white
-                                   border border-[#D9E0F2]
-                                   rounded-lg
-                                   text-sm text-[#495057]"
-                        >
-                            {{ patient.status }}
-                        </span>
-
-                    </td>
-
-
-                    <td class="px-5 py-4 rounded-r-lg">
-
-                        <div class="flex justify-center gap-2">
-
-                            <button
-                                type="button"
-                                (click)="viewPatient(patient.id)"
-                                class="px-3 py-2 rounded-lg
-                                       border border-[#D9E0F2]
-                                       bg-white
-                                       text-[#3B5BDB]
-                                       text-sm
-                                       hover:bg-[#F4F7FF]"
-                            >
-                                Ver
-                            </button>
-
-                            <button
-                                type="button"
-                                (click)="openModal('edit', patient.id)"
-                                class="px-3 py-2 rounded-lg
-                                       border border-[#D9E0F2]
-                                       bg-white
-                                       text-[#3B5BDB]
-                                       text-sm
-                                       hover:bg-[#F4F7FF]"
-                            >
-                                Editar
-                            </button>
-
-                            <button
-                                type="button"
-                                (click)="deletePatient(patient.id)"
-                                class="px-3 py-2 rounded-lg
-                                       border border-[#D9E0F2]
-                                       bg-white
-                                       text-[#DC3545]
-                                       text-sm
-                                       hover:bg-[#FFF5F5]"
-                            >
-                                Eliminar
-                            </button>
-
-                        </div>
-
-                    </td>
-
-                </tr>
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-
-    <!-- =========================================================
-         MODAL NUEVO / EDITAR PACIENTE
-    ========================================================= -->
-
-    <div
-        class="fondo-modal"
-        [class.abierto]="modalOpen"
-        (click)="closeOnBackdrop($event)"
+    <input
+        type="text"
+        [(ngModel)]="searchText"
+        placeholder="Buscar paciente por nombre o documento"
+        class="w-full max-w-md
+               px-4 py-3
+               border border-[#D9E0F2]
+               rounded-lg
+               bg-white
+               text-[#212529]
+               placeholder-[#6C757D]
+               focus:outline-none
+               focus:border-[#3B5BDB]"
     >
 
-        <div
-            class="ventana-modal"
-            (click)="$event.stopPropagation()"
-        >
+</div>
 
-            <div class="encabezado-modal">
 
-                <h3>
-                    {{ modalTitle }}
-                </h3>
+<!-- =========================================================
+     CONTADOR
+========================================================= -->
 
-                <button
-                    class="boton-cerrar"
-                    type="button"
-                    (click)="closeModal()"
-                >
-                    <span class="material-symbols-outlined">
-                        close
-                    </span>
-                </button>
+<div class="mb-5">
 
-            </div>
+    <p class="text-sm text-[#6C757D]">
+        Pacientes registrados:
 
+        <span class="font-semibold text-[#212529]">
+            {{ filteredPatients.length }}
+        </span>
+    </p>
 
-            <div class="cuerpo-modal">
+</div>
 
-                <!-- =================================================
-                     DATOS DEL PACIENTE
-                ================================================== -->
 
-                <div class="seccion-formulario">
-                    Datos del paciente
-                </div>
+<!-- =========================================================
+     TABLA
+========================================================= -->
 
+<div class="overflow-x-auto">
 
-                <div class="rejilla-formulario">
+    <table class="w-full border-separate border-spacing-y-2">
 
-                    <!-- NOMBRES -->
+        <thead>
 
-                    <div class="campo-formulario">
+            <tr class="bg-[#3B5BDB]">
 
-                        <label class="etiqueta-formulario">
-                            Nombres
-                        </label>
+                <th class="px-5 py-4 text-left text-sm font-semibold !text-white rounded-l-lg">
+                    Paciente
+                </th>
 
-                        <input
-                            class="campo-entrada"
-                            type="text"
-                            [(ngModel)]="form.nombre"
-                            placeholder="Nombres"
-                        >
+                <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
+                    Documento
+                </th>
 
-                    </div>
+                <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
+                    Edad
+                </th>
 
+                <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
+                    EPS
+                </th>
 
-                    <!-- APELLIDOS -->
+                <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
+                    Fecha de ingreso
+                </th>
 
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Apellidos
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            type="text"
-                            [(ngModel)]="form.apellidos"
-                            placeholder="Apellidos"
-                        >
-
-                    </div>
-
-
-                    <!-- TIPO DE IDENTIFICACION -->
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Tipo de identificación
-                        </label>
-
-                        <select
-                            class="campo-entrada"
-                            [(ngModel)]="form.tipoIdentificacion"
-                        >
-
-                            <option value="">
-                                Seleccione
-                            </option>
-
-                            <option value="CC">
-                                C.C
-                            </option>
-
-                            <option value="CE">
-                                C. Extranjería
-                            </option>
-
-                            <option value="Pasaporte">
-                                Pasaporte
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <!-- NUMERO DE DOCUMENTO -->
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Número de documento
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            type="text"
-                            [(ngModel)]="form.documento"
-                            placeholder="Número de documento"
-                        >
-
-                    </div>
-
-
-                    <!-- FECHA DE NACIMIENTO -->
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Fecha de nacimiento
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            type="date"
-                            [(ngModel)]="form.nacimiento"
-                        >
-
-                    </div>
-
-
-                    <!-- EDAD -->
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Edad
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            type="number"
-                            [(ngModel)]="form.edad"
-                            readonly
-                        >
-
-                    </div>
-
-
-                    <!-- GENERO -->
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Género
-                        </label>
-
-                        <select
-                            class="campo-entrada"
-                            [(ngModel)]="form.genero"
-                        >
-
-                            <option value="">
-                                Seleccione
-                            </option>
-
-                            <option value="Masculino">
-                                Masculino
-                            </option>
-
-                            <option value="Femenino">
-                                Femenino
-                            </option>
-
-                            <option value="Otro">
-                                Otro
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <!-- GRUPO SANGUINEO -->
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Grupo sanguíneo
-                        </label>
-
-                        <select
-                            class="campo-entrada"
-                            [(ngModel)]="form.grupoSanguineo"
-                        >
-
-                            <option value="">
-                                Seleccione
-                            </option>
-
-                            <option value="A">
-                                A
-                            </option>
-
-                            <option value="B">
-                                B
-                            </option>
-
-                            <option value="AB">
-                                AB
-                            </option>
-
-                            <option value="O">
-                                O
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <!-- RH -->
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            RH
-                        </label>
-
-                        <select
-                            class="campo-entrada"
-                            [(ngModel)]="form.rh"
-                        >
-
-                            <option value="">
-                                Seleccione
-                            </option>
-
-                            <option value="+">
-                                +
-                            </option>
-
-                            <option value="-">
-                                -
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <!-- EPS -->
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            EPS
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            type="text"
-                            [(ngModel)]="form.eps"
-                            placeholder="EPS"
-                        >
-
-                    </div>
-
-
-                    <!-- FECHA DE INGRESO -->
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Fecha de ingreso
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            type="date"
-                            [(ngModel)]="form.fechaIngreso"
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <!-- =================================================
-                     FAMILIAR RESPONSABLE
-                ================================================== -->
-
-                <div class="seccion-formulario">
-                    Familiar responsable
-                </div>
-
-
-                <div class="rejilla-formulario">
-
-                    <!-- NOMBRES -->
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Nombres
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            type="text"
-                            [(ngModel)]="form.familiarNombres"
-                            placeholder="Nombres"
-                        >
-
-                    </div>
-
-
-                    <!-- APELLIDOS -->
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Apellidos
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            type="text"
-                            [(ngModel)]="form.familiarApellidos"
-                            placeholder="Apellidos"
-                        >
-
-                    </div>
-
-
-                    <!-- PARENTESCO -->
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Parentesco
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            type="text"
-                            [(ngModel)]="form.parentesco"
-                            placeholder="Parentesco"
-                        >
-
-                    </div>
-
-
-                    <!-- TELEFONO 1 -->
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Teléfono 1
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            type="tel"
-                            [(ngModel)]="form.telefono1"
-                            placeholder="Teléfono"
-                        >
-
-                    </div>
-
-
-                    <!-- TELEFONO 2 -->
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Teléfono 2
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            type="tel"
-                            [(ngModel)]="form.telefono2"
-                            placeholder="Teléfono"
-                        >
-
-                    </div>
-
-
-                    <!-- DIRECCION -->
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Dirección
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            type="text"
-                            [(ngModel)]="form.direccion"
-                            placeholder="Dirección"
-                        >
-
-                    </div>
-
-
-                    <!-- CORREO -->
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Correo electrónico
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            type="email"
-                            [(ngModel)]="form.correoElectronico"
-                            placeholder="correo@ejemplo.com"
-                        >
-
-                    </div>
-
-
-                    <!-- MUNICIPIO -->
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Municipio
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            type="text"
-                            [(ngModel)]="form.municipio"
-                            placeholder="Municipio"
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <!-- =================================================
-                     UBICACION
-                ================================================== -->
-
-                <div class="seccion-formulario">
-                    Ubicación
-                </div>
-
-
-                <div class="rejilla-formulario">
-
-                    <!-- SEDE -->
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Sede
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            type="text"
-                            [(ngModel)]="form.sede"
-                            placeholder="Sede"
-                        >
-
-                    </div>
-
-
-                    <!-- HABITACION -->
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Habitación
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            type="text"
-                            [(ngModel)]="form.habitacion"
-                            placeholder="Habitación"
-                        >
-
-                    </div>
-
-
-                    <!-- CAMA -->
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Cama
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            type="text"
-                            [(ngModel)]="form.cama"
-                            placeholder="Cama"
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <!-- =================================================
-                     ESTADO
-                ================================================== -->
-
-                <div class="seccion-formulario">
+                <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
                     Estado
+                </th>
+
+                <th class="px-5 py-4 text-center text-sm font-semibold !text-white rounded-r-lg">
+                    Acciones
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            <tr *ngIf="filteredPatients.length === 0">
+
+                <td
+                    colspan="7"
+                    class="px-5 py-12 text-center text-[#6C757D]"
+                >
+                    No se encontraron pacientes.
+                </td>
+
+            </tr>
+
+
+            <tr
+                *ngFor="let patient of filteredPatients"
+                class="bg-[#F4F7FF]"
+            >
+
+                <td class="px-5 py-4 rounded-l-lg">
+
+                    <div
+                        class="inline-flex items-center
+                               px-4 py-2
+                               bg-white
+                               border border-[#D9E0F2]
+                               rounded-lg
+                               text-[#212529]
+                               font-medium"
+                    >
+                        {{ patient.name }}
+                    </div>
+
+                </td>
+
+
+                <td class="px-5 py-4 text-sm text-[#495057]">
+                    {{ patient.doc }}
+                </td>
+
+
+                <td class="px-5 py-4 text-sm text-[#495057]">
+                    {{ patient.age }} años
+                </td>
+
+
+                <td class="px-5 py-4 text-sm text-[#495057]">
+                    -
+                </td>
+
+
+                <td class="px-5 py-4 text-sm text-[#495057]">
+                    -
+                </td>
+
+
+                <td class="px-5 py-4">
+
+                    <span
+                        class="inline-flex items-center
+                               px-3 py-1
+                               bg-white
+                               border border-[#D9E0F2]
+                               rounded-lg
+                               text-sm text-[#495057]"
+                    >
+                        {{ patient.status }}
+                    </span>
+
+                </td>
+
+
+                <td class="px-5 py-4 rounded-r-lg">
+
+                    <div class="flex justify-center gap-2">
+
+                        <button
+                            type="button"
+                            (click)="viewPatient(patient.id)"
+                            class="px-3 py-2 rounded-lg
+                                   border border-[#D9E0F2]
+                                   bg-white
+                                   text-[#3B5BDB]
+                                   text-sm
+                                   hover:bg-[#F4F7FF]"
+                        >
+                            Ver
+                        </button>
+
+                        <button
+                            type="button"
+                            (click)="openModal('edit', patient.id)"
+                            class="px-3 py-2 rounded-lg
+                                   border border-[#D9E0F2]
+                                   bg-white
+                                   text-[#3B5BDB]
+                                   text-sm
+                                   hover:bg-[#F4F7FF]"
+                        >
+                            Editar
+                        </button>
+
+                        <button
+                            type="button"
+                            (click)="deletePatient(patient.id)"
+                            class="px-3 py-2 rounded-lg
+                                   border border-[#D9E0F2]
+                                   bg-white
+                                   text-[#DC3545]
+                                   text-sm
+                                   hover:bg-[#FFF5F5]"
+                        >
+                            Eliminar
+                        </button>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<!-- =========================================================
+     MODAL NUEVO / EDITAR PACIENTE
+========================================================= -->
+
+<div
+    class="fondo-modal"
+    [class.abierto]="modalOpen"
+    (click)="closeOnBackdrop($event)"
+>
+
+    <div
+        class="ventana-modal"
+        (click)="$event.stopPropagation()"
+    >
+
+        <div class="encabezado-modal">
+
+            <h3>
+                {{ modalTitle }}
+            </h3>
+
+            <button
+                class="boton-cerrar"
+                type="button"
+                (click)="closeModal()"
+            >
+                <span class="material-symbols-outlined">
+                    close
+                </span>
+            </button>
+
+        </div>
+
+
+        <div class="cuerpo-modal">
+
+            <!-- =================================================
+                 DATOS DEL PACIENTE
+            ================================================== -->
+
+            <div class="seccion-formulario">
+                Datos del paciente
+            </div>
+
+
+            <div class="rejilla-formulario">
+
+                <!-- NOMBRES -->
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Nombres
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        type="text"
+                        [(ngModel)]="form.nombre"
+                        placeholder="Nombres"
+                    >
+
                 </div>
 
 
-                <div class="rejilla-formulario">
+                <!-- APELLIDOS -->
 
-                    <div class="campo-formulario">
+                <div class="campo-formulario">
 
-                        <label class="etiqueta-formulario">
-                            Estado
-                        </label>
+                    <label class="etiqueta-formulario">
+                        Apellidos
+                    </label>
 
-                        <select
-                            class="campo-entrada"
-                            [(ngModel)]="form.estado"
-                        >
+                    <input
+                        class="campo-entrada"
+                        type="text"
+                        [(ngModel)]="form.apellidos"
+                        placeholder="Apellidos"
+                    >
 
-                            <option value="active">
-                                Activo
-                            </option>
+                </div>
 
-                            <option value="inactive">
-                                Inactivo
-                            </option>
 
-                        </select>
+                <!-- TIPO DE IDENTIFICACION -->
 
-                    </div>
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Tipo de identificación
+                    </label>
+
+                    <select
+                        class="campo-entrada"
+                        [(ngModel)]="form.tipoIdentificacion"
+                    >
+
+                        <option value="">
+                            Seleccione
+                        </option>
+
+                        <option value="CC">
+                            C.C
+                        </option>
+
+                        <option value="CE">
+                            C. Extranjería
+                        </option>
+
+                        <option value="Pasaporte">
+                            Pasaporte
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- NUMERO DE DOCUMENTO -->
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Número de documento
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        type="text"
+                        [(ngModel)]="form.documento"
+                        placeholder="Número de documento"
+                    >
+
+                </div>
+
+
+                <!-- FECHA DE NACIMIENTO -->
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Fecha de nacimiento
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        type="date"
+                        [(ngModel)]="form.nacimiento"
+                    >
+
+                </div>
+
+
+                <!-- EDAD -->
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Edad
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        type="number"
+                        [(ngModel)]="form.edad"
+                        readonly
+                    >
+
+                </div>
+
+
+                <!-- GENERO -->
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Género
+                    </label>
+
+                    <select
+                        class="campo-entrada"
+                        [(ngModel)]="form.genero"
+                    >
+
+                        <option value="">
+                            Seleccione
+                        </option>
+
+                        <option value="Masculino">
+                            Masculino
+                        </option>
+
+                        <option value="Femenino">
+                            Femenino
+                        </option>
+
+                        <option value="Otro">
+                            Otro
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- GRUPO SANGUINEO -->
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Grupo sanguíneo
+                    </label>
+
+                    <select
+                        class="campo-entrada"
+                        [(ngModel)]="form.grupoSanguineo"
+                    >
+
+                        <option value="">
+                            Seleccione
+                        </option>
+
+                        <option value="A">
+                            A
+                        </option>
+
+                        <option value="B">
+                            B
+                        </option>
+
+                        <option value="AB">
+                            AB
+                        </option>
+
+                        <option value="O">
+                            O
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- RH -->
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        RH
+                    </label>
+
+                    <select
+                        class="campo-entrada"
+                        [(ngModel)]="form.rh"
+                    >
+
+                        <option value="">
+                            Seleccione
+                        </option>
+
+                        <option value="+">
+                            +
+                        </option>
+
+                        <option value="-">
+                            -
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- EPS -->
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        EPS
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        type="text"
+                        [(ngModel)]="form.eps"
+                        placeholder="EPS"
+                    >
+
+                </div>
+
+
+                <!-- FECHA DE INGRESO -->
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Fecha de ingreso
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        type="date"
+                        [(ngModel)]="form.fechaIngreso"
+                    >
 
                 </div>
 
             </div>
 
 
-            <!-- PIE DEL MODAL -->
+            <!-- =================================================
+                 FAMILIAR RESPONSABLE
+            ================================================== -->
 
-            <div class="pie-modal">
+            <div class="seccion-formulario">
+                Familiar responsable
+            </div>
 
-                <button
-                    class="boton-cancelar"
-                    type="button"
-                    (click)="closeModal()"
-                >
-                    Cancelar
-                </button>
 
-                <button
-                    class="boton-guardar"
-                    type="button"
-                    (click)="savePatient()"
-                >
-                    {{ saveButtonText }}
-                </button>
+            <div class="rejilla-formulario">
+
+                <!-- NOMBRES -->
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Nombres
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        type="text"
+                        [(ngModel)]="form.familiarNombres"
+                        placeholder="Nombres"
+                    >
+
+                </div>
+
+
+                <!-- APELLIDOS -->
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Apellidos
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        type="text"
+                        [(ngModel)]="form.familiarApellidos"
+                        placeholder="Apellidos"
+                    >
+
+                </div>
+
+
+                <!-- PARENTESCO -->
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Parentesco
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        type="text"
+                        [(ngModel)]="form.parentesco"
+                        placeholder="Parentesco"
+                    >
+
+                </div>
+
+
+                <!-- TELEFONO 1 -->
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Teléfono 1
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        type="tel"
+                        [(ngModel)]="form.telefono1"
+                        placeholder="Teléfono"
+                    >
+
+                </div>
+
+
+                <!-- TELEFONO 2 -->
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Teléfono 2
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        type="tel"
+                        [(ngModel)]="form.telefono2"
+                        placeholder="Teléfono"
+                    >
+
+                </div>
+
+
+                <!-- DIRECCION -->
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Dirección
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        type="text"
+                        [(ngModel)]="form.direccion"
+                        placeholder="Dirección"
+                    >
+
+                </div>
+
+
+                <!-- CORREO -->
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Correo electrónico
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        type="email"
+                        [(ngModel)]="form.correoElectronico"
+                        placeholder="correo@ejemplo.com"
+                    >
+
+                </div>
+
+
+                <!-- MUNICIPIO -->
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Municipio
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        type="text"
+                        [(ngModel)]="form.municipio"
+                        placeholder="Municipio"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 UBICACION
+            ================================================== -->
+
+            <div class="seccion-formulario">
+                Ubicación
+            </div>
+
+
+            <div class="rejilla-formulario">
+
+                <!-- SEDE -->
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Sede
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        type="text"
+                        [(ngModel)]="form.sede"
+                        placeholder="Sede"
+                    >
+
+                </div>
+
+
+                <!-- HABITACION -->
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Habitación
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        type="text"
+                        [(ngModel)]="form.habitacion"
+                        placeholder="Habitación"
+                    >
+
+                </div>
+
+
+                <!-- CAMA -->
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Cama
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        type="text"
+                        [(ngModel)]="form.cama"
+                        placeholder="Cama"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 ESTADO
+            ================================================== -->
+
+            <div class="seccion-formulario">
+                Estado
+            </div>
+
+
+            <div class="rejilla-formulario">
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Estado
+                    </label>
+
+                    <select
+                        class="campo-entrada"
+                        [(ngModel)]="form.estado"
+                    >
+
+                        <option value="active">
+                            Activo
+                        </option>
+
+                        <option value="inactive">
+                            Inactivo
+                        </option>
+
+                    </select>
+
+                </div>
 
             </div>
 
         </div>
 
-    </div>
 
-
-    <!-- =========================================================
-         MODAL CONSULTAR PACIENTE
-    ========================================================= -->
-
-    <div
-        class="fondo-modal"
-        [class.abierto]="viewModalOpen"
-        (click)="closeViewModal()"
-    >
-
-        <div
-            class="ventana-modal"
-            (click)="$event.stopPropagation()"
-            *ngIf="selectedPatient"
-        >
-
-            <div class="encabezado-modal">
-
-                <h3>
-                    Datos del paciente
-                </h3>
-
-                <button
-                    class="boton-cerrar"
-                    type="button"
-                    (click)="closeViewModal()"
-                >
-                    <span class="material-symbols-outlined">
-                        close
-                    </span>
-                </button>
-
-            </div>
-
-
-            <div class="cuerpo-modal">
-
-                <!-- DATOS DEL PACIENTE -->
-
-                <div class="seccion-formulario">
-                    Datos del paciente
-                </div>
-
-
-                <div class="rejilla-formulario">
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Nombres
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            [value]="selectedPatient.name"
-                            readonly
-                        >
-
-                    </div>
-
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Apellidos
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            value="No registrado"
-                            readonly
-                        >
-
-                    </div>
-
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Tipo de identificación
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            value="No registrado"
-                            readonly
-                        >
-
-                    </div>
-
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Número de documento
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            [value]="selectedPatient.doc"
-                            readonly
-                        >
-
-                    </div>
-
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Fecha de nacimiento
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            [value]="selectedPatient.birthDate"
-                            readonly
-                        >
-
-                    </div>
-
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Edad
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            [value]="selectedPatient.age + ' años'"
-                            readonly
-                        >
-
-                    </div>
-
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Género
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            [value]="selectedPatient.gender || 'No registrado'"
-                            readonly
-                        >
-
-                    </div>
-
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Grupo sanguíneo
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            value="No registrado"
-                            readonly
-                        >
-
-                    </div>
-
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            RH
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            value="No registrado"
-                            readonly
-                        >
-
-                    </div>
-
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            EPS
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            [value]="selectedPatient.eps || 'No registrado'"
-                            readonly
-                        >
-
-                    </div>
-
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Fecha de ingreso
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            value="No registrado"
-                            readonly
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <!-- FAMILIAR RESPONSABLE -->
-
-                <div class="seccion-formulario">
-                    Familiar responsable
-                </div>
-
-
-                <div class="rejilla-formulario">
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Nombres
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            value="No registrado"
-                            readonly
-                        >
-
-                    </div>
-
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Apellidos
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            value="No registrado"
-                            readonly
-                        >
-
-                    </div>
-
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Parentesco
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            value="No registrado"
-                            readonly
-                        >
-
-                    </div>
-
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Teléfono 1
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            [value]="selectedPatient.phone || 'No registrado'"
-                            readonly
-                        >
-
-                    </div>
-
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Teléfono 2
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            value="No registrado"
-                            readonly
-                        >
-
-                    </div>
-
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Dirección
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            value="No registrado"
-                            readonly
-                        >
-
-                    </div>
-
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Correo electrónico
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            [value]="selectedPatient.email || 'No registrado'"
-                            readonly
-                        >
-
-                    </div>
-
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Municipio
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            value="No registrado"
-                            readonly
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <!-- UBICACION -->
-
-                <div class="seccion-formulario">
-                    Ubicación
-                </div>
-
-
-                <div class="rejilla-formulario">
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Sede
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            value="No registrado"
-                            readonly
-                        >
-
-                    </div>
-
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Habitación
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            value="No registrado"
-                            readonly
-                        >
-
-                    </div>
-
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Cama
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            value="No registrado"
-                            readonly
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <!-- ESTADO -->
-
-                <div class="seccion-formulario">
-                    Estado
-                </div>
-
-
-                <div class="rejilla-formulario">
-
-                    <div class="campo-formulario">
-
-                        <label class="etiqueta-formulario">
-                            Estado
-                        </label>
-
-                        <input
-                            class="campo-entrada"
-                            [value]="selectedPatient.status || 'No registrado'"
-                            readonly
-                        >
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- PIE -->
-
-            <div class="pie-modal">
-
-                <button
-                    class="boton-cancelar"
-                    type="button"
-                    (click)="closeViewModal()"
-                >
-                    Cerrar
-                </button>
-
-            </div>
+        <!-- PIE DEL MODAL -->
+
+        <div class="pie-modal">
+
+            <button
+                class="boton-cancelar"
+                type="button"
+                (click)="closeModal()"
+            >
+                Cancelar
+            </button>
+
+            <button
+                class="boton-guardar"
+                type="button"
+                (click)="savePatient()"
+            >
+                {{ saveButtonText }}
+            </button>
 
         </div>
 
     </div>
 
 </div>
-```
+
+
+<!-- =========================================================
+     MODAL CONSULTAR PACIENTE
+========================================================= -->
+
+<div
+    class="fondo-modal"
+    [class.abierto]="viewModalOpen"
+    (click)="closeViewModal()"
+>
+
+    <div
+        class="ventana-modal"
+        (click)="$event.stopPropagation()"
+        *ngIf="selectedPatient"
+    >
+
+        <div class="encabezado-modal">
+
+            <h3>
+                Datos del paciente
+            </h3>
+
+            <button
+                class="boton-cerrar"
+                type="button"
+                (click)="closeViewModal()"
+            >
+                <span class="material-symbols-outlined">
+                    close
+                </span>
+            </button>
+
+        </div>
+
+
+        <div class="cuerpo-modal">
+
+            <!-- DATOS DEL PACIENTE -->
+
+            <div class="seccion-formulario">
+                Datos del paciente
+            </div>
+
+
+            <div class="rejilla-formulario">
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Nombres
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        [value]="selectedPatient.name"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Apellidos
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        value="No registrado"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Tipo de identificación
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        value="No registrado"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Número de documento
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        [value]="selectedPatient.doc"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Fecha de nacimiento
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        [value]="selectedPatient.birthDate"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Edad
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        [value]="selectedPatient.age + ' años'"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Género
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        [value]="selectedPatient.gender || 'No registrado'"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Grupo sanguíneo
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        value="No registrado"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        RH
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        value="No registrado"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        EPS
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        [value]="selectedPatient.eps || 'No registrado'"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Fecha de ingreso
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        value="No registrado"
+                        readonly
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- FAMILIAR RESPONSABLE -->
+
+            <div class="seccion-formulario">
+                Familiar responsable
+            </div>
+
+
+            <div class="rejilla-formulario">
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Nombres
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        value="No registrado"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Apellidos
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        value="No registrado"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Parentesco
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        value="No registrado"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Teléfono 1
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        [value]="selectedPatient.phone || 'No registrado'"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Teléfono 2
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        value="No registrado"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Dirección
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        value="No registrado"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Correo electrónico
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        [value]="selectedPatient.email || 'No registrado'"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Municipio
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        value="No registrado"
+                        readonly
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- UBICACION -->
+
+            <div class="seccion-formulario">
+                Ubicación
+            </div>
+
+
+            <div class="rejilla-formulario">
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Sede
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        value="No registrado"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Habitación
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        value="No registrado"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Cama
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        value="No registrado"
+                        readonly
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- ESTADO -->
+
+            <div class="seccion-formulario">
+                Estado
+            </div>
+
+
+            <div class="rejilla-formulario">
+
+                <div class="campo-formulario">
+
+                    <label class="etiqueta-formulario">
+                        Estado
+                    </label>
+
+                    <input
+                        class="campo-entrada"
+                        [value]="selectedPatient.status || 'No registrado'"
+                        readonly
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PIE -->
+
+        <div class="pie-modal">
+
+            <button
+                class="boton-cancelar"
+                type="button"
+                (click)="closeViewModal()"
+            >
+                Cerrar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
