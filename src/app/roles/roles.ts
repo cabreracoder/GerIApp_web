@@ -1,42 +1,36 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {forkJoin,Observable} from 'rxjs';
 
 import {
-RolesService,
-RolApi,
-PermisoApi,
-PermisoRolApi
+  RolesService,
+  RolApi
 } from './roles.service';
 
 // =========================================================
 // INTERFACES
 // =========================================================
 
-interface Permiso {
-id: number;
-label: string;
-granted: boolean;
-}
-
 interface UsuarioAsociado {
-id: number;
-name: string;
-email: string;
-estado: 'activo' | 'inactivo';
-avatar: string;
+  id: number;
+  name: string;
+  email: string;
+  estado: 'activo' | 'inactivo';
+  avatar: string;
 }
 
 interface Rol {
-id: number;
-name: string;
-color: string;
-icon: string;
-userCount: number;
-description: string;
-perms: Permiso[];
-usuariosAsociados: UsuarioAsociado[];
+  id: number;
+  name: string;
+  color: string;
+  icon: string;
+  userCount: number;
+  description: string;
+  usuariosAsociados: UsuarioAsociado[];
 }
 
 // =========================================================
@@ -44,1226 +38,775 @@ usuariosAsociados: UsuarioAsociado[];
 // =========================================================
 
 @Component({
-selector: 'app-roles',
-standalone: true,
-imports: [
-CommonModule,
-FormsModule
-],
-templateUrl: './roles.html',
-styleUrl: './roles.css'
+  selector: 'app-roles',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule
+  ],
+  templateUrl: './roles.html',
+  styleUrl: './roles.css'
 })
 export class Roles implements OnInit {
 
-// =========================================================
-// CONFIGURACIÓN VISUAL
-// =========================================================
+  // =========================================================
+  // CONFIGURACIÓN VISUAL
+  // =========================================================
 
-private readonly CONFIGURACION_ROLES: Record<
-string,
-{
-color: string;
-icon: string;
-}
-
-> = {
-
-
-Administrador: {
-  color: 'var(--color-primary)',
-  icon: 'admin_panel_settings'
-},
-
-Cuidador: {
-  color: 'var(--color-secondary)',
-  icon: 'health_and_safety'
-},
-
-Encargado: {
-  color: 'var(--color-tertiary)',
-  icon: 'supervisor_account'
-}
-
-
-};
-
-// =========================================================
-// DATOS
-// =========================================================
-
-roles: Rol[] = [];
-
-permisosDisponibles: PermisoApi[] = [];
-
-permisosRol: PermisoRolApi[] = [];
-
-usuariosGeneralesDisponibles: UsuarioAsociado[] = [];
-
-// =========================================================
-// SELECCIÓN
-// =========================================================
-
-selectedRole = '';
-
-searchTerm = '';
-
-filtroEstadoUsuario:
-'Todos' |
-'activo' |
-'inactivo' = 'Todos';
-
-// =========================================================
-// FORMULARIO
-// =========================================================
-
-mostrarFormularioRol = false;
-
-nuevoRol = {
-nombre: '',
-descripcion: '',
-permisos: [] as number[]
-};
-
-// =========================================================
-// MENSAJES
-// =========================================================
-
-mensajeExito = '';
-
-mensajeError = '';
-
-ultimoRegistroAuditoria =
-'Sin modificaciones recientes en esta sesión.';
-
-// =========================================================
-// CONSTRUCTOR
-// =========================================================
-
-constructor(
-private readonly rolesService: RolesService
-) {}
-
-// =========================================================
-// INICIO
-// =========================================================
-
-ngOnInit(): void {
-
-
-this.cargarPermisos();
-
-this.cargarRoles();
-
-}
-
-// =========================================================
-// CARGAR PERMISOS
-// =========================================================
-
- cargarPermisos(): void {
-
-  console.log('Consultando permisos...');
-
-  this.rolesService.listarPermisos().subscribe({
-
-    next: (permisos: PermisoApi[]) => {
-
-      console.log('PERMISOS RECIBIDOS DESDE LA API:', permisos);
-
-      this.permisosDisponibles = permisos;
-
-      console.log(
-        'PERMISOS DISPONIBLES:',
-        this.permisosDisponibles
-      );
-
-      const rol = this.selectedRoleObject;
-
-      if (rol) {
-
-        this.cargarPermisosDelRol(rol.id);
-
-      }
-
+  private readonly CONFIGURACION_ROLES: Record<
+    string,
+    {
+      color: string;
+      icon: string;
+    }
+  > = {
+    Administrador: {
+      color: 'var(--color-primary)',
+      icon: 'admin_panel_settings'
     },
 
-    error: (error: unknown) => {
-
-      console.error(
-        'ERROR AL CARGAR PERMISOS:',
-        error
-      );
-
-      this.mostrarError(
-        'No fue posible cargar los permisos desde el servidor.'
-      );
-
-    }
-
-  });
-
-}
-
-// =========================================================
-// CARGAR ROLES
-// =========================================================
-
-cargarRoles(): void {
-
-
-this.rolesService
-  .listarRoles()
-  .subscribe({
-
-    next: (rolesApi: RolApi[]) => {
-
-      this.roles =
-        rolesApi
-          .filter(
-            rol => rol.estado
-          )
-          .map(
-            rol =>
-              this.convertirRol(rol)
-          );
-
-      if (this.roles.length > 0) {
-
-        this.selectedRole =
-          this.roles[0].name;
-
-        this.cargarPermisosDelRol(
-          this.roles[0].id
-        );
-
-      }
-
+    Cuidador: {
+      color: 'var(--color-secondary)',
+      icon: 'health_and_safety'
     },
 
-    error: (error: unknown) => {
-
-      console.error(
-        'Error al cargar los roles:',
-        error
-      );
-
-      this.mensajeError =
-        'No fue posible cargar los roles desde el servidor.';
-
+    Encargado: {
+      color: 'var(--color-tertiary)',
+      icon: 'supervisor_account'
     }
-
-  });
-
-
-}
-
-// =========================================================
-// CARGAR PERMISOS DE UN ROL
-// =========================================================
-
-cargarPermisosDelRol(
-idRol: number
-): void {
-
-
-this.rolesService
-  .listarPermisosRol(idRol)
-  .subscribe({
-
-    next: (
-      permisosRol: PermisoRolApi[]
-    ) => {
-
-      this.permisosRol =
-        permisosRol;
-
-      const rol =
-        this.roles.find(
-          role =>
-            role.id === idRol
-        );
-
-      if (!rol) {
-        return;
-      }
-
-      rol.perms =
-        this.permisosDisponibles.map(
-          permiso => ({
-
-            id:
-              permiso.id_permisos,
-
-            label:
-              permiso.nombre,
-
-            granted:
-              permisosRol.some(
-                relacion =>
-                  relacion.id_permisos ===
-                  permiso.id_permisos
-              )
-
-          })
-        );
-
-    },
-
-    error: (error: unknown) => {
-
-      console.error(
-        'Error al cargar los permisos del rol:',
-        error
-      );
-
-      this.mensajeError =
-        'No fue posible cargar los permisos del rol.';
-
-    }
-
-  });
-
-}
-
-// =========================================================
-// CONVERTIR ROL
-// =========================================================
-
-private convertirRol(
-rolApi: RolApi
-): Rol {
-
-
-const configuracion =
-  this.CONFIGURACION_ROLES[
-    rolApi.nombre
-  ] ??
-  this.crearConfiguracionPorDefecto();
-
-return {
-
-  id:
-    rolApi.id_rol,
-
-  name:
-    rolApi.nombre,
-
-  color:
-    configuracion.color,
-
-  icon:
-    configuracion.icon,
-
-  userCount:
-    0,
-
-  description:
-    rolApi.descripcion,
-
-  perms:
-    [],
-
-  usuariosAsociados:
-    []
-
-};
-
-
-}
-
-// =========================================================
-// CONFIGURACIÓN POR DEFECTO
-// =========================================================
-
-private crearConfiguracionPorDefecto() {
-
-
-return {
-
-  color:
-    'var(--color-primary)',
-
-  icon:
-    'badge'
-
-};
-
-
-}
-
-// =========================================================
-// ROL SELECCIONADO
-// =========================================================
-
-get selectedRoleObject(): Rol | undefined {
-
-
-return this.roles.find(
-  role =>
-    role.name ===
-    this.selectedRole
-);
-
-
-}
-
-// =========================================================
-// ROLES FILTRADOS
-// =========================================================
-
-get filteredRoles(): Rol[] {
-
-
-const textoBusqueda =
-  this.searchTerm
-    .trim()
-    .toLowerCase();
-
-if (!textoBusqueda) {
-
-  return this.roles;
-
-}
-
-return this.roles.filter(
-  role =>
-
-    role.name
-      .toLowerCase()
-      .includes(textoBusqueda)
-
-    ||
-
-    role.description
-      .toLowerCase()
-      .includes(textoBusqueda)
-);
-
-
-}
-
-// =========================================================
-// USUARIOS FILTRADOS
-// =========================================================
-
-get usuariosFiltrados(): UsuarioAsociado[] {
-
-
-const usuarios =
-  this.selectedRoleObject
-    ?.usuariosAsociados ??
-  [];
-
-if (
-  this.filtroEstadoUsuario ===
-  'Todos'
-) {
-
-  return usuarios;
-
-}
-
-return usuarios.filter(
-  usuario =>
-    usuario.estado ===
-    this.filtroEstadoUsuario
-);
-
-
-}
-
-// =========================================================
-// SELECCIONAR ROL
-// =========================================================
-
-selectRole(
-nombreRol: string
-): void {
-
-this.selectedRole =
-  nombreRol;
-
-this.filtroEstadoUsuario =
-  'Todos';
-
-this.limpiarMensajes();
-
-const rol =
-  this.roles.find(
-    role =>
-      role.name ===
-      nombreRol
-  );
-
-if (rol) {
-
-  this.cargarPermisosDelRol(
-    rol.id
-  );
-
-}
-
-
-}
-
-// =========================================================
-// ABRIR FORMULARIO
-// =========================================================
-
-abrirNuevoRol(): void {
-
-  this.mostrarFormularioRol = true;
-
-  this.nuevoRol = {
-    nombre: '',
-    descripcion: '',
-    permisos: []
   };
 
-  this.limpiarMensajes();
-}
+  // =========================================================
+  // DATOS
+  // =========================================================
 
-// =========================================================
-// CERRAR FORMULARIO
-// =========================================================
+  roles: Rol[] = [];
 
-cerrarFormularioRol(): void {
+  // =========================================================
+  // SELECCIÓN
+  // =========================================================
 
+  selectedRole = '';
 
-this.mostrarFormularioRol =
-  false;
+  filtroEstadoUsuario:
+    'Todos' |
+    'activo' |
+    'inactivo' = 'Todos';
 
-}
+  // =========================================================
+  // FORMULARIO
+  // =========================================================
 
-// =========================================================
-// SELECCIONAR PERMISO PARA NUEVO ROL
-// =========================================================
+  mostrarFormularioRol = false;
 
-toggleNuevoPermiso(idPermiso: number): void {
+  modoFormulario: 'crear' | 'editar' = 'crear';
 
-  const index = this.nuevoRol.permisos.indexOf(idPermiso);
+  rolEditandoId: number | null = null;
 
-  if (index === -1) {
-    this.nuevoRol.permisos.push(idPermiso);
-  } else {
-    this.nuevoRol.permisos.splice(index, 1);
+  nuevoRol = {
+    nombre: '',
+    descripcion: ''
+  };
+
+  // =========================================================
+  // MENSAJES
+  // =========================================================
+
+  mensajeExito = '';
+
+  mensajeError = '';
+
+  ultimoRegistroAuditoria =
+    'Sin modificaciones recientes en esta sesión.';
+
+  // =========================================================
+  // CONSTRUCTOR
+  // =========================================================
+
+  constructor(
+    private readonly rolesService: RolesService,
+    private readonly cdr: ChangeDetectorRef
+  ) {}
+
+  // =========================================================
+  // INICIO
+  // =========================================================
+
+  ngOnInit(): void {
+    console.log('COMPONENTE ROLES INICIADO');
+    this.cargarRoles();
   }
-}
 
-// =========================================================
-// CREAR ROL
-// =========================================================
+  // =========================================================
+  // CARGAR ROLES
+  // =========================================================
 
-crearRol(): void {
+  cargarRoles(): void {
+    console.log('CARGANDO ROLES...');
 
+    this.rolesService.listarRoles().subscribe({
+      next: (rolesApi: RolApi[]) => {
 
-const nombre =
-  this.nuevoRol.nombre
-    .trim();
+        console.log(
+          'ROLES RECIBIDOS DE LA API:',
+          rolesApi
+        );
 
-const descripcion =
-  this.nuevoRol.descripcion
-    .trim();
+        this.roles = rolesApi.map(
+          rol => this.convertirRol(rol)
+        );
 
-if (!nombre) {
+        if (this.roles.length > 0) {
+          this.selectedRole =
+            this.roles[0].name;
+        } else {
+          this.selectedRole = '';
+        }
 
-  this.mostrarError(
-    'Debe ingresar un nombre para el rol.'
-  );
+        console.log(
+          'ROLES PARA MOSTRAR:',
+          this.roles
+        );
 
-  return;
+        this.cdr.detectChanges();
+      },
 
-}
+      error: (error: unknown) => {
 
-if (!descripcion) {
+        console.error(
+          'Error al cargar los roles:',
+          error
+        );
 
-  this.mostrarError(
-    'Debe ingresar una descripción para el rol.'
-  );
+        this.mostrarError(
+          'No fue posible cargar los roles desde el servidor.'
+        );
+      }
+    });
+  }
 
-  return;
+  // =========================================================
+  // CONVERTIR ROL
+  // =========================================================
 
-}
+  private convertirRol(
+    rolApi: RolApi
+  ): Rol {
 
-if (
-  this.nuevoRol.permisos.length === 0
-) {
+    const configuracion =
+      this.CONFIGURACION_ROLES[
+        rolApi.nombre
+      ] ??
+      this.crearConfiguracionPorDefecto();
 
-  this.mostrarError(
-    'Debe seleccionar al menos un permiso.'
-  );
+    return {
+      id: rolApi.id_rol,
+      name: rolApi.nombre,
+      color: configuracion.color,
+      icon: configuracion.icon,
+      userCount: 0,
+      description: rolApi.descripcion,
+      usuariosAsociados: []
+    };
+  }
 
-  return;
+  // =========================================================
+  // CONFIGURACIÓN POR DEFECTO
+  // =========================================================
 
-}
+  private crearConfiguracionPorDefecto() {
+    return {
+      color: 'var(--color-primary)',
+      icon: 'badge'
+    };
+  }
 
-const existe =
-  this.roles.some(
-    rol =>
-      rol.name
-        .toLowerCase() ===
-      nombre.toLowerCase()
-  );
+  // =========================================================
+  // ROL SELECCIONADO
+  // =========================================================
 
-if (existe) {
+  get selectedRoleObject(): Rol | undefined {
+    return this.roles.find(
+      role =>
+        role.name === this.selectedRole
+    );
+  }
 
-  this.mostrarError(
-    'Ya existe un rol con ese nombre.'
-  );
+  // =========================================================
+  // USUARIOS FILTRADOS
+  // =========================================================
 
-  return;
+  get usuariosFiltrados(): UsuarioAsociado[] {
 
-}
+    const usuarios =
+      this.selectedRoleObject
+        ?.usuariosAsociados ?? [];
 
+    if (
+      this.filtroEstadoUsuario ===
+      'Todos'
+    ) {
+      return usuarios;
+    }
 
-// =====================================================
-// CREAR ROL EN LA BASE DE DATOS
-// =====================================================
+    return usuarios.filter(
+      usuario =>
+        usuario.estado ===
+        this.filtroEstadoUsuario
+    );
+  }
 
-const nuevoRolApi = {
+  // =========================================================
+  // SELECCIONAR ROL
+  // =========================================================
 
-  nombre,
+  selectRole(
+    nombreRol: string
+  ): void {
 
-  descripcion,
+    this.selectedRole =
+      nombreRol;
 
-  estado: true
+    this.filtroEstadoUsuario =
+      'Todos';
 
-};
+    this.limpiarMensajes();
+  }
 
+  // =========================================================
+  // ABRIR FORMULARIO CREAR
+  // =========================================================
 
-this.rolesService
-  .crearRol(nuevoRolApi)
-  .subscribe({
+  abrirNuevoRol(): void {
 
-    next: (rolCreado: RolApi) => {
+    this.modoFormulario =
+      'crear';
 
-      const configuracion =
-        this.CONFIGURACION_ROLES[
-          rolCreado.nombre
-        ] ??
-        this.crearConfiguracionPorDefecto();
+    this.rolEditandoId =
+      null;
 
+    this.mostrarFormularioRol =
+      true;
 
-      const nuevoRol: Rol = {
+    this.nuevoRol = {
+      nombre: '',
+      descripcion: ''
+    };
 
-        id:
-          rolCreado.id_rol,
+    this.limpiarMensajes();
+  }
 
-        name:
-          rolCreado.nombre,
+  // =========================================================
+  // ABRIR FORMULARIO EDITAR
+  // =========================================================
 
-        color:
-          configuracion.color,
+  editarRol(
+    rol: Rol
+  ): void {
 
-        icon:
-          configuracion.icon,
+    this.modoFormulario =
+      'editar';
 
-        userCount:
-          0,
+    this.rolEditandoId =
+      rol.id;
 
-        description:
-          rolCreado.descripcion,
+    this.nuevoRol = {
+      nombre: rol.name,
+      descripcion: rol.description
+    };
 
-        perms:
-          this.permisosDisponibles.map(
-            permiso => ({
+    this.mostrarFormularioRol =
+      true;
 
-              id:
-                permiso.id_permisos,
+    this.limpiarMensajes();
+  }
 
-              label:
-                permiso.nombre,
+  // =========================================================
+  // CERRAR FORMULARIO
+  // =========================================================
 
-              granted:
-                this.nuevoRol.permisos
-                  .includes(
-                    permiso.id_permisos
-                  )
+  cerrarFormularioRol(): void {
 
-            })
-          ),
+    this.mostrarFormularioRol =
+      false;
 
-        usuariosAsociados:
-          []
+    this.rolEditandoId =
+      null;
 
-      };
+    this.modoFormulario =
+      'crear';
 
+    this.limpiarFormulario();
+  }
 
-      this.roles.push(
-        nuevoRol
+  // =========================================================
+  // GUARDAR ROL
+  // =========================================================
+
+  guardarRol(): void {
+
+    if (
+      this.modoFormulario ===
+      'editar'
+    ) {
+
+      this.actualizarRol();
+
+      return;
+    }
+
+    this.crearRol();
+  }
+
+  // =========================================================
+  // CREAR ROL
+  // =========================================================
+
+  crearRol(): void {
+
+    const nombre =
+      this.nuevoRol.nombre.trim();
+
+    const descripcion =
+      this.nuevoRol.descripcion.trim();
+
+    // =====================================================
+    // VALIDAR NOMBRE
+    // =====================================================
+
+    if (!nombre) {
+
+      this.mostrarError(
+        'Debe ingresar un nombre para el rol.'
       );
 
-      this.selectedRole =
-        nuevoRol.name;
+      return;
+    }
 
+    // =====================================================
+    // VALIDAR DESCRIPCIÓN
+    // =====================================================
 
-      // ===============================================
-      // GUARDAR PERMISOS DEL NUEVO ROL
-      // ===============================================
+    if (!descripcion) {
 
-      const relaciones =
-        this.nuevoRol.permisos.map(
-          idPermiso =>
+      this.mostrarError(
+        'Debe ingresar una descripción para el rol.'
+      );
 
-            this.rolesService
-              .crearPermisoRol({
+      return;
+    }
 
-                id_permisos:
-                  idPermiso,
+    // =====================================================
+    // VERIFICAR ROL EXISTENTE
+    // =====================================================
 
-                id_rol:
-                  rolCreado.id_rol
+    const existe =
+      this.roles.some(
+        rol =>
+          rol.name.toLowerCase() ===
+          nombre.toLowerCase()
+      );
 
-              })
+    if (existe) {
 
-        );
+      this.mostrarError(
+        'Ya existe un rol con ese nombre.'
+      );
 
+      return;
+    }
 
-      if (
-        relaciones.length === 0
-      ) {
+    // =====================================================
+    // CREAR ROL EN LA BASE DE DATOS
+    // =====================================================
 
-        this.finalizarCreacionRol(
-          nuevoRol
-        );
+    const nuevoRolApi = {
+      nombre,
+      descripcion,
+      estado: true
+    };
 
-        return;
+    this.rolesService
+      .crearRol(nuevoRolApi)
+      .subscribe({
 
-      }
+        next: (rolCreado: RolApi) => {
 
+          const nuevoRol =
+            this.convertirRol(
+              rolCreado
+            );
 
-      forkJoin(
-        relaciones
-      ).subscribe({
+          this.roles.push(
+            nuevoRol
+          );
 
-        next: () => {
+          this.selectedRole =
+            nuevoRol.name;
 
           this.finalizarCreacionRol(
             nuevoRol
           );
-
         },
 
         error: (error: unknown) => {
 
           console.error(
-            'Error al guardar los permisos del nuevo rol:',
+            'Error al crear el rol:',
             error
           );
 
           this.mostrarError(
-            'El rol fue creado, pero no fue posible guardar todos sus permisos.'
+            'No fue posible crear el rol en el servidor.'
           );
-
         }
-
       });
+  }
 
-    },
+  // =========================================================
+  // ACTUALIZAR ROL
+  // =========================================================
 
-    error: (error: unknown) => {
+  actualizarRol(): void {
 
-      console.error(
-        'Error al crear el rol:',
-        error
-      );
+    if (
+      this.rolEditandoId === null
+    ) {
 
       this.mostrarError(
-        'No fue posible crear el rol en el servidor.'
+        'No se encontró el rol que desea editar.'
       );
 
+      return;
     }
 
-  });
+    const nombre =
+      this.nuevoRol.nombre.trim();
 
+    const descripcion =
+      this.nuevoRol.descripcion.trim();
 
-}
+    // =====================================================
+    // VALIDAR NOMBRE
+    // =====================================================
 
-// =========================================================
-// FINALIZAR CREACIÓN
-// =========================================================
+    if (!nombre) {
 
-private finalizarCreacionRol(
-nuevoRol: Rol
-): void {
+      this.mostrarError(
+        'Debe ingresar un nombre para el rol.'
+      );
 
+      return;
+    }
 
-this.cerrarFormularioRol();
+    // =====================================================
+    // VALIDAR DESCRIPCIÓN
+    // =====================================================
 
-this.mostrarExito(
-  `El rol "${nuevoRol.name}" fue creado correctamente.`
-);
+    if (!descripcion) {
 
-this.ultimoRegistroAuditoria =
-  `Rol creado el ${this.obtenerFechaActual()}.`;
+      this.mostrarError(
+        'Debe ingresar una descripción para el rol.'
+      );
 
-this.limpiarFormulario();
+      return;
+    }
 
-this.cargarPermisosDelRol(
-  nuevoRol.id
-);
+    // =====================================================
+    // VERIFICAR NOMBRE DUPLICADO
+    // =====================================================
 
+    const existe =
+      this.roles.some(
+        rol =>
+          rol.id !== this.rolEditandoId &&
+          rol.name.toLowerCase() ===
+          nombre.toLowerCase()
+      );
 
-}
+    if (existe) {
 
-// =========================================================
-// TOGGLE PERMISO
-// =========================================================
+      this.mostrarError(
+        'Ya existe otro rol con ese nombre.'
+      );
 
-togglePermiso(
-role: Rol,
-permiso: Permiso
-): void {
+      return;
+    }
 
+    // =====================================================
+    // ACTUALIZAR ROL EN LA BASE DE DATOS
+    // =====================================================
 
-permiso.granted =
-  !permiso.granted;
+    const rolActualizado = {
+      nombre,
+      descripcion
+    };
 
+    this.rolesService
+      .actualizarRol(
+        this.rolEditandoId,
+        rolActualizado
+      )
+      .subscribe({
 
-}
+        next: (rolApi: RolApi) => {
 
-// =========================================================
-// GUARDAR PERMISOS DEL ROL
-// =========================================================
+          const indice =
+            this.roles.findIndex(
+              rol =>
+                rol.id ===
+                this.rolEditandoId
+            );
 
-guardarPermisosRol(): void {
+          if (indice !== -1) {
 
+            this.roles[indice] =
+              this.convertirRol(
+                rolApi
+              );
+          }
 
-const rol =
-  this.selectedRoleObject;
+          this.selectedRole =
+            rolApi.nombre;
 
-if (!rol) {
+          this.finalizarActualizacionRol(
+            rolApi
+          );
+        },
 
-  return;
+        error: (error: unknown) => {
 
-}
-
-
-const permisosSeleccionados =
-  rol.perms.filter(
-    permiso =>
-      permiso.granted
-  );
-
-
-if (
-  permisosSeleccionados.length === 0
-) {
-
-  this.mostrarError(
-    'Debe seleccionar al menos un permiso para este rol.'
-  );
-
-  return;
-
-}
-
-
-// =====================================================
-// CONSULTAR RELACIONES ACTUALES
-// =====================================================
-
-this.rolesService
-  .listarPermisosRol(rol.id)
-  .subscribe({
-
-    next: (
-      relacionesActuales:
-        PermisoRolApi[]
-    ) => {
-
-
-      // ===============================================
-      // ELIMINAR RELACIONES ANTERIORES
-      // ===============================================
-
-      const eliminaciones =
-        relacionesActuales
-          .filter(
-            relacion =>
-              relacion.id_permisos_rol !==
-              undefined
-          )
-          .map(
-            relacion =>
-
-              this.rolesService
-                .eliminarPermisoRol(
-                  relacion.id_permisos_rol!
-                )
-
+          console.error(
+            'Error al actualizar el rol:',
+            error
           );
 
+          this.mostrarError(
+            'No fue posible actualizar el rol en el servidor.'
+          );
+        }
+      });
+  }
 
-      if (
-        eliminaciones.length === 0
-      ) {
+  // =========================================================
+  // ELIMINAR ROL
+  // =========================================================
 
-        this.crearRelacionesPermisos(
-          rol.id,
-          permisosSeleccionados
-        );
+  eliminarRol(
+    rol: Rol
+  ): void {
 
-        return;
+    const confirmar =
+      confirm(
+        `¿Está seguro de eliminar el rol "${rol.name}"?`
+      );
 
-      }
+    if (!confirmar) {
+      return;
+    }
 
+    // =====================================================
+    // ELIMINAR ROL EN LA BASE DE DATOS
+    // =====================================================
 
-      forkJoin(
-        eliminaciones
-      ).subscribe({
+    this.rolesService
+      .eliminarRol(rol.id)
+      .subscribe({
 
         next: () => {
 
-          this.crearRelacionesPermisos(
-            rol.id,
-            permisosSeleccionados
+          const indice =
+            this.roles.findIndex(
+              item =>
+                item.id === rol.id
+            );
+
+          if (indice !== -1) {
+
+            this.roles.splice(
+              indice,
+              1
+            );
+          }
+
+          // ===============================================
+          // ACTUALIZAR ROL SELECCIONADO
+          // ===============================================
+
+          if (
+            this.selectedRole ===
+            rol.name
+          ) {
+
+            if (
+              this.roles.length > 0
+            ) {
+
+              this.selectedRole =
+                this.roles[0].name;
+
+            } else {
+
+              this.selectedRole =
+                '';
+            }
+          }
+
+          this.mostrarExito(
+            `El rol "${rol.name}" fue eliminado correctamente.`
           );
 
+          this.ultimoRegistroAuditoria =
+            `Rol eliminado el ${this.obtenerFechaActual()}.`;
+
+          this.cdr.detectChanges();
         },
 
         error: (error: unknown) => {
 
           console.error(
-            'Error al eliminar los permisos anteriores:',
+            'Error al eliminar el rol:',
             error
           );
 
           this.mostrarError(
-            'No fue posible actualizar los permisos del rol.'
+            'No fue posible eliminar el rol. Verifique si tiene usuarios asociados.'
           );
-
         }
-
       });
+  }
 
-    },
+  // =========================================================
+  // FINALIZAR CREACIÓN
+  // =========================================================
 
-    error: (error: unknown) => {
+  private finalizarCreacionRol(
+    nuevoRol: Rol
+  ): void {
 
-      console.error(
-        'Error al consultar los permisos actuales:',
-        error
-      );
-
-      this.mostrarError(
-        'No fue posible consultar los permisos actuales del rol.'
-      );
-
-    }
-
-  });
-
-
-}
-
-// =========================================================
-// CREAR RELACIONES DE PERMISOS
-// =========================================================
-
-private crearRelacionesPermisos(
-idRol: number,
-permisos: Permiso[]
-): void {
-
-
-const solicitudes:
-  Observable<PermisoRolApi>[] =
-  permisos.map(
-    permiso =>
-
-      this.rolesService
-        .crearPermisoRol({
-
-          id_permisos:
-            permiso.id,
-
-          id_rol:
-            idRol
-
-        })
-
-  );
-
-
-if (
-  solicitudes.length === 0
-) {
-
-  this.mostrarError(
-    'No hay permisos seleccionados.'
-  );
-
-  return;
-
-}
-
-
-forkJoin(
-  solicitudes
-).subscribe({
-
-  next: () => {
+    this.cerrarFormularioRol();
 
     this.mostrarExito(
-      `Configuración guardada correctamente para "${this.selectedRoleObject?.name}".`
+      `El rol "${nuevoRol.name}" fue creado correctamente.`
     );
 
     this.ultimoRegistroAuditoria =
-      `Permisos modificados el ${this.obtenerFechaActual()}.`;
+      `Rol creado el ${this.obtenerFechaActual()}.`;
 
-    this.permisosRol = [];
+    this.limpiarFormulario();
 
-    this.cargarPermisosDelRol(
-      idRol
-    );
-
-  },
-
-  error: (error: unknown) => {
-
-    console.error(
-      'Error al guardar los permisos:',
-      error
-    );
-
-    this.mostrarError(
-      'No fue posible guardar todos los permisos del rol.'
-    );
-
+    this.cdr.detectChanges();
   }
 
-});
-
-
-}
-
-// =========================================================
-// DETALLE USUARIO
-// =========================================================
-
-verDetalleUsuario(
-usuario: UsuarioAsociado
-): void {
-
-
-alert(
-
-  [
-
-    'Detalle del usuario',
-
-    '',
-
-    `Nombre: ${usuario.name}`,
-
-    `Correo: ${usuario.email}`,
-
-    `Estado: ${usuario.estado.toUpperCase()}`
-
-  ].join('\n')
-
-);
-
-
-}
-
-// =========================================================
-// CONTADORES
-// =========================================================
-
-getAllowedCount(
-role: Rol
-): number {
-
-
-return role.perms.filter(
-  permiso =>
-    permiso.granted
-).length;
-
-}
-
-getRestrictedCount(
-role: Rol
-): number {
-
-
-return role.perms.filter(
-  permiso =>
-    !permiso.granted
-).length;
-
-
-}
-
-// =========================================================
-// VERIFICAR PERMISO
-// =========================================================
-
-hasPermission(
-role: Rol,
-nombrePermiso: string
-): boolean {
-
-
-return role.perms.some(
-  permiso =>
-
-    permiso.label ===
-    nombrePermiso
-
-    &&
-
-    permiso.granted
-
-);
-
-
-}
-
-// =========================================================
-// PERMISOS PARA EL HTML
-// =========================================================
-
-get permisosLabels(): string[] {
-
-
-return this.permisosDisponibles
-  .map(
-    permiso =>
-      permiso.nombre
-  );
-
-
-}
-
-// =========================================================
-// OBTENER ID DE PERMISO
-// =========================================================
-
-getIdPermisoPorNombre(
-nombre: string
-): number {
-
-
-const permiso =
-  this.permisosDisponibles.find(
-    permiso =>
-      permiso.nombre ===
-      nombre
-  );
-
-return permiso?.id_permisos ?? 0;
-
-
-}
-
-// =========================================================
-// BÚSQUEDA
-// =========================================================
-
-onSearch(
-event: Event
-): void {
-
-
-const input =
-  event.target as
-  HTMLInputElement;
-
-this.searchTerm =
-  input.value;
-
-
-}
-
-// =========================================================
-// MENSAJE ERROR
-// =========================================================
-
-private mostrarError(
-mensaje: string
-): void {
-
-
-this.mensajeError =
-  mensaje;
-
-this.mensajeExito =
-  '';
-
-
-}
-
-// =========================================================
-// MENSAJE ÉXITO
-// =========================================================
-
-private mostrarExito(
-mensaje: string
-): void {
-
-
-this.mensajeExito =
-  mensaje;
-
-this.mensajeError =
-  '';
-
-setTimeout(
-  () => {
+  // =========================================================
+  // FINALIZAR ACTUALIZACIÓN
+  // =========================================================
+
+  private finalizarActualizacionRol(
+    rolApi: RolApi
+  ): void {
+
+    this.cerrarFormularioRol();
+
+    this.mostrarExito(
+      `El rol "${rolApi.nombre}" fue actualizado correctamente.`
+    );
+
+    this.ultimoRegistroAuditoria =
+      `Rol actualizado el ${this.obtenerFechaActual()}.`;
+
+    this.limpiarFormulario();
+
+    this.cdr.detectChanges();
+  }
+
+  // =========================================================
+  // DETALLE USUARIO
+  // =========================================================
+
+  verDetalleUsuario(
+    usuario: UsuarioAsociado
+  ): void {
+
+    alert(
+      [
+        'Detalle del usuario',
+        '',
+        `Nombre: ${usuario.name}`,
+        `Correo: ${usuario.email}`,
+        `Estado: ${usuario.estado.toUpperCase()}`
+      ].join('\n')
+    );
+  }
+
+  // =========================================================
+  // MENSAJE ERROR
+  // =========================================================
+
+  private mostrarError(
+    mensaje: string
+  ): void {
+
+    this.mensajeError =
+      mensaje;
 
     this.mensajeExito =
       '';
+  }
 
-  },
-  4000
-);
+  // =========================================================
+  // MENSAJE ÉXITO
+  // =========================================================
 
+  private mostrarExito(
+    mensaje: string
+  ): void {
 
-}
+    this.mensajeExito =
+      mensaje;
 
-// =========================================================
-// LIMPIAR MENSAJES
-// =========================================================
+    this.mensajeError =
+      '';
 
-private limpiarMensajes(): void {
+    setTimeout(
+      () => {
+        this.mensajeExito =
+          '';
+      },
+      4000
+    );
+  }
 
+  // =========================================================
+  // LIMPIAR MENSAJES
+  // =========================================================
 
-this.mensajeError =
-  '';
+  private limpiarMensajes(): void {
 
-this.mensajeExito =
-  '';
+    this.mensajeError =
+      '';
 
+    this.mensajeExito =
+      '';
+  }
 
-}
+  // =========================================================
+  // LIMPIAR FORMULARIO
+  // =========================================================
 
-// =========================================================
-// LIMPIAR FORMULARIO
-// =========================================================
+  private limpiarFormulario(): void {
 
-private limpiarFormulario(): void {
+    this.nuevoRol = {
+      nombre: '',
+      descripcion: ''
+    };
+  }
 
-  this.nuevoRol = {
-    nombre: '',
-    descripcion: '',
-    permisos: []
-  };
-}
+  // =========================================================
+  // FECHA
+  // =========================================================
 
-// =========================================================
-// FECHA
-// =========================================================
-
-private obtenerFechaActual(): string {
-
-
-return new Date()
-  .toLocaleString();
-
-
-}
-
+  private obtenerFechaActual(): string {
+    return new Date().toLocaleString();
+  }
 }
