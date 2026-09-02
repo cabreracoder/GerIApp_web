@@ -1,57 +1,35 @@
-
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-
-type PatientStatus = 'stable' | 'critical' | 'observation';
-
-interface Patient {
-  id: number;
-  name: string;
-  doc: string;
-  age: number;
-  birthDate: string;
-  room: string;
-  guardian: string;
-  guardianRel: string;
-  caregiver: string;
-  pavilion: string;
-  status: PatientStatus;
-  phone: string;
-  email: string;
-  notes: string;
-  gender: string;
-  bloodType: string;
-  admissionDate: string;
-  diagnosis: string;
-  eps: string;
-  headquarters: string;
-  medications: string;
-  guardianAddress: string;
-}
 
 interface PatientForm {
   nombre: string;
+  apellidos: string;
+  tipoIdentificacion: string;
   documento: string;
   nacimiento: string;
   edad: number | null;
-  habitacion: string;
-  estado: PatientStatus;
-  cuidador: string;
-  pabellon: string;
-  encargado: string;
-  relacion: string;
-  telefono: string;
-  email: string;
-  notas: string;
   genero: string;
-  tipoSangre: string;
-  fechaIngreso: string;
-  diagnostico: string;
+  grupoSanguineo: string;
+  rh: string;
   eps: string;
-  sede: string;
-  medicamentos: string;
+  fechaIngreso: string;
+
+  familiarNombres: string;
+  familiarApellidos: string;
+  parentesco: string;
+  telefono1: string;
+  telefono2: string;
   direccion: string;
+  correoElectronico: string;
+  municipio: string;
+
+  sede: string;
+  habitacion: string;
+  cama: string;
+
+  estado: string;
 }
 
 @Component({
@@ -67,291 +45,389 @@ interface PatientForm {
 export class Pacientes {
 
   // =========================================================
-  // FILTROS
-  // =========================================================
-
-  searchText = '';
-  pavilionFilter = '';
-  statusFilter: PatientStatus | '' = '';
-
-  // =========================================================
-  // PAGINACIÓN
-  // =========================================================
-
-  currentPage = 1;
-  pageSize = 8;
-
-  // =========================================================
-  // MODAL DE CREACIÓN / EDICIÓN
-  // =========================================================
-
-  modalOpen = false;
-  editingId: number | null = null;
-
-  // =========================================================
-  // MODAL DE CONSULTA
-  // =========================================================
-
-  viewModalOpen = false;
-  selectedPatient: Patient | null = null;
-
-  // =========================================================
-  // FORMULARIO
-  // =========================================================
-
-  form: PatientForm = this.createEmptyForm();
-
-  // =========================================================
   // PACIENTES
   // =========================================================
-  // Los pacientes serán cargados posteriormente desde la API.
 
-  patients: Patient[] = [];
+  patients: any[] = [];
 
-  // =========================================================
-  // OPCIONES DEL FORMULARIO
-  // =========================================================
-  // Estas listas se conectarán posteriormente con los datos
-  // provenientes de la API correspondiente.
-
-  pavilions: string[] = [];
-  caregivers: { id: number; name: string }[] = [];
-
-  // =========================================================
-  // FORMULARIO VACÍO
-  // =========================================================
-
-  createEmptyForm(): PatientForm {
-    return {
-      nombre: '',
-      documento: '',
-      nacimiento: '',
-      edad: null,
-      habitacion: '',
-      estado: 'stable',
-      cuidador: '',
-      pabellon: '',
-      encargado: '',
-      relacion: '',
-      telefono: '',
-      email: '',
-      notas: '',
-      genero: '',
-      tipoSangre: '',
-      fechaIngreso: '',
-      diagnostico: '',
-      eps: '',
-      sede: '',
-      medicamentos: '',
-      direccion: ''
-    };
-  }
-
-  // =========================================================
-  // PACIENTES FILTRADOS
-  // =========================================================
-
-  get filteredPatients(): Patient[] {
-    const search = this.searchText.trim().toLowerCase();
-
-    return this.patients.filter(patient => {
-
-      const matchesSearch =
-        !search ||
-        patient.name.toLowerCase().includes(search) ||
-        patient.doc.toLowerCase().includes(search) ||
-        patient.guardian.toLowerCase().includes(search) ||
-        patient.caregiver.toLowerCase().includes(search);
-
-      const matchesPavilion =
-        !this.pavilionFilter ||
-        patient.pavilion === this.pavilionFilter;
-
-      const matchesStatus =
-        !this.statusFilter ||
-        patient.status === this.statusFilter;
-
-      return (
-        matchesSearch &&
-        matchesPavilion &&
-        matchesStatus
-      );
-    });
-  }
-
-  // =========================================================
-  // PAGINACIÓN
-  // =========================================================
-
-  get totalPages(): number {
-    return Math.max(
-      1,
-      Math.ceil(
-        this.filteredPatients.length / this.pageSize
-      )
-    );
-  }
-
-  get paginatedPatients(): Patient[] {
-    const start =
-      (this.currentPage - 1) * this.pageSize;
-
-    return this.filteredPatients.slice(
-      start,
-      start + this.pageSize
-    );
-  }
-
-  get firstShown(): number {
-    if (this.filteredPatients.length === 0) {
-      return 0;
-    }
-
-    return (
-      (this.currentPage - 1) *
-      this.pageSize
-    ) + 1;
-  }
-
-  get lastShown(): number {
-    return Math.min(
-      this.currentPage * this.pageSize,
-      this.filteredPatients.length
-    );
-  }
-
-  changePage(page: number): void {
-    if (
-      page < 1 ||
-      page > this.totalPages
-    ) {
-      return;
-    }
-
-    this.currentPage = page;
-  }
-
-  filterTable(): void {
-    this.currentPage = 1;
-  }
-
-  // =========================================================
-  // ESTADÍSTICAS
-  // =========================================================
-
-  get totalActive(): number {
-    return this.patients.length;
-  }
-
-  get stablePatients(): number {
-    return this.patients.filter(
-      patient => patient.status === 'stable'
-    ).length;
-  }
-
-  get criticalPatients(): number {
-    return this.patients.filter(
-      patient => patient.status === 'critical'
-    ).length;
-  }
-
-  get observationPatients(): number {
-    return this.patients.filter(
-      patient => patient.status === 'observation'
-    ).length;
-  }
-
-  get occupancy(): number {
-    return 0;
-  }
+  searchText = '';
 
   // =========================================================
   // MODAL
   // =========================================================
 
-  get modalTitle(): string {
-    return this.editingId === null
-      ? 'Nuevo paciente'
-      : 'Editar paciente';
+  modalOpen = false;
+  viewModalOpen = false;
+
+  editingId: number | null = null;
+
+  selectedPatient: any = null;
+
+  // =========================================================
+  // FORMULARIO
+  // =========================================================
+
+  form: PatientForm = this.formularioVacio();
+
+  // =========================================================
+  // CONSTRUCTOR
+  // =========================================================
+
+  constructor(private http: HttpClient) {}
+
+
+  // =========================================================
+  // INICIAR
+  // =========================================================
+
+  ngOnInit() {
+    this.listar();
   }
 
-  get saveButtonText(): string {
-    return this.editingId === null
-      ? 'Guardar paciente'
-      : 'Guardar cambios';
+
+  // =========================================================
+  // FORMULARIO VACÍO
+  // =========================================================
+
+  formularioVacio(): PatientForm {
+
+    return {
+
+      nombre: '',
+      apellidos: '',
+      tipoIdentificacion: '',
+      documento: '',
+      nacimiento: '',
+      edad: null,
+      genero: '',
+      grupoSanguineo: '',
+      rh: '',
+      eps: '',
+      fechaIngreso: '',
+
+      familiarNombres: '',
+      familiarApellidos: '',
+      parentesco: '',
+      telefono1: '',
+      telefono2: '',
+      direccion: '',
+      correoElectronico: '',
+      municipio: '',
+
+      sede: '',
+      habitacion: '',
+      cama: '',
+
+      estado: 'active'
+    };
   }
 
-  openModal(
-    mode: 'new' | 'edit',
-    patientId?: number
-  ): void {
 
-    this.modalOpen = true;
+  // =========================================================
+  // LISTAR - GET
+  // =========================================================
+
+  listar() {
+
+    this.http.get<any[]>(
+      'AQUI_VA_LA_URL_GET'
+    ).subscribe((respuesta) => {
+
+      this.patients = respuesta;
+
+    });
+  }
+
+
+  // =========================================================
+  // FILTRAR PACIENTES
+  // =========================================================
+
+  get filteredPatients(): any[] {
+
+    const texto = this.searchText
+      .trim()
+      .toLowerCase();
+
+    if (!texto) {
+      return this.patients;
+    }
+
+    return this.patients.filter((patient) => {
+
+      const nombre =
+        (patient.nombre ||
+         patient.name ||
+         '').toLowerCase();
+
+      const apellidos =
+        (patient.apellidos || '').toLowerCase();
+
+      const documento =
+        (patient.documento ||
+         patient.doc ||
+         '').toLowerCase();
+
+      return (
+        nombre.includes(texto) ||
+        apellidos.includes(texto) ||
+        documento.includes(texto)
+      );
+
+    });
+  }
+
+
+  // =========================================================
+  // NUEVO PACIENTE
+  // =========================================================
+
+  nuevo() {
+
+    this.form = this.formularioVacio();
+
     this.editingId = null;
 
-    if (mode === 'new') {
-      this.form = this.createEmptyForm();
-      return;
-    }
+    this.modalOpen = true;
+  }
 
-    if (patientId === undefined) {
-      return;
-    }
 
-    const patient = this.patients.find(
-      item => item.id === patientId
-    );
+  // =========================================================
+  // EDITAR PACIENTE
+  // =========================================================
 
-    if (!patient) {
-      return;
-    }
+  editarPaciente(patient: any) {
 
     this.editingId = patient.id;
 
     this.form = {
-      nombre: patient.name,
-      documento: patient.doc,
-      nacimiento: patient.birthDate,
-      edad: patient.age,
-      habitacion: patient.room,
-      estado: patient.status,
-      cuidador: patient.caregiver,
-      pabellon: patient.pavilion,
-      encargado: patient.guardian,
-      relacion: patient.guardianRel,
-      telefono: patient.phone,
-      email: patient.email,
-      notas: patient.notes,
-      genero: patient.gender,
-      tipoSangre: patient.bloodType,
-      fechaIngreso: patient.admissionDate,
-      diagnostico: patient.diagnosis,
-      eps: patient.eps,
-      sede: patient.headquarters,
-      medicamentos: patient.medications,
-      direccion: patient.guardianAddress
+
+      nombre: patient.nombre || '',
+      apellidos: patient.apellidos || '',
+      tipoIdentificacion:
+        patient.tipoIdentificacion || '',
+      documento:
+        patient.documento || patient.doc || '',
+      nacimiento:
+        patient.nacimiento || patient.birthDate || '',
+      edad:
+        patient.edad ?? patient.age ?? null,
+      genero:
+        patient.genero || patient.gender || '',
+      grupoSanguineo:
+        patient.grupoSanguineo || '',
+      rh:
+        patient.rh || '',
+      eps:
+        patient.eps || '',
+      fechaIngreso:
+        patient.fechaIngreso || '',
+
+      familiarNombres:
+        patient.familiarNombres || '',
+      familiarApellidos:
+        patient.familiarApellidos || '',
+      parentesco:
+        patient.parentesco || '',
+      telefono1:
+        patient.telefono1 || patient.phone || '',
+      telefono2:
+        patient.telefono2 || '',
+      direccion:
+        patient.direccion || '',
+      correoElectronico:
+        patient.correoElectronico || patient.email || '',
+      municipio:
+        patient.municipio || '',
+
+      sede:
+        patient.sede || '',
+      habitacion:
+        patient.habitacion || patient.room || '',
+      cama:
+        patient.cama || '',
+
+      estado:
+        patient.estado || patient.status || 'active'
     };
+
+    this.modalOpen = true;
   }
 
-  closeModal(): void {
+
+  // =========================================================
+  // GUARDAR
+  // =========================================================
+
+  guardar() {
+
+    if (this.editar) {
+      this.actualizar();
+    } else {
+      this.crear();
+    }
+  }
+
+
+  // =========================================================
+  // CREAR - POST
+  // =========================================================
+
+  crear() {
+
+    this.http.post(
+      'AQUI_VA_LA_URL_POST',
+      this.form
+    ).subscribe(() => {
+
+      alert('Paciente guardado');
+
+      this.listar();
+
+      this.closeModal();
+
+    });
+  }
+
+
+  // =========================================================
+  // ACTUALIZAR - PUT
+  // =========================================================
+
+  actualizar() {
+
+    this.http.put(
+      'AQUI_VA_LA_URL_PUT/' + this.editingId + '/',
+      this.form
+    ).subscribe(() => {
+
+      alert('Paciente actualizado');
+
+      this.listar();
+
+      this.closeModal();
+
+    });
+  }
+
+
+  // =========================================================
+  // ELIMINAR - DELETE
+  // =========================================================
+
+  eliminar(id: number) {
+
+    if (!confirm('¿Está seguro de eliminar este paciente?')) {
+      return;
+    }
+
+    this.http.delete(
+      'AQUI_VA_LA_URL_DELETE/' + id + '/'
+    ).subscribe(() => {
+
+      alert('Paciente eliminado');
+
+      this.listar();
+
+    });
+  }
+
+
+  // =========================================================
+  // EDITAR
+  // =========================================================
+
+  get editar(): boolean {
+    return this.editingId !== null;
+  }
+
+
+  // =========================================================
+  // ABRIR MODAL
+  // =========================================================
+
+  openModal(
+    mode: 'new' | 'edit',
+    patientId?: number
+  ) {
+
+    if (mode === 'new') {
+
+      this.nuevo();
+
+      return;
+    }
+
+    if (patientId !== undefined) {
+
+      const patient = this.patients.find(
+        item => item.id === patientId
+      );
+
+      if (patient) {
+
+        this.editarPaciente(patient);
+
+      }
+    }
+  }
+
+
+  // =========================================================
+  // CERRAR MODAL
+  // =========================================================
+
+  closeModal() {
+
     this.modalOpen = false;
+
     this.editingId = null;
-    this.form = this.createEmptyForm();
+
+    this.form = this.formularioVacio();
   }
 
-  closeOnBackdrop(event: MouseEvent): void {
+
+  // =========================================================
+  // CERRAR AL HACER CLICK AFUERA
+  // =========================================================
+
+  closeOnBackdrop(event: MouseEvent) {
+
     if (
       event.target === event.currentTarget
     ) {
+
       this.closeModal();
+
     }
   }
+
+
+  // =========================================================
+  // GUARDAR DESDE EL HTML
+  // =========================================================
+
+  savePatient() {
+
+    this.guardar();
+  }
+
+
+  // =========================================================
+  // ELIMINAR DESDE EL HTML
+  // =========================================================
+
+  deletePatient(id: number) {
+
+    this.eliminar(id);
+  }
+
 
   // =========================================================
   // CONSULTAR PACIENTE
   // =========================================================
 
-  viewPatient(id: number): void {
+  viewPatient(id: number) {
 
     const patient = this.patients.find(
       item => item.id === id
@@ -362,157 +438,87 @@ export class Pacientes {
     }
 
     this.selectedPatient = patient;
+
     this.viewModalOpen = true;
   }
 
-  closeViewModal(): void {
+
+  // =========================================================
+  // CERRAR CONSULTA
+  // =========================================================
+
+  closeViewModal() {
+
     this.viewModalOpen = false;
+
     this.selectedPatient = null;
   }
 
-  // =========================================================
-  // GUARDAR PACIENTE
-  // =========================================================
-  // La persistencia se implementará mediante el servicio.
-
-  savePatient(): void {
-    if (!this.validarFormulario()) {
-      return;
-    }
-
-    // Pendiente de conectar con PacientesService.
-  }
 
   // =========================================================
-  // VALIDACIÓN
+  // CALCULAR EDAD
   // =========================================================
 
-  validarFormulario(): boolean {
-
-    if (!this.form.nombre.trim()) {
-      alert('Ingrese el nombre completo.');
-      return false;
-    }
-
-    if (!this.form.documento.trim()) {
-      alert('Ingrese el documento.');
-      return false;
-    }
+  calcularEdad() {
 
     if (!this.form.nacimiento) {
-      alert('Ingrese la fecha de nacimiento.');
-      return false;
-    }
 
-    if (
-      this.form.edad === null ||
-      this.form.edad < 50 ||
-      this.form.edad > 120
-    ) {
-      alert(
-        'La edad debe estar entre 50 y 120 años.'
-      );
-      return false;
-    }
+      this.form.edad = null;
 
-    if (!this.form.habitacion.trim()) {
-      alert('Ingrese la habitación.');
-      return false;
-    }
-
-    if (!this.form.encargado.trim()) {
-      alert(
-        'Ingrese el encargado familiar.'
-      );
-      return false;
-    }
-
-    if (!this.form.telefono.trim()) {
-      alert('Ingrese el teléfono.');
-      return false;
-    }
-
-    return true;
-  }
-
-  // =========================================================
-  // CAMBIAR ESTADO
-  // =========================================================
-  // La actualización se realizará mediante la API.
-
-  toggleStatus(id: number): void {
-
-    const patient = this.patients.find(
-      item => item.id === id
-    );
-
-    if (!patient) {
       return;
     }
 
-    const nextStatus: PatientStatus =
-      patient.status === 'stable'
-        ? 'observation'
-        : 'stable';
+    const nacimiento =
+      new Date(this.form.nacimiento);
 
-    patient.status = nextStatus;
+    const hoy =
+      new Date();
 
-    this.patients = [...this.patients];
-  }
+    let edad =
+      hoy.getFullYear() -
+      nacimiento.getFullYear();
 
-  // =========================================================
-  // ELIMINAR
-  // =========================================================
-  // La eliminación se realizará mediante la API.
-
-  deletePatient(id: number): void {
-
-    const patient = this.patients.find(
-      item => item.id === id
-    );
-
-    if (!patient) {
-      return;
-    }
+    const mes =
+      hoy.getMonth() -
+      nacimiento.getMonth();
 
     if (
-      !window.confirm(
-        `¿Está seguro de eliminar a ${patient.name}?`
+      mes < 0 ||
+      (
+        mes === 0 &&
+        hoy.getDate() < nacimiento.getDate()
       )
     ) {
-      return;
+
+      edad--;
+
     }
 
-    this.patients = this.patients.filter(
-      item => item.id !== id
-    );
-
-    if (
-      this.currentPage > this.totalPages
-    ) {
-      this.currentPage = this.totalPages;
-    }
+    this.form.edad = edad;
   }
 
+
   // =========================================================
-  // AVATAR
+  // TEXTO DEL MODAL
   // =========================================================
 
-  getAvatarColor(
-    status: PatientStatus
-  ): string {
+  get modalTitle(): string {
 
-    switch (status) {
-
-      case 'critical':
-        return '#fee2e2';
-
-      case 'observation':
-        return '#fef3c7';
-
-      default:
-        return '#dbeafe';
-    }
+    return this.editar
+      ? 'Editar paciente'
+      : 'Nuevo paciente';
   }
+
+
+  // =========================================================
+  // TEXTO DEL BOTÓN
+  // =========================================================
+
+  get saveButtonText(): string {
+
+    return this.editar
+      ? 'Guardar cambios'
+      : 'Guardar paciente';
+  }
+
 }
-
