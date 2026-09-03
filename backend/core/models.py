@@ -1,17 +1,10 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
 
 class Actividades(models.Model):
     id_actividad = models.AutoField(primary_key=True)
     id_bitacora = models.ForeignKey('Bitacora', models.DO_NOTHING, db_column='id_bitacora', blank=True, null=True)
-    nombre = models.CharField()
+    nombre = models.CharField(max_length=255)
     descripcion = models.CharField()
     fecha_hora = models.DateTimeField()
     estado = models.BooleanField()
@@ -432,8 +425,10 @@ class Pacientes(models.Model):
     fecha_nacimiento = models.DateField()
     genero = models.CharField()
     telefono = models.CharField(blank=True, null=True)
-    tipo_sanguineo = models.CharField(max_length=5, blank=True, null=True)
+    grupo_sanguineo = models.CharField(max_length=5, blank=True, null=True)
     rh = models.CharField(max_length=5, blank=True, null=True)
+    cama = models.IntegerField()
+    estado = models.BooleanField()
 
     class Meta:
         managed = False
@@ -482,6 +477,28 @@ class Roles(models.Model):
     class Meta:
         managed = False
         db_table = 'roles'
+
+class Usuarios(models.Model):
+    id_usuario = models.AutoField(primary_key=True)
+    id_rol = models.ForeignKey(
+        'Roles',
+        models.DO_NOTHING,
+        db_column='id_rol',
+        blank=True,
+        null=True
+    )
+    tipo_documento = models.CharField()
+    numero_documento = models.CharField()
+    nombres = models.CharField()
+    apellidos = models.CharField()
+    correo = models.CharField()
+    telefono = models.CharField(blank=True, null=True)
+    fecha_ingreso = models.DateTimeField()
+    estado = models.BooleanField()
+
+    class Meta:
+        managed = False
+        db_table = 'usuarios'
 
 
 class SignosVitales(models.Model):
@@ -578,21 +595,3 @@ class Turnos(models.Model):
     class Meta:
         managed = False
         db_table = 'turnos'
-
-
-class Usuarios(models.Model):
-    nombres = models.CharField()
-    apellidos = models.CharField()
-    correo = models.CharField()
-    contrasena = models.CharField()
-    fecha_ingreso = models.DateTimeField()
-    estado = models.BooleanField()
-    id_usuario = models.AutoField(primary_key=True)
-    id_rol = models.ForeignKey(Roles, models.DO_NOTHING, db_column='id_rol', blank=True, null=True)
-    tipo_documento = models.CharField()
-    numero_documento = models.CharField()
-    telefono = models.CharField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'usuarios'

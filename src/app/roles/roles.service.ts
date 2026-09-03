@@ -37,12 +37,25 @@ export class RolesService {
   // ROLES
   // =========================================================
 
+  // LISTAR ROLES
   listarRoles(): Observable<RolApi[]> {
     return this.http.get<RolApi[]>(
       `${this.apiUrl}/roles/`
     );
   }
 
+  // OBTENER UN ROL
+  //GET /api/roles/{id}/
+  obtenerRol(
+    idRol: number
+  ): Observable<RolApi> {
+
+    return this.http.get<RolApi>(
+      `${this.apiUrl}/roles/${idRol}/`
+    );
+  }
+
+  // CREAR ROL
   crearRol(
     rol: Omit<RolApi, 'id_rol'>
   ): Observable<RolApi> {
@@ -53,46 +66,27 @@ export class RolesService {
     );
   }
 
-  // =========================================================
-  // PERMISOS
-  // =========================================================
+  // ACTUALIZAR ROL
+  //PATCH /api/roles/{id}/
+  actualizarRol(
+    idRol: number,
+    rol: Partial<Omit<RolApi, 'id_rol'>>
+  ): Observable<RolApi> {
 
-  listarPermisos(): Observable<PermisoApi[]> {
-
-    return this.http.get<PermisoApi[]>(
-      `${this.apiUrl}/permisos/`
+    return this.http.patch<RolApi>(
+      `${this.apiUrl}/roles/${idRol}/`,
+      rol
     );
   }
 
-  // =========================================================
-  // PERMISOS DEL ROL
-  // =========================================================
-
-  listarPermisosRol(
+  // ELIMINAR ROL
+  //DELETE /api/roles/{id}/
+  eliminarRol(
     idRol: number
-  ): Observable<PermisoRolApi[]> {
-
-    return this.http.get<PermisoRolApi[]>(
-      `${this.apiUrl}/permisos_rol/?id_rol=${idRol}`
-    );
-  }
-
-  crearPermisoRol(
-    relacion: Omit<PermisoRolApi, 'id_permisos_rol'>
-  ): Observable<PermisoRolApi> {
-
-    return this.http.post<PermisoRolApi>(
-      `${this.apiUrl}/permisos_rol/`,
-      relacion
-    );
-  }
-
-  eliminarPermisoRol(
-    idPermisosRol: number
   ): Observable<void> {
 
     return this.http.delete<void>(
-      `${this.apiUrl}/permisos_rol/${idPermisosRol}/`
+      `${this.apiUrl}/roles/${idRol}/`
     );
   }
 }

@@ -199,9 +199,7 @@
 .contenedor-filtros {
   display: grid;
   grid-template-columns:
-    minmax(0, 1.7fr)
-    minmax(180px, 0.8fr)
-    minmax(180px, 0.8fr);
+    minmax(0, 1.7fr) minmax(180px, 0.8fr) minmax(180px, 0.8fr);
   gap: var(--spacing-sm);
   padding: var(--spacing-md) var(--spacing-lg);
   border-bottom: 1px solid var(--border-color);

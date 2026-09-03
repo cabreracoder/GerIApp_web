@@ -377,41 +377,29 @@
   font-size: var(--icon-size-sm);
 }
 
-
 /* =========================================================
-   RESUMEN DE PERMISOS
+   BOTONES DE ACCIONES DEL ROL
 ========================================================= */
 
-.role-perm-summary {
+.role-card-actions {
+
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-xs);
-}
 
-.perm-badge {
-  display: inline-flex;
   align-items: center;
-  gap: var(--spacing-2xs);
-  padding: var(--spacing-2xs) var(--spacing-xs);
-  border-radius: var(--radius-full);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
+
+  justify-content: center;
+
+  gap: 12px;
+
+  margin-top: var(--spacing-md);
+
 }
 
-.perm-badge.allowed {
-  background: rgba(59, 91, 219, .08);
-  color: var(--color-primary);
-}
+.role-card-actions .small-button {
 
-.perm-badge.restricted {
-  background: var(--bg-neutral-light);
-  color: var(--text-secondary);
-}
+  margin: 0;
 
-.perm-badge .material-symbols-outlined {
-  font-size: var(--icon-size-sm);
 }
-
 
 /* =========================================================
    PANEL DE DETALLE
@@ -623,145 +611,6 @@
 
 
 /* =========================================================
-   PERMISOS
-========================================================= */
-
-.permission-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  overflow: hidden;
-}
-
-.perm-list-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid var(--border-color);
-}
-
-.perm-list-title {
-  color: var(--text-primary);
-  font-family: var(--font-heading-family);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-bold);
-}
-
-.perm-list-hint {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-2xs);
-  color: var(--text-secondary);
-  font-size: var(--font-size-xs);
-}
-
-.perm-list-hint .material-symbols-outlined {
-  font-size: var(--icon-size-sm);
-}
-
-.perm-rows {
-  padding: var(--spacing-xs) 0;
-}
-
-.perm-row {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  min-width: 0;
-  padding: var(--spacing-sm) var(--spacing-lg);
-  cursor: pointer;
-  user-select: none;
-  transition: background .15s ease;
-}
-
-.perm-row:hover {
-  background: var(--bg-primary);
-}
-
-.perm-row-icon .material-symbols-outlined {
-  font-size: 20px;
-}
-
-.perm-row-icon.granted .material-symbols-outlined {
-  color: var(--color-primary);
-}
-
-.perm-row-icon.denied .material-symbols-outlined {
-  color: var(--text-secondary);
-  opacity: .5;
-}
-
-.perm-row-label {
-  flex: 1;
-  min-width: 0;
-  color: var(--text-primary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-}
-
-.perm-status-badge {
-  padding: var(--spacing-2xs) var(--spacing-sm);
-  border-radius: var(--radius-full);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-  text-transform: uppercase;
-}
-
-.perm-status-badge.granted {
-  background: rgba(59, 91, 219, .09);
-  color: var(--color-primary);
-}
-
-.perm-status-badge.denied {
-  background: var(--bg-neutral-light);
-  color: var(--text-secondary);
-}
-
-.toggle {
-  position: relative;
-  width: 40px;
-  height: 22px;
-  flex-shrink: 0;
-}
-
-.toggle-track {
-  position: absolute;
-  inset: 0;
-  border-radius: 11px;
-  background: var(--border-color);
-  transition: background .2s ease;
-}
-
-.toggle-track::after {
-  content: '';
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 16px;
-  height: 16px;
-  border-radius: var(--radius-full);
-  background: var(--bg-surface);
-  box-shadow: var(--shadow-sm);
-  transition: transform .2s ease;
-}
-
-.toggle.on .toggle-track {
-  background: var(--color-primary);
-}
-
-.toggle.on .toggle-track::after {
-  transform: translateX(18px);
-}
-
-.permission-actions {
-  padding: var(--spacing-md) var(--spacing-lg);
-  border-top: 1px solid var(--border-color);
-}
-
-
-/* =========================================================
    MENSAJES
 ========================================================= */
 
@@ -797,117 +646,10 @@
   border-left: 4px solid #fa5252;
 }
 
-
 /* =========================================================
-   MATRIZ
+   ICONOS DE BOTONES
 ========================================================= */
 
-.matrix-section {
-  width: 100%;
-  overflow: hidden;
-  background: var(--bg-surface);
-  border: 1.5px solid var(--border-color);
-  border-radius: var(--radius-lg);
-}
-
-.matrix-header {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid var(--border-color);
-}
-
-.matrix-header-icon {
-  color: var(--color-primary);
-  font-size: var(--icon-size-md);
-}
-
-.matrix-title {
-  color: var(--text-primary);
-  font-family: var(--font-heading-family);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-bold);
-}
-
-.matrix-subtitle {
-  margin-left: auto;
-  color: var(--text-secondary);
-  font-size: var(--font-size-xs);
-}
-
-.matrix-table-wrap {
-  width: 100%;
-  overflow-x: auto;
-}
-
-.matrix-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.matrix-table th {
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--bg-neutral-light);
-  border-bottom: 1px solid var(--border-color);
-  text-align: center;
-  font-family: var(--font-heading-family);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-bold);
-  white-space: nowrap;
-}
-
-.matrix-table th:first-child {
-  color: var(--text-secondary);
-  text-align: left;
-  font-size: var(--font-size-xs);
-  text-transform: uppercase;
-}
-
-.matrix-table td {
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-bottom: 1px solid var(--border-color);
-  text-align: center;
-  font-size: var(--font-size-xs);
-}
-
-.matrix-table td:first-child {
-  color: var(--text-primary);
-  text-align: left;
-  font-weight: var(--font-weight-medium);
-}
-
-.matrix-table tr:last-child td {
-  border-bottom: none;
-}
-
-.matrix-table tr:hover td {
-  background: var(--bg-primary);
-}
-
-.matrix-role-label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-xs);
-}
-
-.matrix-role-dot {
-  width: 8px;
-  height: 8px;
-  flex-shrink: 0;
-  border-radius: var(--radius-full);
-  background: var(--role-color, var(--color-primary));
-}
-
-.matrix-icon .material-symbols-outlined {
-  font-size: var(--icon-size-md);
-}
-
-.matrix-icon.granted .material-symbols-outlined {
-  color: var(--color-primary);
-}
-
-.matrix-icon.denied .material-symbols-outlined {
-  color: var(--border-color);
+.role-card-actions .material-symbols-outlined {
+  font-size: 12px;
 }
