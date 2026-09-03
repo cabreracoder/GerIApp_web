@@ -137,7 +137,7 @@
 
           <img
             [src]="encargadoPrincipal.foto"
-            [alt]="'Foto de ' + encargadoPrincipal.nombre"
+            [alt]="'Foto de ' + encargadoPrincipal.nombres + ' ' + encargadoPrincipal.apellidos"
           />
 
         </ng-container>
@@ -168,25 +168,12 @@
 
         <div class="nombre-encargado-principal">
 
-          {{ encargadoPrincipal.nombre }}
-
-        </div>
-
-
-        <div class="cargo-encargado-principal">
-
-          {{ encargadoPrincipal.cargo }}
-
-          <span>·</span>
-
-          {{ encargadoPrincipal.area }}
+          {{ encargadoPrincipal.nombres }} {{ encargadoPrincipal.apellidos }}
 
         </div>
 
 
         <div class="descripcion-encargado-principal">
-
-          {{ encargadoPrincipal.descripcion }}
 
         </div>
 
@@ -216,19 +203,6 @@
 
             <span>
               {{ encargadoPrincipal.email }}
-            </span>
-
-          </div>
-
-
-          <div class="contacto-encargado">
-
-            <span class="material-symbols-outlined">
-              calendar_month
-            </span>
-
-            <span>
-              {{ encargadoPrincipal.ingresoTexto }}
             </span>
 
           </div>
@@ -371,7 +345,7 @@
 
                     <img
                       [src]="encargado.foto"
-                      [alt]="'Foto de ' + encargado.nombre"
+                      [alt]="'Foto de ' + encargado.nombres + ' ' + encargado.apellidos"
                     />
 
                   </ng-container>
@@ -389,7 +363,7 @@
 
                   <div class="nombre-tabla">
 
-                    {{ encargado.nombre }}
+                    {{ encargado.nombres }} {{ encargado.apellidos }}
 
                   </div>
 
@@ -404,25 +378,6 @@
               </div>
 
             </td>
-
-
-            <!-- CARGO -->
-
-            <td>
-
-              {{ encargado.cargo }}
-
-            </td>
-
-
-            <!-- ÁREA -->
-
-            <td>
-
-              {{ encargado.area }}
-
-            </td>
-
 
             <!-- TELÉFONO -->
 
@@ -648,18 +603,18 @@
         </div>
 
 
-        <div class="fila-formulario">
+                <div class="fila-formulario">
 
-          <!-- NOMBRE -->
+          <!-- NOMBRES -->
 
           <div class="grupo-formulario">
 
             <label
               class="etiqueta-formulario"
-              for="nombre-encargado"
+              for="nombres-encargado"
             >
 
-              Nombre completo
+              Nombres
 
               <span class="campo-obligatorio">
                 *
@@ -669,18 +624,18 @@
 
 
             <input
-              id="nombre-encargado"
+              id="nombres-encargado"
               type="text"
               class="campo-formulario"
-              [class.campo-invalido]="errores.nombre"
+              [class.campo-invalido]="errores.nombres"
               autocomplete="off"
-              [(ngModel)]="formulario.nombre"
+              [(ngModel)]="formulario.nombres"
             />
 
 
             <div
               class="mensaje-error"
-              [class.mostrar]="errores.nombre"
+              [class.mostrar]="errores.nombres"
             >
 
               <span class="material-symbols-outlined">
@@ -693,6 +648,107 @@
 
           </div>
 
+          <!-- APELLIDOS -->
+
+          <div class="grupo-formulario">
+
+            <label
+              class="etiqueta-formulario"
+              for="apellidos-encargado"
+            >
+
+              Apellidos
+
+              <span class="campo-obligatorio">
+                *
+              </span>
+
+            </label>
+
+
+            <input
+              id="apellidos-encargado"
+              type="text"
+              class="campo-formulario"
+              [class.campo-invalido]="errores.apellidos"
+              autocomplete="off"
+              [(ngModel)]="formulario.apellidos"
+            />
+
+
+            <div
+              class="mensaje-error"
+              [class.mostrar]="errores.apellidos"
+            >
+
+              <span class="material-symbols-outlined">
+                error
+              </span>
+
+              Campo requerido
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+                <div class="fila-formulario">
+
+          <!-- TIPO DE DOCUMENTO -->
+
+          <div class="grupo-formulario">
+
+            <label
+              class="etiqueta-formulario"
+              for="tipo-documento-encargado"
+            >
+
+              Tipo de documento
+
+              <span class="campo-obligatorio">
+                *
+              </span>
+
+            </label>
+
+
+            <select
+              id="tipo-documento-encargado"
+              class="campo-select"
+              [class.campo-invalido]="errores.tipoDocumento"
+              [(ngModel)]="formulario.tipoDocumento"
+            >
+
+              <option value="">
+                Seleccionar tipo
+              </option>
+
+              <option value="CC">Cédula de ciudadanía</option>
+
+              <option value="CE">Cédula de extranjería</option>
+
+              <option value="PAS">Pasaporte</option>
+
+            </select>
+
+
+            <div
+              class="mensaje-error"
+              [class.mostrar]="errores.tipoDocumento"
+            >
+
+              <span class="material-symbols-outlined">
+                error
+              </span>
+
+              Seleccione un tipo de documento
+
+            </div>
+
+          </div>
 
           <!-- DOCUMENTO -->
 
@@ -738,34 +794,10 @@
 
           </div>
 
-
-          <!-- FECHA DE INGRESO -->
-
-          <div class="grupo-formulario">
-
-            <label
-              class="etiqueta-formulario"
-              for="fecha-ingreso"
-            >
-
-              Fecha de ingreso
-
-            </label>
-
-
-            <input
-              id="fecha-ingreso"
-              type="date"
-              class="campo-formulario"
-              [(ngModel)]="formulario.fechaIngreso"
-            />
-
-          </div>
-
         </div>
 
 
-        <div class="fila-formulario">
+                <div class="fila-formulario">
 
           <!-- TELÉFONO -->
 
@@ -877,36 +909,76 @@
 
         </div>
 
-      </section>
+
+        <div class="fila-formulario">
+
+          <!-- FECHA DE INGRESO -->
+
+          <div class="grupo-formulario">
+
+            <label
+              class="etiqueta-formulario"
+              for="fecha-ingreso"
+            >
+
+              Fecha de ingreso
+
+            </label>
 
 
-      <!-- CARGO Y RESPONSABILIDADES -->
+            <input
+              id="fecha-ingreso"
+              type="date"
+              class="campo-formulario"
+              [(ngModel)]="formulario.fechaIngreso"
+            />
 
-      <section class="seccion-formulario">
+          </div>
 
-        <div class="titulo-seccion-formulario">
+          <!-- ESTADO (NUEVO) -->
 
-          <span class="material-symbols-outlined">
-            work
-          </span>
+          <div class="grupo-formulario">
 
-          Cargo y Responsabilidades
+            <label
+              class="etiqueta-formulario"
+              for="estado-encargado"
+            >
+
+              Estado
+
+            </label>
+
+
+            <select
+              id="estado-encargado"
+              class="campo-select"
+              [(ngModel)]="formulario.estado"
+            >
+
+              <option value="Activo">Activo</option>
+
+              <option value="Inactivo">Inactivo</option>
+
+            </select>
+
+          </div>
 
         </div>
+     
 
 
         <div class="fila-formulario">
 
-          <!-- CARGO -->
+          <!-- FECHA DE NACIMIENTO (NUEVO) -->
 
           <div class="grupo-formulario">
 
             <label
               class="etiqueta-formulario"
-              for="cargo-encargado"
+              for="fecha-nacimiento-encargado"
             >
 
-              Cargo
+              Fecha de nacimiento
 
               <span class="campo-obligatorio">
                 *
@@ -915,126 +987,29 @@
             </label>
 
 
-            <select
-              id="cargo-encargado"
-              class="campo-select"
-              [class.campo-invalido]="errores.cargo"
-              [(ngModel)]="formulario.cargo"
-            >
-
-              <option value="">
-                Seleccionar cargo
-              </option>
-
-              <option
-                *ngFor="let cargo of cargosDisponibles"
-                [value]="cargo"
-              >
-
-                {{ cargo }}
-
-              </option>
-
-            </select>
-
-
-            <div
-              class="mensaje-error"
-              [class.mostrar]="errores.cargo"
-            >
-
-              <span class="material-symbols-outlined">
-                error
-              </span>
-
-              Seleccione un cargo
-
-            </div>
+            <input
+              id="fecha-nacimiento-encargado"
+              type="date"
+              class="campo-formulario"
+              [(ngModel)]="formulario.fechaNacimiento"
+              (change)="calcularEdad()"
+            />
 
           </div>
 
 
-          <!-- ÁREA -->
+          <!-- EDAD CALCULADA (NUEVO) -->
 
-          <div class="grupo-formulario">
+          <div class="grupo-formulario" *ngIf="formulario.edad !== undefined">
 
-            <label
-              class="etiqueta-formulario"
-              for="area-encargado"
-            >
-
-              Área
-
-              <span class="campo-obligatorio">
-                *
-              </span>
-
+            <label class="etiqueta-formulario">
+              Edad calculada
             </label>
 
-
-            <select
-              id="area-encargado"
-              class="campo-select"
-              [class.campo-invalido]="errores.area"
-              [(ngModel)]="formulario.area"
-            >
-
-              <option value="">
-                Seleccionar área
-              </option>
-
-              <option
-                *ngFor="let area of areasDisponibles"
-                [value]="area"
-              >
-
-                {{ area }}
-
-              </option>
-
-            </select>
-
-
-            <div
-              class="mensaje-error"
-              [class.mostrar]="errores.area"
-            >
-
-              <span class="material-symbols-outlined">
-                error
-              </span>
-
-              Seleccione un área
-
+            <div class="texto-edad-calculada" style="display: flex; align-items: center; gap: 8px; padding: 10px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+              <span class="material-symbols-outlined" style="color: #3b82f6;">cake</span>
+              <span><strong>{{ formulario.edad }} años</strong></span>
             </div>
-
-          </div>
-
-        </div>
-
-
-        <!-- DESCRIPCIÓN -->
-
-        <div class="fila-formulario completa">
-
-          <div class="grupo-formulario">
-
-            <label
-              class="etiqueta-formulario"
-              for="descripcion-encargado"
-            >
-
-              Descripción del cargo
-
-            </label>
-
-
-            <textarea
-              id="descripcion-encargado"
-              class="campo-textarea"
-              autocomplete="off"
-              [(ngModel)]="formulario.descripcion"
-            ></textarea>
 
           </div>
 
@@ -1042,8 +1017,158 @@
 
       </section>
 
-    </div>
+            <!-- INFORMACIÓN PROFESIONAL -->
 
+      <section class="seccion-formulario">
+
+        <div class="titulo-seccion-formulario">
+          <span class="material-symbols-outlined">badge</span>
+          Información profesional
+        </div>
+
+        <div class="fila-formulario">
+
+          <div class="grupo-formulario">
+            <label class="etiqueta-formulario" for="especialidad-encargado">
+              Especialidad
+              <span class="campo-obligatorio">*</span>
+            </label>
+            <input
+              id="especialidad-encargado"
+              type="text"
+              class="campo-formulario"
+              autocomplete="off"
+              placeholder="Especialidad"
+              [(ngModel)]="formulario.especialidad"
+            />
+          </div>
+
+          <div class="grupo-formulario">
+            <label class="etiqueta-formulario" for="licencia-encargado">
+              Licencia
+              <span class="campo-obligatorio">*</span>
+            </label>
+            <input
+              id="licencia-encargado"
+              type="text"
+              class="campo-formulario"
+              autocomplete="off"
+              placeholder="Número de licencia"
+              [(ngModel)]="formulario.licencia"
+            />
+          </div>
+
+        </div>
+
+        <div class="fila-formulario">
+
+          <div class="grupo-formulario">
+            <label class="etiqueta-formulario" for="experiencia-encargado">
+              Experiencia
+            </label>
+            <input
+              id="experiencia-encargado"
+              type="text"
+              class="campo-formulario"
+              autocomplete="off"
+              placeholder="Años de experiencia"
+              [(ngModel)]="formulario.experiencia"
+            />
+          </div>
+
+          <div class="grupo-formulario">
+            <label class="etiqueta-formulario" for="institucion-encargado">
+              Institución
+            </label>
+            <input
+              id="institucion-encargado"
+              type="text"
+              class="campo-formulario"
+              autocomplete="off"
+              placeholder="Institución"
+              [(ngModel)]="formulario.institucion"
+            />
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- DOCUMENTOS -->
+
+            <!-- DOCUMENTOS -->
+
+      <section class="seccion-formulario">
+
+        <div class="titulo-seccion-formulario">
+          <span class="material-symbols-outlined">folder</span>
+          Documentos
+        </div>
+
+        <div class="grid-documentos">
+
+          <!-- CÉDULA -->
+          <label class="tarjeta-documento">
+            <span class="material-symbols-outlined">badge</span>
+            <span class="nombre-documento">Cédula</span>
+            <span class="estado-documento" [class.con-archivo]="formulario.cedulaFile">
+              {{ formulario.cedulaFile ? formulario.cedulaFile.name : 'Seleccionar archivo' }}
+            </span>
+            <span class="boton-examinar">
+              <span class="material-symbols-outlined">upload</span>
+              Examinar
+            </span>
+            <input type="file" (change)="onFileSelected($event, 'cedula')" hidden accept=".pdf,.png,.jpg,.jpeg">
+          </label>
+
+          <!-- TARJETA PROFESIONAL -->
+          <label class="tarjeta-documento">
+            <span class="material-symbols-outlined">card_membership</span>
+            <span class="nombre-documento">Tarjeta profesional</span>
+            <span class="estado-documento" [class.con-archivo]="formulario.tarjetaProfesionalFile">
+              {{ formulario.tarjetaProfesionalFile ? formulario.tarjetaProfesionalFile.name : 'Seleccionar archivo' }}
+            </span>
+            <span class="boton-examinar">
+              <span class="material-symbols-outlined">upload</span>
+              Examinar
+            </span>
+            <input type="file" (change)="onFileSelected($event, 'tarjetaProfesional')" hidden accept=".pdf,.png,.jpg,.jpeg">
+          </label>
+
+          <!-- ANTECEDENTES -->
+          <label class="tarjeta-documento">
+            <span class="material-symbols-outlined">verified_user</span>
+            <span class="nombre-documento">Antecedentes</span>
+            <span class="estado-documento" [class.con-archivo]="formulario.antecedentesFile">
+              {{ formulario.antecedentesFile ? formulario.antecedentesFile.name : 'Seleccionar archivo' }}
+            </span>
+            <span class="boton-examinar">
+              <span class="material-symbols-outlined">upload</span>
+              Examinar
+            </span>
+            <input type="file" (change)="onFileSelected($event, 'antecedentes')" hidden accept=".pdf,.png,.jpg,.jpeg">
+          </label>
+
+          <!-- HOJA DE VIDA -->
+          <label class="tarjeta-documento">
+            <span class="material-symbols-outlined">description</span>
+            <span class="nombre-documento">Hoja de vida</span>
+            <span class="estado-documento" [class.con-archivo]="formulario.hojaDeVidaFile">
+              {{ formulario.hojaDeVidaFile ? formulario.hojaDeVidaFile.name : 'Seleccionar archivo' }}
+            </span>
+            <span class="boton-examinar">
+              <span class="material-symbols-outlined">upload</span>
+              Examinar
+            </span>
+            <input type="file" (change)="onFileSelected($event, 'hojaDeVida')" hidden accept=".pdf,.doc,.docx">
+          </label>
+
+        </div>
+
+      </section>
+   
+
+    </div>
 
     <!-- PIE DEL MODAL -->
 
@@ -1096,10 +1221,10 @@
 
     </div>
 
+
   </div>
 
 </div>
-
 
 <!-- =====================================================
      MODAL DETALLES
@@ -1185,7 +1310,7 @@
 
             <img
               [src]="encargadoSeleccionado.foto"
-              [alt]="'Foto de ' + encargadoSeleccionado.nombre"
+              [alt]="'Foto de ' + encargadoSeleccionado.nombres + ' ' + encargadoSeleccionado.apellidos"
             />
 
           </ng-container>
@@ -1208,27 +1333,10 @@
 
           <div class="nombre-perfil">
 
-            {{ encargadoSeleccionado.nombre }}
+            {{ encargadoSeleccionado.nombres }} {{ encargadoSeleccionado.apellidos }}
 
           </div>
 
-
-          <div class="cargo-perfil">
-
-            {{ encargadoSeleccionado.cargo }}
-
-          </div>
-
-
-          <div class="area-perfil">
-
-            <span class="material-symbols-outlined">
-              business
-            </span>
-
-            {{ encargadoSeleccionado.area }}
-
-          </div>
 
 
           <div
@@ -1361,27 +1469,12 @@
           <div class="elemento-detalle">
 
             <span class="etiqueta-detalle">
-              Cargo
-            </span>
-
-            <span class="valor-detalle">
-
-              {{ encargadoSeleccionado.cargo }}
-
-            </span>
-
-          </div>
-
-
-          <div class="elemento-detalle">
-
-            <span class="etiqueta-detalle">
               Área
             </span>
 
             <span class="valor-detalle">
 
-              {{ encargadoSeleccionado.area }}
+              {{ encargadoSeleccionado.especialidad }}
 
             </span>
 
@@ -1396,7 +1489,7 @@
 
             <span class="valor-detalle">
 
-              {{ encargadoSeleccionado.ingresoTexto }}
+              {{ encargadoSeleccionado.experiencia }}
 
             </span>
 
@@ -1446,7 +1539,6 @@
         <div class="descripcion-detalle">
 
           {{
-            encargadoSeleccionado.descripcion ||
             'Sin descripción registrada.'
           }}
 
@@ -1538,8 +1630,7 @@
         >
 
           Registro de cambios
-
-        </div>
+        </div> 
 
 
         <div class="subtitulo-encabezado-modal">
@@ -1718,13 +1809,6 @@
                 {{ registro.encargado }}
 
               </strong>
-
-            </div>
-
-
-            <div class="descripcion-registro">
-
-              {{ registro.descripcion }}
 
             </div>
 
