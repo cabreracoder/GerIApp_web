@@ -44,6 +44,88 @@
 }
 
 /* =====================================================
+   BUSCADOR
+===================================================== */
+
+.tarjeta-buscador {
+
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  width: 100%;
+
+  min-height: 50px;
+
+  margin-bottom: var(--spacing-lg);
+
+  padding: 0 var(--spacing-md);
+
+  border: 1px solid var(--border-color);
+
+  border-radius: var(--radius-md);
+
+  background: var(--bg-surface);
+
+  box-shadow: var(--shadow-sm);
+
+}
+
+.icono-busqueda {
+
+  flex-shrink: 0;
+
+  color: var(--text-secondary);
+
+  font-size: var(--icon-size-md);
+
+}
+
+.tarjeta-buscador input {
+
+  flex: 1;
+
+  min-width: 0;
+
+  height: 48px;
+
+  padding: 0 var(--spacing-sm);
+
+  border: none;
+
+  outline: none;
+
+  background: transparent;
+
+  color: var(--text-primary);
+
+  font-family: var(--font-family-base);
+
+  font-size: var(--font-size-sm);
+
+}
+
+.tarjeta-buscador input::placeholder {
+
+  color: var(--text-secondary);
+
+}
+
+.contador-resultados {
+
+  flex-shrink: 0;
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-size-xs);
+
+  font-weight: var(--font-weight-medium);
+
+}
+
+/* =====================================================
    TÍTULO PRINCIPAL
 ===================================================== */
 
