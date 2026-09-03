@@ -424,7 +424,6 @@ class Pacientes(models.Model):
     numero_documento = models.CharField()
     fecha_nacimiento = models.DateField()
     genero = models.CharField()
-    telefono = models.CharField(blank=True, null=True)
     grupo_sanguineo = models.CharField(max_length=5, blank=True, null=True)
     rh = models.CharField(max_length=5, blank=True, null=True)
     cama = models.IntegerField()
