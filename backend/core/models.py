@@ -494,6 +494,7 @@ class Usuarios(models.Model):
     telefono = models.CharField(blank=True, null=True)
     fecha_ingreso = models.DateTimeField()
     estado = models.BooleanField()
+    contrasena = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         managed = False
