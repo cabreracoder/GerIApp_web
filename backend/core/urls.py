@@ -49,8 +49,8 @@ router.register(r'disponibilidad_usuario',DisponibilidadUsuarioViewSet)
 #aqui lo que hacemos es registrar las rutas de los viewsets en el router, para que puedan ser accedidos a través de la API.
 #Cada viewset corresponde a un modelo y permite realizar operaciones CRUD (crear, leer, actualizar, eliminar) sobre ese modelo.  
 urlpatterns = [
-    path('', include(router.urls)),
-
     path('usuarios/registro/', registro_usuario, name='registro_usuario'),
     path('usuarios/login/', login_usuario, name='login_usuario'),
+
+    path('', include(router.urls)),
 ]
