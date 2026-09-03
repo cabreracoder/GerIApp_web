@@ -6,20 +6,20 @@
 
   <header class="encabezado-configuracion">
 
+    <div class="contenido-encabezado-configuracion">
 
-<div class="contenido-encabezado-configuracion">
+      <h1 class="titulo-configuracion">
+        Configuración
+      </h1>
 
-  <h1 class="titulo-configuracion">
-    Configuración
-  </h1>
+      <p class="subtitulo-configuracion">
+        Preferencias del sistema y cuenta de administrador
+      </p>
 
-  <p class="subtitulo-configuracion">
-    Preferencias del sistema y cuenta de administrador
-  </p>
-
-</div>
+    </div>
 
   </header>
+
 
   <!-- =====================================================
        PERFIL DE ADMINISTRADOR
@@ -27,264 +27,211 @@
 
   <section class="tarjeta-configuracion">
 
+    <!-- TÍTULO -->
 
-<div class="titulo-seccion-configuracion">
+    <div class="titulo-seccion-configuracion">
 
-  <span class="material-symbols-outlined">
-    manage_accounts
-  </span>
+      <span class="material-symbols-outlined">
+        manage_accounts
+      </span>
 
-  <h3>
-    Perfil de Administrador
-  </h3>
+      <h3>
+        Perfil de Administrador
+      </h3>
 
-</div>
-
-
-<!-- PERFIL -->
-
-<div class="fila-perfil-configuracion">
-
-  <div class="avatar-administrador">
-    {{ inicialesUsuario }}
-  </div>
-
-  <div class="informacion-perfil">
-
-    <div class="nombre-perfil">
-      {{ nombreUsuario }}
     </div>
 
-    <div class="datos-perfil">
-      {{ cargoUsuario }} · {{ correoUsuario }}
+
+    <!-- ===================================================
+         INFORMACIÓN DEL PERFIL
+    ==================================================== -->
+
+    <div class="fila-perfil-configuracion">
+
+      <!-- AVATAR -->
+
+      <div class="avatar-administrador">
+        {{ inicialesUsuario }}
+      </div>
+
+
+      <!-- INFORMACIÓN -->
+
+      <div class="informacion-perfil">
+
+        <div class="nombre-perfil">
+          {{ nombreUsuario }}
+        </div>
+
+        <div class="datos-perfil">
+          {{ cargoUsuario }} · {{ correoUsuario }}
+        </div>
+
+      </div>
+
+
+      <!-- CAMBIAR FOTO -->
+
+      <button
+        type="button"
+        class="boton-secundario-configuracion"
+        (click)="cambiarFoto()">
+
+        Cambiar foto
+
+      </button>
+
     </div>
 
-  </div>
 
-  <button
-    type="button"
-    class="boton-secundario-configuracion">
-    Cambiar foto
-  </button>
+    <!-- ===================================================
+         CAMPOS DEL PERFIL
+    ==================================================== -->
 
-</div>
+    <div class="cuadricula-formulario-configuracion">
 
 
-<!-- CAMPOS -->
+      <!-- NOMBRE COMPLETO -->
 
-<div class="cuadricula-formulario-configuracion">
+      <div class="campo-formulario-configuracion">
 
-  <div class="campo-formulario-configuracion">
+        <label for="configuracionNombre">
+          Nombre Completo
+        </label>
 
-    <label for="configuracionNombre">
-      Nombre Completo
-    </label>
+        <input
+          id="configuracionNombre"
+          type="text"
+          [(ngModel)]="nombreUsuario"
+          autocomplete="name">
 
-    <input
-      id="configuracionNombre"
-      type="text"
-      [(ngModel)]="nombreUsuario">
-
-  </div>
-
-
-  <div class="campo-formulario-configuracion">
-
-    <label for="configuracionEmail">
-      Correo Electrónico
-    </label>
-
-    <input
-      id="configuracionEmail"
-      type="email"
-      [(ngModel)]="correoUsuario">
-
-  </div>
+      </div>
 
 
-  <div class="campo-formulario-configuracion">
+      <!-- CORREO -->
 
-    <label for="configuracionTelefono">
-      Teléfono
-    </label>
+      <div class="campo-formulario-configuracion">
 
-    <input
-      id="configuracionTelefono"
-      type="tel"
-      [(ngModel)]="telefonoUsuario">
+        <label for="configuracionEmail">
+          Correo Electrónico
+        </label>
 
-  </div>
+        <input
+          id="configuracionEmail"
+          type="email"
+          [(ngModel)]="correoUsuario"
+          autocomplete="email">
 
-
-  <div class="campo-formulario-configuracion">
-
-    <label for="configuracionCargo">
-      Cargo
-    </label>
-
-    <input
-      id="configuracionCargo"
-      type="text"
-      [(ngModel)]="cargoUsuario">
-
-  </div>
-
-</div>
+      </div>
 
 
-<!-- FOOTER -->
+      <!-- TELÉFONO -->
 
-<div class="pie-tarjeta-configuracion">
+      <div class="campo-formulario-configuracion">
 
-  <div class="mensaje-exito-configuracion">
+        <label for="configuracionTelefono">
+          Teléfono
+        </label>
 
-    <span class="material-symbols-outlined">
-      check_circle
-    </span>
+        <input
+          id="configuracionTelefono"
+          type="tel"
+          [(ngModel)]="telefonoUsuario"
+          autocomplete="tel">
 
-    Cambios guardados correctamente
-
-  </div>
+      </div>
 
 
-  <button
-    type="button"
-    class="boton-principal-configuracion">
+      <!-- CARGO -->
 
-    <span class="indicador-carga-configuracion"></span>
+      <div class="campo-formulario-configuracion">
 
-    <span class="texto-boton-configuracion">
-      Guardar cambios
-    </span>
+        <label for="configuracionCargo">
+          Cargo
+        </label>
 
-  </button>
+        <input
+          id="configuracionCargo"
+          type="text"
+          [(ngModel)]="cargoUsuario"
+          readonly>
 
-</div>
+      </div>
 
+    </div>
+
+
+    <!-- ===================================================
+         FOOTER DEL PERFIL
+    ==================================================== -->
+
+    <div class="pie-tarjeta-configuracion">
+
+
+      <!-- MENSAJE DE ÉXITO -->
+
+      <div
+        class="mensaje-exito-configuracion"
+        *ngIf="mensajeExito">
+
+        <span class="material-symbols-outlined">
+          check_circle
+        </span>
+
+        {{ mensajeExito }}
+
+      </div>
+
+
+      <!-- MENSAJE DE ERROR -->
+
+      <div
+        class="mensaje-error-configuracion"
+        *ngIf="mensajeError">
+
+        <span class="material-symbols-outlined">
+          error
+        </span>
+
+        {{ mensajeError }}
+
+      </div>
+
+
+      <!-- BOTÓN GUARDAR -->
+
+      <button
+        type="button"
+        class="boton-principal-configuracion"
+        (click)="guardarCambios()"
+        [disabled]="guardando">
+
+
+        <!-- INDICADOR DE CARGA -->
+
+        <span
+          class="indicador-carga-configuracion"
+          *ngIf="guardando">
+        </span>
+
+
+        <!-- TEXTO -->
+
+        <span class="texto-boton-configuracion">
+
+          {{ guardando
+            ? 'Guardando...'
+            : 'Guardar cambios'
+          }}
+
+        </span>
+
+      </button>
+
+    </div>
 
   </section>
 
-  <!-- =====================================================
-       PREFERENCIAS DE NOTIFICACIONES
-  ====================================================== -->
-
-  <section class="tarjeta-configuracion">
-
-
-<div class="titulo-seccion-configuracion">
-
-  <span class="material-symbols-outlined">
-    notifications_active
-  </span>
-
-  <h3>
-    Preferencias de Notificaciones
-  </h3>
-
-</div>
-
-
-<div class="lista-interruptores-configuracion">
-
-  <!-- CORREO -->
-
-  <div class="fila-interruptor-configuracion">
-
-    <div class="informacion-interruptor">
-
-      <div class="etiqueta-interruptor">
-        Notificaciones por correo
-      </div>
-
-      <div class="descripcion-interruptor">
-        Recibir alertas en el correo registrado
-      </div>
-
-    </div>
-
-
-    <label class="interruptor-configuracion">
-
-      <input
-        type="checkbox"
-        [(ngModel)]="notificacionesCorreo">
-
-      <span class="pista-interruptor"></span>
-
-      <span class="perilla-interruptor"></span>
-
-    </label>
-
-  </div>
-
-
-  <!-- SMS -->
-
-  <div class="fila-interruptor-configuracion">
-
-    <div class="informacion-interruptor">
-
-      <div class="etiqueta-interruptor">
-        Notificaciones por SMS
-      </div>
-
-      <div class="descripcion-interruptor">
-        Recibir alertas en el teléfono registrado
-      </div>
-
-    </div>
-
-
-    <label class="interruptor-configuracion">
-
-      <input
-        type="checkbox"
-        [(ngModel)]="notificacionesSms">
-
-      <span class="pista-interruptor"></span>
-
-      <span class="perilla-interruptor"></span>
-
-    </label>
-
-  </div>
-
-
-  <!-- ALERTAS CRÍTICAS -->
-
-  <div class="fila-interruptor-configuracion">
-
-    <div class="informacion-interruptor">
-
-      <div class="etiqueta-interruptor">
-        Alertas críticas en tiempo real
-      </div>
-
-      <div class="descripcion-interruptor">
-        Notificación inmediata ante estado crítico
-      </div>
-
-    </div>
-
-
-    <label class="interruptor-configuracion">
-
-      <input
-        type="checkbox"
-        [(ngModel)]="alertasCriticas">
-
-      <span class="pista-interruptor"></span>
-
-      <span class="perilla-interruptor"></span>
-
-    </label>
-
-  </div>
-
-</div>
-
-
-  </section>
 
   <!-- =====================================================
        SEGURIDAD
@@ -292,91 +239,105 @@
 
   <section class="tarjeta-configuracion">
 
+    <!-- TÍTULO -->
 
-<div class="titulo-seccion-configuracion">
+    <div class="titulo-seccion-configuracion">
 
-  <span class="material-symbols-outlined">
-    lock
-  </span>
+      <span class="material-symbols-outlined">
+        lock
+      </span>
 
-  <h3>
-    Seguridad
-  </h3>
+      <h3>
+        Seguridad
+      </h3>
 
-</div>
-
-
-<div class="cuadricula-seguridad-configuracion">
-
-  <!-- CONTRASEÑA ACTUAL -->
-
-  <div class="campo-formulario-configuracion">
-
-    <label for="configuracionPasswordActual">
-      Contraseña actual
-    </label>
-
-    <input
-      id="configuracionPasswordActual"
-      type="password"
-      placeholder="••••••••">
-
-  </div>
+    </div>
 
 
-  <!-- ESPACIO -->
+    <!-- ===================================================
+         CAMPOS DE SEGURIDAD
+    ==================================================== -->
 
-  <div class="campo-formulario-vacio"></div>
-
-
-  <!-- NUEVA CONTRASEÑA -->
-
-  <div class="campo-formulario-configuracion">
-
-    <label for="configuracionPasswordNueva">
-      Nueva contraseña
-    </label>
-
-    <input
-      id="configuracionPasswordNueva"
-      type="password"
-      placeholder="••••••••">
-
-  </div>
+    <div class="cuadricula-seguridad-configuracion">
 
 
-  <!-- CONFIRMAR CONTRASEÑA -->
+      <!-- CONTRASEÑA ACTUAL -->
 
-  <div class="campo-formulario-configuracion">
+      <div class="campo-formulario-configuracion">
 
-    <label for="configuracionPasswordConfirmar">
-      Confirmar contraseña
-    </label>
+        <label for="configuracionPasswordActual">
+          Contraseña actual
+        </label>
 
-    <input
-      id="configuracionPasswordConfirmar"
-      type="password"
-      placeholder="••••••••">
+        <input
+          id="configuracionPasswordActual"
+          type="password"
+          placeholder="••••••••"
+          [(ngModel)]="contrasenaActual"
+          autocomplete="current-password">
 
-  </div>
-
-</div>
+      </div>
 
 
-<!-- FOOTER SEGURIDAD -->
+      <!-- ESPACIO -->
 
-<div class="pie-seguridad-configuracion">
+      <div class="campo-formulario-vacio"></div>
 
-  <button
-    type="button"
-    class="boton-outline-configuracion">
 
-    Actualizar contraseña
+      <!-- NUEVA CONTRASEÑA -->
 
-  </button>
+      <div class="campo-formulario-configuracion">
 
-</div>
+        <label for="configuracionPasswordNueva">
+          Nueva contraseña
+        </label>
 
+        <input
+          id="configuracionPasswordNueva"
+          type="password"
+          placeholder="••••••••"
+          [(ngModel)]="nuevaContrasena"
+          autocomplete="new-password">
+
+      </div>
+
+
+      <!-- CONFIRMAR CONTRASEÑA -->
+
+      <div class="campo-formulario-configuracion">
+
+        <label for="configuracionPasswordConfirmar">
+          Confirmar contraseña
+        </label>
+
+        <input
+          id="configuracionPasswordConfirmar"
+          type="password"
+          placeholder="••••••••"
+          [(ngModel)]="confirmarContrasena"
+          autocomplete="new-password">
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         FOOTER SEGURIDAD
+    ==================================================== -->
+
+    <div class="pie-seguridad-configuracion">
+
+      <button
+        type="button"
+        class="boton-outline-configuracion"
+        (click)="actualizarContrasena()">
+
+        Actualizar contraseña
+
+      </button>
+
+    </div>
 
   </section>
 

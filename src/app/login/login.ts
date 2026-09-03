@@ -45,7 +45,10 @@ export class Login {
 
         this.cargando = false;
 
-        console.log('Login exitoso:', respuesta);
+        console.log(
+          'USUARIO RECIBIDO DEL LOGIN:',
+          JSON.stringify(respuesta.usuario, null, 2)
+        );
 
         // Guardamos los datos del usuario
         localStorage.setItem(

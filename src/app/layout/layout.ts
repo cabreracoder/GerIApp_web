@@ -72,12 +72,6 @@ export class Layout {
       ruta: '/roles'
     },
 
-    {
-      nombre: 'Notificaciones',
-      icono: 'notifications',
-      ruta: '/notificaciones'
-    }
-
   ];
 
   configuracion: OpcionMenu = {
