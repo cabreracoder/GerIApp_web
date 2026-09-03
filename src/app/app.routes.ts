@@ -2,13 +2,34 @@ import { Routes } from '@angular/router';
 import { Layout } from './layout/layout';
 import { DashboardComponent } from './dashboard/dashboard';
 import { Pacientes } from './pacientes/pacientes';
-import { Cuidadores } from './cuidadores/cuidadores'
+import { Cuidadores } from './cuidadores/cuidadores';
 import { Roles } from './roles/roles';
 import { Notificaciones } from './notificaciones/notificaciones';
 import { Configuracion } from './configuracion/configuracion';
 import { Encargados } from './encargados/encargados';
+import { Login } from './login/login';
+import { Registro } from './registro/registro';
 
 export const routes: Routes = [
+
+  // =========================
+  // RUTAS PÚBLICAS
+  // =========================
+
+  {
+    path: 'login',
+    component: Login
+  },
+
+  {
+    path: 'registro',
+    component: Registro
+  },
+
+  // =========================
+  // RUTAS DEL SISTEMA
+  // =========================
+
   {
     path: '',
     component: Layout,
@@ -60,6 +81,7 @@ export const routes: Routes = [
 
   {
     path: '**',
-    redirectTo: 'dashboard'
+    redirectTo: 'login'
   }
+
 ];

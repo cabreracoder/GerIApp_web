@@ -1,1 +1,63 @@
-<p>login works!</p>
+<div class="login-container">
+
+  <div class="login-card">
+
+    <h1>Iniciar sesión</h1>
+
+    <p class="subtitulo">
+      Ingresa a GerIApp
+    </p>
+
+    <form (ngSubmit)="iniciarSesion()">
+
+      <div class="campo">
+        <label for="correo">Correo electrónico</label>
+
+        <input
+          type="email"
+          id="correo"
+          name="correo"
+          [(ngModel)]="usuario.correo"
+          placeholder="ejemplo@correo.com"
+          required
+        >
+      </div>
+
+      <div class="campo">
+        <label for="contrasena">Contraseña</label>
+
+        <input
+          type="password"
+          id="contrasena"
+          name="contrasena"
+          [(ngModel)]="usuario.contrasena"
+          placeholder="Ingresa tu contraseña"
+          required
+        >
+      </div>
+
+      <div class="mensaje-exito" *ngIf="mensaje">
+        {{ mensaje }}
+      </div>
+
+      <div class="mensaje-error" *ngIf="error">
+        {{ error }}
+      </div>
+
+      <button
+        type="submit"
+        [disabled]="cargando"
+      >
+        {{ cargando ? 'Ingresando...' : 'Iniciar sesión' }}
+      </button>
+
+    </form>
+
+    <p class="registro-link">
+      ¿No tienes una cuenta?
+      <a routerLink="/registro">Regístrate</a>
+    </p>
+
+  </div>
+
+</div>

@@ -1,1 +1,136 @@
-<p>registro works!</p>
+<div class="registro-container">
+
+  <div class="registro-card">
+
+    <h1>Crear cuenta</h1>
+
+    <p class="subtitulo">
+      Regístrate para comenzar a utilizar GerIApp
+    </p>
+
+    <form (ngSubmit)="registrar()" #registroForm="ngForm">
+
+      <div class="campo">
+        <label for="tipo_documento">Tipo de documento</label>
+
+        <select
+          id="tipo_documento"
+          name="tipo_documento"
+          [(ngModel)]="usuario.tipo_documento"
+          required
+        >
+          <option value="">Selecciona una opción</option>
+          <option value="CC">Cédula de ciudadanía</option>
+          <option value="TI">Tarjeta de identidad</option>
+          <option value="CE">Cédula de extranjería</option>
+        </select>
+      </div>
+
+      <div class="campo">
+        <label for="numero_documento">Número de documento</label>
+
+        <input
+          type="text"
+          id="numero_documento"
+          name="numero_documento"
+          [(ngModel)]="usuario.numero_documento"
+          placeholder="Ingresa tu número de documento"
+          required
+        >
+      </div>
+
+      <div class="campo">
+        <label for="nombres">Nombres</label>
+
+        <input
+          type="text"
+          id="nombres"
+          name="nombres"
+          [(ngModel)]="usuario.nombres"
+          placeholder="Ingresa tus nombres"
+          required
+        >
+      </div>
+
+      <div class="campo">
+        <label for="apellidos">Apellidos</label>
+
+        <input
+          type="text"
+          id="apellidos"
+          name="apellidos"
+          [(ngModel)]="usuario.apellidos"
+          placeholder="Ingresa tus apellidos"
+          required
+        >
+      </div>
+
+      <div class="campo">
+        <label for="correo">Correo electrónico</label>
+
+        <input
+          type="email"
+          id="correo"
+          name="correo"
+          [(ngModel)]="usuario.correo"
+          placeholder="ejemplo@correo.com"
+          required
+        >
+      </div>
+
+      <div class="campo">
+        <label for="telefono">Teléfono</label>
+
+        <input
+          type="text"
+          id="telefono"
+          name="telefono"
+          [(ngModel)]="usuario.telefono"
+          placeholder="Ingresa tu teléfono"
+        >
+      </div>
+
+      <div class="campo">
+        <label for="contrasena">Contraseña</label>
+
+        <input
+          type="password"
+          id="contrasena"
+          name="contrasena"
+          [(ngModel)]="usuario.contrasena"
+          placeholder="Ingresa una contraseña"
+          required
+        >
+      </div>
+
+      <div
+        class="mensaje-exito"
+        *ngIf="mensaje"
+      >
+        {{ mensaje }}
+      </div>
+
+      <div
+        class="mensaje-error"
+        *ngIf="error"
+      >
+        {{ error }}
+      </div>
+
+      <button
+        type="submit"
+        [disabled]="cargando"
+      >
+        {{ cargando ? 'Registrando...' : 'Registrarse' }}
+      </button>
+
+    </form>
+
+    <p class="login-link">
+      ¿Ya tienes una cuenta?
+      <a routerLink="/login">Inicia sesión</a>
+    </p>
+
+  </div>
+
+</div>
