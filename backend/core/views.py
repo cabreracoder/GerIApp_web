@@ -1,4 +1,7 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django.contrib.auth.hashers import check_password
 
 from .models import (
     HistoriaClinicas,
@@ -45,6 +48,7 @@ from .serializers import (
     RolesSerializer,
     TratamientoSerializer,
     UsuariosSerializer,
+    RegistroUsuarioSerializer,
     HistoriaClinicasSerializer,
     TratamientoMedicamentoSerializer,
     InventarioSerializer,
@@ -73,7 +77,106 @@ from .serializers import (
     PerfilProfesionalSerializer,
     DisponibilidadUsuarioSerializer,
 )
+#Esta parte hace que se pueda registrar un usuario, validando que no exista otro con el mismo correo o número de documento.
+#Si el registro es exitoso, devuelve un mensaje de éxito y los datos del usuario registrado. Si hay errores en la validación,
+#devuelve los errores correspondientes.     
+@api_view(['POST'])
+def registro_usuario(request):
 
+    serializer = RegistroUsuarioSerializer(data=request.data)
+
+    if serializer.is_valid():
+
+        correo = serializer.validated_data['correo']
+        numero_documento = serializer.validated_data['numero_documento']
+
+        if Usuarios.objects.filter(correo=correo).exists():
+            return Response(
+                {'error': 'Ya existe un usuario con este correo.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if Usuarios.objects.filter(numero_documento=numero_documento).exists():
+            return Response(
+                {'error': 'Ya existe un usuario con este número de documento.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        usuario = serializer.save()
+
+        return Response(
+            {
+                'mensaje': 'Usuario registrado correctamente.',
+                'usuario': {
+                    'id_usuario': usuario.id_usuario,
+                    'nombres': usuario.nombres,
+                    'apellidos': usuario.apellidos,
+                    'correo': usuario.correo,
+                    'id_rol': usuario.id_rol_id,
+                    'estado': usuario.estado
+                }
+            },
+            status=status.HTTP_201_CREATED
+        )
+
+    return Response(
+        serializer.errors,
+        status=status.HTTP_400_BAD_REQUEST
+
+    )
+#esta parte permite que un usuario pueda iniciar sesión en la aplicación, validando su correo y contraseña.
+@api_view(['POST'])
+def login_usuario(request):
+
+    correo = request.data.get('correo')
+    contrasena = request.data.get('contrasena')
+
+    if not correo or not contrasena:
+        return Response(
+            {'error': 'El correo y la contraseña son obligatorios.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        usuario = Usuarios.objects.get(correo=correo)
+    except Usuarios.DoesNotExist:
+        return Response(
+            {'error': 'Credenciales inválidas.'},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+
+    if not usuario.contrasena:
+        return Response(
+            {'error': 'Este usuario no tiene una contraseña registrada.'},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+
+    if not check_password(contrasena, usuario.contrasena):
+        return Response(
+            {'error': 'Credenciales inválidas.'},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+
+    if not usuario.estado:
+        return Response(
+            {'error': 'El usuario se encuentra inactivo.'},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    return Response(
+        {
+            'mensaje': 'Inicio de sesión exitoso.',
+            'usuario': {
+                'id_usuario': usuario.id_usuario,
+                'nombres': usuario.nombres,
+                'apellidos': usuario.apellidos,
+                'correo': usuario.correo,
+                'id_rol': usuario.id_rol_id,
+                'estado': usuario.estado
+            }
+        },
+        status=status.HTTP_200_OK
+    )
 
 class PacientesViewSet(viewsets.ModelViewSet):
     queryset = Pacientes.objects.all()

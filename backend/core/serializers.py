@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.utils import timezone
 
 from .models import (
     Medicamentos,
@@ -36,6 +37,7 @@ from .models import (
     PerfilProfesional,
     DisponibilidadUsuario,
 )
+
 
 
 class PacientesSerializer(serializers.ModelSerializer):
@@ -237,3 +239,36 @@ class DisponibilidadUsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = DisponibilidadUsuario
         fields = '__all__'
+
+
+# Esta parte permite registrar un usuario desde la aplicación,
+# encripta la contraseña y establece el usuario como activo.
+class RegistroUsuarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuarios
+        fields = [
+            'nombres',
+            'apellidos',
+            'correo',
+            'tipo_documento',
+            'numero_documento',
+            'telefono',
+            'contrasena',
+        ]
+        extra_kwargs = {
+            'contrasena': {'write_only': True}
+        }
+
+    def create(self, validated_data):
+        from django.contrib.auth.hashers import make_password
+
+        validated_data['contrasena'] = make_password(
+            validated_data['contrasena']
+        )
+
+        validated_data['estado'] = True
+        validated_data['fecha_ingreso'] = timezone.now()
+
+        usuario = Usuarios.objects.create(**validated_data)
+
+        return usuario

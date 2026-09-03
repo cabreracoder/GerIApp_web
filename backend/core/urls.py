@@ -7,7 +7,7 @@ from .views import DetalleEntregaMedicamentoViewSet, MovimientoMedicamentoViewSe
 from .views import InsumosViewSet, DetalleEntregaInsumoViewSet, EntregaInsumoViewSet, MovimientoInsumoViewSet, BitacoraViewSet
 from .views import ActividadesViewSet, SignosVitalesViewSet, TipoEventoViewSet, TipoEmergenciaViewSet, EventosAdversosViewSet, ImagenesEventoAdversoViewSet 
 from .views import AsignacionPacienteCuidadorViewSet,TurnosViewSet, AsignacionTurnoUsuarioViewSet, PermisosViewSet,PermisosRolViewSet
-from .views import FamiliarResponsableViewSet, PerfilProfesionalViewSet, DisponibilidadUsuarioViewSet
+from .views import FamiliarResponsableViewSet, PerfilProfesionalViewSet, DisponibilidadUsuarioViewSet,registro_usuario,login_usuario
 
 router = DefaultRouter()
 
@@ -46,7 +46,11 @@ router.register(r'familiar_responsable',FamiliarResponsableViewSet)
 router.register(r'perfil_profesional',PerfilProfesionalViewSet) 
 router.register(r'disponibilidad_usuario',DisponibilidadUsuarioViewSet)
 
-
+#aqui lo que hacemos es registrar las rutas de los viewsets en el router, para que puedan ser accedidos a través de la API.
+#Cada viewset corresponde a un modelo y permite realizar operaciones CRUD (crear, leer, actualizar, eliminar) sobre ese modelo.  
 urlpatterns = [
     path('', include(router.urls)),
+
+    path('usuarios/registro/', registro_usuario, name='registro_usuario'),
+    path('usuarios/login/', login_usuario, name='login_usuario'),
 ]
