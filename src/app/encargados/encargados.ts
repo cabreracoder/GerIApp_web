@@ -11,39 +11,54 @@ import Swal from 'sweetalert2';
 
 interface Encargado {
   id: number;
+  tipoDocumento: string;
   documento: string;
-  nombre: string;
+  nombres: string;
+  apellidos: string;
   email: string;
   telefono: string;
   fechaIngreso: string;
-  ingresoTexto: string;
-  cargo: string;
-  area: string;
-  descripcion: string;
+  fechaNacimiento?: string;
+  edad?: number;
+  especialidad?: string;
+  licencia?: string;
+  experiencia?: string;
+  institucion?: string;
   estado: 'Activo' | 'Inactivo';
   iniciales: string;
   foto?: string;
 }
 
 interface FormularioEncargado {
+  tipoDocumento: string;
   documento: string;
-  nombre: string;
+  nombres: string;
+  apellidos: string;
+  estado: 'Activo' | 'Inactivo';
   fechaIngreso: string;
+  fechaNacimiento?: string;
+  edad?: number;
   telefono: string;
   email: string;
-  cargo: string;
-  area: string;
-  descripcion: string;
+  especialidad?: string;
+  licencia?: string;
+  experiencia?: string;
+  institucion?: string;
+  cedulaFile?: File | null;
+  hojaDeVidaFile?: File | null;
+  tarjetaProfesionalFile?: File | null;
+  antecedentesFile?: File | null;
+
 }
 
 interface ErroresFormulario {
+  tipoDocumento: boolean;
   documento: boolean;
-  nombre: boolean;
+  nombres: boolean;
+  apellidos: boolean;
   telefono: boolean;
   email: boolean;
   emailInvalido?: boolean;
-  cargo: boolean;
-  area: boolean;
 }
 
 interface RegistroCambio {
@@ -57,7 +72,6 @@ interface RegistroCambio {
     | 'Desactivación'
     | 'Eliminación';
   encargado: string;
-  descripcion: string;
 }
 
 
@@ -153,14 +167,15 @@ export class Encargados implements OnInit {
   // =====================================================
 
   errores: ErroresFormulario = {
+    tipoDocumento: false,
     documento: false,
-    nombre: false,
+    nombres: false,
+    apellidos: false,
     telefono: false,
     email: false,
     emailInvalido: false,
-    cargo: false,
-    area: false,
   };
+
 
 
   // =====================================================
@@ -242,19 +257,74 @@ export class Encargados implements OnInit {
 
   formularioInicial(): FormularioEncargado {
 
+
     return {
+      tipoDocumento: '',
       documento: '',
-      nombre: '',
+      nombres: '',
+      apellidos: '',
+      estado: 'Activo',
       fechaIngreso: '',
+      fechaNacimiento: '',
+      edad: undefined,
       telefono: '',
       email: '',
-      cargo: '',
-      area: '',
-      descripcion: '',
+      cedulaFile: null,
+      hojaDeVidaFile: null,
+      especialidad: '',
+      licencia: '',
+      experiencia: '',
+      institucion: '',
+      tarjetaProfesionalFile: null,
+      antecedentesFile: null,
     };
   }
 
+  // =====================================================
+  // CALCULAR EDAD
+  // =====================================================
 
+  calcularEdad(): void {
+    if (!this.formulario.fechaNacimiento) {
+      this.formulario.edad = undefined;
+      return;
+    }
+
+    const hoy = new Date();
+    const nacimiento = new Date(this.formulario.fechaNacimiento + 'T00:00:00');
+
+    let edad = hoy.getFullYear() - nacimiento.getFullYear();
+    const m = hoy.getMonth() - nacimiento.getMonth();
+
+    if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
+      edad--;
+    }
+
+    this.formulario.edad = edad >= 0 ? edad : 0;
+  }
+
+
+  // =====================================================
+  // SELECCIONAR ARCHIVOS (DOCUMENTOS)
+  // =====================================================
+
+  onFileSelected(
+    event: any,
+    tipo: 'cedula' | 'tarjetaProfesional' | 'antecedentes' | 'hojaDeVida'
+  ): void {
+    const file = event.target.files[0];
+    if (file) {
+      if (tipo === 'cedula') {
+        this.formulario.cedulaFile = file;
+      } else if (tipo === 'tarjetaProfesional') {
+        this.formulario.tarjetaProfesionalFile = file;
+      } else if (tipo === 'antecedentes') {
+        this.formulario.antecedentesFile = file;
+      } else if (tipo === 'hojaDeVida') {
+        this.formulario.hojaDeVidaFile = file;
+      }
+    }
+  }
   // =====================================================
   // ABRIR REGISTRO DE CAMBIOS
   // =====================================================
@@ -274,7 +344,6 @@ export class Encargados implements OnInit {
   cerrarRegistroCambios(): void {
 
     this.modalRegistroCambiosAbierto = false;
-
     this.cdr.detectChanges();
   }
 
@@ -320,30 +389,37 @@ export class Encargados implements OnInit {
       return;
     }
 
-
     // EDITAR PRINCIPAL
 
-    if (modo === 'editPrincipal') {
-
+    if ((modo as string) === 'editPrincipal') {
       if (!this.encargadoPrincipal) {
         this.closeModal();
         return;
       }
 
       this.formulario = {
+        tipoDocumento: this.encargadoPrincipal.tipoDocumento || '',
         documento: this.encargadoPrincipal.documento,
-        nombre: this.encargadoPrincipal.nombre,
+        nombres: this.encargadoPrincipal.nombres,
+        apellidos: this.encargadoPrincipal.apellidos,
+        estado: this.encargadoPrincipal.estado,
         fechaIngreso: this.encargadoPrincipal.fechaIngreso,
+        fechaNacimiento: this.encargadoPrincipal.fechaNacimiento || '',
+        edad: this.encargadoPrincipal.edad,
         telefono: this.encargadoPrincipal.telefono,
         email: this.encargadoPrincipal.email,
-        cargo: this.encargadoPrincipal.cargo,
-        area: this.encargadoPrincipal.area,
-        descripcion: this.encargadoPrincipal.descripcion,
+        especialidad: this.encargadoPrincipal.especialidad || '',
+        licencia: this.encargadoPrincipal.licencia || '',
+        experiencia: this.encargadoPrincipal.experiencia || '',
+        institucion: this.encargadoPrincipal.institucion || '',
+        cedulaFile: null,
+        tarjetaProfesionalFile: null,
+        antecedentesFile: null,
+        hojaDeVidaFile: null,
       };
 
       return;
     }
-
 
     // EDITAR OTRO
 
@@ -352,14 +428,24 @@ export class Encargados implements OnInit {
       this.idEditando = encargado.id;
 
       this.formulario = {
+        tipoDocumento: encargado.tipoDocumento || '',
         documento: encargado.documento,
-        nombre: encargado.nombre,
+        nombres: encargado.nombres,
+        apellidos: encargado.apellidos,
+        estado: encargado.estado,
         fechaIngreso: encargado.fechaIngreso,
+        fechaNacimiento: encargado.fechaNacimiento || '',
+        edad: encargado.edad,
         telefono: encargado.telefono,
         email: encargado.email,
-        cargo: encargado.cargo,
-        area: encargado.area,
-        descripcion: encargado.descripcion,
+        especialidad: encargado.especialidad || '',
+        licencia: encargado.licencia || '',
+        experiencia: encargado.experiencia || '',
+        institucion: encargado.institucion || '',
+        cedulaFile: null,
+        tarjetaProfesionalFile: null,
+        antecedentesFile: null,
+        hojaDeVidaFile: null,
       };
     }
   }
@@ -564,6 +650,11 @@ export class Encargados implements OnInit {
 
     let valido = true;
 
+    if (!this.formulario.tipoDocumento) {
+      this.errores.tipoDocumento = true;
+      valido = false;
+    }
+
 
     if (!this.formulario.documento.trim()) {
 
@@ -573,9 +664,16 @@ export class Encargados implements OnInit {
     }
 
 
-    if (!this.formulario.nombre.trim()) {
+    if (!this.formulario.nombres.trim()) {
 
-      this.errores.nombre = true;
+      this.errores.nombres = true;
+
+      valido = false;
+    }
+
+    if (!this.formulario.apellidos.trim()) {
+
+      this.errores.apellidos = true;
 
       valido = false;
     }
@@ -606,23 +704,6 @@ export class Encargados implements OnInit {
       valido = false;
     }
 
-
-    if (!this.formulario.cargo) {
-
-      this.errores.cargo = true;
-
-      valido = false;
-    }
-
-
-    if (!this.formulario.area) {
-
-      this.errores.area = true;
-
-      valido = false;
-    }
-
-
     return valido;
   }
 
@@ -634,13 +715,13 @@ export class Encargados implements OnInit {
   limpiarErrores(): void {
 
     this.errores = {
+      tipoDocumento: false,
       documento: false,
-      nombre: false,
+      nombres: false,
+      apellidos: false,
       telefono: false,
       email: false,
       emailInvalido: false,
-      cargo: false,
-      area: false,
     };
   }
 
@@ -896,25 +977,19 @@ export class Encargados implements OnInit {
 
           ||
 
-          encargado.nombre
+          encargado.nombres
+            .toLowerCase()
+            .includes(termino)
+
+          ||
+
+          encargado.apellidos
             .toLowerCase()
             .includes(termino)
 
           ||
 
           encargado.email
-            .toLowerCase()
-            .includes(termino)
-
-          ||
-
-          encargado.cargo
-            .toLowerCase()
-            .includes(termino)
-
-          ||
-
-          encargado.area
             .toLowerCase()
             .includes(termino)
 
@@ -931,7 +1006,6 @@ export class Encargados implements OnInit {
 
       this.mostrarAlertaBusqueda(termino);
     }
-
 
     this.cdr.detectChanges();
   }
@@ -1029,8 +1103,6 @@ export class Encargados implements OnInit {
       | 'Eliminación',
 
     encargado: string,
-
-    descripcion: string
   ): void {
 
     const nuevoRegistro: RegistroCambio = {
@@ -1060,7 +1132,6 @@ export class Encargados implements OnInit {
 
       encargado,
 
-      descripcion,
     };
 
 
@@ -1158,4 +1229,3 @@ export class Encargados implements OnInit {
     }`;
   }
 }
-
