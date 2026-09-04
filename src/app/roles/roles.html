@@ -27,11 +27,7 @@
 
   <div class="role-actions">
 
-    <button
-      type="button"
-      class="primary-button"
-      (click)="abrirNuevoRol()"
-    >
+    <button type="button" class="primary-button" (click)="abrirNuevoRol()">
 
       <span class="material-symbols-outlined">
         add
@@ -48,10 +44,7 @@
   <!-- FORMULARIO CREAR / EDITAR ROL -->
   <!-- ===================================================== -->
 
-  <section
-    *ngIf="mostrarFormularioRol"
-    class="new-role-card"
-  >
+  <section *ngIf="mostrarFormularioRol" class="new-role-card">
 
     <div class="new-role-header">
 
@@ -59,24 +52,19 @@
 
         <h3>
           {{ modoFormulario === 'crear'
-            ? 'Crear nuevo rol'
-            : 'Editar rol' }}
+          ? 'Crear nuevo rol'
+          : 'Editar rol' }}
         </h3>
 
         <p>
           {{ modoFormulario === 'crear'
-            ? 'Define el nombre y la descripción del nuevo rol.'
-            : 'Modifica el nombre y la descripción del rol seleccionado.' }}
+          ? 'Define el nombre y la descripción del nuevo rol.'
+          : 'Modifica el nombre y la descripción del rol seleccionado.' }}
         </p>
 
       </div>
 
-      <button
-        type="button"
-        class="close-button"
-        (click)="cerrarFormularioRol()"
-        aria-label="Cerrar formulario"
-      >
+      <button type="button" class="close-button" (click)="cerrarFormularioRol()" aria-label="Cerrar formulario">
 
         <span class="material-symbols-outlined">
           close
@@ -97,12 +85,7 @@
           Nombre del rol
         </label>
 
-        <input
-          id="nombreRol"
-          type="text"
-          [(ngModel)]="nuevoRol.nombre"
-          placeholder="Ej. Recepcionista"
-        >
+        <input id="nombreRol" type="text" [(ngModel)]="nuevoRol.nombre" placeholder="Ej. Recepcionista">
 
       </div>
 
@@ -113,12 +96,8 @@
           Descripción
         </label>
 
-        <input
-          id="descripcionRol"
-          type="text"
-          [(ngModel)]="nuevoRol.descripcion"
-          placeholder="Describe las funciones del rol"
-        >
+        <input id="descripcionRol" type="text" [(ngModel)]="nuevoRol.descripcion"
+          placeholder="Describe las funciones del rol">
 
       </div>
 
@@ -129,28 +108,20 @@
 
     <div class="form-actions">
 
-      <button
-        type="button"
-        class="secondary-button"
-        (click)="cerrarFormularioRol()"
-      >
+      <button type="button" class="secondary-button" (click)="cerrarFormularioRol()">
         Cancelar
       </button>
 
 
-      <button
-        type="button"
-        class="primary-button"
-        (click)="guardarRol()"
-      >
+      <button type="button" class="primary-button" (click)="guardarRol()">
 
         <span class="material-symbols-outlined">
           {{ modoFormulario === 'crear' ? 'add' : 'save' }}
         </span>
 
         {{ modoFormulario === 'crear'
-          ? 'Crear rol'
-          : 'Guardar cambios' }}
+        ? 'Crear rol'
+        : 'Guardar cambios' }}
 
       </button>
 
@@ -175,39 +146,23 @@
     </div>
 
 
-    <section
-      class="role-cards"
-      role="radiogroup"
-      aria-label="Selección de rol"
-    >
+    <section class="role-cards" role="radiogroup" aria-label="Selección de rol">
 
       <!-- ================================================= -->
       <!-- TARJETAS DE ROLES -->
       <!-- ================================================= -->
 
-      <article
-        *ngFor="let role of roles"
-        class="role-card"
-        [class.selected]="role.name === selectedRole"
-        [style.--role-color]="role.color"
-        role="radio"
-        [attr.aria-checked]="role.name === selectedRole"
-        tabindex="0"
-        [attr.aria-label]="'Rol ' + role.name"
-        (click)="selectRole(role.name)"
-        (keydown.enter)="selectRole(role.name)"
+      <article *ngFor="let role of roles" class="role-card" [class.selected]="role.name === selectedRole"
+        [style.--role-color]="role.color" role="radio" [attr.aria-checked]="role.name === selectedRole" tabindex="0"
+        [attr.aria-label]="'Rol ' + role.name" (click)="selectRole(role.name)" (keydown.enter)="selectRole(role.name)"
         (keydown.space)="
           $event.preventDefault();
           selectRole(role.name)
-        "
-      >
+        ">
 
         <!-- MARCA DE SELECCIÓN -->
 
-        <div
-          *ngIf="role.name === selectedRole"
-          class="selected-check"
-        >
+        <div *ngIf="role.name === selectedRole" class="selected-check">
 
           <span class="material-symbols-outlined">
             check
@@ -266,11 +221,7 @@
 
         <div class="role-card-actions">
 
-          <button
-            type="button"
-            class="small-button"
-            (click)="$event.stopPropagation(); editarRol(role)"
-          >
+          <button type="button" class="small-button" (click)="$event.stopPropagation(); editarRol(role)">
 
             <span class="material-symbols-outlined">
               edit
@@ -281,11 +232,8 @@
           </button>
 
 
-          <button
-            type="button"
-            class="small-button delete-button"
-            (click)="$event.stopPropagation(); eliminarRol(role)"
-          >
+          <button type="button" class="small-button delete-button"
+            (click)="$event.stopPropagation(); eliminarRol(role)">
 
             <span class="material-symbols-outlined">
               delete
@@ -311,10 +259,7 @@
     </div>
 
 
-    <div
-      *ngIf="selectedRoleObject"
-      class="detail-panel"
-    >
+    <div *ngIf="selectedRoleObject" class="detail-panel">
 
       <!-- INFORMACIÓN DEL ROL -->
 
@@ -369,10 +314,7 @@
           </span>
 
 
-          <select
-            [(ngModel)]="filtroEstadoUsuario"
-            aria-label="Filtrar usuarios por estado"
-          >
+          <select [(ngModel)]="filtroEstadoUsuario" aria-label="Filtrar usuarios por estado">
 
             <option value="Todos">
               Todos los estados
@@ -393,10 +335,7 @@
 
         <!-- SIN USUARIOS -->
 
-        <div
-          *ngIf="usuariosFiltrados.length === 0"
-          class="empty-state"
-        >
+        <div *ngIf="usuariosFiltrados.length === 0" class="empty-state">
 
           <span class="material-symbols-outlined">
             group_off
@@ -411,15 +350,9 @@
 
         <!-- LISTA DE USUARIOS -->
 
-        <div
-          *ngIf="usuariosFiltrados.length > 0"
-          class="user-list"
-        >
+        <div *ngIf="usuariosFiltrados.length > 0" class="user-list">
 
-          <div
-            *ngFor="let user of usuariosFiltrados"
-            class="user-item"
-          >
+          <div *ngFor="let user of usuariosFiltrados" class="user-item">
 
             <div class="user-data">
 
@@ -445,22 +378,15 @@
 
             <div class="user-actions">
 
-              <span
-                class="user-status"
-                [class.active]="user.estado === 'activo'"
-                [class.inactive]="user.estado === 'inactivo'"
-              >
+              <span class="user-status" [class.active]="user.estado === 'activo'"
+                [class.inactive]="user.estado === 'inactivo'">
 
                 {{ user.estado }}
 
               </span>
 
 
-              <button
-                type="button"
-                class="small-button"
-                (click)="verDetalleUsuario(user)"
-              >
+              <button type="button" class="small-button" (click)="verDetalleUsuario(user)">
 
                 Ver detalle
 
@@ -481,10 +407,7 @@
     <!-- MENSAJE DE ÉXITO -->
     <!-- =================================================== -->
 
-    <div
-      *ngIf="mensajeExito"
-      class="message success-message"
-    >
+    <div *ngIf="mensajeExito" class="message success-message">
 
       <span class="material-symbols-outlined">
         check_circle
@@ -512,10 +435,7 @@
     <!-- MENSAJE DE ERROR -->
     <!-- =================================================== -->
 
-    <div
-      *ngIf="mensajeError"
-      class="message error-message"
-    >
+    <div *ngIf="mensajeError" class="message error-message">
 
       <span class="material-symbols-outlined">
         error

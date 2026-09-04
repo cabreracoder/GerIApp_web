@@ -60,21 +60,21 @@ export class Roles implements OnInit {
       icon: string;
     }
   > = {
-    Administrador: {
-      color: 'var(--color-primary)',
-      icon: 'admin_panel_settings'
-    },
+      Administrador: {
+        color: 'var(--color-primary)',
+        icon: 'admin_panel_settings'
+      },
 
-    Cuidador: {
-      color: 'var(--color-secondary)',
-      icon: 'health_and_safety'
-    },
+      Cuidador: {
+        color: 'var(--color-secondary)',
+        icon: 'health_and_safety'
+      },
 
-    Encargado: {
-      color: 'var(--color-tertiary)',
-      icon: 'supervisor_account'
-    }
-  };
+      Encargado: {
+        color: 'var(--color-tertiary)',
+        icon: 'supervisor_account'
+      }
+    };
 
   // =========================================================
   // DATOS
@@ -126,7 +126,7 @@ export class Roles implements OnInit {
   constructor(
     private readonly rolesService: RolesService,
     private readonly cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   // =========================================================
   // INICIO
@@ -195,7 +195,7 @@ export class Roles implements OnInit {
 
     const configuracion =
       this.CONFIGURACION_ROLES[
-        rolApi.nombre
+      rolApi.nombre
       ] ??
       this.crearConfiguracionPorDefecto();
 
