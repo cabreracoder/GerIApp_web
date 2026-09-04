@@ -418,7 +418,6 @@ class Pacientes(models.Model):
     sede = models.CharField()
     fecha_ingreso = models.DateTimeField()
     habitacion = models.IntegerField()
-    responsable = models.CharField()
     id_usuario = models.ForeignKey('Usuarios', models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
     tipo_documento = models.CharField()
     numero_documento = models.CharField()
