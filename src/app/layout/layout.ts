@@ -1,10 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  RouterLink,
-  RouterLinkActive,
-  RouterOutlet
-} from '@angular/router';
+import {RouterLink,RouterLinkActive,RouterOutlet,Router } from '@angular/router';
 
 interface OpcionMenu {
   nombre: string;
@@ -20,13 +16,15 @@ interface OpcionMenu {
     CommonModule,
     RouterLink,
     RouterLinkActive,
-    RouterOutlet
+    RouterOutlet,
   ],
 
   templateUrl: './layout.html',
   styleUrl: './layout.css'
 })
 export class Layout {
+
+  constructor(private router: Router) {}
 
   nombreAplicacion = 'GerIApp';
 
@@ -74,12 +72,6 @@ export class Layout {
       ruta: '/roles'
     },
 
-    {
-      nombre: 'Notificaciones',
-      icono: 'notifications',
-      ruta: '/notificaciones'
-    }
-
   ];
 
   configuracion: OpcionMenu = {
@@ -91,8 +83,11 @@ export class Layout {
 
   cerrarSesion(): void {
 
-    console.log('Cerrando sesión...');
+  console.log('Cerrando sesión...');
 
-  }
+  localStorage.removeItem('usuario');
+
+  this.router.navigate(['/login']);
+}
 
 }
