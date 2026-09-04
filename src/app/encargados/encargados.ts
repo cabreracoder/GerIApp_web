@@ -1,5 +1,6 @@
 
 import { CommonModule } from '@angular/common';
+import {HttpClient} from '@angular/common/http';
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
@@ -89,12 +90,14 @@ interface RegistroCambio {
 export class Encargados implements OnInit {
 
   private cdr = inject(ChangeDetectorRef);
+  private http = inject(HttpClient);
 
   // =====================================================
   // USUARIO RESPONSABLE
   // =====================================================
 
   usuarioActual = 'Administrador';
+  private apiUrl = 'https://geriapp-web-1.onrender.com/api/usuarios/';
 
 
   // =====================================================
@@ -200,6 +203,8 @@ export class Encargados implements OnInit {
   // INICIO
   // =====================================================
 
+  constructor() {}
+
   ngOnInit(): void {
     this.cargarEncargados();
   }
@@ -241,13 +246,51 @@ export class Encargados implements OnInit {
      * });
      */
 
-    this.encargados = [];
-    this.encargadoPrincipal = null;
-    this.encargadosFiltrados = [];
+     this.cargando = true;
 
-    this.cargando = false;
+    this.http.get<any[]>(this.apiUrl).subscribe({
 
-    this.cdr.detectChanges();
+      next: (respuesta: any[]) => {
+
+        this.encargados = respuesta
+          .filter((usuario) => usuario.id_rol === 6)
+          .map((usuario) => ({
+            id: usuario.id_usuario,
+            tipoDocumento: usuario.tipo_documento,
+            documento: usuario.numero_documento,
+            nombres: usuario.nombres,
+            apellidos: usuario.apellidos,
+            email: usuario.correo,
+            telefono: usuario.telefono,
+            fechaIngreso: usuario.fecha_ingreso,
+            estado: usuario.estado ? 'Activo' : 'Inactivo',
+            iniciales: this.generarIniciales(`${usuario.nombres} ${usuario.apellidos}`),
+          }));
+
+        this.encargadoPrincipal = null;
+
+        this.filtrarEncargados();
+
+        this.cargando = false;
+
+        this.cdr.detectChanges();
+      },
+
+      error: () => {
+
+        this.cargando = false;
+
+        Swal.fire({
+          title: 'Error al cargar encargados',
+          text: 'No se pudo conectar con el servidor.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#3B5BDB',
+        });
+
+        this.cdr.detectChanges();
+      },
+    });
   }
 
 
@@ -614,7 +657,6 @@ export class Encargados implements OnInit {
       return false;
     }
 
-
     if (
       !this.editarPrincipal &&
       this.encargadoPrincipal &&
@@ -623,7 +665,6 @@ export class Encargados implements OnInit {
 
       return true;
     }
-
 
     return this.encargados.some((encargado) => {
 
@@ -729,32 +770,32 @@ export class Encargados implements OnInit {
   // =====================================================
   // GUARDAR ENCARGADO
   // =====================================================
-
   saveEncargado(): void {
 
     if (this.guardando) {
       return;
     }
 
-
     if (!this.validarFormulario()) {
 
-      let mensaje =
-        'Completa los campos obligatorios.';
-
+      let mensaje = 'Completa los campos obligatorios.';
 
       if (this.errores.telefono) {
-
-        mensaje =
-          'El teléfono debe contener exactamente 10 números.';
-
+        mensaje = 'El teléfono debe contener exactamente 10 números.';
       } else if (this.errores.emailInvalido) {
-
-        mensaje =
-          'Ingresa un correo electrónico válido.';
+        mensaje = 'Ingresa un correo electrónico válido.';
       }
+  
 
-
+    /*
+     * AQUÍ NO SE CREAN OBJETOS QUEMADOS.
+     *
+     * El formulario debe enviarse mediante EncargadosService
+     * a la API de Django.
+     *
+     * Cuando me pases tu servicio/endpoints, esta parte
+     * se conecta directamente con POST, PUT/PATCH.
+     */
       Swal.fire({
         title: 'Revisa el formulario',
         text: mensaje,
@@ -766,68 +807,107 @@ export class Encargados implements OnInit {
       return;
     }
 
-
-    if (
-      this.DocumentoDuplicado(
-        this.formulario.documento
-      )
-    ) {
-
+    if (this.DocumentoDuplicado(this.formulario.documento)) {
       this.errores.documento = true;
-
       Swal.fire({
         title: 'Documento duplicado',
-        text:
-          'El número de documento ya se encuentra registrado.',
+        text: 'El número de documento ya se encuentra registrado.',
         icon: 'warning',
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#3B5BDB',
       });
-
       return;
     }
 
-
-    if (
-      this.emailDuplicado(
-        this.formulario.email
-      )
-    ) {
-
+    if (this.emailDuplicado(this.formulario.email)) {
       this.errores.email = true;
-
       Swal.fire({
         title: 'Correo duplicado',
-        text:
-          'El correo electrónico ya se encuentra registrado.',
+        text: 'El correo electrónico ya se encuentra registrado.',
         icon: 'warning',
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#3B5BDB',
       });
-
       return;
     }
 
+    this.guardando = true;
 
-    /*
-     * AQUÍ NO SE CREAN OBJETOS QUEMADOS.
-     *
-     * El formulario debe enviarse mediante EncargadosService
-     * a la API de Django.
-     *
-     * Cuando me pases tu servicio/endpoints, esta parte
-     * se conecta directamente con POST, PUT/PATCH.
-     */
+    // Cuerpo que espera la API (nombres de campos del backend, no los tuyos)
+    const cuerpo = {
+      tipo_documento: this.formulario.tipoDocumento,
+      numero_documento: this.formulario.documento,
+      nombres: this.formulario.nombres,
+      apellidos: this.formulario.apellidos,
+      correo: this.formulario.email,
+      telefono: this.formulario.telefono,
+      fecha_ingreso: this.formulario.fechaIngreso,
+      estado: this.formulario.estado === 'Activo',
+      id_rol: 6,
+    };
 
-    Swal.fire({
-      title: 'Servicio pendiente',
-      text:
-        'El formulario está listo, pero todavía falta conectarlo al endpoint de encargados.',
-      icon: 'info',
-      confirmButtonText: 'Aceptar',
-      confirmButtonColor: '#3B5BDB',
-    });
+    if (this.modoEdicion && this.idEditando) {
+
+      // ACTUALIZAR
+      this.http.put(`${this.apiUrl}${this.idEditando}/`, cuerpo).subscribe({
+
+        next: () => {
+          this.guardando = false;
+          Swal.fire({
+            title: 'Encargado actualizado',
+            icon: 'success',
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#3B5BDB',
+          });
+          this.closeModal();
+          this.cargarEncargados();
+        },
+
+        error: (err) => {
+          this.guardando = false;
+          console.error(err);
+          Swal.fire({
+            title: 'Error al actualizar',
+            text: 'Revisa la consola del navegador para más detalles.',
+            icon: 'error',
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#3B5BDB',
+          });
+        },
+      });
+
+    } else {
+
+      // CREAR
+      this.http.post(this.apiUrl, cuerpo).subscribe({
+
+        next: () => {
+          this.guardando = false;
+          Swal.fire({
+            title: 'Encargado creado',
+            icon: 'success',
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#3B5BDB',
+          });
+          this.closeModal();
+          this.cargarEncargados();
+        },
+
+        error: (err) => {
+          this.guardando = false;
+          console.error(err);
+          Swal.fire({
+            title: 'Error al crear',
+            text: 'Revisa la consola del navegador para más detalles.',
+            icon: 'error',
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#3B5BDB',
+          });
+        },
+      });
+    }
   }
+
 
 
   // =====================================================
@@ -897,29 +977,18 @@ export class Encargados implements OnInit {
   // ELIMINAR
   // =====================================================
 
-  eliminarEncargado(id: number): void {
+    eliminarEncargado(id: number): void {
 
     Swal.fire({
 
       title: '¿Eliminar encargado?',
-
-      text:
-        'Esta acción no se puede deshacer.',
-
+      text: 'Esta acción no se puede deshacer.',
       icon: 'warning',
-
       showCancelButton: true,
-
-      confirmButtonText:
-        'Sí, eliminar',
-
-      cancelButtonText:
-        'Cancelar',
-
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
       reverseButtons: true,
-
-      confirmButtonColor:
-        '#3B5BDB',
+      confirmButtonColor: '#3B5BDB',
 
     }).then((resultado) => {
 
@@ -927,19 +996,30 @@ export class Encargados implements OnInit {
         return;
       }
 
+      this.http.delete(`${this.apiUrl}${id}/`).subscribe({
 
-      /*
-       * La eliminación debe realizarse mediante DELETE
-       * utilizando EncargadosService.
-       */
+        next: () => {
 
-      Swal.fire({
-        title: 'Servicio pendiente',
-        text:
-          'La eliminación debe conectarse al endpoint de encargados.',
-        icon: 'info',
-        confirmButtonText: 'Aceptar',
-        confirmButtonColor: '#3B5BDB',
+          Swal.fire({
+            title: 'Encargado eliminado',
+            icon: 'success',
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#3B5BDB',
+          });
+
+          this.cargarEncargados();
+        },
+
+        error: () => {
+
+          Swal.fire({
+            title: 'Error al eliminar',
+            text: 'No se pudo eliminar el encargado.',
+            icon: 'error',
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#3B5BDB',
+          });
+        },
       });
     });
   }
