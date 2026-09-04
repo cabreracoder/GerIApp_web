@@ -47,6 +47,12 @@ export class Layout {
       icono: 'dashboard',
       ruta: '/dashboard'
     },
+    {
+      nombre: 'Usuarios',
+      icono: 'people',
+      ruta: '/usuarios'
+    },
+
 
     {
       nombre: 'Pacientes',
@@ -71,14 +77,13 @@ export class Layout {
       icono: 'admin_panel_settings',
       ruta: '/roles'
     },
+    {
+      nombre: 'Configuración',
+      icono: 'person',
+      ruta: '/configuracion'
+    }
 
   ];
-
-  configuracion: OpcionMenu = {
-    nombre: 'Configuración',
-    icono: 'settings',
-    ruta: '/configuracion'
-  };
 
 
   cerrarSesion(): void {

@@ -9,6 +9,7 @@ import { Configuracion } from './configuracion/configuracion';
 import { Encargados } from './encargados/encargados';
 import { Login } from './login/login';
 import { Registro } from './registro/registro';
+import { Usuarios } from './usuarios/usuarios';
 
 export const routes: Routes = [
 
@@ -44,6 +45,11 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         component: DashboardComponent
+      },
+      {
+        path: 'usuarios',
+        component: Usuarios
+
       },
 
       {

@@ -1,3 +1,4 @@
+
 <div class="login-container">
 
   <div class="login-card">
@@ -11,7 +12,10 @@
     <form (ngSubmit)="iniciarSesion()">
 
       <div class="campo">
-        <label for="correo">Correo electrónico</label>
+
+        <label for="correo">
+          Correo electrónico
+        </label>
 
         <input
           type="email"
@@ -21,10 +25,14 @@
           placeholder="ejemplo@correo.com"
           required
         >
+
       </div>
 
       <div class="campo">
-        <label for="contrasena">Contraseña</label>
+
+        <label for="contrasena">
+          Contraseña
+        </label>
 
         <input
           type="password"
@@ -34,13 +42,20 @@
           placeholder="Ingresa tu contraseña"
           required
         >
+
       </div>
 
-      <div class="mensaje-exito" *ngIf="mensaje">
+      <div
+        class="mensaje-exito"
+        *ngIf="mensaje"
+      >
         {{ mensaje }}
       </div>
 
-      <div class="mensaje-error" *ngIf="error">
+      <div
+        class="mensaje-error"
+        *ngIf="error"
+      >
         {{ error }}
       </div>
 
@@ -54,10 +69,19 @@
     </form>
 
     <p class="registro-link">
+
       ¿No tienes una cuenta?
-      <a routerLink="/registro">Regístrate</a>
+
+      <button
+        type="button"
+        (click)="registro()"
+      >
+        Regístrate
+      </button>
+
     </p>
 
   </div>
 
 </div>
+
