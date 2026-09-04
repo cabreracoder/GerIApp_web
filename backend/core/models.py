@@ -191,7 +191,7 @@ class Diagnosticos(models.Model):
 
 class DisponibilidadUsuario(models.Model):
     id_disponibilidad = models.AutoField(primary_key=True)
-    id_usuario = models.ForeignKey('Usuarios', models.DB_CASCADE, db_column='id_usuario')
+    id_usuario = models.ForeignKey('Usuarios', models.CASCADE, db_column='id_usuario')
     dia_semana = models.CharField(max_length=15)
     hora_inicio = models.TimeField()
     hora_fin = models.TimeField()
@@ -298,7 +298,7 @@ class EventosAdversos(models.Model):
 
 class FamiliarResponsable(models.Model):
     id_familiar_responsable = models.AutoField(primary_key=True)
-    id_paciente = models.ForeignKey('Pacientes', models.DB_CASCADE, db_column='id_paciente')
+    id_paciente = models.ForeignKey('Pacientes', models.CASCADE, db_column='id_paciente')
     nombres = models.CharField(max_length=100)
     apellidos = models.CharField(max_length=100)
     parentesco = models.CharField(max_length=50)
@@ -436,7 +436,7 @@ class Pacientes(models.Model):
 
 class PerfilProfesional(models.Model):
     id_perfil_profesional = models.AutoField(primary_key=True)
-    id_usuario = models.OneToOneField('Usuarios', models.DB_CASCADE, db_column='id_usuario')
+    id_usuario = models.OneToOneField('Usuarios', models.CASCADE, db_column='id_usuario')
     especialidad = models.CharField(max_length=100, blank=True, null=True)
     licencia = models.CharField(max_length=100, blank=True, null=True)
     experiencia = models.IntegerField(blank=True, null=True)
