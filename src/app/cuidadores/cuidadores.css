@@ -30,20 +30,10 @@
 .encabezado-pagina {
   width: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: var(--spacing-lg);
   margin: 0 0 var(--spacing-lg);
-}
-
-.titulo-pagina {
-  margin: 0;
-  color: var(--text-primary);
-  font-family: var(--font-heading-family);
-  font-size: var(--font-size-h1);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: -0.5px;
-  line-height: 1.2;
 }
 
 .subtitulo-pagina {
@@ -52,13 +42,14 @@
   font-family: var(--font-family-base);
   font-size: var(--font-size-sm);
   line-height: 1.5;
+  white-space: nowrap;
 }
 
 /* =========================================================
-   BOTÓN PRINCIPAL
+   BOTÓN NUEVO CUIDADOR
 ========================================================= */
 
-.boton-principal {
+.boton-nuevo {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -74,21 +65,23 @@
   font-weight: var(--font-weight-bold);
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.2s ease, transform 0.15s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
 }
 
-.boton-principal:hover {
+.boton-nuevo:hover {
   background: var(--color-primary-hover);
   transform: translateY(-1px);
 }
 
-.boton-principal .material-symbols-outlined {
+.boton-nuevo .material-symbols-outlined {
   font-size: var(--icon-size-md);
 }
 
-/* =====================================================
+/* =========================================================
    BUSCADOR
-===================================================== */
+========================================================= */
 
 .tarjeta-buscador {
   position: relative;
@@ -127,26 +120,15 @@
   color: var(--text-secondary);
 }
 
-.contador-resultados {
-  flex-shrink: 0;
-  color: var(--text-secondary);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-}
-
 /* =========================================================
-   CONTADOR SIMPLE
+   CONTADOR
 ========================================================= */
 
-.contador-cuidadores {
+.contador-resultados {
   margin-bottom: var(--spacing-md);
-  font-size: var(--font-size-sm);
   color: var(--text-secondary);
-}
-
-.contador-cuidadores span {
-  font-weight: var(--font-weight-bold);
-  color: var(--text-primary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
 }
 
 /* =========================================================
@@ -155,6 +137,7 @@
 
 .contenedor-tabla {
   width: 100%;
+  min-width: 0;
   overflow: hidden;
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
@@ -169,24 +152,25 @@
 
 table {
   width: 100%;
-  min-width: 800px;
+  min-width: 1050px;
   border-collapse: collapse;
   table-layout: auto;
 }
 
 thead {
-  background: var(--color-primary);
+  background: var(--bg-neutral-light);
 }
 
 th {
   padding: var(--spacing-sm) var(--spacing-md);
-  color: #ffffff !important;
+  color: var(--text-secondary);
   font-family: var(--font-family-base);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
   text-align: left;
   text-transform: uppercase;
   letter-spacing: 0.4px;
+  border-bottom: 1px solid var(--border-color);
   white-space: nowrap;
 }
 
@@ -207,79 +191,127 @@ tbody tr:hover {
 }
 
 /* =========================================================
-   INFORMACIÓN Y ESTADOS EN TABLA
+   INFORMACIÓN DEL CUIDADOR
 ========================================================= */
 
-.nombre-cuidador {
-  display: inline-flex;
+.informacion-cuidador {
+  display: flex;
   align-items: center;
-  padding: 6px 12px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  color: var(--text-primary);
-  font-weight: var(--font-weight-medium);
+  gap: var(--spacing-sm);
+  min-width: 210px;
 }
+
+.avatar-cuidador {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-accent-beige);
+  color: #7d5a4f;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.datos-cuidador {
+  min-width: 0;
+}
+
+.datos-cuidador p {
+  margin: 0;
+}
+
+.datos-cuidador p:first-child {
+  margin-bottom: var(--spacing-2xs);
+  color: var(--text-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+.datos-cuidador p:last-child {
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+}
+
+/* =========================================================
+   ESTADO
+========================================================= */
 
 .badge-estado {
   display: inline-flex;
   align-items: center;
-  padding: 4px 10px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  padding: 6px 9px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent-beige);
+  color: #7d5a4f;
   font-size: var(--font-size-xs);
-  color: var(--text-primary);
-  text-transform: capitalize;
+  font-weight: var(--font-weight-bold);
+  white-space: nowrap;
 }
 
 /* =========================================================
-   BOTONES DE ACCIÓN EN TABLA
+   BOTONES DE ACCIONES
 ========================================================= */
 
 .contenedor-acciones {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
+  gap: 5px;
   white-space: nowrap;
 }
 
-.boton-accion {
-  padding: 6px 12px;
+.boton-icono {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   background: var(--bg-surface);
-  color: var(--color-primary);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
   cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 
-.boton-accion:hover {
-  background: var(--bg-primary);
-  border-color: var(--color-primary);
+.boton-icono:hover {
+  background: var(--bg-neutral-light);
+  border-color: var(--color-secondary);
+  color: var(--color-primary);
 }
 
-.boton-accion.boton-peligro {
+.boton-icono .material-symbols-outlined {
+  font-size: var(--icon-size-sm);
+}
+
+/* BOTÓN ELIMINAR */
+
+.boton-eliminar:hover {
+  background: #f8d7da;
+  border-color: var(--color-danger);
   color: var(--color-danger);
 }
 
-.boton-accion.boton-peligro:hover {
-  background: #fff5f5;
-  border-color: var(--color-danger);
-}
+/* =========================================================
+   MENSAJE VACÍO
+========================================================= */
 
 .mensaje-vacio {
-  padding: 40px !important;
+  padding: 50px !important;
   color: var(--text-secondary);
   font-size: var(--font-size-sm);
   text-align: center;
+  border-bottom: none !important;
 }
 
 /* =========================================================
-   FONDO DEL MODAL
+   FONDO MODAL
 ========================================================= */
 
 .fondo-modal {
@@ -299,7 +331,7 @@ tbody tr:hover {
 }
 
 /* =========================================================
-   VENTANA DEL MODAL
+   VENTANA MODAL
 ========================================================= */
 
 .ventana-modal {
@@ -314,7 +346,7 @@ tbody tr:hover {
 }
 
 /* =========================================================
-   ENCABEZADO DEL MODAL
+   ENCABEZADO MODAL
 ========================================================= */
 
 .encabezado-modal {
@@ -354,7 +386,7 @@ tbody tr:hover {
 }
 
 /* =========================================================
-   CUERPO DEL MODAL
+   CUERPO MODAL
 ========================================================= */
 
 .cuerpo-modal {
@@ -362,7 +394,14 @@ tbody tr:hover {
   overflow-y: auto;
 }
 
+/* =========================================================
+   SECCIONES DEL FORMULARIO
+========================================================= */
+
 .seccion-formulario {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
   margin: var(--spacing-xs) 0 var(--spacing-sm);
   padding-bottom: var(--spacing-xs);
   border-bottom: 1px solid var(--border-color);
@@ -375,6 +414,25 @@ tbody tr:hover {
   margin-top: 0;
 }
 
+/* =========================================================
+   TÍTULO DOCUMENTOS
+========================================================= */
+
+.titulo-seccion-formulario {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  width: 100%;
+}
+
+.titulo-seccion-formulario .material-symbols-outlined {
+  color: var(--color-primary);
+}
+
+/* =========================================================
+   REJILLA DEL FORMULARIO
+========================================================= */
+
 .rejilla-formulario {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -386,10 +444,6 @@ tbody tr:hover {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
-}
-
-.campo-formulario.campo-completo {
-  grid-column: 1 / -1;
 }
 
 .etiqueta-formulario {
@@ -409,7 +463,9 @@ tbody tr:hover {
   color: var(--text-primary);
   font-family: var(--font-family-base);
   font-size: var(--font-size-sm);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .campo-entrada:focus {
@@ -417,12 +473,99 @@ tbody tr:hover {
   box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.1);
 }
 
-.campo-entrada::placeholder {
+/* =========================================================
+   DOCUMENTOS
+========================================================= */
+
+/* =====================================================
+   DOCUMENTOS
+===================================================== */
+
+.grid-documentos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-sm);
+}
+
+.tarjeta-documento {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2xs);
+  min-height: 120px;
+  padding: var(--spacing-md);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-neutral-light);
+  text-align: center;
+  transition: border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.tarjeta-documento:hover {
+  border-color: var(--color-secondary);
+}
+
+.tarjeta-documento>.material-symbols-outlined {
   color: var(--text-secondary);
+  font-size: var(--icon-size-md);
+}
+
+.nombre-documento {
+  color: var(--text-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.estado-documento {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.estado-documento.con-archivo {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.boton-examinar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2xs);
+  margin-top: var(--spacing-2xs);
+  padding: var(--spacing-2xs) var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.boton-examinar:hover {
+  border-color: var(--color-secondary);
+  color: var(--color-primary);
+  background: var(--bg-neutral-light);
+}
+
+.boton-examinar .material-symbols-outlined {
+  font-size: 16px;
+}
+
+@media (max-width: 700px) {
+  .grid-documentos {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* =========================================================
-   PIE DEL MODAL
+   PIE MODAL
 ========================================================= */
 
 .pie-modal {
@@ -464,4 +607,62 @@ tbody tr:hover {
 
 .boton-guardar:hover {
   background: var(--color-primary-hover);
+}
+
+.boton-guardar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   AVATAR DEL DETALLE
+========================================================= */
+
+.avatar-detalle {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  color: #7d5a4f;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+  .encabezado-pagina {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .boton-nuevo {
+    width: 100%;
+  }
+
+  .rejilla-formulario {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-documentos {
+    grid-template-columns: 1fr;
+  }
+
+  .ventana-modal {
+    width: 100%;
+    max-height: 95vh;
+  }
+
+  .cuerpo-modal {
+    padding: var(--spacing-md);
+  }
+
+  .pie-modal {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
 }

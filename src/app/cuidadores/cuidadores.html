@@ -6,487 +6,996 @@
       <h1 class="text-3xl font-bold text-[#212529]">
         Gestión de Cuidadores
       </h1>
+
       <p class="text-[#6C757D] mt-1">
-        Administración y seguimiento de cuidadores registrados.
+        Administración y registro de cuidadores
       </p>
     </div>
 
-    <button type="button" (click)="abrirFormulario('crear')"
-      class="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-[#3B5BDB] bg-[#3B5BDB] text-white hover:bg-[#324EC7] transition">
-      <span class="material-symbols-outlined text-xl">person_add</span>
-      Nuevo cuidador
+    <button type="button" (click)="abrirFormulario('crear')" class="px-5 py-3 rounded-lg
+             border border-[#3B5BDB]
+             bg-[#3B5BDB] text-white
+             hover:bg-[#324EC7] transition">
+      + Nuevo Cuidador
     </button>
   </div>
 
-  <!-- BUSCADOR Y FILTROS -->
-  <section class="tarjeta-buscador flex items-center gap-3 bg-white p-4 rounded-xl border border-[#D9E0F2] mb-6">
-    <span class="material-symbols-outlined text-[#6C757D]">search</span>
-    <input type="text" class="w-full bg-transparent outline-none text-[#212529] placeholder-[#6C757D]"
-      placeholder="Buscar por documento o nombre..." aria-label="Buscar cuidador" autocomplete="off"
-      [(ngModel)]="textoBusqueda" (input)="buscarCuidadores()">
 
-    <span class="text-xs text-[#6C757D] whitespace-nowrap bg-[#F4F7FF] px-3 py-1 rounded-full border border-[#D9E0F2]"
-      *ngIf="textoBusqueda">
-      {{ cuidadoresFiltrados.length }} resultado{{ cuidadoresFiltrados.length === 1 ? '' : 's' }}
+  <!-- BUSCADOR -->
+  <div class="tarjeta-buscador">
+
+    <span class="material-symbols-outlined icono-busqueda">
+      search
     </span>
-  </section>
+
+    <input type="text" placeholder="Buscar por documento o nombre..." aria-label="Buscar cuidador" autocomplete="off"
+      [(ngModel)]="textoBusqueda" (input)="buscarCuidadores()" />
+
+  </div>
+
 
   <!-- CONTADOR -->
-  <div class="mb-5 flex justify-between items-center">
+  <div class="mb-5">
     <p class="text-sm text-[#6C757D]">
+
       Cuidadores registrados:
-      <span class="font-semibold text-[#212529]">
+
+      <span class="font-bold text-[#212529]">
         {{ cuidadoresFiltrados.length }}
       </span>
+
     </p>
   </div>
 
-  <!-- TABLA DE CUIDADORES -->
+
+  <!-- TABLA -->
   <div class="overflow-x-auto">
+
     <table class="w-full border-separate border-spacing-y-2">
+
+      <!-- ENCABEZADO -->
       <thead>
+
         <tr class="bg-[#3B5BDB]">
+
+          <!-- CUIDADOR -->
           <th (click)="ordenarCuidadores()"
-            class="px-5 py-4 text-left text-sm font-semibold !text-white rounded-l-lg cursor-pointer select-none">
-            <div class="flex items-center gap-1">
-              Cuidador
-              <span class="material-symbols-outlined text-base">
-                {{ ordenNombre === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
-              </span>
-            </div>
+            class="px-5 py-4 text-left text-sm font-semibold !text-white rounded-l-lg cursor-pointer">
+
+            CUIDADOR
+
           </th>
-          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">Documento</th>
-          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">Turno</th>
-          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">Pacientes</th>
-          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">Estado</th>
-          <th class="px-5 py-4 text-center text-sm font-semibold !text-white rounded-r-lg">Acciones</th>
+
+
+          <!-- DOCUMENTO -->
+          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
+            DOCUMENTO
+          </th>
+
+
+          <!-- TURNO -->
+          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
+            TURNO
+          </th>
+
+
+          <!-- PACIENTES -->
+          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
+            PACIENTES
+          </th>
+
+
+          <!-- ESTADO -->
+          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
+            ESTADO
+          </th>
+
+
+          <!-- ACCIONES -->
+          <th class="px-5 py-4 text-center text-sm font-semibold !text-white rounded-r-lg">
+            ACCIONES
+          </th>
+
         </tr>
+
       </thead>
 
+
+      <!-- CUERPO DE LA TABLA -->
       <tbody>
-        <!-- ESTADO VACÍO -->
+
+        <!-- SIN RESULTADOS -->
         <tr *ngIf="cuidadoresFiltrados.length === 0">
-          <td colspan="6" class="px-5 py-12 text-center text-[#6C757D] bg-[#F4F7FF] rounded-lg">
+
+          <td colspan="6" class="px-5 py-12 text-center text-[#6C757D]">
+
             <div class="flex flex-col items-center gap-2">
-              <span class="material-symbols-outlined text-4xl">group_off</span>
-              <strong class="text-base text-[#212529]">No hay cuidadores registrados</strong>
-              <span class="text-xs">Los cuidadores obtenidos desde la API aparecerán aquí.</span>
+
+              <span class="material-symbols-outlined text-4xl">
+                group_off
+              </span>
+
+              <strong>
+                No se encontraron cuidadores.
+              </strong>
+
             </div>
+
           </td>
+
         </tr>
+
 
         <!-- REGISTROS -->
         <tr *ngFor="let caregiver of cuidadoresFiltrados" class="bg-[#F4F7FF]">
-          <!-- Nombre y Avatar -->
+
+          <!-- CUIDADOR -->
           <td class="px-5 py-4 rounded-l-lg">
+
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-sm shrink-0"
-                [style.background]="obtenerColorAvatar(caregiver.id)">
-                {{ obtenerIniciales(caregiver.nombreCompleto || caregiver.nombre) }}
+
+              <div class="avatar-cuidador" [style.background]="obtenerColorAvatar(caregiver.id)">
+
+                {{
+                obtenerIniciales(
+                caregiver.nombreCompleto || caregiver.nombre
+                )
+                }}
+
               </div>
+
+
               <div class="flex flex-col">
-                <strong class="text-[#212529] font-medium text-sm">
-                  {{ caregiver.nombreCompleto || (caregiver.nombre + ' ' + (caregiver.apellido || '')) }}
+
+                <strong class="text-[#212529]">
+
+                  {{
+                  caregiver.nombreCompleto ||
+                  (
+                  caregiver.nombre +
+                  ' ' +
+                  (caregiver.apellido || '')
+                  )
+                  }}
+
                 </strong>
-                <span class="text-xs text-[#6C757D]">{{ caregiver.correo }}</span>
+
+
+                <span class="text-xs text-[#6C757D]">
+
+                  {{ caregiver.correo }}
+
+                </span>
+
               </div>
+
             </div>
+
           </td>
 
-          <!-- Documento -->
+
+          <!-- DOCUMENTO -->
           <td class="px-5 py-4 text-sm text-[#495057]">
-            {{ (caregiver.tipoDocumento ? caregiver.tipoDocumento + ' - ' : '') + (caregiver.numeroDocumento ||
-            caregiver.documento) }}
+
+            {{
+            (
+            caregiver.tipoDocumento
+            ? caregiver.tipoDocumento + ' - '
+            : ''
+            )
+            +
+            (
+            caregiver.numeroDocumento ||
+            caregiver.documento
+            )
+            }}
+
           </td>
 
-          <!-- Turno -->
+
+          <!-- TURNO -->
           <td class="px-5 py-4 text-sm text-[#495057]">
-            <span
-              class="inline-flex items-center px-3 py-1 bg-white border border-[#D9E0F2] rounded-lg text-sm font-medium">
-              {{ caregiver.turno || 'Sin asignar' }}
-            </span>
+
+            {{ caregiver.turno || 'Sin asignar' }}
+
           </td>
 
-          <!-- Pacientes -->
+
+          <!-- PACIENTES -->
           <td class="px-5 py-4 text-sm text-[#495057]">
+
             {{ caregiver.pacientes ?? 0 }}
+
           </td>
 
-          <!-- Estado -->
+
+          <!-- ESTADO -->
           <td class="px-5 py-4">
-            <span
-              class="inline-flex items-center px-3 py-1 bg-white border border-[#D9E0F2] rounded-lg text-sm text-[#495057]">
-              {{ caregiver.estado || 'Activo' }}
+
+            <span class="badge-estado">
+
+              {{
+              caregiver.estado === 'activo'
+              ? 'Activo'
+              : 'Inactivo'
+              }}
+
             </span>
+
           </td>
 
-          <!-- Acciones -->
+
+          <!-- ACCIONES -->
           <td class="px-5 py-4 rounded-r-lg">
+
             <div class="flex justify-center gap-2">
-              <button type="button" (click)="verDetalle(caregiver)" title="Ver detalle"
-                class="px-3 py-2 rounded-lg border border-[#D9E0F2] bg-white text-[#3B5BDB] text-sm hover:bg-[#F4F7FF] transition flex items-center gap-1">
-                <span class="material-symbols-outlined text-base">visibility</span> Ver
+
+              <!-- VER -->
+              <button type="button" class="boton-icono" title="Ver cuidador" (click)="verDetalle(caregiver)">
+
+                <span class="material-symbols-outlined">
+                  visibility
+                </span>
+
               </button>
 
-              <button type="button" (click)="abrirFormulario('editar', caregiver.id)" title="Editar"
-                class="px-3 py-2 rounded-lg border border-[#D9E0F2] bg-white text-[#3B5BDB] text-sm hover:bg-[#F4F7FF] transition flex items-center gap-1">
-                <span class="material-symbols-outlined text-base">edit</span> Editar
+
+              <!-- EDITAR -->
+              <button type="button" class="boton-icono" title="Editar cuidador"
+                (click)="abrirFormulario('editar', caregiver.id)">
+
+                <span class="material-symbols-outlined">
+                  edit
+                </span>
+
               </button>
 
-              <button type="button" (click)="solicitarEliminacion(caregiver.id)" title="Eliminar"
-                class="px-3 py-2 rounded-lg border border-[#D9E0F2] bg-white text-[#DC3545] text-sm hover:bg-[#FFF5F5] transition flex items-center gap-1">
-                <span class="material-symbols-outlined text-base">delete</span> Eliminar
+
+              <!-- CAMBIAR ESTADO -->
+              <button type="button" class="boton-icono" title="Cambiar estado">
+
+                <span class="material-symbols-outlined">
+                  toggle_on
+                </span>
+
               </button>
+
+
+              <!-- ELIMINAR -->
+              <button type="button" class="boton-icono boton-eliminar" title="Eliminar cuidador"
+                (click)="solicitarEliminacion(caregiver.id)">
+
+                <span class="material-symbols-outlined">
+                  delete
+                </span>
+
+              </button>
+
             </div>
+
           </td>
+
         </tr>
+
       </tbody>
+
     </table>
+
   </div>
 
+
+  <!-- ===================================================== -->
   <!-- MODAL CREAR / EDITAR CUIDADOR -->
+  <!-- ===================================================== -->
+
   <div class="fondo-modal" [class.abierto]="formularioAbierto" (click)="cerrarFormularioPorOverlay($event)">
-    <div class="ventana-modal max-w-3xl w-full" (click)="$event.stopPropagation()">
+
+    <div class="ventana-modal" (click)="$event.stopPropagation()">
+
+
+      <!-- ENCABEZADO -->
       <div class="encabezado-modal">
-        <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-[#3B5BDB]">person_add</span>
-          <h3>{{ modoFormulario === 'crear' ? 'Nuevo Cuidador' : 'Editar Cuidador' }}</h3>
-        </div>
+
+        <h3>
+          {{
+          modoFormulario === 'crear'
+          ? 'Nuevo Cuidador'
+          : 'Editar Cuidador'
+          }}
+        </h3>
+
         <button class="boton-cerrar" type="button" (click)="cerrarFormulario()">
-          <span class="material-symbols-outlined">close</span>
+
+          <span class="material-symbols-outlined">
+            close
+          </span>
+
         </button>
+
       </div>
 
-      <form class="cuerpo-modal space-y-6 max-h-[80vh] overflow-y-auto" (ngSubmit)="guardarCuidador()">
-        <!-- DATOS PERSONALES -->
-        <div>
-          <div class="seccion-formulario flex items-center gap-2 font-semibold mb-3 text-[#212529]">
-            <span class="material-symbols-outlined text-[#3B5BDB] text-xl">person</span>
-            Información personal
-          </div>
 
-          <div class="rejilla-formulario grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="campo-formulario">
-              <label class="etiqueta-formulario">Nombres <span class="text-red-500">*</span></label>
-              <input class="campo-entrada" [class.error]="tieneError('nombre')" type="text"
-                [(ngModel)]="formulario.nombre" name="nombre" placeholder="Nombres">
-              <span class="mensaje-error text-xs text-red-500 mt-1 block" *ngIf="tieneError('nombre')">Este campo es
-                obligatorio.</span>
-            </div>
+      <!-- CUERPO -->
+      <form class="cuerpo-modal" (ngSubmit)="guardarCuidador()">
 
-            <div class="campo-formulario">
-              <label class="etiqueta-formulario">Apellidos <span class="text-red-500">*</span></label>
-              <input class="campo-entrada" [class.error]="tieneError('apellido')" type="text"
-                [(ngModel)]="formulario.apellido" name="apellido" placeholder="Apellidos">
-              <span class="mensaje-error text-xs text-red-500 mt-1 block" *ngIf="tieneError('apellido')">Este campo es
-                obligatorio.</span>
-            </div>
 
-            <div class="campo-formulario">
-              <label class="etiqueta-formulario">Tipo de documento <span class="text-red-500">*</span></label>
-              <select class="campo-entrada" [class.error]="tieneError('tipoDocumento')"
-                [(ngModel)]="formulario.tipoDocumento" name="tipoDocumento">
-                <option value="">Seleccione</option>
-                <option *ngFor="let tipo of tiposDocumento" [value]="tipo">{{ tipo }}</option>
-              </select>
-              <span class="mensaje-error text-xs text-red-500 mt-1 block" *ngIf="tieneError('tipoDocumento')">Este campo
-                es obligatorio.</span>
-            </div>
+        <!-- ============================= -->
+        <!-- INFORMACIÓN PERSONAL -->
+        <!-- ============================= -->
 
-            <div class="campo-formulario">
-              <label class="etiqueta-formulario">Número de documento <span class="text-red-500">*</span></label>
-              <input class="campo-entrada" [class.error]="tieneError('numeroDocumento')" type="text"
-                [(ngModel)]="formulario.numeroDocumento" name="numeroDocumento" placeholder="Número de documento">
-              <span class="mensaje-error text-xs text-red-500 mt-1 block" *ngIf="tieneError('numeroDocumento')">Este
-                campo es obligatorio.</span>
-            </div>
-
-            <div class="campo-formulario">
-              <label class="etiqueta-formulario">Teléfono <span class="text-red-500">*</span></label>
-              <input class="campo-entrada" [class.error]="tieneError('telefono')" type="tel"
-                [(ngModel)]="formulario.telefono" name="telefono" placeholder="Teléfono">
-            </div>
-
-            <div class="campo-formulario">
-              <label class="etiqueta-formulario">Correo electrónico <span class="text-red-500">*</span></label>
-              <input class="campo-entrada" [class.error]="tieneError('correo')" type="email"
-                [(ngModel)]="formulario.correo" name="correo" placeholder="correo@ejemplo.com">
-            </div>
-
-            <div class="campo-formulario">
-              <label class="etiqueta-formulario">Fecha de nacimiento</label>
-              <input class="campo-entrada" type="date" [(ngModel)]="formulario.fechaNacimiento" name="fechaNacimiento"
-                (change)="calcularEdad()">
-            </div>
-
-            <div class="campo-formulario">
-              <label class="etiqueta-formulario">Edad</label>
-              <input class="campo-entrada bg-gray-100" type="number" [value]="formulario.edad ?? ''" name="edad"
-                readonly placeholder="Años cumplidos">
-            </div>
-          </div>
+        <div class="seccion-formulario">
+          Información personal
         </div>
 
+        <div class="rejilla-formulario">
+
+
+          <!-- NOMBRES -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Nombres
+            </label>
+
+            <input type="text" class="campo-entrada" [(ngModel)]="formulario.nombre" name="nombre" required>
+
+          </div>
+
+
+          <!-- APELLIDOS -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Apellidos
+            </label>
+
+            <input type="text" class="campo-entrada" [(ngModel)]="formulario.apellido" name="apellido" required>
+
+          </div>
+
+
+          <!-- TIPO DOCUMENTO -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Tipo de documento
+            </label>
+
+            <select class="campo-entrada" [(ngModel)]="formulario.tipoDocumento" name="tipoDocumento" required>
+
+              <option value="">
+                Seleccionar
+              </option>
+
+              <option value="CC">
+                Cédula de ciudadanía
+              </option>
+
+              <option value="CE">
+                Cédula de extranjería
+              </option>
+
+              <option value="TI">
+                Tarjeta de identidad
+              </option>
+
+              <option value="PASAPORTE">
+                Pasaporte
+              </option>
+
+              <option value="PEP">
+                PEP
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- NÚMERO DOCUMENTO -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Número de documento
+            </label>
+
+            <input type="text" class="campo-entrada" [(ngModel)]="formulario.numeroDocumento" name="numeroDocumento"
+              required>
+
+          </div>
+
+
+          <!-- TELÉFONO -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Teléfono
+            </label>
+
+            <input type="tel" class="campo-entrada" [(ngModel)]="formulario.telefono" name="telefono">
+
+          </div>
+
+
+          <!-- CORREO -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Correo electrónico
+            </label>
+
+            <input type="email" class="campo-entrada" [(ngModel)]="formulario.correo" name="correo">
+
+          </div>
+
+
+          <!-- FECHA NACIMIENTO -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Fecha de nacimiento
+            </label>
+
+            <input type="date" class="campo-entrada" [(ngModel)]="formulario.fechaNacimiento" name="fechaNacimiento"
+              (change)="calcularEdad()">
+
+          </div>
+
+
+          <!-- EDAD -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Edad
+            </label>
+
+            <input type="number" class="campo-entrada" [(ngModel)]="formulario.edad" name="edad" readonly>
+
+          </div>
+
+        </div>
+
+
+        <!-- ============================= -->
         <!-- INFORMACIÓN PROFESIONAL -->
-        <div>
-          <div class="seccion-formulario flex items-center gap-2 font-semibold mb-3 text-[#212529]">
-            <span class="material-symbols-outlined text-[#3B5BDB] text-xl">medical_information</span>
-            Información profesional
-          </div>
+        <!-- ============================= -->
 
-          <div class="rejilla-formulario grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="campo-formulario">
-              <label class="etiqueta-formulario">Especialidad / Rol <span class="text-red-500">*</span></label>
-              <input class="campo-entrada" [class.error]="tieneError('especialidad')" type="text"
-                [(ngModel)]="formulario.especialidad" name="especialidad" placeholder="Ej. Enfermero, Auxiliar">
-            </div>
-
-            <div class="campo-formulario">
-              <label class="etiqueta-formulario">Licencia <span class="text-red-500">*</span></label>
-              <input class="campo-entrada" [class.error]="tieneError('licencia')" type="text"
-                [(ngModel)]="formulario.licencia" name="licencia" placeholder="Número de licencia">
-            </div>
-
-            <div class="campo-formulario">
-              <label class="etiqueta-formulario">Experiencia (años)</label>
-              <input class="campo-entrada" type="number" min="0" [(ngModel)]="formulario.experiencia" name="experiencia"
-                placeholder="Años de experiencia">
-            </div>
-
-            <div class="campo-formulario">
-              <label class="etiqueta-formulario">Institución</label>
-              <input class="campo-entrada" type="text" [(ngModel)]="formulario.institucion" name="institucion"
-                placeholder="Institución">
-            </div>
-          </div>
+        <div class="seccion-formulario">
+          Información profesional
         </div>
 
-        <!-- TURNO Y DÍAS -->
-        <div>
-          <div class="seccion-formulario flex items-center gap-2 font-semibold mb-3 text-[#212529]">
-            <span class="material-symbols-outlined text-[#3B5BDB] text-xl">schedule</span>
-            Turno y Disponibilidad
-          </div>
+        <div class="rejilla-formulario">
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div class="campo-formulario">
-              <label class="etiqueta-formulario">Turno / Horario</label>
-              <select class="campo-entrada" [(ngModel)]="turnoSeleccionado" name="turno">
-                <option value="">Seleccione</option>
-                <option *ngFor="let turno of turnosDisponibles" [value]="turno.nombre">
-                  {{ turno.nombre }} ({{ turno.horario }})
-                </option>
-              </select>
-            </div>
 
-            <div class="campo-formulario">
-              <label class="etiqueta-formulario">Estado</label>
-              <select class="campo-entrada" [(ngModel)]="formulario.estado" name="estado">
-                <option value="activo">Activo</option>
-                <option value="inactivo">Inactivo</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Selección de Días -->
+          <!-- ESPECIALIDAD -->
           <div class="campo-formulario">
-            <label class="etiqueta-formulario mb-2 block">Días disponibles</label>
-            <div class="flex flex-wrap gap-2">
-              <button type="button" *ngFor="let dia of diasSemana"
-                class="px-3 py-1.5 rounded-lg border text-sm transition"
-                [ngClass]="estaSeleccionadoElDia(dia) ? 'bg-[#3B5BDB] text-white border-[#3B5BDB]' : 'bg-white text-[#495057] border-[#D9E0F2] hover:bg-[#F4F7FF]'"
-                (click)="cambiarDia(dia)">
-                {{ dia }}
-              </button>
-            </div>
+
+            <label class="etiqueta-formulario">
+              Especialidad / Rol
+            </label>
+
+            <input type="text" class="campo-entrada" [(ngModel)]="formulario.especialidad" name="especialidad">
+
           </div>
+
+
+          <!-- LICENCIA -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Licencia / tarjeta profesional
+            </label>
+
+            <input type="text" class="campo-entrada" [(ngModel)]="formulario.licencia" name="licencia">
+
+          </div>
+
+
+          <!-- EXPERIENCIA -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Experiencia
+            </label>
+
+            <input type="number" class="campo-entrada" [(ngModel)]="formulario.experiencia" name="experiencia" min="0">
+
+          </div>
+
+
+          <!-- INSTITUCIÓN -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Institución
+            </label>
+
+            <input type="text" class="campo-entrada" [(ngModel)]="formulario.institucion" name="institucion">
+
+          </div>
+
         </div>
 
-        <!-- ADJUNTAR DOCUMENTOS -->
-        <div>
-          <div class="seccion-formulario flex items-center gap-2 font-semibold mb-3 text-[#212529]">
-            <span class="material-symbols-outlined text-[#3B5BDB] text-xl">upload_file</span>
-            Documentos adjuntos
-          </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <label
-              class="p-3 border border-dashed rounded-lg flex items-center gap-3 cursor-pointer hover:bg-[#F4F7FF] transition"
-              [class.border-[#3B5BDB]]="archivoSeleccionado('cedula')">
-              <span class="material-symbols-outlined text-[#3B5BDB]">badge</span>
-              <div class="text-xs overflow-hidden">
-                <p class="font-medium text-[#212529] truncate">{{ archivoSeleccionado('cedula') ?
-                  obtenerNombreArchivo('cedula') : 'Cédula' }}</p>
-                <span class="text-[#6C757D]">Seleccionar archivo</span>
-              </div>
-              <input type="file" class="hidden" (change)="seleccionarArchivo($event, 'cedula')">
-            </label>
+        <!-- ============================= -->
+        <!-- INFORMACIÓN LABORAL -->
+        <!-- ============================= -->
 
-            <label
-              class="p-3 border border-dashed rounded-lg flex items-center gap-3 cursor-pointer hover:bg-[#F4F7FF] transition"
-              [class.border-[#3B5BDB]]="archivoSeleccionado('tarjetaProfesional')">
-              <span class="material-symbols-outlined text-[#3B5BDB]">card_membership</span>
-              <div class="text-xs overflow-hidden">
-                <p class="font-medium text-[#212529] truncate">{{ archivoSeleccionado('tarjetaProfesional') ?
-                  obtenerNombreArchivo('tarjetaProfesional') : 'Tarjeta Profesional' }}</p>
-                <span class="text-[#6C757D]">Seleccionar archivo</span>
-              </div>
-              <input type="file" class="hidden" (change)="seleccionarArchivo($event, 'tarjetaProfesional')">
-            </label>
-
-            <label
-              class="p-3 border border-dashed rounded-lg flex items-center gap-3 cursor-pointer hover:bg-[#F4F7FF] transition"
-              [class.border-[#3B5BDB]]="archivoSeleccionado('antecedentes')">
-              <span class="material-symbols-outlined text-[#3B5BDB]">verified_user</span>
-              <div class="text-xs overflow-hidden">
-                <p class="font-medium text-[#212529] truncate">{{ archivoSeleccionado('antecedentes') ?
-                  obtenerNombreArchivo('antecedentes') : 'Antecedentes' }}</p>
-                <span class="text-[#6C757D]">Seleccionar archivo</span>
-              </div>
-              <input type="file" class="hidden" (change)="seleccionarArchivo($event, 'antecedentes')">
-            </label>
-
-            <label
-              class="p-3 border border-dashed rounded-lg flex items-center gap-3 cursor-pointer hover:bg-[#F4F7FF] transition"
-              [class.border-[#3B5BDB]]="archivoSeleccionado('hojaVida')">
-              <span class="material-symbols-outlined text-[#3B5BDB]">description</span>
-              <div class="text-xs overflow-hidden">
-                <p class="font-medium text-[#212529] truncate">{{ archivoSeleccionado('hojaVida') ?
-                  obtenerNombreArchivo('hojaVida') : 'Hoja de vida' }}</p>
-                <span class="text-[#6C757D]">Seleccionar archivo</span>
-              </div>
-              <input type="file" class="hidden" (change)="seleccionarArchivo($event, 'hojaVida')">
-            </label>
-          </div>
+        <div class="seccion-formulario">
+          Información laboral
         </div>
 
-        <!-- PIE DE MODAL -->
-        <div class="pie-modal pt-4 border-t flex justify-end gap-3">
-          <button
-            class="boton-cancelar px-4 py-2 rounded-lg border border-[#D9E0F2] text-[#495057] hover:bg-gray-100 transition"
-            type="button" (click)="cancelarFormulario()" [disabled]="guardando">
+        <div class="rejilla-formulario">
+
+
+          <!-- ESTADO -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Estado
+            </label>
+
+            <select class="campo-entrada" [(ngModel)]="formulario.estado" name="estado">
+
+              <option value="activo">
+                Activo
+              </option>
+
+              <option value="inactivo">
+                Inactivo
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- FECHA INGRESO -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Fecha de ingreso
+            </label>
+
+            <input type="date" class="campo-entrada" [(ngModel)]="formulario.fechaIngreso" name="fechaIngreso">
+
+          </div>
+
+        </div>
+
+
+        <!-- ============================= -->
+        <!-- DOCUMENTOS -->
+        <!-- ============================= -->
+
+        <div class="seccion-formulario documentos-seccion">
+
+          <div class="titulo-seccion-formulario">
+
+            Documentos
+
+          </div>
+
+        </div>
+
+
+        <div class="grid-documentos">
+
+
+          <!-- CÉDULA -->
+          <label class="tarjeta-documento">
+
+            <span class="material-symbols-outlined">
+              badge
+            </span>
+
+            <span class="nombre-documento">
+              Cédula
+            </span>
+
+            <span class="estado-documento" [class.con-archivo]="formulario.cedulaFile">
+
+              {{
+              formulario.cedulaFile
+              ? formulario.cedulaFile.name
+              : 'Seleccionar archivo'
+              }}
+
+            </span>
+
+            <span class="boton-examinar">
+
+              <span class="material-symbols-outlined">
+                upload
+              </span>
+
+              Examinar
+
+            </span>
+
+            <input type="file" hidden accept=".pdf,.png,.jpg,.jpeg" (change)="onFileSelected($event, 'cedula')">
+
+          </label>
+
+
+          <!-- TARJETA PROFESIONAL -->
+          <label class="tarjeta-documento">
+
+            <span class="material-symbols-outlined">
+              card_membership
+            </span>
+
+            <span class="nombre-documento">
+              Tarjeta profesional
+            </span>
+
+            <span class="estado-documento" [class.con-archivo]="formulario.tarjetaProfesionalFile">
+
+              {{
+              formulario.tarjetaProfesionalFile
+              ? formulario.tarjetaProfesionalFile.name
+              : 'Seleccionar archivo'
+              }}
+
+            </span>
+
+            <span class="boton-examinar">
+
+              <span class="material-symbols-outlined">
+                upload
+              </span>
+
+              Examinar
+
+            </span>
+
+            <input type="file" hidden accept=".pdf,.png,.jpg,.jpeg"
+              (change)="onFileSelected($event, 'tarjetaProfesional')">
+
+          </label>
+
+
+          <!-- ANTECEDENTES -->
+          <label class="tarjeta-documento">
+
+            <span class="material-symbols-outlined">
+              verified_user
+            </span>
+
+            <span class="nombre-documento">
+              Antecedentes
+            </span>
+
+            <span class="estado-documento" [class.con-archivo]="formulario.antecedentesFile">
+
+              {{
+              formulario.antecedentesFile
+              ? formulario.antecedentesFile.name
+              : 'Seleccionar archivo'
+              }}
+
+            </span>
+
+            <span class="boton-examinar">
+
+              <span class="material-symbols-outlined">
+                upload
+              </span>
+
+              Examinar
+
+            </span>
+
+            <input type="file" hidden accept=".pdf,.png,.jpg,.jpeg" (change)="onFileSelected($event, 'antecedentes')">
+
+          </label>
+
+
+          <!-- HOJA DE VIDA -->
+          <label class="tarjeta-documento">
+
+            <span class="material-symbols-outlined">
+              description
+            </span>
+
+            <span class="nombre-documento">
+              Hoja de vida
+            </span>
+
+            <span class="estado-documento" [class.con-archivo]="formulario.hojaDeVidaFile">
+
+              {{
+              formulario.hojaDeVidaFile
+              ? formulario.hojaDeVidaFile.name
+              : 'Seleccionar archivo'
+              }}
+
+            </span>
+
+            <span class="boton-examinar">
+
+              <span class="material-symbols-outlined">
+                upload
+              </span>
+
+              Examinar
+
+            </span>
+
+            <input type="file" hidden accept=".pdf,.doc,.docx" (change)="onFileSelected($event, 'hojaDeVida')">
+
+          </label>
+
+        </div>
+
+
+        <!-- ============================= -->
+        <!-- PIE DEL MODAL -->
+        <!-- ============================= -->
+
+        <div class="pie-modal">
+
+          <button type="button" class="boton-cancelar" (click)="cancelarFormulario()">
+
             Cancelar
+
           </button>
-          <button
-            class="boton-guardar px-5 py-2 rounded-lg bg-[#3B5BDB] text-white hover:bg-[#324EC7] transition flex items-center gap-2"
-            type="submit" [disabled]="guardando">
-            <span *ngIf="guardando"
-              class="spinner border-2 border-white border-t-transparent rounded-full w-4 h-4 animate-spin"></span>
-            <span *ngIf="!guardando" class="material-symbols-outlined text-base">save</span>
-            {{ guardando ? 'Guardando...' : 'Guardar cuidador' }}
+
+          <button type="submit" class="boton-guardar" [disabled]="guardando">
+
+            {{
+            guardando
+            ? 'Guardando...'
+            : 'Guardar cuidador'
+            }}
+
           </button>
+
         </div>
+
       </form>
+
     </div>
+
   </div>
 
-  <!-- MODAL CONSULTAR / DETALLE CUIDADOR -->
+
+  <!-- ===================================================== -->
+  <!-- MODAL DETALLE -->
+  <!-- ===================================================== -->
+
   <div class="fondo-modal" [class.abierto]="detalleAbierto" (click)="cerrarDetallePorOverlay($event)">
-    <div class="ventana-modal max-w-2xl w-full" (click)="$event.stopPropagation()" *ngIf="cuidadorSeleccionado">
+
+    <div *ngIf="cuidadorSeleccionado" class="ventana-modal max-w-2xl w-full" (click)="$event.stopPropagation()">
+
+
+      <!-- ENCABEZADO -->
       <div class="encabezado-modal">
-        <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-[#3B5BDB]">person</span>
-          <h3>Información del Cuidador</h3>
-        </div>
+
+        <h3>
+          Información del Cuidador
+        </h3>
+
         <button class="boton-cerrar" type="button" (click)="cerrarDetalle()">
-          <span class="material-symbols-outlined">close</span>
+
+          <span class="material-symbols-outlined">
+            close
+          </span>
+
         </button>
+
       </div>
 
-      <div class="cuerpo-modal space-y-6">
-        <!-- Cabecera de Detalle con Avatar -->
-        <div class="flex items-center gap-4 p-4 bg-[#F4F7FF] rounded-xl border border-[#D9E0F2]">
-          <div class="w-14 h-14 rounded-full flex items-center justify-center font-bold text-white text-xl shrink-0"
-            [style.background]="obtenerColorAvatar(cuidadorSeleccionado.id)">
-            {{ obtenerIniciales(cuidadorSeleccionado.nombreCompleto || cuidadorSeleccionado.nombre) }}
+
+      <!-- CUERPO -->
+      <div class="cuerpo-modal">
+
+
+        <!-- DATOS PRINCIPALES -->
+        <div class="flex items-center gap-4 mb-6">
+
+          <div class="avatar-detalle" [style.background]="obtenerColorAvatar(cuidadorSeleccionado.id)">
+
+            {{
+            obtenerIniciales(
+            cuidadorSeleccionado.nombreCompleto ||
+            cuidadorSeleccionado.nombre
+            )
+            }}
+
           </div>
+
+
           <div>
-            <h2 class="text-xl font-bold text-[#212529]">
-              {{ cuidadorSeleccionado.nombreCompleto || (cuidadorSeleccionado.nombre + ' ' +
-              (cuidadorSeleccionado.apellido || '')) }}
+
+            <h2 class="text-xl font-bold">
+
+              {{
+              cuidadorSeleccionado.nombreCompleto ||
+              cuidadorSeleccionado.nombre
+              }}
+
             </h2>
-            <p class="text-sm text-[#6C757D]">{{ cuidadorSeleccionado.correo }}</p>
+
+            <p class="text-[#6C757D]">
+
+              {{ cuidadorSeleccionado.correo }}
+
+            </p>
+
           </div>
+
         </div>
 
-        <!-- Grilla de Datos -->
-        <div class="rejilla-formulario grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div class="campo-formulario">
-            <label class="etiqueta-formulario text-xs text-[#6C757D]">Documento</label>
-            <input class="campo-entrada bg-gray-50"
-              [value]="(cuidadorSeleccionado.tipoDocumento ? cuidadorSeleccionado.tipoDocumento + ' - ' : '') + (cuidadorSeleccionado.numeroDocumento || cuidadorSeleccionado.documento)"
-              readonly>
-          </div>
+
+        <!-- INFORMACIÓN -->
+        <div class="rejilla-formulario">
+
 
           <div class="campo-formulario">
-            <label class="etiqueta-formulario text-xs text-[#6C757D]">Teléfono</label>
-            <input class="campo-entrada bg-gray-50" [value]="cuidadorSeleccionado.telefono || 'No registrado'" readonly>
+
+            <label class="etiqueta-formulario">
+              Documento
+            </label>
+
+            <input class="campo-entrada" [value]="
+                (
+                  cuidadorSeleccionado.tipoDocumento
+                    ? cuidadorSeleccionado.tipoDocumento + ' - '
+                    : ''
+                )
+                +
+                (
+                  cuidadorSeleccionado.numeroDocumento ||
+                  cuidadorSeleccionado.documento ||
+                  ''
+                )
+              " readonly>
+
           </div>
+
 
           <div class="campo-formulario">
-            <label class="etiqueta-formulario text-xs text-[#6C757D]">Especialidad / Rol</label>
-            <input class="campo-entrada bg-gray-50" [value]="cuidadorSeleccionado.especialidad || 'No registrada'"
-              readonly>
+
+            <label class="etiqueta-formulario">
+              Teléfono
+            </label>
+
+            <input class="campo-entrada" [value]="cuidadorSeleccionado.telefono || ''" readonly>
+
           </div>
+
 
           <div class="campo-formulario">
-            <label class="etiqueta-formulario text-xs text-[#6C757D]">Licencia</label>
-            <input class="campo-entrada bg-gray-50" [value]="cuidadorSeleccionado.licencia || 'No registrada'" readonly>
+
+            <label class="etiqueta-formulario">
+              Especialidad
+            </label>
+
+            <input class="campo-entrada" [value]="cuidadorSeleccionado.especialidad || ''" readonly>
+
           </div>
+
 
           <div class="campo-formulario">
-            <label class="etiqueta-formulario text-xs text-[#6C757D]">Experiencia</label>
-            <input class="campo-entrada bg-gray-50" [value]="(cuidadorSeleccionado.experiencia ?? 0) + ' años'"
-              readonly>
+
+            <label class="etiqueta-formulario">
+              Experiencia
+            </label>
+
+            <input class="campo-entrada" [value]="cuidadorSeleccionado.experiencia ?? ''" readonly>
+
           </div>
+
 
           <div class="campo-formulario">
-            <label class="etiqueta-formulario text-xs text-[#6C757D]">Institución</label>
-            <input class="campo-entrada bg-gray-50" [value]="cuidadorSeleccionado.institucion || 'No registrada'"
-              readonly>
+
+            <label class="etiqueta-formulario">
+              Institución
+            </label>
+
+            <input class="campo-entrada" [value]="cuidadorSeleccionado.institucion || ''" readonly>
+
           </div>
+
 
           <div class="campo-formulario">
-            <label class="etiqueta-formulario text-xs text-[#6C757D]">Turno</label>
-            <input class="campo-entrada bg-gray-50" [value]="cuidadorSeleccionado.turno || 'No asignado'" readonly>
+
+            <label class="etiqueta-formulario">
+              Turno
+            </label>
+
+            <input class="campo-entrada" [value]="cuidadorSeleccionado.turno || 'Sin asignar'" readonly>
+
           </div>
+
 
           <div class="campo-formulario">
-            <label class="etiqueta-formulario text-xs text-[#6C757D]">Pacientes Asignados</label>
-            <input class="campo-entrada bg-gray-50" [value]="cuidadorSeleccionado.pacientes ?? 0" readonly>
+
+            <label class="etiqueta-formulario">
+              Estado
+            </label>
+
+            <input class="campo-entrada" [value]="
+                cuidadorSeleccionado.estado === 'activo'
+                  ? 'Activo'
+                  : 'Inactivo'
+              " readonly>
+
           </div>
 
-          <div class="campo-formulario sm:col-span-2">
-            <label class="etiqueta-formulario text-xs text-[#6C757D]">Estado</label>
-            <input class="campo-entrada bg-gray-50" [value]="cuidadorSeleccionado.estado || 'Activo'" readonly>
+
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Fecha de ingreso
+            </label>
+
+            <input class="campo-entrada" [value]="cuidadorSeleccionado.fechaIngreso || ''" readonly>
+
           </div>
+
         </div>
+
       </div>
+
     </div>
+
   </div>
 
-  <!-- MODAL DE CONFIRMACIÓN PARA ELIMINAR -->
-  <div class="fondo-modal" [class.abierto]="confirmacionAbierta">
-    <div class="ventana-modal max-w-md w-full text-center p-6" (click)="$event.stopPropagation()">
-      <div class="w-12 h-12 rounded-full bg-red-100 text-[#DC3545] flex items-center justify-center mx-auto mb-4">
-        <span class="material-symbols-outlined text-2xl">delete</span>
-      </div>
-      <h2 class="text-xl font-bold text-[#212529] mb-2">Eliminar cuidador</h2>
-      <p class="text-sm text-[#6C757D] mb-6">¿Está seguro de eliminar este cuidador? Esta acción no se puede deshacer.
-      </p>
 
-      <div class="flex justify-center gap-3">
-        <button type="button"
-          class="px-4 py-2 rounded-lg border border-[#D9E0F2] text-[#495057] hover:bg-gray-100 transition"
-          (click)="cerrarConfirmacion()">
-          Cancelar
+  <!-- ===================================================== -->
+  <!-- MODAL CONFIRMACIÓN ELIMINAR -->
+  <!-- ===================================================== -->
+
+  <div class="fondo-modal" [class.abierto]="confirmacionAbierta" (click)="cerrarConfirmacion()">
+
+    <div class="ventana-modal max-w-md w-full" (click)="$event.stopPropagation()">
+
+      <div class="encabezado-modal">
+
+        <h3>
+          Confirmar eliminación
+        </h3>
+
+        <button class="boton-cerrar" type="button" (click)="cerrarConfirmacion()">
+
+          <span class="material-symbols-outlined">
+            close
+          </span>
+
         </button>
-        <button type="button" class="px-4 py-2 rounded-lg bg-[#DC3545] text-white hover:bg-[#c82333] transition"
-          (click)="confirmarEliminacion()">
-          Eliminar
-        </button>
+
       </div>
+
+
+      <div class="cuerpo-modal">
+
+        <p class="text-[#495057]">
+          ¿Está seguro de que desea eliminar este cuidador?
+        </p>
+
+      </div>
+
+
+      <div class="pie-modal">
+
+        <button type="button" class="boton-cancelar" (click)="cerrarConfirmacion()">
+
+          Cancelar
+
+        </button>
+
+        <button type="button" class="boton-guardar" (click)="confirmarEliminacion()">
+
+          Eliminar
+
+        </button>
+
+      </div>
+
     </div>
+
   </div>
 
 </div>
