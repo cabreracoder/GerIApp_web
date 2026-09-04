@@ -66,11 +66,11 @@ interface RegistroCambio {
   fecha: string;
   usuario: string;
   accion:
-    | 'Creación'
-    | 'Actualización'
-    | 'Activación'
-    | 'Desactivación'
-    | 'Eliminación';
+  | 'Creación'
+  | 'Actualización'
+  | 'Activación'
+  | 'Desactivación'
+  | 'Eliminación';
   encargado: string;
 }
 
@@ -1110,10 +1110,10 @@ export class Encargados implements OnInit {
       id:
         this.registrosCambios.length > 0
           ? Math.max(
-              ...this.registrosCambios.map(
-                registro => registro.id
-              )
-            ) + 1
+            ...this.registrosCambios.map(
+              registro => registro.id
+            )
+          ) + 1
           : 1,
 
       fecha:
@@ -1222,10 +1222,8 @@ export class Encargados implements OnInit {
     ];
 
 
-    return `Desde ${
-      meses[fechaObj.getMonth()]
-    } ${
-      fechaObj.getFullYear()
-    }`;
+    return `Desde ${meses[fechaObj.getMonth()]
+      } ${fechaObj.getFullYear()
+      }`;
   }
 }

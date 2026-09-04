@@ -58,6 +58,16 @@ export interface ErroresFormulario {
   styleUrl: './cuidadores.css',
 })
 export class Cuidadores implements OnInit {
+
+  searchText: any;
+  modalOpen: any;
+  openModal(arg0: string) {
+    throw new Error('Method not implemented.');
+  }
+  selectedCaregiver: any;
+  closeViewModal() {
+    throw new Error('Method not implemented.');
+  }
   private cdr = inject(ChangeDetectorRef);
   private http = inject(HttpClient);
 
@@ -102,6 +112,7 @@ export class Cuidadores implements OnInit {
 
   formulario: ICuidador = this.formularioInicial();
   errores: ErroresFormulario = {};
+  filteredCaregivers: any;
 
   ngOnInit(): void {
     this.cargarCuidadores();
