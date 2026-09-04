@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { ChangeDetectorRef, Component } from '@angular/core';
+import Swal from 'sweetalert2';
 
 interface PatientForm {
   nombre: string;
@@ -74,8 +75,10 @@ export class Pacientes {
   // CONSTRUCTOR
   // =========================================================
 
-  constructor(private http: HttpClient) {}
-
+  constructor(
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef
+  ) {}
   // =========================================================
   // INICIAR
   // =========================================================
@@ -136,18 +139,14 @@ export class Pacientes {
     ).subscribe({
 
       next: (respuesta) => {
-
-        console.log(
-          'Pacientes recibidos:',
-          respuesta
-        );
+        console.log('Pacientes recibidos:', respuesta);
 
         this.patients = respuesta;
-        
 
-      console.log('TOTAL PACIENTES:', this.patients.length);
-      console.log('PRIMER PACIENTE:', this.patients[0]);
+        console.log('TOTAL PACIENTES:', this.patients.length);
+        console.log('PRIMER PACIENTE:', this.patients[0]);
 
+        this.cdr.detectChanges();
       },
 
       error: (error) => {
@@ -372,12 +371,43 @@ export class Pacientes {
   // =========================================================
 
   crear() {
+  const paciente = {
+    nombre: this.form.nombre,
+    apellido: this.form.apellidos,
+    eps: this.form.eps,
+    sede: this.form.sede,
+    fecha_ingreso: this.form.fechaIngreso,
+    habitacion: Number(this.form.habitacion),
+    id_usuario: null,
+    tipo_documento: this.form.tipoIdentificacion,
+    numero_documento: this.form.documento,
+    fecha_nacimiento: this.form.nacimiento,
+    genero: this.form.genero,
+    grupo_sanguineo: this.form.grupoSanguineo || null,
+    rh: this.form.rh || null,
+    cama: Number(this.form.cama),
+    estado: this.form.estado === 'active'
+  };
 
-    console.log(
-      'POST todavía no conectado'
-    );
+  console.log('Paciente que se enviará:', paciente);
 
-  }
+  this.http.post(
+    'http://127.0.0.1:8000/api/pacientes/',
+    paciente
+  ).subscribe({
+    next: (respuesta) => {
+      console.log('Paciente creado:', respuesta);
+
+      this.listar();
+      this.closeModal();
+    },
+
+    error: (error) => {
+      console.error('Error al crear paciente:', error);
+      console.error('Detalle del error:', error.error);
+    }
+  });
+}
 
   // =========================================================
   // ACTUALIZAR - PUT
@@ -385,27 +415,116 @@ export class Pacientes {
 
   actualizar() {
 
-    console.log(
-      'PUT todavía no conectado'
-    );
-
+  if (this.editingId === null) {
+    return;
   }
 
-  // =========================================================
-  // ELIMINAR - DELETE
-  // =========================================================
+  const paciente = {
+    nombre: this.form.nombre,
+    apellido: this.form.apellidos,
+    eps: this.form.eps,
+    sede: this.form.sede,
+    fecha_ingreso: this.form.fechaIngreso,
+    habitacion: Number(this.form.habitacion),
+    id_usuario: null,
+    tipo_documento: this.form.tipoIdentificacion,
+    numero_documento: this.form.documento,
+    fecha_nacimiento: this.form.nacimiento,
+    genero: this.form.genero,
+    grupo_sanguineo: this.form.grupoSanguineo || null,
+    rh: this.form.rh || null,
+    cama: Number(this.form.cama),
+    estado: this.form.estado === 'active'
+  };
 
-  eliminar(
-    id: number
-  ) {
+  console.log('Paciente que se actualizará:', paciente);
 
-    console.log(
-      'DELETE todavía no conectado:',
-      id
-    );
+  this.http.put(
+    `http://127.0.0.1:8000/api/pacientes/${this.editingId}/`,
+    paciente
+  ).subscribe({
 
-  }
+    next: (respuesta) => {
 
+      console.log('Paciente actualizado:', respuesta);
+
+      this.listar();
+      this.closeModal();
+
+    },
+
+    error: (error) => {
+
+      console.error(
+        'Error al actualizar paciente:',
+        error
+      );
+
+      console.error(
+        'Detalle del error:',
+        error.error
+      );
+
+    }
+
+  });
+
+}
+
+ // =========================================================
+// ELIMINAR - DELETE
+// =========================================================
+
+eliminar(id: number) {
+
+  Swal.fire({
+    title: '¿Está seguro de eliminar este paciente?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Eliminar',
+    cancelButtonText: 'Cancelar'
+  }).then((resultado) => {
+
+    if (resultado.isConfirmed) {
+
+      this.http.delete(
+        `http://127.0.0.1:8000/api/pacientes/${id}/`
+      ).subscribe({
+
+        next: () => {
+
+          Swal.fire({
+            title: 'Paciente eliminado correctamente',
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+          });
+
+          this.listar();
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Error al eliminar paciente:',
+            error
+          );
+
+          Swal.fire({
+            title: 'Error al eliminar el paciente',
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
+          });
+
+        }
+
+      });
+
+    }
+
+  });
+
+}
   // =========================================================
   // SABER SI ESTAMOS EDITANDO
   // =========================================================
