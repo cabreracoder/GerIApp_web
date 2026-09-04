@@ -53,10 +53,11 @@ export class Pacientes {
   searchText = '';
 
   // =========================================================
-  // MODAL
+  // MODALES
   // =========================================================
 
   modalOpen = false;
+
   viewModalOpen = false;
 
   editingId: number | null = null;
@@ -75,15 +76,15 @@ export class Pacientes {
 
   constructor(private http: HttpClient) {}
 
-
   // =========================================================
   // INICIAR
   // =========================================================
 
   ngOnInit() {
-    this.listar();
-  }
 
+    this.listar();
+
+  }
 
   // =========================================================
   // FORMULARIO VACÍO
@@ -119,25 +120,48 @@ export class Pacientes {
       cama: '',
 
       estado: 'active'
+
     };
+
   }
 
-
   // =========================================================
-  // LISTAR - GET
+  // LISTAR PACIENTES - GET
   // =========================================================
 
   listar() {
 
     this.http.get<any[]>(
-      'AQUI_VA_LA_URL_GET'
-    ).subscribe((respuesta) => {
+      'http://127.0.0.1:8000/api/pacientes/'
+    ).subscribe({
 
-      this.patients = respuesta;
+      next: (respuesta) => {
+
+        console.log(
+          'Pacientes recibidos:',
+          respuesta
+        );
+
+        this.patients = respuesta;
+        
+
+      console.log('TOTAL PACIENTES:', this.patients.length);
+      console.log('PRIMER PACIENTE:', this.patients[0]);
+
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Error al obtener los pacientes:',
+          error
+        );
+
+      }
 
     });
-  }
 
+  }
 
   // =========================================================
   // FILTRAR PACIENTES
@@ -145,336 +169,53 @@ export class Pacientes {
 
   get filteredPatients(): any[] {
 
-    const texto = this.searchText
-      .trim()
-      .toLowerCase();
+    const texto =
+      this.searchText
+        .trim()
+        .toLowerCase();
 
     if (!texto) {
+
       return this.patients;
+
     }
 
     return this.patients.filter((patient) => {
 
-      const nombre =
-        (patient.nombre ||
-         patient.name ||
-         '').toLowerCase();
-
-      const apellidos =
-        (patient.apellidos || '').toLowerCase();
+      const nombreCompleto =
+        `${patient.nombre || ''} ${patient.apellido || ''}`
+          .toLowerCase();
 
       const documento =
-        (patient.documento ||
-         patient.doc ||
-         '').toLowerCase();
+        (patient.numero_documento || '')
+          .toString()
+          .toLowerCase();
 
       return (
-        nombre.includes(texto) ||
-        apellidos.includes(texto) ||
+        nombreCompleto.includes(texto) ||
         documento.includes(texto)
       );
 
     });
+
   }
 
-
   // =========================================================
-  // NUEVO PACIENTE
-  // =========================================================
-
-  nuevo() {
-
-    this.form = this.formularioVacio();
-
-    this.editingId = null;
-
-    this.modalOpen = true;
-  }
-
-
-  // =========================================================
-  // EDITAR PACIENTE
+  // CALCULAR EDAD PARA LA TABLA
   // =========================================================
 
-  editarPaciente(patient: any) {
+  calcularEdadPaciente(
+    fechaNacimiento: string
+  ): number {
 
-    this.editingId = patient.id;
+    if (!fechaNacimiento) {
 
-    this.form = {
+      return 0;
 
-      nombre: patient.nombre || '',
-      apellidos: patient.apellidos || '',
-      tipoIdentificacion:
-        patient.tipoIdentificacion || '',
-      documento:
-        patient.documento || patient.doc || '',
-      nacimiento:
-        patient.nacimiento || patient.birthDate || '',
-      edad:
-        patient.edad ?? patient.age ?? null,
-      genero:
-        patient.genero || patient.gender || '',
-      grupoSanguineo:
-        patient.grupoSanguineo || '',
-      rh:
-        patient.rh || '',
-      eps:
-        patient.eps || '',
-      fechaIngreso:
-        patient.fechaIngreso || '',
-
-      familiarNombres:
-        patient.familiarNombres || '',
-      familiarApellidos:
-        patient.familiarApellidos || '',
-      parentesco:
-        patient.parentesco || '',
-      telefono1:
-        patient.telefono1 || patient.phone || '',
-      telefono2:
-        patient.telefono2 || '',
-      direccion:
-        patient.direccion || '',
-      correoElectronico:
-        patient.correoElectronico || patient.email || '',
-      municipio:
-        patient.municipio || '',
-
-      sede:
-        patient.sede || '',
-      habitacion:
-        patient.habitacion || patient.room || '',
-      cama:
-        patient.cama || '',
-
-      estado:
-        patient.estado || patient.status || 'active'
-    };
-
-    // Recalcular la edad a partir de la fecha de nacimiento
-    if (this.form.nacimiento) {
-      this.calcularEdad();
-    }
-
-    this.modalOpen = true;
-  }
-
-
-  // =========================================================
-  // GUARDAR
-  // =========================================================
-
-  guardar() {
-
-    if (this.editar) {
-      this.actualizar();
-    } else {
-      this.crear();
-    }
-  }
-
-
-  // =========================================================
-  // CREAR - POST
-  // =========================================================
-
-  crear() {
-
-    this.http.post(
-      'AQUI_VA_LA_URL_POST',
-      this.form
-    ).subscribe(() => {
-
-      alert('Paciente guardado');
-
-      this.listar();
-
-      this.closeModal();
-
-    });
-  }
-
-
-  // =========================================================
-  // ACTUALIZAR - PUT
-  // =========================================================
-
-  actualizar() {
-
-    this.http.put(
-      'AQUI_VA_LA_URL_PUT/' + this.editingId + '/',
-      this.form
-    ).subscribe(() => {
-
-      alert('Paciente actualizado');
-
-      this.listar();
-
-      this.closeModal();
-
-    });
-  }
-
-
-  // =========================================================
-  // ELIMINAR - DELETE
-  // =========================================================
-
-  eliminar(id: number) {
-
-    if (!confirm('¿Está seguro de eliminar este paciente?')) {
-      return;
-    }
-
-    this.http.delete(
-      'AQUI_VA_LA_URL_DELETE/' + id + '/'
-    ).subscribe(() => {
-
-      alert('Paciente eliminado');
-
-      this.listar();
-
-    });
-  }
-
-
-  // =========================================================
-  // EDITAR
-  // =========================================================
-
-  get editar(): boolean {
-    return this.editingId !== null;
-  }
-
-
-  // =========================================================
-  // ABRIR MODAL
-  // =========================================================
-
-  openModal(
-    mode: 'new' | 'edit',
-    patientId?: number
-  ) {
-
-    if (mode === 'new') {
-
-      this.nuevo();
-
-      return;
-    }
-
-    if (patientId !== undefined) {
-
-      const patient = this.patients.find(
-        item => item.id === patientId
-      );
-
-      if (patient) {
-
-        this.editarPaciente(patient);
-
-      }
-    }
-  }
-
-
-  // =========================================================
-  // CERRAR MODAL
-  // =========================================================
-
-  closeModal() {
-
-    this.modalOpen = false;
-
-    this.editingId = null;
-
-    this.form = this.formularioVacio();
-  }
-
-
-  // =========================================================
-  // CERRAR AL HACER CLICK AFUERA
-  // =========================================================
-
-  closeOnBackdrop(event: MouseEvent) {
-
-    if (
-      event.target === event.currentTarget
-    ) {
-
-      this.closeModal();
-
-    }
-  }
-
-
-  // =========================================================
-  // GUARDAR DESDE EL HTML
-  // =========================================================
-
-  savePatient() {
-
-    this.guardar();
-  }
-
-
-  // =========================================================
-  // ELIMINAR DESDE EL HTML
-  // =========================================================
-
-  deletePatient(id: number) {
-
-    this.eliminar(id);
-  }
-
-
-  // =========================================================
-  // CONSULTAR PACIENTE
-  // =========================================================
-
-  viewPatient(id: number) {
-
-    const patient = this.patients.find(
-      item => item.id === id
-    );
-
-    if (!patient) {
-      return;
-    }
-
-    this.selectedPatient = patient;
-
-    this.viewModalOpen = true;
-  }
-
-
-  // =========================================================
-  // CERRAR CONSULTA
-  // =========================================================
-
-  closeViewModal() {
-
-    this.viewModalOpen = false;
-
-    this.selectedPatient = null;
-  }
-
-
-  // =========================================================
-  // CALCULAR EDAD
-  // =========================================================
-
-  calcularEdad() {
-
-    if (!this.form.nacimiento) {
-
-      this.form.edad = null;
-
-      return;
     }
 
     const nacimiento =
-      new Date(this.form.nacimiento);
+      new Date(fechaNacimiento);
 
     const hoy =
       new Date();
@@ -499,12 +240,369 @@ export class Pacientes {
 
     }
 
-    this.form.edad = edad;
+    return edad;
+
   }
 
+  // =========================================================
+  // NUEVO PACIENTE
+  // =========================================================
+
+  nuevo() {
+
+    this.form =
+      this.formularioVacio();
+
+    this.editingId = null;
+
+    this.modalOpen = true;
+
+  }
 
   // =========================================================
-  // TEXTO DEL MODAL
+  // EDITAR PACIENTE
+  // =========================================================
+
+  editarPaciente(
+    patient: any
+  ) {
+
+    this.editingId =
+      patient.id_paciente;
+
+    this.form = {
+
+      nombre:
+        patient.nombre || '',
+
+      apellidos:
+        patient.apellido || '',
+
+      tipoIdentificacion:
+        patient.tipo_documento || '',
+
+      documento:
+        patient.numero_documento || '',
+
+      nacimiento:
+        patient.fecha_nacimiento || '',
+
+      edad:
+        null,
+
+      genero:
+        patient.genero || '',
+
+      grupoSanguineo:
+        patient.grupo_sanguineo || '',
+
+      rh:
+        patient.rh || '',
+
+      eps:
+        patient.eps || '',
+
+      fechaIngreso:
+        patient.fecha_ingreso
+          ? patient.fecha_ingreso.substring(0, 10)
+          : '',
+
+      familiarNombres: '',
+      familiarApellidos: '',
+      parentesco: '',
+      telefono1: '',
+      telefono2: '',
+      direccion: '',
+      correoElectronico: '',
+      municipio: '',
+
+      sede:
+        patient.sede || '',
+
+      habitacion:
+        patient.habitacion !== null &&
+        patient.habitacion !== undefined
+          ? patient.habitacion.toString()
+          : '',
+
+      cama:
+        patient.cama !== null &&
+        patient.cama !== undefined
+          ? patient.cama.toString()
+          : '',
+
+      estado:
+        patient.estado
+          ? 'active'
+          : 'inactive'
+
+    };
+
+    // Calcular edad automáticamente
+    if (this.form.nacimiento) {
+
+      this.calcularEdad();
+
+    }
+
+    this.modalOpen = true;
+
+  }
+
+  // =========================================================
+  // GUARDAR
+  // =========================================================
+
+  guardar() {
+
+    if (this.editar) {
+
+      this.actualizar();
+
+    } else {
+
+      this.crear();
+
+    }
+
+  }
+
+  // =========================================================
+  // CREAR - POST
+  // =========================================================
+
+  crear() {
+
+    console.log(
+      'POST todavía no conectado'
+    );
+
+  }
+
+  // =========================================================
+  // ACTUALIZAR - PUT
+  // =========================================================
+
+  actualizar() {
+
+    console.log(
+      'PUT todavía no conectado'
+    );
+
+  }
+
+  // =========================================================
+  // ELIMINAR - DELETE
+  // =========================================================
+
+  eliminar(
+    id: number
+  ) {
+
+    console.log(
+      'DELETE todavía no conectado:',
+      id
+    );
+
+  }
+
+  // =========================================================
+  // SABER SI ESTAMOS EDITANDO
+  // =========================================================
+
+  get editar(): boolean {
+
+    return this.editingId !== null;
+
+  }
+
+  // =========================================================
+  // ABRIR MODAL
+  // =========================================================
+
+  openModal(
+    mode: 'new' | 'edit',
+    patientId?: number
+  ) {
+
+    if (mode === 'new') {
+
+      this.nuevo();
+
+      return;
+
+    }
+
+    if (
+      patientId !== undefined
+    ) {
+
+      const patient =
+        this.patients.find(
+          item =>
+            item.id_paciente === patientId
+        );
+
+      if (patient) {
+
+        this.editarPaciente(
+          patient
+        );
+
+      }
+
+    }
+
+  }
+
+  // =========================================================
+  // CERRAR MODAL
+  // =========================================================
+
+  closeModal() {
+
+    this.modalOpen = false;
+
+    this.editingId = null;
+
+    this.form =
+      this.formularioVacio();
+
+  }
+
+  // =========================================================
+  // CERRAR AL HACER CLICK AFUERA
+  // =========================================================
+
+  closeOnBackdrop(
+    event: MouseEvent
+  ) {
+
+    if (
+      event.target ===
+      event.currentTarget
+    ) {
+
+      this.closeModal();
+
+    }
+
+  }
+
+  // =========================================================
+  // GUARDAR DESDE HTML
+  // =========================================================
+
+  savePatient() {
+
+    this.guardar();
+
+  }
+
+  // =========================================================
+  // ELIMINAR DESDE HTML
+  // =========================================================
+
+  deletePatient(
+    id: number
+  ) {
+
+    this.eliminar(id);
+
+  }
+
+  // =========================================================
+  // CONSULTAR PACIENTE
+  // =========================================================
+
+  viewPatient(
+    id: number
+  ) {
+
+    const patient =
+      this.patients.find(
+        item =>
+          item.id_paciente === id
+      );
+
+    if (!patient) {
+
+      return;
+
+    }
+
+    this.selectedPatient =
+      patient;
+
+    this.viewModalOpen =
+      true;
+
+  }
+
+  // =========================================================
+  // CERRAR CONSULTA
+  // =========================================================
+
+  closeViewModal() {
+
+    this.viewModalOpen =
+      false;
+
+    this.selectedPatient =
+      null;
+
+  }
+
+  // =========================================================
+  // CALCULAR EDAD DEL FORMULARIO
+  // =========================================================
+
+  calcularEdad() {
+
+    if (!this.form.nacimiento) {
+
+      this.form.edad = null;
+
+      return;
+
+    }
+
+    const nacimiento =
+      new Date(
+        this.form.nacimiento
+      );
+
+    const hoy =
+      new Date();
+
+    let edad =
+      hoy.getFullYear() -
+      nacimiento.getFullYear();
+
+    const mes =
+      hoy.getMonth() -
+      nacimiento.getMonth();
+
+    if (
+      mes < 0 ||
+      (
+        mes === 0 &&
+        hoy.getDate() <
+        nacimiento.getDate()
+      )
+    ) {
+
+      edad--;
+
+    }
+
+    this.form.edad =
+      edad;
+
+  }
+
+  // =========================================================
+  // TÍTULO DEL MODAL
   // =========================================================
 
   get modalTitle(): string {
@@ -512,8 +610,8 @@ export class Pacientes {
     return this.editar
       ? 'Editar paciente'
       : 'Nuevo paciente';
-  }
 
+  }
 
   // =========================================================
   // TEXTO DEL BOTÓN
@@ -524,6 +622,7 @@ export class Pacientes {
     return this.editar
       ? 'Guardar cambios'
       : 'Guardar paciente';
+
   }
 
 }
