@@ -1,19 +1,27 @@
+
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
   OnInit
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-
 import {
-  RolesService,
-  RolApi
-} from './roles.service';
+  FormsModule
+} from '@angular/forms';
+import {
+  HttpClient
+} from '@angular/common/http';
 
 // =========================================================
 // INTERFACES
 // =========================================================
+
+interface RolApi {
+  id_rol: number;
+  nombre: string;
+  descripcion: string;
+  estado: boolean;
+}
 
 interface UsuarioAsociado {
   id: number;
@@ -50,7 +58,14 @@ interface Rol {
 export class Roles implements OnInit {
 
   // =========================================================
-  // CONFIGURACIÓN VISUAL
+  // URL DE LA API
+  // =========================================================
+
+  private readonly apiUrl =
+    'https://geriapp-web-1.onrender.com/api';
+
+  // =========================================================
+  // CONFIGURACIÓN VISUAL DE LOS ROLES
   // =========================================================
 
   private readonly CONFIGURACION_ROLES: Record<
@@ -60,21 +75,22 @@ export class Roles implements OnInit {
       icon: string;
     }
   > = {
-      Administrador: {
-        color: 'var(--color-primary)',
-        icon: 'admin_panel_settings'
-      },
 
-      Cuidador: {
-        color: 'var(--color-secondary)',
-        icon: 'health_and_safety'
-      },
+    Administrador: {
+      color: 'var(--color-primary)',
+      icon: 'admin_panel_settings'
+    },
 
-      Encargado: {
-        color: 'var(--color-tertiary)',
-        icon: 'supervisor_account'
-      }
-    };
+    Cuidador: {
+      color: 'var(--color-secondary)',
+      icon: 'health_and_safety'
+    },
+
+    Encargado: {
+      color: 'var(--color-tertiary)',
+      icon: 'supervisor_account'
+    }
+  };
 
   // =========================================================
   // DATOS
@@ -99,7 +115,9 @@ export class Roles implements OnInit {
 
   mostrarFormularioRol = false;
 
-  modoFormulario: 'crear' | 'editar' = 'crear';
+  modoFormulario:
+    'crear' |
+    'editar' = 'crear';
 
   rolEditandoId: number | null = null;
 
@@ -107,6 +125,16 @@ export class Roles implements OnInit {
     nombre: '',
     descripcion: ''
   };
+
+  // =========================================================
+  // ESTADOS DE LA INTERFAZ
+  // =========================================================
+
+  cargandoRoles = false;
+
+  guardandoRol = false;
+
+  eliminandoRolId: number | null = null;
 
   // =========================================================
   // MENSAJES
@@ -124,69 +152,108 @@ export class Roles implements OnInit {
   // =========================================================
 
   constructor(
-    private readonly rolesService: RolesService,
+    private readonly http: HttpClient,
     private readonly cdr: ChangeDetectorRef
-  ) { }
+  ) {}
 
   // =========================================================
   // INICIO
   // =========================================================
 
   ngOnInit(): void {
-    console.log('COMPONENTE ROLES INICIADO');
+
+    console.log(
+      'COMPONENTE ROLES INICIADO'
+    );
+
     this.cargarRoles();
   }
 
   // =========================================================
   // CARGAR ROLES
+  // GET /api/roles/
   // =========================================================
 
   cargarRoles(): void {
-    console.log('CARGANDO ROLES...');
 
-    this.rolesService.listarRoles().subscribe({
-      next: (rolesApi: RolApi[]) => {
+    this.cargandoRoles = true;
 
-        console.log(
-          'ROLES RECIBIDOS DE LA API:',
-          rolesApi
-        );
+    this.limpiarMensajes();
 
-        this.roles = rolesApi.map(
-          rol => this.convertirRol(rol)
-        );
+    console.log(
+      'CARGANDO ROLES...'
+    );
 
-        if (this.roles.length > 0) {
-          this.selectedRole =
-            this.roles[0].name;
-        } else {
-          this.selectedRole = '';
+    this.http
+      .get<RolApi[]>(
+        `${this.apiUrl}/roles/`
+      )
+      .subscribe({
+
+        next: (rolesApi: RolApi[]) => {
+
+          console.log(
+            'ROLES RECIBIDOS DE LA API:',
+            rolesApi
+          );
+
+          this.roles =
+            rolesApi.map(
+              (rolApi: RolApi) =>
+                this.convertirRol(rolApi)
+            );
+
+          // =================================================
+          // MANTENER LA SELECCIÓN ACTUAL
+          // =================================================
+
+          const seleccionActualExiste =
+            this.roles.some(
+              rol =>
+                rol.name ===
+                this.selectedRole
+            );
+
+          if (
+            !seleccionActualExiste
+          ) {
+
+            this.selectedRole =
+              this.roles.length > 0
+                ? this.roles[0].name
+                : '';
+          }
+
+          this.cargandoRoles = false;
+
+          console.log(
+            'ROLES PARA MOSTRAR:',
+            this.roles
+          );
+
+          this.cdr.detectChanges();
+        },
+
+        error: (error: unknown) => {
+
+          console.error(
+            'Error al cargar los roles:',
+            error
+          );
+
+          this.cargandoRoles = false;
+
+          this.mostrarError(
+            'No fue posible cargar los roles desde el servidor.'
+          );
+
+          this.cdr.detectChanges();
         }
-
-        console.log(
-          'ROLES PARA MOSTRAR:',
-          this.roles
-        );
-
-        this.cdr.detectChanges();
-      },
-
-      error: (error: unknown) => {
-
-        console.error(
-          'Error al cargar los roles:',
-          error
-        );
-
-        this.mostrarError(
-          'No fue posible cargar los roles desde el servidor.'
-        );
-      }
-    });
+      });
   }
 
   // =========================================================
-  // CONVERTIR ROL
+  // CONVERTIR ROL DE LA API
   // =========================================================
 
   private convertirRol(
@@ -195,18 +262,32 @@ export class Roles implements OnInit {
 
     const configuracion =
       this.CONFIGURACION_ROLES[
-      rolApi.nombre
+        rolApi.nombre
       ] ??
       this.crearConfiguracionPorDefecto();
 
     return {
-      id: rolApi.id_rol,
-      name: rolApi.nombre,
-      color: configuracion.color,
-      icon: configuracion.icon,
-      userCount: 0,
-      description: rolApi.descripcion,
-      usuariosAsociados: []
+
+      id:
+        rolApi.id_rol,
+
+      name:
+        rolApi.nombre,
+
+      color:
+        configuracion.color,
+
+      icon:
+        configuracion.icon,
+
+      userCount:
+        0,
+
+      description:
+        rolApi.descripcion,
+
+      usuariosAsociados:
+        []
     };
   }
 
@@ -214,10 +295,18 @@ export class Roles implements OnInit {
   // CONFIGURACIÓN POR DEFECTO
   // =========================================================
 
-  private crearConfiguracionPorDefecto() {
+  private crearConfiguracionPorDefecto(): {
+    color: string;
+    icon: string;
+  } {
+
     return {
-      color: 'var(--color-primary)',
-      icon: 'badge'
+
+      color:
+        'var(--color-primary)',
+
+      icon:
+        'badge'
     };
   }
 
@@ -226,9 +315,11 @@ export class Roles implements OnInit {
   // =========================================================
 
   get selectedRoleObject(): Rol | undefined {
+
     return this.roles.find(
       role =>
-        role.name === this.selectedRole
+        role.name ===
+        this.selectedRole
     );
   }
 
@@ -240,12 +331,14 @@ export class Roles implements OnInit {
 
     const usuarios =
       this.selectedRoleObject
-        ?.usuariosAsociados ?? [];
+        ?.usuariosAsociados ??
+      [];
 
     if (
       this.filtroEstadoUsuario ===
       'Todos'
     ) {
+
       return usuarios;
     }
 
@@ -274,7 +367,7 @@ export class Roles implements OnInit {
   }
 
   // =========================================================
-  // ABRIR FORMULARIO CREAR
+  // ABRIR FORMULARIO PARA CREAR
   // =========================================================
 
   abrirNuevoRol(): void {
@@ -285,19 +378,23 @@ export class Roles implements OnInit {
     this.rolEditandoId =
       null;
 
+    this.nuevoRol = {
+
+      nombre:
+        '',
+
+      descripcion:
+        ''
+    };
+
     this.mostrarFormularioRol =
       true;
-
-    this.nuevoRol = {
-      nombre: '',
-      descripcion: ''
-    };
 
     this.limpiarMensajes();
   }
 
   // =========================================================
-  // ABRIR FORMULARIO EDITAR
+  // ABRIR FORMULARIO PARA EDITAR
   // =========================================================
 
   editarRol(
@@ -311,8 +408,12 @@ export class Roles implements OnInit {
       rol.id;
 
     this.nuevoRol = {
-      nombre: rol.name,
-      descripcion: rol.description
+
+      nombre:
+        rol.name,
+
+      descripcion:
+        rol.description
     };
 
     this.mostrarFormularioRol =
@@ -346,6 +447,13 @@ export class Roles implements OnInit {
   guardarRol(): void {
 
     if (
+      this.guardandoRol
+    ) {
+
+      return;
+    }
+
+    if (
       this.modoFormulario ===
       'editar'
     ) {
@@ -360,6 +468,7 @@ export class Roles implements OnInit {
 
   // =========================================================
   // CREAR ROL
+  // POST /api/roles/
   // =========================================================
 
   crearRol(): void {
@@ -397,13 +506,30 @@ export class Roles implements OnInit {
     }
 
     // =====================================================
-    // VERIFICAR ROL EXISTENTE
+    // VALIDAR LONGITUD
+    // =====================================================
+
+    if (
+      nombre.length < 2
+    ) {
+
+      this.mostrarError(
+        'El nombre del rol debe tener al menos 2 caracteres.'
+      );
+
+      return;
+    }
+
+    // =====================================================
+    // VERIFICAR ROL DUPLICADO
     // =====================================================
 
     const existe =
       this.roles.some(
         rol =>
-          rol.name.toLowerCase() ===
+          rol.name
+            .trim()
+            .toLowerCase() ===
           nombre.toLowerCase()
       );
 
@@ -417,20 +543,48 @@ export class Roles implements OnInit {
     }
 
     // =====================================================
-    // CREAR ROL EN LA BASE DE DATOS
+    // DATOS PARA LA API
     // =====================================================
 
-    const nuevoRolApi = {
-      nombre,
-      descripcion,
-      estado: true
+    const nuevoRolApi:
+      Omit<RolApi, 'id_rol'> = {
+
+      nombre:
+        nombre,
+
+      descripcion:
+        descripcion,
+
+      estado:
+        true
     };
 
-    this.rolesService
-      .crearRol(nuevoRolApi)
+    // =====================================================
+    // ESTADO DE CARGA
+    // =====================================================
+
+    this.guardandoRol =
+      true;
+
+    // =====================================================
+    // PETICIÓN POST
+    // =====================================================
+
+    this.http
+      .post<RolApi>(
+        `${this.apiUrl}/roles/`,
+        nuevoRolApi
+      )
       .subscribe({
 
-        next: (rolCreado: RolApi) => {
+        next: (
+          rolCreado: RolApi
+        ) => {
+
+          console.log(
+            'ROL CREADO:',
+            rolCreado
+          );
 
           const nuevoRol =
             this.convertirRol(
@@ -444,33 +598,45 @@ export class Roles implements OnInit {
           this.selectedRole =
             nuevoRol.name;
 
+          this.guardandoRol =
+            false;
+
           this.finalizarCreacionRol(
             nuevoRol
           );
         },
 
-        error: (error: unknown) => {
+        error: (
+          error: unknown
+        ) => {
 
           console.error(
             'Error al crear el rol:',
             error
           );
 
+          this.guardandoRol =
+            false;
+
           this.mostrarError(
             'No fue posible crear el rol en el servidor.'
           );
+
+          this.cdr.detectChanges();
         }
       });
   }
 
   // =========================================================
   // ACTUALIZAR ROL
+  // PATCH /api/roles/{id}/
   // =========================================================
 
   actualizarRol(): void {
 
     if (
-      this.rolEditandoId === null
+      this.rolEditandoId ===
+      null
     ) {
 
       this.mostrarError(
@@ -513,14 +679,17 @@ export class Roles implements OnInit {
     }
 
     // =====================================================
-    // VERIFICAR NOMBRE DUPLICADO
+    // VERIFICAR DUPLICADO
     // =====================================================
 
     const existe =
       this.roles.some(
         rol =>
-          rol.id !== this.rolEditandoId &&
-          rol.name.toLowerCase() ===
+          rol.id !==
+          this.rolEditandoId &&
+          rol.name
+            .trim()
+            .toLowerCase() ===
           nombre.toLowerCase()
       );
 
@@ -534,31 +703,63 @@ export class Roles implements OnInit {
     }
 
     // =====================================================
-    // ACTUALIZAR ROL EN LA BASE DE DATOS
+    // GUARDAR ID
     // =====================================================
 
-    const rolActualizado = {
-      nombre,
-      descripcion
+    const idRol =
+      this.rolEditandoId;
+
+    // =====================================================
+    // DATOS PARA LA API
+    // =====================================================
+
+    const rolActualizado:
+      Partial<Omit<RolApi, 'id_rol'>> = {
+
+      nombre:
+        nombre,
+
+      descripcion:
+        descripcion
     };
 
-    this.rolesService
-      .actualizarRol(
-        this.rolEditandoId,
+    // =====================================================
+    // ESTADO DE CARGA
+    // =====================================================
+
+    this.guardandoRol =
+      true;
+
+    // =====================================================
+    // PETICIÓN PATCH
+    // =====================================================
+
+    this.http
+      .patch<RolApi>(
+        `${this.apiUrl}/roles/${idRol}/`,
         rolActualizado
       )
       .subscribe({
 
-        next: (rolApi: RolApi) => {
+        next: (
+          rolApi: RolApi
+        ) => {
+
+          console.log(
+            'ROL ACTUALIZADO:',
+            rolApi
+          );
 
           const indice =
             this.roles.findIndex(
               rol =>
                 rol.id ===
-                this.rolEditandoId
+                idRol
             );
 
-          if (indice !== -1) {
+          if (
+            indice !== -1
+          ) {
 
             this.roles[indice] =
               this.convertirRol(
@@ -569,27 +770,38 @@ export class Roles implements OnInit {
           this.selectedRole =
             rolApi.nombre;
 
+          this.guardandoRol =
+            false;
+
           this.finalizarActualizacionRol(
             rolApi
           );
         },
 
-        error: (error: unknown) => {
+        error: (
+          error: unknown
+        ) => {
 
           console.error(
             'Error al actualizar el rol:',
             error
           );
 
+          this.guardandoRol =
+            false;
+
           this.mostrarError(
             'No fue posible actualizar el rol en el servidor.'
           );
+
+          this.cdr.detectChanges();
         }
       });
   }
 
   // =========================================================
   // ELIMINAR ROL
+  // DELETE /api/roles/{id}/
   // =========================================================
 
   eliminarRol(
@@ -602,26 +814,44 @@ export class Roles implements OnInit {
       );
 
     if (!confirmar) {
+
       return;
     }
 
     // =====================================================
-    // ELIMINAR ROL EN LA BASE DE DATOS
+    // ESTADO DE ELIMINACIÓN
     // =====================================================
 
-    this.rolesService
-      .eliminarRol(rol.id)
+    this.eliminandoRolId =
+      rol.id;
+
+    // =====================================================
+    // PETICIÓN DELETE
+    // =====================================================
+
+    this.http
+      .delete<void>(
+        `${this.apiUrl}/roles/${rol.id}/`
+      )
       .subscribe({
 
         next: () => {
 
+          console.log(
+            'ROL ELIMINADO:',
+            rol
+          );
+
           const indice =
             this.roles.findIndex(
               item =>
-                item.id === rol.id
+                item.id ===
+                rol.id
             );
 
-          if (indice !== -1) {
+          if (
+            indice !== -1
+          ) {
 
             this.roles.splice(
               indice,
@@ -629,28 +859,23 @@ export class Roles implements OnInit {
             );
           }
 
-          // ===============================================
+          // =================================================
           // ACTUALIZAR ROL SELECCIONADO
-          // ===============================================
+          // =================================================
 
           if (
             this.selectedRole ===
             rol.name
           ) {
 
-            if (
+            this.selectedRole =
               this.roles.length > 0
-            ) {
-
-              this.selectedRole =
-                this.roles[0].name;
-
-            } else {
-
-              this.selectedRole =
-                '';
-            }
+                ? this.roles[0].name
+                : '';
           }
+
+          this.eliminandoRolId =
+            null;
 
           this.mostrarExito(
             `El rol "${rol.name}" fue eliminado correctamente.`
@@ -662,16 +887,23 @@ export class Roles implements OnInit {
           this.cdr.detectChanges();
         },
 
-        error: (error: unknown) => {
+        error: (
+          error: unknown
+        ) => {
 
           console.error(
             'Error al eliminar el rol:',
             error
           );
 
+          this.eliminandoRolId =
+            null;
+
           this.mostrarError(
             'No fue posible eliminar el rol. Verifique si tiene usuarios asociados.'
           );
+
+          this.cdr.detectChanges();
         }
       });
   }
@@ -693,8 +925,6 @@ export class Roles implements OnInit {
     this.ultimoRegistroAuditoria =
       `Rol creado el ${this.obtenerFechaActual()}.`;
 
-    this.limpiarFormulario();
-
     this.cdr.detectChanges();
   }
 
@@ -715,13 +945,11 @@ export class Roles implements OnInit {
     this.ultimoRegistroAuditoria =
       `Rol actualizado el ${this.obtenerFechaActual()}.`;
 
-    this.limpiarFormulario();
-
     this.cdr.detectChanges();
   }
 
   // =========================================================
-  // DETALLE USUARIO
+  // VER DETALLE DEL USUARIO
   // =========================================================
 
   verDetalleUsuario(
@@ -740,7 +968,7 @@ export class Roles implements OnInit {
   }
 
   // =========================================================
-  // MENSAJE ERROR
+  // MOSTRAR ERROR
   // =========================================================
 
   private mostrarError(
@@ -752,10 +980,12 @@ export class Roles implements OnInit {
 
     this.mensajeExito =
       '';
+
+    this.cdr.detectChanges();
   }
 
   // =========================================================
-  // MENSAJE ÉXITO
+  // MOSTRAR ÉXITO
   // =========================================================
 
   private mostrarExito(
@@ -768,10 +998,16 @@ export class Roles implements OnInit {
     this.mensajeError =
       '';
 
+    this.cdr.detectChanges();
+
     setTimeout(
       () => {
+
         this.mensajeExito =
           '';
+
+        this.cdr.detectChanges();
+
       },
       4000
     );
@@ -797,16 +1033,23 @@ export class Roles implements OnInit {
   private limpiarFormulario(): void {
 
     this.nuevoRol = {
-      nombre: '',
-      descripcion: ''
+
+      nombre:
+        '',
+
+      descripcion:
+        ''
     };
   }
 
   // =========================================================
-  // FECHA
+  // OBTENER FECHA ACTUAL
   // =========================================================
 
   private obtenerFechaActual(): string {
-    return new Date().toLocaleString();
+
+    return new Date()
+      .toLocaleString('es-CO');
   }
 }
+
