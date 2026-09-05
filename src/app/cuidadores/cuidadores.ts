@@ -205,111 +205,82 @@ export class Cuidadores implements OnInit {
   // ==========================================
   // CARGAR CUIDADORES
   // ==========================================
-
-  cargarCuidadores(): void {
+  cargarCuidadores() {
 
     this.http
-      .get<ICuidador[]>(this.apiUrl)
+      .get<any[]>(
+        'https://geriapp-web-1.onrender.com/api/usuarios/'
+      )
       .subscribe({
 
-        next: (data) => {
+        next: (respuesta) => {
 
-          this.cuidadores = data.map((c) => {
+          console.log(
+            'Respuesta de la API:',
+            respuesta
+          );
 
-            const idReg =
-              c.id_usuario || c.id;
+          this.cuidadores = respuesta
+            .filter(usuario => usuario.id_rol === 5)
+            .map(usuario => {
 
+              return {
+                id: usuario.id_usuario,
+                nombre: usuario.nombres,
+                apellido: usuario.apellidos,
 
-            const nom =
-              c.nombres ||
-              c.nombre ||
-              '';
+                nombreCompleto:
+                  usuario.nombres +
+                  ' ' +
+                  usuario.apellidos,
 
+                correo: usuario.correo,
 
-            const ape =
-              c.apellidos ||
-              c.apellido ||
-              '';
+                telefono: usuario.telefono,
 
+                tipoDocumento:
+                  usuario.tipo_documento,
 
-            const fullNombre =
-              c.nombreCompleto ||
-              `${nom} ${ape}`.trim() ||
-              nom;
+                numeroDocumento:
+                  usuario.numero_documento,
 
+                estado:
+                  usuario.estado
+                    ? 'activo'
+                    : 'inactivo',
 
-            const docNum =
-              c.numero_documento ||
-              c.numeroDocumento ||
-              c.documento ||
-              '';
+                id_rol:
+                  usuario.id_rol,
 
+                pacientes: 0,
 
-            const docTipo =
-              c.tipo_documento ||
-              c.tipoDocumento ||
-              'CC';
+                turno: 'Sin asignar'
+              };
 
+            });
 
-            const esActivo =
-              c.estado === true ||
-              c.estado === 'activo';
-
-
-            return {
-
-              ...c,
-
-              id: idReg,
-
-              nombre: nom,
-
-              apellido: ape,
-
-              nombreCompleto: fullNombre,
-
-              tipoDocumento: docTipo,
-
-              numeroDocumento: docNum,
-
-              documento: docNum,
-
-              estado: esActivo
-                ? 'activo'
-                : 'inactivo',
-
-              disponible:
-                c.disponible ??
-                (
-                  esActivo &&
-                  (!c.pacientes ||
-                    c.pacientes < 3)
-                ),
-
-            };
-
-          });
-
+          this.cuidadoresFiltrados =
+            [...this.cuidadores];
 
           this.actualizarMetricas();
 
-          this.filtrarCuidadores();
-
-          this.cdr.detectChanges();
-
-        },
-
-
-        error: (err) => {
-
-          console.error(
-            'Error al obtener cuidadores desde Render:',
-            err
+          console.log(
+            'Cuidadores encontrados:',
+            this.cuidadores
           );
 
           this.cdr.detectChanges();
 
         },
+
+        error: (error) => {
+
+          console.error(
+            'Error al cargar:',
+            error
+          );
+
+        }
 
       });
 
@@ -958,144 +929,180 @@ export class Cuidadores implements OnInit {
 
   guardarCuidador(): void {
 
-    if (
-      !this.validarFormulario()
-    ) {
-
-      Swal.fire({
-
-        title: 'Atención',
-
-        text:
-          'Por favor complete todos los campos obligatorios.',
-
-        icon: 'warning',
-
-        confirmButtonColor:
-          '#3B5BDB',
-
-      });
-
+    // Validamos el formulario
+    if (!this.validarFormulario()) {
+      alert('Por favor completa los campos obligatorios.');
       return;
-
     }
-
 
     this.guardando = true;
 
+    // ==========================================
+    // 1. DATOS DEL USUARIO
+    // ==========================================
 
-    const payloadDjango = {
-
-      ...this.formulario,
-
-      nombres:
-        this.formulario.nombre,
-
-      apellidos:
-        this.formulario.apellido,
-
-      tipo_documento:
-        this.formulario.tipoDocumento,
-
-      numero_documento:
-        this.formulario.numeroDocumento,
-
-      estado:
-        this.formulario.estado ===
-        'activo',
-
-      nombreCompleto:
-        `${this.formulario.nombre} ${this.formulario.apellido}`
-          .trim(),
-
+    const cuidador = {
+      tipo_documento: this.formulario.tipoDocumento,
+      numero_documento: this.formulario.numeroDocumento,
+      nombres: this.formulario.nombre,
+      apellidos: this.formulario.apellido,
+      correo: this.formulario.correo,
+      telefono: this.formulario.telefono,
+      fecha_ingreso: this.formulario.fechaIngreso,
+      estado: this.formulario.estado === 'activo',
+      id_rol: 5
     };
 
 
-    const urlEndpoint =
-
-      this.modoFormulario === 'editar' &&
-        this.idEditando
-
-        ? `${this.apiUrl}${this.idEditando}/`
-
-        : this.apiUrl;
+    console.log('Creando usuario:', cuidador);
 
 
-    const peticion =
+    // ==========================================
+    // 2. CREAR USUARIO
+    // ==========================================
 
-      this.modoFormulario === 'editar' &&
-        this.idEditando
+    this.http
+      .post<any>(
+        'https://geriapp-web-1.onrender.com/api/usuarios/',
+        cuidador
+      )
+      .subscribe({
 
-        ? this.http.put(
-          urlEndpoint,
-          payloadDjango
-        )
+        next: (respuestaUsuario) => {
 
-        : this.http.post(
-          urlEndpoint,
-          payloadDjango
-        );
-
-
-    peticion.subscribe({
-
-      next: () => {
-
-        this.guardando = false;
+          console.log(
+            'Usuario creado:',
+            respuestaUsuario
+          );
 
 
-        Swal.fire({
-
-          title: '¡Éxito!',
-
-          text:
-            `Cuidador ${this.modoFormulario === 'crear'
-              ? 'creado'
-              : 'actualizado'
-            } correctamente.`,
-
-          icon: 'success',
-
-          confirmButtonColor:
-            '#3B5BDB',
-
-        });
+          // Obtenemos el ID del usuario recién creado
+          const idUsuario =
+            respuestaUsuario.id_usuario;
 
 
-        this.cerrarFormulario();
+          if (!idUsuario) {
 
-        this.cargarCuidadores();
+            console.error(
+              'La API no devolvió el id_usuario',
+              respuestaUsuario
+            );
 
-      },
+            alert(
+              'El usuario fue creado, pero no se pudo crear su perfil profesional.'
+            );
+
+            this.guardando = false;
+
+            return;
+
+          }
 
 
-      error: (err) => {
+          // ==========================================
+          // 3. DATOS DEL PERFIL PROFESIONAL
+          // ==========================================
 
-        console.error(err);
+          const perfilProfesional = {
 
-        this.guardando = false;
+            id_usuario: idUsuario,
+
+            especialidad:
+              this.formulario.especialidad || null,
+
+            licencia:
+              this.formulario.licencia || null,
+
+            experiencia:
+              this.formulario.experiencia ?? null,
+
+            institucion:
+              this.formulario.institucion || null
+
+          };
 
 
-        Swal.fire({
+          console.log(
+            'Creando perfil profesional:',
+            perfilProfesional
+          );
 
-          title: 'Error',
 
-          text:
-            'No se pudo procesar la solicitud en el servidor.',
+          // ==========================================
+          // 4. CREAR PERFIL PROFESIONAL
+          // ==========================================
 
-          icon: 'error',
+          this.http
+            .post<any>(
+              'https://geriapp-web-1.onrender.com/api/perfil_profesional/',
+              perfilProfesional
+            )
+            .subscribe({
 
-          confirmButtonColor:
-            '#3B5BDB',
+              next: (respuestaPerfil) => {
 
-        });
+                console.log(
+                  'Perfil profesional creado:',
+                  respuestaPerfil
+                );
 
-      },
 
-    });
+                // ==========================================
+                // 5. FINALIZAR
+                // ==========================================
+
+                this.guardando = false;
+
+                alert(
+                  'Cuidador y perfil profesional registrados correctamente.'
+                );
+
+
+                this.cerrarFormulario();
+
+                this.cargarCuidadores();
+
+              },
+
+
+              error: (errorPerfil) => {
+
+                console.error(
+                  'Error al crear el perfil profesional:',
+                  errorPerfil
+                );
+
+                this.guardando = false;
+
+                alert(
+                  'El cuidador fue creado, pero ocurrió un error al crear su perfil profesional.'
+                );
+
+              }
+
+            });
+
+        },
+
+
+        error: (errorUsuario) => {
+
+          console.error(
+            'Error al crear el usuario:',
+            errorUsuario
+          );
+
+          this.guardando = false;
+
+          alert(
+            'No se pudo registrar el cuidador.'
+          );
+
+        }
+
+      });
 
   }
-
 
   // ==========================================
   // MODAL DETALLE
