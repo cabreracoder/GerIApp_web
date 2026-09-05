@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -85,26 +86,38 @@ export class DashboardComponent implements OnInit {
   ===================================================== */
 
   fechaActual = '';
-  nombreAdministrador = '';
+
+  usuario = {
+    nombres: ''
+  };
+
   nombreFundacion = '';
 
   mesActual = '';
+
 
   /* =====================================================
      PACIENTES
   ===================================================== */
 
   totalPacientes = 0;
+
   pacientesActuales = 0;
+
   capacidadMaxima = 0;
 
   pacientesEstables = 0;
+
   pacientesCriticos = 0;
+
   altasDelMes = 0;
 
   porcentajeOcupacion = 0;
+
   porcentajeEstables = 0;
+
   porcentajeCriticos = 0;
+
   porcentajeAltas = 0;
 
   progresoMes = 0;
@@ -113,18 +126,23 @@ export class DashboardComponent implements OnInit {
 
   pacientesRecientes: PacienteReciente[] = [];
 
+
   /* =====================================================
      CUIDADORES
   ===================================================== */
 
   totalCuidadores = 0;
+
   cuidadoresEnTurno = 0;
+
   cuidadoresLibres = 0;
+
   ingresosCuidadores = 0;
 
   cuidadores: Cuidador[] = [];
 
   ratioCuidadorPaciente = '—';
+
 
   /* =====================================================
      OCUPACIÓN
@@ -141,11 +159,13 @@ export class DashboardComponent implements OnInit {
 
   ocupacionDashArray = '0 263.89';
 
+
   /* =====================================================
      ANÁLISIS DE SALUD
   ===================================================== */
 
   estadosSalud: EstadoSalud[] = [];
+
 
   /* =====================================================
      TENDENCIA
@@ -161,55 +181,121 @@ export class DashboardComponent implements OnInit {
 
   tendenciaAreaPath = '';
 
+
   /* =====================================================
      INDICADORES DE BIENESTAR
   ===================================================== */
 
   indicadoresBienestar: IndicadorBienestar[] = [];
 
+
   /* =====================================================
      ALERTAS
   ===================================================== */
 
   alertasSinLeer = 0;
+
   totalAlertas = 0;
 
   alertasCriticas = 0;
+
   alertasAvisos = 0;
+
   alertasInfo = 0;
 
   alertas: Alerta[] = [];
+
 
   /* =====================================================
      INICIO
   ===================================================== */
 
   ngOnInit(): void {
+
+    // Cargar el usuario que inició sesión
+    this.cargarUsuario();
+
+    // Cargar fecha actual
     this.cargarFechaActual();
+
+    // Calcular ocupación
     this.calcularOcupacion();
   }
+
+
+  /* =====================================================
+     CARGAR USUARIO AUTENTICADO
+  ===================================================== */
+
+  private cargarUsuario(): void {
+
+    const usuarioGuardado = localStorage.getItem('usuario');
+
+    // Verificar si existe un usuario guardado
+    if (!usuarioGuardado) {
+
+      console.warn(
+        'No hay un usuario guardado en localStorage.'
+      );
+
+      return;
+    }
+
+    try {
+
+      // Convertir el texto almacenado en objeto
+      const usuario = JSON.parse(usuarioGuardado);
+
+      // Cargar los datos del usuario
+      this.usuario = {
+        nombres: usuario.nombres ?? ''
+      };
+
+      console.log(
+        'Usuario cargado en el Dashboard:',
+        this.usuario
+      );
+
+    } catch (error) {
+
+      console.error(
+        'Error al leer el usuario de localStorage:',
+        error
+      );
+
+    }
+  }
+
 
   /* =====================================================
      FECHA ACTUAL
   ===================================================== */
 
   private cargarFechaActual(): void {
+
     const fecha = new Date();
 
-    this.fechaActual = fecha.toLocaleDateString('es-CO', {
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric'
-    });
+    this.fechaActual = fecha.toLocaleDateString(
+      'es-CO',
+      {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      }
+    );
 
-    this.mesActual = fecha.toLocaleDateString('es-CO', {
-      month: 'long'
-    });
+    this.mesActual = fecha.toLocaleDateString(
+      'es-CO',
+      {
+        month: 'long'
+      }
+    );
 
     this.mesActual =
       this.mesActual.charAt(0).toUpperCase() +
       this.mesActual.slice(1);
   }
+
 
   /* =====================================================
      CÁLCULO DE OCUPACIÓN
@@ -218,30 +304,45 @@ export class DashboardComponent implements OnInit {
   private calcularOcupacion(): void {
 
     if (this.capacidadMaxima <= 0) {
+
       this.porcentajeOcupacion = 0;
+
       this.ocupacionDashArray = '0 263.89';
+
       return;
     }
 
     this.porcentajeOcupacion = Math.round(
-      (this.pacientesActuales / this.capacidadMaxima) * 100
+      (
+        this.pacientesActuales /
+        this.capacidadMaxima
+      ) * 100
     );
 
     const radio = 42;
-    const circunferencia = 2 * Math.PI * radio;
+
+    const circunferencia =
+      2 * Math.PI * radio;
 
     const porcentaje = Math.min(
-      Math.max(this.porcentajeOcupacion, 0),
+      Math.max(
+        this.porcentajeOcupacion,
+        0
+      ),
       100
     );
 
     const ocupado =
-      (porcentaje / 100) * circunferencia;
+      (porcentaje / 100) *
+      circunferencia;
 
     const restante =
-      circunferencia - ocupado;
+      circunferencia -
+      ocupado;
 
     this.ocupacionDashArray =
       `${ocupado} ${restante}`;
   }
+
 }
+

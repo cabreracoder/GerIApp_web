@@ -1,0 +1,585 @@
+<div class="pagina">
+
+  <section class="encabezado-pagina">
+    <div>
+      <h1 class="titulo-pagina">
+        Gestión de Cuidadores
+      </h1>
+
+      <p class="subtitulo-pagina">
+        Administración y seguimiento de cuidadores registrados.
+      </p>
+
+    </div>
+
+    <!-- NUEVO ENCARGADO -->
+
+
+    <button type="button" class="boton-principal" (click)="abrirFormulario('crear')">
+      <span class="material-symbols-outlined">
+        add
+      </span>
+
+      Nuevo Encargado
+
+    </button>
+
+
+
+  </section>
+
+
+  <!-- =====================================================
+        TABLA
+  ====================================================== -->
+  <section class="tarjeta-tabla">
+    <div class="encabezado-tabla">
+      <h2 class="titulo-tabla">
+        Cuidadores registrados
+      </h2>
+    </div>
+
+    <!-- ===================================================
+      FILTROS (Únicamente el Buscador por documento)
+    ==================================================== -->
+    <div class="contenedor-filtros">
+      <div class="grupo-filtro">
+        <label class="etiqueta-filtro">
+          Buscar por documento
+        </label>
+        <div class="buscador">
+          <span class="material-symbols-outlined">
+            search
+          </span>
+          <input type="text" class="campo-filtro" [(ngModel)]="textoBusqueda" (input)="buscarCuidadores()"
+            placeholder="Ingrese el número de documento">
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================
+      TABLA RESPONSIVA (Únicamente 4 columnas)
+    ==================================================== -->
+    <div class="tabla-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th (click)="ordenarCuidadores()" style="cursor: pointer;">
+              Cuidador
+              <span class="material-symbols-outlined" style="font-size: 16px; vertical-align: middle;">
+                {{ ordenNombre === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+              </span>
+            </th>
+            <th>
+              Turno
+            </th>
+            <th>
+              Paciente
+            </th>
+            <th class="encabezado-acciones">
+              Acciones
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let cuidador of cuidadoresFiltrados">
+            <td>
+              <div class="informacion-cuidador">
+                <div class="avatar-cuidador" [style.background]="obtenerColorAvatar(cuidador.id)">
+                  {{ obtenerIniciales(cuidador.nombreCompleto || cuidador.nombre) }}
+                </div>
+                <div class="texto-cuidador">
+                  <strong class="nombre-cuidador">
+                    {{ cuidador.nombreCompleto || (cuidador.nombre + ' ' + (cuidador.apellido || '')) }}
+                  </strong>
+                  <span class="correo-cuidador">
+                    {{ cuidador.correo }}
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <td>
+              <span class="insignia-turno">
+                {{ cuidador.turno }}
+              </span>
+            </td>
+
+            <td>
+              {{ cuidador.pacientes ?? 0 }}
+            </td>
+
+            <td>
+              <div class="celda-acciones">
+                <button type="button" class="boton-accion" title="Ver detalle" (click)="verDetalle(cuidador)">
+                  <span class="material-symbols-outlined">
+                    visibility
+                  </span>
+                </button>
+
+                <button type="button" class="boton-accion" title="Editar"
+                  (click)="abrirFormulario('editar', cuidador.id)">
+                  <span class="material-symbols-outlined">
+                    edit
+                  </span>
+                </button>
+
+                <button type="button" class="boton-accion peligro" title="Eliminar"
+                  (click)="solicitarEliminacion(cuidador.id)">
+                  <span class="material-symbols-outlined">
+                    delete
+                  </span>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- ESTADO VACÍO -->
+          <tr *ngIf="cuidadoresFiltrados.length === 0">
+            <td colspan="4" class="celda-vacia">
+              <div class="estado-vacio">
+                <span class="material-symbols-outlined">
+                  group_off
+                </span>
+                <strong>
+                  No hay cuidadores registrados
+                </strong>
+                <span>
+                  Los cuidadores obtenidos desde la API aparecerán aquí.
+                </span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- =====================================================
+        MODAL FORMULARIO
+  ====================================================== -->
+  <div class="modal-overlay" [class.open]="formularioAbierto" (click)="cerrarFormularioPorOverlay($event)">
+    <div class="modal">
+      <header class="modal-header">
+        <div class="modal-header-icono">
+          <span class="material-symbols-outlined">
+            person_add
+          </span>
+        </div>
+        <div class="modal-header-contenido">
+          <strong>
+            {{ modoFormulario === 'crear' ? 'Nuevo cuidador' : 'Editar cuidador' }}
+          </strong>
+          <span>
+            Complete la información del cuidador.
+          </span>
+        </div>
+        <button type="button" class="boton-cerrar" (click)="cerrarFormulario()">
+          <span class="material-symbols-outlined">
+            close
+          </span>
+        </button>
+      </header>
+
+      <form class="cuerpo-modal" (ngSubmit)="guardarCuidador()">
+
+        <!-- INFORMACIÓN PERSONAL -->
+        <section class="seccion-formulario">
+          <h3 class="titulo-seccion-formulario">
+            <span class="material-symbols-outlined">
+              person
+            </span>
+            Información personal
+          </h3>
+
+          <div class="rejilla-formulario">
+            <!-- Nombre -->
+            <div class="grupo-formulario">
+              <label class="etiqueta-formulario">
+                Nombre
+                <span class="requerido">*</span>
+              </label>
+              <input type="text" class="campo-formulario" [class.error]="tieneError('nombre')"
+                [(ngModel)]="formulario.nombre" name="nombre" placeholder="Nombre">
+              <span class="mensaje-error" [class.mostrar]="tieneError('nombre')">
+                Este campo es obligatorio.
+              </span>
+            </div>
+
+            <!-- Apellido -->
+            <div class="grupo-formulario">
+              <label class="etiqueta-formulario">
+                Apellido
+                <span class="requerido">*</span>
+              </label>
+              <input type="text" class="campo-formulario" [class.error]="tieneError('apellido')"
+                [(ngModel)]="formulario.apellido" name="apellido" placeholder="Apellido">
+              <span class="mensaje-error" [class.mostrar]="tieneError('apellido')">
+                Este campo es obligatorio.
+              </span>
+            </div>
+
+            <!-- Tipo de Documento -->
+            <div class="grupo-formulario">
+              <label class="etiqueta-formulario">
+                Tipo de documento
+                <span class="requerido">*</span>
+              </label>
+              <select class="campo-formulario" [class.error]="tieneError('tipoDocumento')"
+                [(ngModel)]="formulario.tipoDocumento" name="tipoDocumento">
+                <option *ngFor="let tipo of tiposDocumento" [value]="tipo">
+                  {{ tipo }}
+                </option>
+              </select>
+              <span class="mensaje-error" [class.mostrar]="tieneError('tipoDocumento')">
+                Este campo es obligatorio.
+              </span>
+            </div>
+
+            <!-- Número de Documento -->
+            <div class="grupo-formulario">
+              <label class="etiqueta-formulario">
+                Número de documento
+                <span class="requerido">*</span>
+              </label>
+              <input type="text" class="campo-formulario" [class.error]="tieneError('numeroDocumento')"
+                [(ngModel)]="formulario.numeroDocumento" name="numeroDocumento" placeholder="Número de identificación">
+              <span class="mensaje-error" [class.mostrar]="tieneError('numeroDocumento')">
+                Este campo es obligatorio.
+              </span>
+            </div>
+
+            <!-- Teléfono -->
+            <div class="grupo-formulario">
+              <label class="etiqueta-formulario">
+                Teléfono
+                <span class="requerido">*</span>
+              </label>
+              <input type="tel" class="campo-formulario" [class.error]="tieneError('telefono')"
+                [(ngModel)]="formulario.telefono" name="telefono" placeholder="Número de teléfono">
+            </div>
+
+            <!-- Correo Electrónico -->
+            <div class="grupo-formulario">
+              <label class="etiqueta-formulario">
+                Correo electrónico
+                <span class="requerido">*</span>
+              </label>
+              <input type="email" class="campo-formulario" [class.error]="tieneError('correo')"
+                [(ngModel)]="formulario.correo" name="correo" placeholder="Correo electrónico">
+            </div>
+
+            <!-- Fecha de Nacimiento -->
+            <div class="grupo-formulario">
+              <label class="etiqueta-formulario">
+                Fecha de nacimiento
+              </label>
+              <input type="date" class="campo-formulario" [(ngModel)]="formulario.fechaNacimiento"
+                (change)="calcularEdad()" name="fechaNacimiento">
+            </div>
+
+            <!-- Edad (Calculada Automáticamente) -->
+            <div class="grupo-formulario">
+              <label class="etiqueta-formulario">
+                Edad
+              </label>
+              <input type="number" class="campo-formulario" [value]="formulario.edad ?? ''" name="edad" readonly
+                placeholder="Años cumplidos">
+            </div>
+          </div>
+        </section>
+
+        <!-- INFORMACIÓN PROFESIONAL -->
+        <section class="seccion-formulario">
+          <h3 class="titulo-seccion-formulario">
+            <span class="material-symbols-outlined">
+              medical_information
+            </span>
+            Información profesional
+          </h3>
+
+          <div class="rejilla-formulario">
+            <div class="grupo-formulario">
+              <label class="etiqueta-formulario">
+                Especialidad
+                <span class="requerido">*</span>
+              </label>
+              <input type="text" class="campo-formulario" [class.error]="tieneError('especialidad')"
+                [(ngModel)]="formulario.especialidad" name="especialidad" placeholder="Especialidad">
+            </div>
+
+            <div class="grupo-formulario">
+              <label class="etiqueta-formulario">
+                Licencia
+                <span class="requerido">*</span>
+              </label>
+              <input type="text" class="campo-formulario" [class.error]="tieneError('licencia')"
+                [(ngModel)]="formulario.licencia" name="licencia" placeholder="Número de licencia">
+            </div>
+
+            <div class="grupo-formulario">
+              <label class="etiqueta-formulario">
+                Experiencia
+              </label>
+              <input type="number" min="0" class="campo-formulario" [(ngModel)]="formulario.experiencia"
+                name="experiencia" placeholder="Años de experiencia">
+            </div>
+
+            <div class="grupo-formulario">
+              <label class="etiqueta-formulario">
+                Institución
+              </label>
+              <input type="text" class="campo-formulario" [(ngModel)]="formulario.institucion" name="institucion"
+                placeholder="Institución">
+            </div>
+          </div>
+        </section>
+
+        <!-- TURNOS (Diurno / Nocturno) -->
+        <section class="seccion-formulario">
+          <h3 class="titulo-seccion-formulario">
+            <span class="material-symbols-outlined">
+              schedule
+            </span>
+            Turno
+          </h3>
+
+          <div class="rejilla-turnos">
+            <label class="tarjeta-turno" *ngFor="let turno of turnosDisponibles"
+              [class.seleccionado]="turnoSeleccionado === turno.nombre">
+              <input type="radio" name="turno" [value]="turno.nombre" [(ngModel)]="turnoSeleccionado">
+              <strong>
+                {{ turno.nombre }}
+              </strong>
+              <span>
+                {{ turno.horario }}
+              </span>
+            </label>
+          </div>
+        </section>
+
+        <!-- DÍAS -->
+        <section class="seccion-formulario">
+          <h3 class="titulo-seccion-formulario">
+            <span class="material-symbols-outlined">
+              calendar_month
+            </span>
+            Días disponibles
+          </h3>
+
+          <div class="contenedor-dias">
+            <button type="button" class="chip-dia" *ngFor="let dia of diasSemana"
+              [class.seleccionado]="estaSeleccionadoElDia(dia)" (click)="cambiarDia(dia)">
+              {{ dia }}
+            </button>
+          </div>
+        </section>
+
+        <!-- ARCHIVOS -->
+        <section class="seccion-formulario">
+          <h3 class="titulo-seccion-formulario">
+            <span class="material-symbols-outlined">
+              upload_file
+            </span>
+            Documentos
+          </h3>
+
+          <div class="rejilla-archivos">
+            <label class="zona-carga" [class.completada]="archivoSeleccionado('cedula')">
+              <span class="icono-carga">
+                <span class="material-symbols-outlined">
+                  badge
+                </span>
+              </span>
+              <strong>
+                {{ archivoSeleccionado('cedula') ? obtenerNombreArchivo('cedula') : 'Cédula' }}
+              </strong>
+              <span>Seleccionar archivo</span>
+              <input type="file" class="input-archivo" (change)="seleccionarArchivo($event, 'cedula')">
+            </label>
+
+            <label class="zona-carga" [class.completada]="archivoSeleccionado('tarjetaProfesional')">
+              <span class="icono-carga">
+                <span class="material-symbols-outlined">
+                  card_membership
+                </span>
+              </span>
+              <strong>
+                {{ archivoSeleccionado('tarjetaProfesional') ? obtenerNombreArchivo('tarjetaProfesional') : 'Tarjeta
+                profesional' }}
+              </strong>
+              <span>Seleccionar archivo</span>
+              <input type="file" class="input-archivo" (change)="seleccionarArchivo($event, 'tarjetaProfesional')">
+            </label>
+
+            <label class="zona-carga" [class.completada]="archivoSeleccionado('antecedentes')">
+              <span class="icono-carga">
+                <span class="material-symbols-outlined">
+                  verified_user
+                </span>
+              </span>
+              <strong>
+                {{ archivoSeleccionado('antecedentes') ? obtenerNombreArchivo('antecedentes') : 'Antecedentes' }}
+              </strong>
+              <span>Seleccionar archivo</span>
+              <input type="file" class="input-archivo" (change)="seleccionarArchivo($event, 'antecedentes')">
+            </label>
+
+            <label class="zona-carga" [class.completada]="archivoSeleccionado('hojaVida')">
+              <span class="icono-carga">
+                <span class="material-symbols-outlined">
+                  description
+                </span>
+              </span>
+              <strong>
+                {{ archivoSeleccionado('hojaVida') ? obtenerNombreArchivo('hojaVida') : 'Hoja de vida' }}
+              </strong>
+              <span>Seleccionar archivo</span>
+              <input type="file" class="input-archivo" (change)="seleccionarArchivo($event, 'hojaVida')">
+            </label>
+          </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="pie-modal">
+          <button type="button" class="boton-cancelar" (click)="cancelarFormulario()" [disabled]="guardando">
+            Cancelar
+          </button>
+          <button type="submit" class="boton-guardar" [disabled]="guardando">
+            <span *ngIf="guardando" class="spinner"></span>
+            <span *ngIf="!guardando" class="material-symbols-outlined">
+              save
+            </span>
+            {{ guardando ? 'Guardando...' : 'Guardar cuidador' }}
+          </button>
+        </footer>
+      </form>
+    </div>
+  </div>
+
+  <!-- =====================================================
+        MODAL DETALLE
+  ====================================================== -->
+  <div class="modal-overlay" [class.open]="detalleAbierto" (click)="cerrarDetallePorOverlay($event)">
+    <div class="modal modal-detalle" *ngIf="cuidadorSeleccionado">
+      <header class="modal-header">
+        <div class="modal-header-icono">
+          <span class="material-symbols-outlined">
+            person
+          </span>
+        </div>
+        <div class="modal-header-contenido">
+          <strong>
+            Información del cuidador
+          </strong>
+          <span>
+            Detalle del registro seleccionado.
+          </span>
+        </div>
+        <button type="button" class="boton-cerrar" (click)="cerrarDetalle()">
+          <span class="material-symbols-outlined">
+            close
+          </span>
+        </button>
+      </header>
+
+      <div class="cuerpo-modal detalle-contenido">
+        <div class="cabecera-detalle">
+          <div class="avatar-detalle" [style.background]="obtenerColorAvatar(cuidadorSeleccionado.id)">
+            {{ obtenerIniciales(cuidadorSeleccionado.nombreCompleto || cuidadorSeleccionado.nombre) }}
+          </div>
+          <div>
+            <h2>
+              {{ cuidadorSeleccionado.nombreCompleto || (cuidadorSeleccionado.nombre + ' ' +
+              (cuidadorSeleccionado.apellido || '')) }}
+            </h2>
+            <span>
+              {{ cuidadorSeleccionado.correo }}
+            </span>
+          </div>
+        </div>
+
+        <div class="informacion-detalle">
+          <div class="dato-detalle">
+            <span>Documento</span>
+            <strong>
+              {{ (cuidadorSeleccionado.tipoDocumento ? cuidadorSeleccionado.tipoDocumento + ' - ' : '') +
+              (cuidadorSeleccionado.numeroDocumento || cuidadorSeleccionado.documento) }}
+            </strong>
+          </div>
+          <div class="dato-detalle">
+            <span>Teléfono</span>
+            <strong>
+              {{ cuidadorSeleccionado.telefono }}
+            </strong>
+          </div>
+          <div class="dato-detalle">
+            <span>Especialidad</span>
+            <strong>
+              {{ cuidadorSeleccionado.especialidad }}
+            </strong>
+          </div>
+          <div class="dato-detalle">
+            <span>Licencia</span>
+            <strong>
+              {{ cuidadorSeleccionado.licencia }}
+            </strong>
+          </div>
+          <div class="dato-detalle">
+            <span>Experiencia</span>
+            <strong>
+              {{ cuidadorSeleccionado.experiencia ?? 0 }} años
+            </strong>
+          </div>
+          <div class="dato-detalle">
+            <span>Institución</span>
+            <strong>
+              {{ cuidadorSeleccionado.institucion || 'No registrada' }}
+            </strong>
+          </div>
+          <div class="dato-detalle">
+            <span>Turno</span>
+            <strong>
+              {{ cuidadorSeleccionado.turno || 'No asignado' }}
+            </strong>
+          </div>
+          <div class="dato-detalle">
+            <span>Pacientes</span>
+            <strong>
+              {{ cuidadorSeleccionado.pacientes ?? 0 }}
+            </strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+        CONFIRMACIÓN
+  ====================================================== -->
+  <div class="modal-overlay" [class.open]="confirmacionAbierta">
+    <div class="dialogo-confirmacion">
+      <div class="icono-confirmacion">
+        <span class="material-symbols-outlined">
+          delete
+        </span>
+      </div>
+      <h2>
+        Eliminar cuidador
+      </h2>
+      <p>
+        ¿Está seguro de eliminar este cuidador?
+      </p>
+      <div class="acciones-confirmacion">
+        <button type="button" class="boton-cancelar" (click)="cerrarConfirmacion()">
+          Cancelar
+        </button>
+        <button type="button" class="boton-peligro" (click)="confirmarEliminacion()">
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

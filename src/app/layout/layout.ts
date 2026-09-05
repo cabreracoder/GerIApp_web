@@ -1,6 +1,12 @@
+
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {RouterLink,RouterLinkActive,RouterOutlet,Router } from '@angular/router';
+import {
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+  Router
+} from '@angular/router';
 
 interface OpcionMenu {
   nombre: string;
@@ -16,7 +22,7 @@ interface OpcionMenu {
     CommonModule,
     RouterLink,
     RouterLinkActive,
-    RouterOutlet,
+    RouterOutlet
   ],
 
   templateUrl: './layout.html',
@@ -24,7 +30,13 @@ interface OpcionMenu {
 })
 export class Layout {
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+    this.cargarUsuario();
+  }
+
+  // =========================================================
+  // DATOS GENERALES DE LA APLICACIÓN
+  // =========================================================
 
   nombreAplicacion = 'GerIApp';
 
@@ -32,13 +44,23 @@ export class Layout {
 
   textoCerrarSesion = 'Cerrar sesión';
 
-  nombreUsuario = 'Jose Cabrera';
-
-  rolUsuario = 'ADMINISTRADOR';
-
-  inicialesUsuario = 'JC';
-
   placeholderBuscador = 'Buscar por nombre o documento...';
+
+
+  // =========================================================
+  // DATOS DEL USUARIO AUTENTICADO
+  // =========================================================
+
+  nombreUsuario = '';
+
+  rolUsuario = '';
+
+  inicialesUsuario = '';
+
+
+  // =========================================================
+  // MENÚ
+  // =========================================================
 
   menu: OpcionMenu[] = [
 
@@ -47,12 +69,12 @@ export class Layout {
       icono: 'dashboard',
       ruta: '/dashboard'
     },
+
     {
       nombre: 'Usuarios',
       icono: 'people',
       ruta: '/usuarios'
     },
-
 
     {
       nombre: 'Pacientes',
@@ -77,6 +99,7 @@ export class Layout {
       icono: 'admin_panel_settings',
       ruta: '/roles'
     },
+
     {
       nombre: 'Configuración',
       icono: 'person',
@@ -86,13 +109,60 @@ export class Layout {
   ];
 
 
+  // =========================================================
+  // CARGAR USUARIO DESDE LOCALSTORAGE
+  // =========================================================
+
+  cargarUsuario(): void {
+
+    const usuarioGuardado = localStorage.getItem('usuario');
+
+    if (!usuarioGuardado) {
+      console.warn('No hay un usuario guardado en localStorage.');
+      return;
+    }
+
+    try {
+
+      const usuario = JSON.parse(usuarioGuardado);
+
+      // Nombre completo
+      this.nombreUsuario =
+        `${usuario.nombres ?? ''} ${usuario.apellidos ?? ''}`.trim();
+
+      // Rol
+      this.rolUsuario = usuario.rol ?? '';
+
+      // Iniciales
+      const nombres = usuario.nombres ?? '';
+      const apellidos = usuario.apellidos ?? '';
+
+      this.inicialesUsuario =
+        `${nombres.charAt(0)}${apellidos.charAt(0)}`.toUpperCase();
+
+    } catch (error) {
+
+      console.error(
+        'Error al leer el usuario guardado en localStorage:',
+        error
+      );
+
+    }
+  }
+
+
+  // =========================================================
+  // CERRAR SESIÓN
+  // =========================================================
+
   cerrarSesion(): void {
 
-  console.log('Cerrando sesión...');
+    console.log('Cerrando sesión...');
 
-  localStorage.removeItem('usuario');
+    localStorage.removeItem('usuario');
 
-  this.router.navigate(['/login']);
+    this.router.navigate(['/login']);
+  }
+
 }
 
-}

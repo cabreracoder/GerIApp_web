@@ -169,13 +169,14 @@ def login_usuario(request):
         {
             'mensaje': 'Inicio de sesión exitoso.',
             'usuario': {
-                'id_usuario': usuario.id_usuario,
-                'nombres': usuario.nombres,
-                'apellidos': usuario.apellidos,
-                'correo': usuario.correo,
-                'id_rol': usuario.id_rol_id,
-                'estado': usuario.estado
-            }
+            'id_usuario': usuario.id_usuario,
+            'nombres': usuario.nombres,
+            'apellidos': usuario.apellidos,
+            'correo': usuario.correo,
+            'id_rol': usuario.id_rol_id,
+            'rol': usuario.id_rol.nombre if usuario.id_rol else None,
+            'estado': usuario.estado
+        }
         },
         status=status.HTTP_200_OK
     )
