@@ -7,7 +7,7 @@ from .views import DetalleEntregaMedicamentoViewSet, MovimientoMedicamentoViewSe
 from .views import InsumosViewSet, DetalleEntregaInsumoViewSet, EntregaInsumoViewSet, MovimientoInsumoViewSet, BitacoraViewSet
 from .views import ActividadesViewSet, SignosVitalesViewSet, TipoEventoViewSet, TipoEmergenciaViewSet, EventosAdversosViewSet, ImagenesEventoAdversoViewSet 
 from .views import AsignacionPacienteCuidadorViewSet,TurnosViewSet, AsignacionTurnoUsuarioViewSet, PermisosViewSet,PermisosRolViewSet
-from .views import FamiliarResponsableViewSet, PerfilProfesionalViewSet, DisponibilidadUsuarioViewSet,registro_usuario,login_usuario
+from .views import FamiliarResponsableViewSet, PerfilProfesionalViewSet, DisponibilidadUsuarioViewSet,registro_usuario,login_usuario,DocumentosViewSet
 
 router = DefaultRouter()
 
@@ -15,6 +15,7 @@ router.register(r'pacientes', PacientesViewSet)
 router.register(r'medicamentos', MedicamentosViewSet)
 router.register(r'roles', RolesViewSet)
 router.register(r'usuarios', UsuariosViewSet)
+router.register(r'documentos', DocumentosViewSet)
 router.register(r'historia_clinicas', HistoriaClinicasViewSet)
 router.register(r'enfermedades' , EnfermedadesViewSet)
 router.register(r'diagnosticos', DiagnosticosViewSet)

@@ -45,17 +45,16 @@ interface PatientForm {
 })
 export class Pacientes {
 
-  // =========================================================
+  
   // PACIENTES
-  // =========================================================
-
+  
   patients: any[] = [];
 
   searchText = '';
 
-  // =========================================================
+  
   // MODALES
-  // =========================================================
+  
 
   modalOpen = false;
 
@@ -65,33 +64,22 @@ export class Pacientes {
 
   selectedPatient: any = null;
 
-  // =========================================================
+  
   // FORMULARIO
-  // =========================================================
+  
 
   form: PatientForm = this.formularioVacio();
-
-  // =========================================================
-  // CONSTRUCTOR
-  // =========================================================
 
   constructor(
     private http: HttpClient,
     private cdr: ChangeDetectorRef
   ) {}
-  // =========================================================
-  // INICIAR
-  // =========================================================
 
   ngOnInit() {
 
     this.listar();
 
   }
-
-  // =========================================================
-  // FORMULARIO VACÍO
-  // =========================================================
 
   formularioVacio(): PatientForm {
 
@@ -128,9 +116,9 @@ export class Pacientes {
 
   }
 
-  // =========================================================
-  // LISTAR PACIENTES - GET
-  // =========================================================
+  
+  // LISTAR LOS PACIENTES CON GET DE LA API DE GERIAPP
+ 
 
   listar() {
 
@@ -139,14 +127,26 @@ export class Pacientes {
     ).subscribe({
 
       next: (respuesta) => {
-        console.log('Pacientes recibidos:', respuesta);
+
+        console.log(
+          'Pacientes recibidos:',
+          respuesta
+        );
 
         this.patients = respuesta;
 
-        console.log('TOTAL PACIENTES:', this.patients.length);
-        console.log('PRIMER PACIENTE:', this.patients[0]);
+        console.log(
+          'TOTAL PACIENTES:',
+          this.patients.length
+        );
+
+        console.log(
+          'PRIMER PACIENTE:',
+          this.patients[0]
+        );
 
         this.cdr.detectChanges();
+
       },
 
       error: (error) => {
@@ -162,9 +162,9 @@ export class Pacientes {
 
   }
 
-  // =========================================================
+ 
   // FILTRAR PACIENTES
-  // =========================================================
+ 
 
   get filteredPatients(): any[] {
 
@@ -199,9 +199,9 @@ export class Pacientes {
 
   }
 
-  // =========================================================
+  
   // CALCULAR EDAD PARA LA TABLA
-  // =========================================================
+  
 
   calcularEdadPaciente(
     fechaNacimiento: string
@@ -243,9 +243,9 @@ export class Pacientes {
 
   }
 
-  // =========================================================
+
   // NUEVO PACIENTE
-  // =========================================================
+  
 
   nuevo() {
 
@@ -258,167 +258,165 @@ export class Pacientes {
 
   }
 
-  // =========================================================
   // EDITAR PACIENTE
-  // =========================================================
+  
 
   editarPaciente(patient: any) {
 
-  this.editingId = patient.id_paciente;
+    this.editingId =
+      patient.id_paciente;
 
-  // Primero cargamos los datos del paciente
-  this.form = {
+    // Primero cargamos los datos del paciente
+    this.form = {
 
-    nombre:
-      patient.nombre || '',
+      nombre:
+        patient.nombre || '',
 
-    apellidos:
-      patient.apellido || '',
+      apellidos:
+        patient.apellido || '',
 
-    tipoIdentificacion:
-      patient.tipo_documento || '',
+      tipoIdentificacion:
+        patient.tipo_documento || '',
 
-    documento:
-      patient.numero_documento || '',
+      documento:
+        patient.numero_documento || '',
 
-    nacimiento:
-      patient.fecha_nacimiento || '',
+      nacimiento:
+        patient.fecha_nacimiento || '',
 
-    edad:
-      null,
+      edad:
+        null,
 
-    genero:
-      patient.genero || '',
+      genero:
+        patient.genero || '',
 
-    grupoSanguineo:
-      patient.grupo_sanguineo || '',
+      grupoSanguineo:
+        patient.grupo_sanguineo || '',
 
-    rh:
-      patient.rh || '',
+      rh:
+        patient.rh || '',
 
-    eps:
-      patient.eps || '',
+      eps:
+        patient.eps || '',
 
-    fechaIngreso:
-      patient.fecha_ingreso
-        ? patient.fecha_ingreso.substring(0, 10)
-        : '',
+      fechaIngreso:
+        patient.fecha_ingreso
+          ? patient.fecha_ingreso.substring(0, 10)
+          : '',
 
-    // Por ahora vacíos.
-    // Los llenaremos con la información del familiar.
-    familiarNombres: '',
-    familiarApellidos: '',
-    parentesco: '',
-    telefono1: '',
-    telefono2: '',
-    direccion: '',
-    correoElectronico: '',
-    municipio: '',
+      familiarNombres: '',
+      familiarApellidos: '',
+      parentesco: '',
+      telefono1: '',
+      telefono2: '',
+      direccion: '',
+      correoElectronico: '',
+      municipio: '',
 
-    sede:
-      patient.sede || '',
+      sede:
+        patient.sede || '',
 
-    habitacion:
-      patient.habitacion !== null &&
-      patient.habitacion !== undefined
-        ? patient.habitacion.toString()
-        : '',
+      habitacion:
+        patient.habitacion !== null &&
+        patient.habitacion !== undefined
+          ? patient.habitacion.toString()
+          : '',
 
-    cama:
-      patient.cama !== null &&
-      patient.cama !== undefined
-        ? patient.cama.toString()
-        : '',
+      cama:
+        patient.cama !== null &&
+        patient.cama !== undefined
+          ? patient.cama.toString()
+          : '',
 
-    estado:
-      patient.estado
-        ? 'active'
-        : 'inactive'
-  };
+      estado:
+        patient.estado
+          ? 'active'
+          : 'inactive'
 
-  // Calcular edad automáticamente
-  if (this.form.nacimiento) {
-    this.calcularEdad();
-  }
+    };
 
-  // Ahora buscamos el familiar responsable de este paciente
-  this.http.get<any[]>(
-    'http://127.0.0.1:8000/api/familiar_responsable/'
-  ).subscribe({
+    // Calcular edad automáticamente
+    if (this.form.nacimiento) {
 
-    next: (familiares) => {
-
-      console.log(
-        'Familiares recibidos:',
-        familiares
-      );
-
-      // Buscamos el familiar relacionado con este paciente
-      const familiar = familiares.find(
-        item =>
-          item.id_paciente === patient.id_paciente
-      );
-
-      console.log(
-        'Familiar del paciente:',
-        familiar
-      );
-
-      // Si encontramos el familiar, cargamos sus datos
-      if (familiar) {
-
-        this.form.familiarNombres =
-          familiar.nombres || '';
-
-        this.form.familiarApellidos =
-          familiar.apellidos || '';
-
-        this.form.parentesco =
-          familiar.parentesco || '';
-
-        this.form.telefono1 =
-          familiar.telefono_uno || '';
-
-        this.form.telefono2 =
-          familiar.telefono_dos || '';
-
-        this.form.direccion =
-          familiar.direccion || '';
-
-        this.form.correoElectronico =
-          familiar.correo || '';
-
-        this.form.municipio =
-          familiar.municipio || '';
-
-      }
-
-      // Finalmente abrimos el formulario
-      this.modalOpen = true;
-      this.cdr.detectChanges();
-
-    },
-
-    error: (error) => {
-
-      console.error(
-        'Error al obtener el familiar responsable:',
-        error
-      );
-
-      // Abrimos el formulario aunque no se haya
-      // podido cargar el familiar
-      this.modalOpen = true;
+      this.calcularEdad();
 
     }
 
-  });
+    // Buscar familiar responsable
+    this.http.get<any[]>(
+      'http://127.0.0.1:8000/api/familiar_responsable/'
+    ).subscribe({
 
-}
+      next: (familiares) => {
 
-  // =========================================================
+        console.log(
+          'Familiares recibidos:',
+          familiares
+        );
+
+        const familiar =
+          familiares.find(
+            item =>
+              item.id_paciente ===
+              patient.id_paciente
+          );
+
+        console.log(
+          'Familiar del paciente:',
+          familiar
+        );
+
+        if (familiar) {
+
+          this.form.familiarNombres =
+            familiar.nombres || '';
+
+          this.form.familiarApellidos =
+            familiar.apellidos || '';
+
+          this.form.parentesco =
+            familiar.parentesco || '';
+
+          this.form.telefono1 =
+            familiar.telefono_uno || '';
+
+          this.form.telefono2 =
+            familiar.telefono_dos || '';
+
+          this.form.direccion =
+            familiar.direccion || '';
+
+          this.form.correoElectronico =
+            familiar.correo || '';
+
+          this.form.municipio =
+            familiar.municipio || '';
+
+        }
+
+        this.modalOpen = true;
+
+        this.cdr.detectChanges();
+
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Error al obtener el familiar responsable:',
+          error
+        );
+
+        this.modalOpen = true;
+
+      }
+
+    });
+
+  }
+
+ 
   // GUARDAR
-  // =========================================================
 
   guardar() {
 
@@ -434,82 +432,593 @@ export class Pacientes {
 
   }
 
-  // =========================================================
+ 
   // CREAR - POST
-  // =========================================================
+  
 
   crear() {
-  const paciente = {
-    nombre: this.form.nombre,
-    apellido: this.form.apellidos,
-    eps: this.form.eps,
-    sede: this.form.sede,
-    fecha_ingreso: this.form.fechaIngreso,
-    habitacion: Number(this.form.habitacion),
-    id_usuario: null,
-    tipo_documento: this.form.tipoIdentificacion,
-    numero_documento: this.form.documento,
-    fecha_nacimiento: this.form.nacimiento,
-    genero: this.form.genero,
-    grupo_sanguineo: this.form.grupoSanguineo || null,
-    rh: this.form.rh || null,
-    cama: Number(this.form.cama),
-    estado: this.form.estado === 'active'
-  };
 
-  console.log('Paciente que se enviará:', paciente);
+    const paciente = {
 
-  // 1. Primero guardamos el paciente
-  this.http.post<any>(
-    'http://127.0.0.1:8000/api/pacientes/',
-    paciente
-  ).subscribe({
-    next: (respuesta) => {
+      nombre:
+        this.form.nombre,
 
-      console.log('Paciente creado:', respuesta);
+      apellido:
+        this.form.apellidos,
 
-      // Obtenemos automáticamente el ID que Django acaba de crear
-      const idPaciente = respuesta.id_paciente;
+      eps:
+        this.form.eps,
 
-      console.log('ID del paciente creado:', idPaciente);
+      sede:
+        this.form.sede,
 
-      // 2. Ahora guardamos el familiar responsable
-      const familiar = {
-        nombres: this.form.familiarNombres,
-        apellidos: this.form.familiarApellidos,
-        parentesco: this.form.parentesco,
-        telefono_uno: this.form.telefono1,
-        telefono_dos: this.form.telefono2 || null,
-        direccion: this.form.direccion || null,
-        correo: this.form.correoElectronico || null,
-        municipio: this.form.municipio || null,
-        id_paciente: idPaciente
+      fecha_ingreso:
+        this.form.fechaIngreso,
+
+      habitacion:
+        Number(this.form.habitacion),
+
+      id_usuario:
+        null,
+
+      tipo_documento:
+        this.form.tipoIdentificacion,
+
+      numero_documento:
+        this.form.documento,
+
+      fecha_nacimiento:
+        this.form.nacimiento,
+
+      genero:
+        this.form.genero,
+
+      grupo_sanguineo:
+        this.form.grupoSanguineo || null,
+
+      rh:
+        this.form.rh || null,
+
+      cama:
+        Number(this.form.cama),
+
+      estado:
+        this.form.estado === 'active'
+
+    };
+
+    console.log(
+      'Paciente que se enviará:',
+      paciente
+    );
+
+    // 1. Guardar paciente
+    this.http.post<any>(
+      'http://127.0.0.1:8000/api/pacientes/',
+      paciente
+    ).subscribe({
+
+      next: (respuesta) => {
+
+        console.log(
+          'Paciente creado:',
+          respuesta
+        );
+
+        const idPaciente =
+          respuesta.id_paciente;
+
+        console.log(
+          'ID del paciente creado:',
+          idPaciente
+        );
+
+        // 2. Guardar familiar responsable
+        const familiar = {
+
+          nombres:
+            this.form.familiarNombres,
+
+          apellidos:
+            this.form.familiarApellidos,
+
+          parentesco:
+            this.form.parentesco,
+
+          telefono_uno:
+            this.form.telefono1,
+
+          telefono_dos:
+            this.form.telefono2 || null,
+
+          direccion:
+            this.form.direccion || null,
+
+          correo:
+            this.form.correoElectronico || null,
+
+          municipio:
+            this.form.municipio || null,
+
+          id_paciente:
+            idPaciente
+
+        };
+
+        console.log(
+          'Familiar que se enviará:',
+          familiar
+        );
+
+        this.http.post(
+          'http://127.0.0.1:8000/api/familiar_responsable/',
+          familiar
+        ).subscribe({
+
+          next: (respuestaFamiliar) => {
+
+            console.log(
+              'Familiar creado:',
+              respuestaFamiliar
+            );
+
+            Swal.fire({
+              title:
+                'Paciente registrado correctamente',
+              icon:
+                'success',
+              confirmButtonText:
+                'Aceptar'
+            });
+
+            this.listar();
+
+            this.closeModal();
+
+          },
+
+          error: (error) => {
+
+            console.error(
+              'Error al crear el familiar responsable:',
+              error
+            );
+
+            console.error(
+              'Detalle del error:',
+              error.error
+            );
+
+            Swal.fire({
+              title:
+                'Paciente creado, pero hubo un problema',
+              text:
+                'No se pudo guardar el familiar responsable.',
+              icon:
+                'warning',
+              confirmButtonText:
+                'Aceptar'
+            });
+
+            this.listar();
+
+          }
+
+        });
+
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Error al crear paciente:',
+          error
+        );
+
+        console.error(
+          'Detalle del error:',
+          error.error
+        );
+
+        Swal.fire({
+          title:
+            'Error al registrar el paciente',
+          text:
+            'No se pudo guardar el paciente.',
+          icon:
+            'error',
+          confirmButtonText:
+            'Aceptar'
+        });
+
+      }
+
+    });
+
+  }
+
+
+  // ACTUALIZAR POR MEDIO DEL METODO PUT
+ 
+
+  actualizar() {
+
+    if (this.editingId === null) {
+
+      return;
+
+    }
+
+    const paciente = {
+
+      nombre:
+        this.form.nombre,
+
+      apellido:
+        this.form.apellidos,
+
+      eps:
+        this.form.eps,
+
+      sede:
+        this.form.sede,
+
+      fecha_ingreso:
+        this.form.fechaIngreso,
+
+      habitacion:
+        Number(this.form.habitacion),
+
+      id_usuario:
+        null,
+
+      tipo_documento:
+        this.form.tipoIdentificacion,
+
+      numero_documento:
+        this.form.documento,
+
+      fecha_nacimiento:
+        this.form.nacimiento,
+
+      genero:
+        this.form.genero,
+
+      grupo_sanguineo:
+        this.form.grupoSanguineo || null,
+
+      rh:
+        this.form.rh || null,
+
+      cama:
+        Number(this.form.cama),
+
+      estado:
+        this.form.estado === 'active'
+
+    };
+
+    console.log(
+      'Paciente que se actualizará:',
+      paciente
+    );
+
+    // 1. Actualizar paciente
+    this.http.put(
+      `http://127.0.0.1:8000/api/pacientes/${this.editingId}/`,
+      paciente
+    ).subscribe({
+
+      next: (respuesta) => {
+
+        console.log(
+          'Paciente actualizado:',
+          respuesta
+        );
+
+        // 2. Buscar familiar
+        this.http.get<any[]>(
+          'http://127.0.0.1:8000/api/familiar_responsable/'
+        ).subscribe({
+
+          next: (familiares) => {
+
+            const familiar =
+              familiares.find(
+                item =>
+                  item.id_paciente ===
+                  this.editingId
+              );
+
+            console.log(
+              'Familiar encontrado:',
+              familiar
+            );
+
+            // 3. Actualizar familiar
+            if (familiar) {
+
+              const familiarActualizado = {
+
+                nombres:
+                  this.form.familiarNombres,
+
+                apellidos:
+                  this.form.familiarApellidos,
+
+                parentesco:
+                  this.form.parentesco,
+
+                telefono_uno:
+                  this.form.telefono1,
+
+                telefono_dos:
+                  this.form.telefono2 || null,
+
+                direccion:
+                  this.form.direccion || null,
+
+                correo:
+                  this.form.correoElectronico || null,
+
+                municipio:
+                  this.form.municipio || null,
+
+                id_paciente:
+                  this.editingId
+
+              };
+
+              console.log(
+                'Familiar que se actualizará:',
+                familiarActualizado
+              );
+
+              this.http.put(
+                `http://127.0.0.1:8000/api/familiar_responsable/${familiar.id_familiar_responsable}/`,
+                familiarActualizado
+              ).subscribe({
+
+                next: (respuestaFamiliar) => {
+
+                  console.log(
+                    'Familiar actualizado:',
+                    respuestaFamiliar
+                  );
+
+                  Swal.fire({
+                    title:
+                      'Paciente actualizado correctamente',
+                    icon:
+                      'success',
+                    confirmButtonText:
+                      'Aceptar'
+                  });
+
+                  this.listar();
+
+                  this.closeModal();
+
+                },
+
+                error: (error) => {
+
+                  console.error(
+                    'Error al actualizar el familiar responsable:',
+                    error
+                  );
+
+                  console.error(
+                    'Detalle del error:',
+                    error.error
+                  );
+
+                  Swal.fire({
+                    title:
+                      'Paciente actualizado',
+                    text:
+                      'El paciente se actualizó, pero hubo un problema con el familiar responsable.',
+                    icon:
+                      'warning',
+                    confirmButtonText:
+                      'Aceptar'
+                  });
+
+                  this.listar();
+
+                }
+
+              });
+
+            } else {
+
+              console.warn(
+                'No se encontró familiar responsable para el paciente:',
+                this.editingId
+              );
+
+              Swal.fire({
+                title:
+                  'Paciente actualizado',
+                text:
+                  'El paciente se actualizó, pero no se encontró un familiar responsable asociado.',
+                icon:
+                  'warning',
+                confirmButtonText:
+                  'Aceptar'
+              });
+
+              this.listar();
+
+              this.closeModal();
+
+            }
+
+          },
+
+          error: (error) => {
+
+            console.error(
+              'Error al obtener los familiares:',
+              error
+            );
+
+            Swal.fire({
+              title:
+                'Paciente actualizado',
+              text:
+                'El paciente se actualizó, pero no se pudo consultar el familiar responsable.',
+              icon:
+                'warning',
+              confirmButtonText:
+                'Aceptar'
+            });
+
+            this.listar();
+
+          }
+
+        });
+
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Error al actualizar paciente:',
+          error
+        );
+
+        console.error(
+          'Detalle del error:',
+          error.error
+        );
+
+        Swal.fire({
+          title:
+            'Error al actualizar el paciente',
+          icon:
+            'error',
+          confirmButtonText:
+            'Aceptar'
+        });
+
+      }
+
+    });
+
+  }
+
+  
+  // CAMBIAR ESTADO - PUT ESTA FUNCION SE COLOCA PARA PODER HACER LOS CAMBIOS CUANDO SE ACTIVE O DESACTIVE EL PACIENTE
+ 
+
+  cambiarEstado(patient: any) {
+
+    const nuevoEstado =
+      !patient.estado;
+
+    const accion =
+      nuevoEstado
+        ? 'activar'
+        : 'desactivar';
+
+    Swal.fire({
+
+      title:
+        nuevoEstado
+          ? 'Activar paciente'
+          : 'Desactivar paciente',
+
+      text:
+        `¿Deseas ${accion} a ${patient.nombre} ${patient.apellido}?`,
+
+      icon:
+        'question',
+
+      showCancelButton:
+        true,
+
+      confirmButtonText:
+        nuevoEstado
+          ? 'Sí, activar'
+          : 'Sí, desactivar',
+
+      cancelButtonText:
+        'Cancelar',
+
+      confirmButtonColor:
+        '#3B5BDB'
+
+    }).then((resultado) => {
+
+      if (!resultado.isConfirmed) {
+
+        return;
+
+      }
+
+      const pacienteActualizado = {
+
+        ...patient,
+
+        estado:
+          nuevoEstado
+
       };
 
-      console.log('Familiar que se enviará:', familiar);
+      console.log(
+        'Estado que se enviará:',
+        nuevoEstado
+      );
 
-      this.http.post(
-        'http://127.0.0.1:8000/api/familiar_responsable/',
-        familiar
+      this.http.put(
+
+        `http://127.0.0.1:8000/api/pacientes/${patient.id_paciente}/`,
+
+        pacienteActualizado
+
       ).subscribe({
-        next: (respuestaFamiliar) => {
 
-          console.log('Familiar creado:', respuestaFamiliar);
+        next: (respuesta) => {
 
-          // 3. Todo salió bien
+          console.log(
+            'Estado actualizado:',
+            respuesta
+          );
+
+          patient.estado =
+            nuevoEstado;
+
+          this.cdr.detectChanges();
+
           Swal.fire({
-            title: 'Paciente registrado correctamente',
-            icon: 'success',
-            confirmButtonText: 'Aceptar'
+
+            title:
+              'Estado actualizado',
+
+            text:
+              nuevoEstado
+                ? 'El paciente ha sido activado.'
+                : 'El paciente ha sido desactivado.',
+
+            icon:
+              'success',
+
+            confirmButtonText:
+              'Aceptar',
+
+            confirmButtonColor:
+              '#3B5BDB'
+
           });
 
-          this.listar();
-          this.closeModal();
         },
 
         error: (error) => {
+
           console.error(
-            'Error al crear el familiar responsable:',
+            'Error al cambiar el estado del paciente:',
             error
           );
 
@@ -519,328 +1028,112 @@ export class Pacientes {
           );
 
           Swal.fire({
-            title: 'Paciente creado, pero hubo un problema',
-            text: 'No se pudo guardar el familiar responsable.',
-            icon: 'warning',
-            confirmButtonText: 'Aceptar'
+
+            title:
+              'Error',
+
+            text:
+              'No fue posible cambiar el estado del paciente.',
+
+            icon:
+              'error',
+
+            confirmButtonText:
+              'Aceptar',
+
+            confirmButtonColor:
+              '#3B5BDB'
+
           });
 
-          // Actualizamos la tabla porque el paciente sí se creó
-          this.listar();
         }
+
       });
-    },
 
-    error: (error) => {
+    });
 
-      console.error(
-        'Error al crear paciente:',
-        error
-      );
-
-      console.error(
-        'Detalle del error:',
-        error.error
-      );
-
-      Swal.fire({
-        title: 'Error al registrar el paciente',
-        text: 'No se pudo guardar el paciente.',
-        icon: 'error',
-        confirmButtonText: 'Aceptar'
-      });
-    }
-  });
-}
-  // =========================================================
-  // ACTUALIZAR - PUT
-  // =========================================================
-
-  actualizar() {
-
-  if (this.editingId === null) {
-    return;
   }
 
-  // =========================================================
-  // DATOS DEL PACIENTE
-  // =========================================================
+  
+  // ELIMINAR - DELETE
 
-  const paciente = {
-    nombre: this.form.nombre,
-    apellido: this.form.apellidos,
-    eps: this.form.eps,
-    sede: this.form.sede,
-    fecha_ingreso: this.form.fechaIngreso,
-    habitacion: Number(this.form.habitacion),
-    id_usuario: null,
-    tipo_documento: this.form.tipoIdentificacion,
-    numero_documento: this.form.documento,
-    fecha_nacimiento: this.form.nacimiento,
-    genero: this.form.genero,
-    grupo_sanguineo: this.form.grupoSanguineo || null,
-    rh: this.form.rh || null,
-    cama: Number(this.form.cama),
-    estado: this.form.estado === 'active'
-  };
 
-  console.log(
-    'Paciente que se actualizará:',
-    paciente
-  );
+  eliminar(id: number) {
 
-  // =========================================================
-  // 1. ACTUALIZAR PACIENTE
-  // =========================================================
+    Swal.fire({
 
-  this.http.put(
-    `http://127.0.0.1:8000/api/pacientes/${this.editingId}/`,
-    paciente
-  ).subscribe({
+      title:
+        '¿Está seguro de eliminar este paciente?',
 
-    next: (respuesta) => {
+      icon:
+        'warning',
 
-      console.log(
-        'Paciente actualizado:',
-        respuesta
-      );
+      showCancelButton:
+        true,
 
-      // =====================================================
-      // 2. BUSCAR EL FAMILIAR DEL PACIENTE
-      // =====================================================
+      confirmButtonText:
+        'Eliminar',
 
-      this.http.get<any[]>(
-        'http://127.0.0.1:8000/api/familiar_responsable/'
-      ).subscribe({
+      cancelButtonText:
+        'Cancelar'
 
-        next: (familiares) => {
+    }).then((resultado) => {
 
-          const familiar = familiares.find(
-            item =>
-              item.id_paciente === this.editingId
-          );
+      if (resultado.isConfirmed) {
 
-          console.log(
-            'Familiar encontrado:',
-            familiar
-          );
+        this.http.delete(
+          `http://127.0.0.1:8000/api/pacientes/${id}/`
+        ).subscribe({
 
-          // =================================================
-          // 3. ACTUALIZAR FAMILIAR
-          // =================================================
-
-          if (familiar) {
-
-            const familiarActualizado = {
-
-              nombres:
-                this.form.familiarNombres,
-
-              apellidos:
-                this.form.familiarApellidos,
-
-              parentesco:
-                this.form.parentesco,
-
-              telefono_uno:
-                this.form.telefono1,
-
-              telefono_dos:
-                this.form.telefono2 || null,
-
-              direccion:
-                this.form.direccion || null,
-
-              correo:
-                this.form.correoElectronico || null,
-
-              municipio:
-                this.form.municipio || null,
-
-              id_paciente:
-                this.editingId
-
-            };
-
-            console.log(
-              'Familiar que se actualizará:',
-              familiarActualizado
-            );
-
-            this.http.put(
-              `http://127.0.0.1:8000/api/familiar_responsable/${familiar.id_familiar_responsable}/`,
-              familiarActualizado
-            ).subscribe({
-
-              next: (respuestaFamiliar) => {
-
-                console.log(
-                  'Familiar actualizado:',
-                  respuestaFamiliar
-                );
-
-                // =========================================
-                // TODO ACTUALIZADO
-                // =========================================
-
-                Swal.fire({
-                  title: 'Paciente actualizado correctamente',
-                  icon: 'success',
-                  confirmButtonText: 'Aceptar'
-                });
-
-                this.listar();
-                this.closeModal();
-
-              },
-
-              error: (error) => {
-
-                console.error(
-                  'Error al actualizar el familiar responsable:',
-                  error
-                );
-
-                console.error(
-                  'Detalle del error:',
-                  error.error
-                );
-
-                Swal.fire({
-                  title: 'Paciente actualizado',
-                  text: 'El paciente se actualizó, pero hubo un problema con el familiar responsable.',
-                  icon: 'warning',
-                  confirmButtonText: 'Aceptar'
-                });
-
-                this.listar();
-
-              }
-
-            });
-
-          } else {
-
-            // No se encontró familiar para este paciente
-            console.warn(
-              'No se encontró familiar responsable para el paciente:',
-              this.editingId
-            );
+          next: () => {
 
             Swal.fire({
-              title: 'Paciente actualizado',
-              text: 'El paciente se actualizó, pero no se encontró un familiar responsable asociado.',
-              icon: 'warning',
-              confirmButtonText: 'Aceptar'
+
+              title:
+                'Paciente eliminado correctamente',
+
+              icon:
+                'success',
+
+              confirmButtonText:
+                'Aceptar'
+
             });
 
             this.listar();
-            this.closeModal();
+
+          },
+
+          error: (error) => {
+
+            console.error(
+              'Error al eliminar paciente:',
+              error
+            );
+
+            Swal.fire({
+
+              title:
+                'Error al eliminar el paciente',
+
+              icon:
+                'error',
+
+              confirmButtonText:
+                'Aceptar'
+
+            });
 
           }
 
-        },
+        });
 
-        error: (error) => {
+      }
 
-          console.error(
-            'Error al obtener los familiares:',
-            error
-          );
+    });
 
-          Swal.fire({
-            title: 'Paciente actualizado',
-            text: 'El paciente se actualizó, pero no se pudo consultar el familiar responsable.',
-            icon: 'warning',
-            confirmButtonText: 'Aceptar'
-          });
+  }
 
-          this.listar();
-
-        }
-
-      });
-
-    },
-
-    error: (error) => {
-
-      console.error(
-        'Error al actualizar paciente:',
-        error
-      );
-
-      console.error(
-        'Detalle del error:',
-        error.error
-      );
-
-      Swal.fire({
-        title: 'Error al actualizar el paciente',
-        icon: 'error',
-        confirmButtonText: 'Aceptar'
-      });
-
-    }
-
-  });
-
-}
-
- // =========================================================
-// ELIMINAR - DELETE
-// =========================================================
-
-eliminar(id: number) {
-
-  Swal.fire({
-    title: '¿Está seguro de eliminar este paciente?',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Eliminar',
-    cancelButtonText: 'Cancelar'
-  }).then((resultado) => {
-
-    if (resultado.isConfirmed) {
-
-      this.http.delete(
-        `http://127.0.0.1:8000/api/pacientes/${id}/`
-      ).subscribe({
-
-        next: () => {
-
-          Swal.fire({
-            title: 'Paciente eliminado correctamente',
-            icon: 'success',
-            confirmButtonText: 'Aceptar'
-          });
-
-          this.listar();
-
-        },
-
-        error: (error) => {
-
-          console.error(
-            'Error al eliminar paciente:',
-            error
-          );
-
-          Swal.fire({
-            title: 'Error al eliminar el paciente',
-            icon: 'error',
-            confirmButtonText: 'Aceptar'
-          });
-
-        }
-
-      });
-
-    }
-
-  });
-
-}
   // =========================================================
   // SABER SI ESTAMOS EDITANDO
   // =========================================================
@@ -851,9 +1144,9 @@ eliminar(id: number) {
 
   }
 
-  // =========================================================
+  
   // ABRIR MODAL
-  // =========================================================
+ 
 
   openModal(
     mode: 'new' | 'edit',
@@ -875,7 +1168,8 @@ eliminar(id: number) {
       const patient =
         this.patients.find(
           item =>
-            item.id_paciente === patientId
+            item.id_paciente ===
+            patientId
         );
 
       if (patient) {
@@ -890,24 +1184,26 @@ eliminar(id: number) {
 
   }
 
-  // =========================================================
+ 
   // CERRAR MODAL
-  // =========================================================
+  
 
   closeModal() {
 
-    this.modalOpen = false;
+    this.modalOpen =
+      false;
 
-    this.editingId = null;
+    this.editingId =
+      null;
 
     this.form =
       this.formularioVacio();
 
   }
 
-  // =========================================================
+  
   // CERRAR AL HACER CLICK AFUERA
-  // =========================================================
+  
 
   closeOnBackdrop(
     event: MouseEvent
@@ -924,9 +1220,9 @@ eliminar(id: number) {
 
   }
 
-  // =========================================================
+ 
   // GUARDAR DESDE HTML
-  // =========================================================
+ 
 
   savePatient() {
 
@@ -934,9 +1230,9 @@ eliminar(id: number) {
 
   }
 
-  // =========================================================
+ 
   // ELIMINAR DESDE HTML
-  // =========================================================
+  
 
   deletePatient(
     id: number
@@ -946,114 +1242,142 @@ eliminar(id: number) {
 
   }
 
-  // =========================================================
-// CONSULTAR PACIENTE
-// =========================================================
+ 
+  // CONSULTAR PACIENTE
+  
 
-viewPatient(id: number) {
+  viewPatient(id: number) {
 
-  const patient =
-    this.patients.find(
-      item =>
-        item.id_paciente === id
-    );
-
-  if (!patient) {
-    return;
-  }
-
-  // Guardamos primero los datos del paciente
-  this.selectedPatient = {
-    ...patient,
-
-    familiarNombres: 'No registrado',
-    familiarApellidos: 'No registrado',
-    parentesco: 'No registrado',
-    telefono1: 'No registrado',
-    telefono2: 'No registrado',
-    direccion: 'No registrado',
-    correoElectronico: 'No registrado',
-    municipio: 'No registrado'
-  };
-
-  // Buscamos el familiar responsable
-  this.http.get<any[]>(
-    'http://127.0.0.1:8000/api/familiar_responsable/'
-  ).subscribe({
-
-    next: (familiares) => {
-
-      console.log(
-        'Familiares recibidos para consultar:',
-        familiares
+    const patient =
+      this.patients.find(
+        item =>
+          item.id_paciente ===
+          id
       );
 
-      const familiar =
-        familiares.find(
-          item =>
-            item.id_paciente === id
-        );
+    if (!patient) {
 
-      console.log(
-        'Familiar del paciente:',
-        familiar
-      );
-
-      // Si existe familiar, cargamos sus datos
-      if (familiar) {
-
-        this.selectedPatient.familiarNombres =
-          familiar.nombres || 'No registrado';
-
-        this.selectedPatient.familiarApellidos =
-          familiar.apellidos || 'No registrado';
-
-        this.selectedPatient.parentesco =
-          familiar.parentesco || 'No registrado';
-
-        this.selectedPatient.telefono1 =
-          familiar.telefono_uno || 'No registrado';
-
-        this.selectedPatient.telefono2 =
-          familiar.telefono_dos || 'No registrado';
-
-        this.selectedPatient.direccion =
-          familiar.direccion || 'No registrado';
-
-        this.selectedPatient.correoElectronico =
-          familiar.correo || 'No registrado';
-
-        this.selectedPatient.municipio =
-          familiar.municipio || 'No registrado';
-      }
-
-      this.viewModalOpen = true;
-
-      this.cdr.detectChanges();
-
-    },
-
-    error: (error) => {
-
-      console.error(
-        'Error al obtener el familiar responsable:',
-        error
-      );
-
-      // Mostramos igualmente el paciente
-      this.viewModalOpen = true;
-
-      this.cdr.detectChanges();
+      return;
 
     }
 
-  });
+    this.selectedPatient = {
 
-}
+      ...patient,
 
-  // =========================================================
+      familiarNombres:
+        'No registrado',
+
+      familiarApellidos:
+        'No registrado',
+
+      parentesco:
+        'No registrado',
+
+      telefono1:
+        'No registrado',
+
+      telefono2:
+        'No registrado',
+
+      direccion:
+        'No registrado',
+
+      correoElectronico:
+        'No registrado',
+
+      municipio:
+        'No registrado'
+
+    };
+
+    this.http.get<any[]>(
+      'http://127.0.0.1:8000/api/familiar_responsable/'
+    ).subscribe({
+
+      next: (familiares) => {
+
+        console.log(
+          'Familiares recibidos para consultar:',
+          familiares
+        );
+
+        const familiar =
+          familiares.find(
+            item =>
+              item.id_paciente ===
+              id
+          );
+
+        console.log(
+          'Familiar del paciente:',
+          familiar
+        );
+
+        if (familiar) {
+
+          this.selectedPatient.familiarNombres =
+            familiar.nombres ||
+            'No registrado';
+
+          this.selectedPatient.familiarApellidos =
+            familiar.apellidos ||
+            'No registrado';
+
+          this.selectedPatient.parentesco =
+            familiar.parentesco ||
+            'No registrado';
+
+          this.selectedPatient.telefono1 =
+            familiar.telefono_uno ||
+            'No registrado';
+
+          this.selectedPatient.telefono2 =
+            familiar.telefono_dos ||
+            'No registrado';
+
+          this.selectedPatient.direccion =
+            familiar.direccion ||
+            'No registrado';
+
+          this.selectedPatient.correoElectronico =
+            familiar.correo ||
+            'No registrado';
+
+          this.selectedPatient.municipio =
+            familiar.municipio ||
+            'No registrado';
+
+        }
+
+        this.viewModalOpen =
+          true;
+
+        this.cdr.detectChanges();
+
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Error al obtener el familiar responsable:',
+          error
+        );
+
+        this.viewModalOpen =
+          true;
+
+        this.cdr.detectChanges();
+
+      }
+
+    });
+
+  }
+
+ 
   // CERRAR CONSULTA
-  // =========================================================
+  
 
   closeViewModal() {
 
@@ -1065,15 +1389,16 @@ viewPatient(id: number) {
 
   }
 
-  // =========================================================
+  
   // CALCULAR EDAD DEL FORMULARIO
-  // =========================================================
+  
 
   calcularEdad() {
 
     if (!this.form.nacimiento) {
 
-      this.form.edad = null;
+      this.form.edad =
+        null;
 
       return;
 
@@ -1113,9 +1438,9 @@ viewPatient(id: number) {
 
   }
 
-  // =========================================================
+  
   // TÍTULO DEL MODAL
-  // =========================================================
+  
 
   get modalTitle(): string {
 
@@ -1125,9 +1450,9 @@ viewPatient(id: number) {
 
   }
 
-  // =========================================================
+  
   // TEXTO DEL BOTÓN
-  // =========================================================
+  
 
   get saveButtonText(): string {
 

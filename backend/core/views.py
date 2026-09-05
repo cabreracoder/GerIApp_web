@@ -9,6 +9,7 @@ from .models import (
     Medicamentos,
     Roles,
     Usuarios,
+    Documentos,
     Enfermedades,
     Diagnosticos,
     Tratamientos,
@@ -48,6 +49,7 @@ from .serializers import (
     RolesSerializer,
     TratamientoSerializer,
     UsuariosSerializer,
+    DocumentosSerializer,
     RegistroUsuarioSerializer,
     HistoriaClinicasSerializer,
     TratamientoMedicamentoSerializer,
@@ -197,6 +199,9 @@ class UsuariosViewSet(viewsets.ModelViewSet):
     queryset = Usuarios.objects.all()
     serializer_class = UsuariosSerializer
 
+class DocumentosViewSet(viewsets.ModelViewSet):
+    queryset = Documentos.objects.all()
+    serializer_class = DocumentosSerializer
 
 class HistoriaClinicasViewSet(viewsets.ModelViewSet):
     queryset = HistoriaClinicas.objects.all()

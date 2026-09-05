@@ -6,6 +6,7 @@ from .models import (
     Pacientes,
     Roles,
     Usuarios,
+    Documentos,
     HistoriaClinicas,
     Enfermedades,
     Diagnosticos,
@@ -61,6 +62,11 @@ class RolesSerializer(serializers.ModelSerializer):
 class UsuariosSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuarios
+        fields = '__all__'
+
+class DocumentosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Documentos
         fields = '__all__'
 
 

@@ -1,3 +1,4 @@
+from django.core.serializers import python
 from django.db import models
 
 
@@ -244,6 +245,7 @@ class DjangoSession(models.Model):
     class Meta:
         managed = False
         db_table = 'django_session'
+
 
 
 class Enfermedades(models.Model):
@@ -500,6 +502,24 @@ class Usuarios(models.Model):
         db_table = 'usuarios'
 
 
+class Documentos(models.Model):
+    id_documento = models.AutoField(primary_key=True)
+    id_usuario = models.ForeignKey(
+        'Usuarios',
+        models.DO_NOTHING,
+        db_column='id_usuario'
+    )
+    cedula = models.CharField(max_length=500, blank=True, null=True)
+    tarjeta_profesional = models.CharField(max_length=500, blank=True, null=True)
+    antecedentes = models.CharField(max_length=500, blank=True, null=True)
+    hoja_de_vida = models.CharField(max_length=500, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'documentos'
+
+
+
 class SignosVitales(models.Model):
     id_signos_vitales = models.AutoField(primary_key=True)
     id_bitacora = models.ForeignKey(Bitacora, models.DO_NOTHING, db_column='id_bitacora', blank=True, null=True)
@@ -594,3 +614,5 @@ class Turnos(models.Model):
     class Meta:
         managed = False
         db_table = 'turnos'
+
+
