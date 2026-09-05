@@ -208,113 +208,107 @@ export class Cuidadores implements OnInit {
 
   cargarCuidadores(): void {
 
-    this.http
-      .get<ICuidador[]>(this.apiUrl)
-      .subscribe({
+  this.http
+    .get<ICuidador[]>(this.apiUrl)
+    .subscribe({
 
-        next: (data) => {
+      next: (data) => {
 
-          this.cuidadores = data.map((c) => {
+        const cuidadoresFiltrados = data.filter(
+          (usuario) => usuario.id_rol === 5
+        );
 
-            const idReg =
-              c.id_usuario || c.id;
+        this.cuidadores = cuidadoresFiltrados.map((c) => {
 
+          const idReg =
+            c.id_usuario || c.id;
 
-            const nom =
-              c.nombres ||
-              c.nombre ||
-              '';
+          const nom =
+            c.nombres ||
+            c.nombre ||
+            '';
 
+          const ape =
+            c.apellidos ||
+            c.apellido ||
+            '';
 
-            const ape =
-              c.apellidos ||
-              c.apellido ||
-              '';
+          const fullNombre =
+            c.nombreCompleto ||
+            `${nom} ${ape}`.trim() ||
+            nom;
 
+          const docNum =
+            c.numero_documento ||
+            c.numeroDocumento ||
+            c.documento ||
+            '';
 
-            const fullNombre =
-              c.nombreCompleto ||
-              `${nom} ${ape}`.trim() ||
-              nom;
+          const docTipo =
+            c.tipo_documento ||
+            c.tipoDocumento ||
+            'CC';
 
+          const esActivo =
+            c.estado === true ||
+            c.estado === 'activo';
 
-            const docNum =
-              c.numero_documento ||
-              c.numeroDocumento ||
-              c.documento ||
-              '';
+          return {
 
+            ...c,
 
-            const docTipo =
-              c.tipo_documento ||
-              c.tipoDocumento ||
-              'CC';
+            id: idReg,
 
+            nombre: nom,
 
-            const esActivo =
-              c.estado === true ||
-              c.estado === 'activo';
+            apellido: ape,
 
+            nombreCompleto: fullNombre,
 
-            return {
+            tipoDocumento: docTipo,
 
-              ...c,
+            numeroDocumento: docNum,
 
-              id: idReg,
+            documento: docNum,
 
-              nombre: nom,
+            estado: esActivo
+              ? 'activo'
+              : 'inactivo',
 
-              apellido: ape,
+            disponible:
+              c.disponible ??
+              (
+                esActivo &&
+                (!c.pacientes ||
+                  c.pacientes < 3)
+              ),
 
-              nombreCompleto: fullNombre,
+          };
 
-              tipoDocumento: docTipo,
+        });
 
-              numeroDocumento: docNum,
+        this.actualizarMetricas();
 
-              documento: docNum,
+        this.filtrarCuidadores();
 
-              estado: esActivo
-                ? 'activo'
-                : 'inactivo',
+        this.cdr.detectChanges();
 
-              disponible:
-                c.disponible ??
-                (
-                  esActivo &&
-                  (!c.pacientes ||
-                    c.pacientes < 3)
-                ),
+      },
 
-            };
+      error: (err) => {
 
-          });
+        console.error(
+          'Error al obtener cuidadores desde Render:',
+          err
+        );
 
+        this.cdr.detectChanges();
 
-          this.actualizarMetricas();
+      },
 
-          this.filtrarCuidadores();
+    });
 
-          this.cdr.detectChanges();
-
-        },
-
-
-        error: (err) => {
-
-          console.error(
-            'Error al obtener cuidadores desde Render:',
-            err
-          );
-
-          this.cdr.detectChanges();
-
-        },
-
-      });
-
-  }
-
+}
 
   // ==========================================
   // MÉTRICAS

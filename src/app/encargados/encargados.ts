@@ -216,35 +216,6 @@ export class Encargados implements OnInit {
 
   cargarEncargados(): void {
 
-    /*
-     * IMPORTANTE:
-     * Aquí debe ir la llamada a tu EncargadosService.
-     *
-     * No se agregan datos manualmente.
-     *
-     * Ejemplo de estructura:
-     *
-     * this.encargadosService.obtenerEncargados().subscribe({
-     *
-     *   next: (respuesta) => {
-     *
-     *     this.encargados = respuesta;
-     *
-     *     this.encargadoPrincipal = this.encargados.find(
-     *       encargado => encargado.id === ...
-     *     ) ?? null;
-     *
-     *     this.filtrarEncargados();
-     *
-     *   },
-     *
-     *   error: () => {
-     *
-     *     Swal.fire(...);
-     *   }
-     *
-     * });
-     */
 
      this.cargando = true;
 
