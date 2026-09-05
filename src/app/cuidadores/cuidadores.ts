@@ -99,7 +99,6 @@ export class Cuidadores implements OnInit {
   private apiUrl =
     'https://geriapp-web-1.onrender.com/api/usuarios/';
 
-
   // ==========================================
   // DATOS
   // ==========================================
@@ -1071,21 +1070,83 @@ export class Cuidadores implements OnInit {
                   respuestaPerfil
                 );
 
-
                 // ==========================================
-                // 5. FINALIZAR
+                // CREAR REGISTRO DE DOCUMENTOS
                 // ==========================================
 
-                this.guardando = false;
+                const documentos = {
 
-                alert(
-                  'Cuidador y perfil profesional registrados correctamente.'
+                  id_usuario: idUsuario,
+
+                  cedula:
+                    this.formulario.cedulaFile
+                      ? this.formulario.cedulaFile.name
+                      : null,
+
+                  tarjeta_profesional:
+                    this.formulario.tarjetaProfesionalFile
+                      ? this.formulario.tarjetaProfesionalFile.name
+                      : null,
+
+                  antecedentes:
+                    this.formulario.antecedentesFile
+                      ? this.formulario.antecedentesFile.name
+                      : null,
+
+                  hoja_de_vida:
+                    this.formulario.hojaDeVidaFile
+                      ? this.formulario.hojaDeVidaFile.name
+                      : null
+
+                };
+
+                console.log(
+                  'Creando documentos:',
+                  documentos
                 );
 
+                this.http
+                  .post(
+                    'https://geriapp-web-1.onrender.com/api/documentos/',
+                    documentos
+                  )
+                  .subscribe({
 
-                this.cerrarFormulario();
+                    next: (respuestaDocumentos) => {
 
-                this.cargarCuidadores();
+                      console.log(
+                        'Documentos registrados:',
+                        respuestaDocumentos
+                      );
+
+                      this.guardando = false;
+
+                      alert(
+                        'Cuidador registrado correctamente.'
+                      );
+
+                      this.cerrarFormulario();
+
+                      this.cargarCuidadores();
+
+                    },
+
+                    error: (errorDocumentos) => {
+
+                      console.error(
+                        'Error al registrar documentos:',
+                        errorDocumentos
+                      );
+
+                      this.guardando = false;
+
+                      alert(
+                        'El cuidador fue creado, pero ocurrió un error al registrar los documentos.'
+                      );
+
+                    }
+
+                  });
 
               },
 
