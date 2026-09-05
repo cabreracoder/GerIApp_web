@@ -63,38 +63,27 @@
 /* =========================================================
    LOGOTIPO
 ========================================================= */
-
 .layout-logo-container {
-  width: 100%;
-
   display: flex;
-  align-items: center;
   justify-content: center;
-
-  margin-bottom: var(--spacing-lg);
+  align-items: center;
 }
 
 .layout-logo {
-  width: var(--logo-icon-only);
-  height: var(--logo-icon-only);
-
+  width: 64px;
+  height: 64px;
   display: flex;
-  align-items: center;
   justify-content: center;
-
-  background: var(--bg-surface);
-
-  border-radius: var(--radius-md);
-
-  flex-shrink: 0;
+  align-items: center;
+  overflow: hidden;
 }
 
-.layout-logo .material-symbols-outlined {
-  color: var(--color-primary);
-
-  font-size: var(--icon-size-md);
+.layout-logo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
-
 
 /* =========================================================
    MENÚ PRINCIPAL
