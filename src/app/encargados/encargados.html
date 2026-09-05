@@ -23,29 +23,6 @@
 
       <!-- REGISTRO DE CAMBIOS -->
 
-      <button
-        class="boton-secundario"
-        type="button"
-        (click)="abrirRegistroCambios()"
-        title="Ver registro de cambios"
-      >
-
-        <span class="material-symbols-outlined">
-          history
-        </span>
-
-        Registro de cambios
-
-        <span
-          class="contador-encabezado"
-          *ngIf="registrosCambios.length > 0"
-        >
-          {{ registrosCambios.length }}
-        </span>
-
-      </button>
-
-
       <!-- NUEVO ENCARGADO -->
 
       <button
@@ -87,7 +64,7 @@
       (keyup.enter)="filtrarEncargados()"
     />
 
-    <span
+        <span
       class="contador-resultados"
       *ngIf="busqueda"
     >
@@ -96,6 +73,16 @@
     </span>
 
   </section>
+
+
+  <!-- =====================================================
+       CONTADOR DE ENCARGADOS
+  ====================================================== -->
+
+  <p class="texto-contador-registros">
+    Encargados registrados: <strong>{{ encargados.length }}</strong>
+  </p>
+
 
 
   <!-- =====================================================
@@ -220,27 +207,6 @@
        OTROS ENCARGADOS
   ====================================================== -->
 
-  <section class="encabezado-seccion">
-
-    <div class="titulo-seccion">
-
-      <span class="material-symbols-outlined">
-        group
-      </span>
-
-      <span>
-        Otros Encargados
-      </span>
-
-    </div>
-
-    <span class="contador-seccion">
-
-      {{ encargadosFiltrados.length }}
-
-    </span>
-
-  </section>
 
 
   <!-- =====================================================
@@ -377,7 +343,7 @@
 
               </div>
 
-            </td>
+                        </td>
 
             <!-- DOCUMENTO -->
 
@@ -422,17 +388,22 @@
 
             <td>
 
-              <span
-                class="insignia-estado"
+              <button
+                type="button"
+                class="interruptor-estado"
                 [class.activo]="encargado.estado === 'Activo'"
-                [class.inactivo]="encargado.estado === 'Inactivo'"
+                [attr.aria-pressed]="encargado.estado === 'Activo'"
+                [title]="
+                  encargado.estado === 'Activo'
+                    ? 'Clic para desactivar'
+                    : 'Clic para activar'
+                "
+                (click)="cambiarEstado(encargado)"
               >
 
-                <span class="punto-estado"></span>
+                <span class="interruptor-perilla"></span>
 
-                {{ encargado.estado }}
-
-              </span>
+              </button>
 
             </td>
 
@@ -477,30 +448,7 @@
                 </button>
 
 
-                <!-- CAMBIAR ESTADO -->
-
-                <button
-                  class="boton-accion advertencia"
-                  type="button"
-                  [title]="
-                    encargado.estado === 'Activo'
-                      ? 'Desactivar encargado'
-                      : 'Activar encargado'
-                  "
-                  [attr.aria-label]="
-                    encargado.estado === 'Activo'
-                      ? 'Desactivar encargado'
-                      : 'Activar encargado'
-                  "
-                  (click)="cambiarEstado(encargado)"
-                >
-
-                  <span class="material-symbols-outlined">
-                    toggle_on
-                  </span>
-
-                </button>
-
+            
 
                 <!-- ELIMINAR -->
 
@@ -1618,273 +1566,4 @@
 </div>
 
 
-<!-- =====================================================
-     MODAL REGISTRO DE CAMBIOS
-====================================================== -->
-
-<div
-  class="modal-overlay registro-overlay"
-  [class.open]="modalRegistroCambiosAbierto"
-  (click)="cerrarRegistroCambiosPorFondo($event)"
->
-
-  <div
-    class="modal-encargado modal-registro-cambios"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="titulo-registro-cambios"
-  >
-
-    <!-- ENCABEZADO -->
-
-    <div class="encabezado-modal">
-
-      <div class="icono-encabezado-modal">
-
-        <span class="material-symbols-outlined">
-          history
-        </span>
-
-      </div>
-
-
-      <div class="contenido-encabezado-modal">
-
-        <div
-          id="titulo-registro-cambios"
-          class="titulo-encabezado-modal"
-        >
-
-          Registro de cambios
-        </div> 
-
-
-        <div class="subtitulo-encabezado-modal">
-
-          Historial de acciones realizadas sobre los encargados
-
-        </div>
-
-      </div>
-
-
-      <button
-        class="boton-cerrar-modal"
-        type="button"
-        (click)="cerrarRegistroCambios()"
-        aria-label="Cerrar registro de cambios"
-      >
-
-        <span class="material-symbols-outlined">
-          close
-        </span>
-
-      </button>
-
-    </div>
-
-
-    <!-- CUERPO -->
-
-    <div class="cuerpo-modal registro-cuerpo">
-
-      <!-- RESUMEN -->
-
-      <div class="resumen-registro">
-
-        <div class="icono-resumen-registro">
-
-          <span class="material-symbols-outlined">
-            manage_history
-          </span>
-
-        </div>
-
-
-        <div class="informacion-resumen-registro">
-
-          <div class="titulo-resumen-registro">
-
-            Historial de modificaciones
-
-          </div>
-
-
-          <div class="subtitulo-resumen-registro">
-
-            {{ registrosCambios.length }}
-
-            registro{{ registrosCambios.length === 1 ? '' : 's' }}
-
-            realizado{{ registrosCambios.length === 1 ? '' : 's' }}
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <!-- SIN REGISTROS -->
-
-      <div
-        class="registro-vacio"
-        *ngIf="registrosCambios.length === 0"
-      >
-
-        <span class="material-symbols-outlined">
-          history_toggle_off
-        </span>
-
-
-        <div class="titulo-registro-vacio">
-
-          No hay registros de cambios
-
-        </div>
-
-
-        <div class="subtitulo-registro-vacio">
-
-          Las acciones realizadas sobre los encargados aparecerán aquí automáticamente.
-
-        </div>
-
-      </div>
-
-
-      <!-- LISTA DE REGISTROS -->
-
-      <div
-        class="lista-registros"
-        *ngIf="registrosCambios.length > 0"
-      >
-
-        <div
-          class="elemento-registro"
-          *ngFor="let registro of registrosCambios"
-        >
-
-          <div
-            class="icono-registro"
-            [class.creacion]="registro.accion === 'Creación'"
-            [class.actualizacion]="registro.accion === 'Actualización'"
-            [class.activacion]="registro.accion === 'Activación'"
-            [class.desactivacion]="registro.accion === 'Desactivación'"
-            [class.eliminacion]="registro.accion === 'Eliminación'"
-          >
-
-            <span class="material-symbols-outlined">
-
-              {{
-                registro.accion === 'Creación'
-                  ? 'person_add'
-                  : registro.accion === 'Actualización'
-                    ? 'edit'
-                    : registro.accion === 'Activación'
-                      ? 'check_circle'
-                      : registro.accion === 'Desactivación'
-                        ? 'block'
-                        : 'delete'
-              }}
-
-            </span>
-
-          </div>
-
-
-          <div class="contenido-registro">
-
-            <div class="parte-superior-registro">
-
-              <span
-                class="accion-registro"
-                [class.creacion]="registro.accion === 'Creación'"
-                [class.actualizacion]="registro.accion === 'Actualización'"
-                [class.activacion]="registro.accion === 'Activación'"
-                [class.desactivacion]="registro.accion === 'Desactivación'"
-                [class.eliminacion]="registro.accion === 'Eliminación'"
-              >
-
-                {{ registro.accion }}
-
-              </span>
-
-
-              <span class="fecha-registro">
-
-                <span class="material-symbols-outlined">
-                  schedule
-                </span>
-
-                {{ registro.fecha }}
-
-              </span>
-
-            </div>
-
-
-            <div class="encargado-registro">
-
-              <span class="material-symbols-outlined">
-                person
-              </span>
-
-              <strong>
-
-                {{ registro.encargado }}
-
-              </strong>
-
-            </div>
-
-
-            <div class="usuario-registro">
-
-              <span class="material-symbols-outlined">
-                account_circle
-              </span>
-
-              Realizado por:
-
-              <strong>
-
-                {{ registro.usuario }}
-
-              </strong>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <!-- PIE -->
-
-    <div class="pie-modal">
-
-      <button
-        class="boton-cancelar"
-        type="button"
-        (click)="cerrarRegistroCambios()"
-      >
-
-        <span class="material-symbols-outlined">
-          close
-        </span>
-
-        Cerrar
-
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
 

@@ -887,21 +887,20 @@ export class Encargados implements OnInit {
 
   cambiarEstado(encargado: Encargado): void {
 
-    const nuevoEstado =
-      encargado.estado === 'Activo'
-        ? 'Inactivo'
-        : 'Activo';
+    const nuevoEstadoBooleano = encargado.estado !== 'Activo';
+
+    const nuevoEstadoTexto = nuevoEstadoBooleano ? 'Activo' : 'Inactivo';
 
 
     Swal.fire({
 
       title:
-        nuevoEstado === 'Activo'
+        nuevoEstadoTexto === 'Activo'
           ? '¿Activar encargado?'
           : '¿Desactivar encargado?',
 
       text:
-        nuevoEstado === 'Activo'
+        nuevoEstadoTexto === 'Activo'
           ? 'El encargado volverá a estar activo.'
           : 'El encargado quedará marcado como inactivo.',
 
@@ -910,7 +909,7 @@ export class Encargados implements OnInit {
       showCancelButton: true,
 
       confirmButtonText:
-        nuevoEstado === 'Activo'
+        nuevoEstadoTexto === 'Activo'
           ? 'Sí, activar'
           : 'Sí, desactivar',
 
@@ -926,20 +925,38 @@ export class Encargados implements OnInit {
         return;
       }
 
+      this.http
+        .patch(`${this.apiUrl}${encargado.id}/`, { estado: nuevoEstadoBooleano })
+        .subscribe({
 
-      /*
-       * Este cambio debe realizarse mediante PATCH/PUT
-       * en la API de Django.
-       */
+          next: () => {
 
-      Swal.fire({
-        title: 'Servicio pendiente',
-        text:
-          'El cambio de estado debe conectarse al endpoint de encargados.',
-        icon: 'info',
-        confirmButtonText: 'Aceptar',
-        confirmButtonColor: '#3B5BDB',
-      });
+            Swal.fire({
+              title:
+                nuevoEstadoTexto === 'Activo'
+                  ? 'Encargado activado'
+                  : 'Encargado desactivado',
+              icon: 'success',
+              confirmButtonText: 'Aceptar',
+              confirmButtonColor: '#3B5BDB',
+            });
+
+            this.cargarEncargados();
+          },
+
+          error: (err: any) => {
+
+            console.error(err);
+
+            Swal.fire({
+              title: 'Error al actualizar estado',
+              text: 'No se pudo actualizar el estado del encargado.',
+              icon: 'error',
+              confirmButtonText: 'Aceptar',
+              confirmButtonColor: '#3B5BDB',
+            });
+          },
+        });
     });
   }
 

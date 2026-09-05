@@ -163,6 +163,17 @@
   font-weight: var(--font-weight-medium);
 }
 
+.texto-contador-registros {
+  margin: 0 0 var(--spacing-sm);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.texto-contador-registros strong {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-bold);
+}
+
 
 /* =====================================================
    ENCARGADO PRINCIPAL
@@ -532,6 +543,41 @@
   height: 7px;
   border-radius: var(--radius-full);
   background: currentColor;
+}
+
+.interruptor-estado {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 44px;
+  height: 24px;
+  padding: 2px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: var(--bg-neutral-light);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.interruptor-estado.activo {
+  background: #22c55e;
+}
+
+.interruptor-estado:hover {
+  opacity: 0.85;
+}
+
+.interruptor-perilla {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease;
+}
+
+.interruptor-estado.activo .interruptor-perilla {
+  transform: translateX(20px);
 }
 
 
