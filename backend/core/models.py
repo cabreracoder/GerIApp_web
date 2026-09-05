@@ -614,3 +614,5 @@ class Turnos(models.Model):
     class Meta:
         managed = False
         db_table = 'turnos'
+
+
