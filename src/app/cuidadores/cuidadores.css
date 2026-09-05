@@ -158,20 +158,31 @@ table {
 }
 
 thead {
-  background: var(--bg-neutral-light);
+  background: var(--color-primary);
 }
 
 th {
   padding: var(--spacing-sm) var(--spacing-md);
-  color: var(--text-secondary);
+  background: var(--color-primary);
+  color: var(--bg-surface);
   font-family: var(--font-family-base);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
   text-align: left;
   text-transform: uppercase;
-  letter-spacing: 0.4px;
-  border-bottom: 1px solid var(--border-color);
+  letter-spacing: 0.03em;
+  border-bottom: none;
   white-space: nowrap;
+}
+
+thead th:first-child {
+  border-top-left-radius: var(--radius-full);
+  border-bottom-left-radius: var(--radius-full);
+}
+
+thead th:last-child {
+  border-top-right-radius: var(--radius-full);
+  border-bottom-right-radius: var(--radius-full);
 }
 
 td {
@@ -202,16 +213,17 @@ tbody tr:hover {
 }
 
 .avatar-cuidador {
-  width: 42px;
-  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  overflow: hidden;
   border-radius: var(--radius-full);
-  background: var(--color-accent-beige);
-  color: #7d5a4f;
-  font-size: var(--font-size-sm);
+  background: var(--bg-neutral-light);
+  color: var(--color-primary);
+  font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
 }
 
@@ -237,17 +249,33 @@ tbody tr:hover {
 /* =========================================================
    ESTADO
 ========================================================= */
-
 .badge-estado {
   display: inline-flex;
   align-items: center;
-  padding: 6px 9px;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-2xs) var(--spacing-sm);
   border-radius: var(--radius-full);
-  background: var(--color-accent-beige);
-  color: #7d5a4f;
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
   white-space: nowrap;
+}
+
+.estado-activo {
+  background: rgba(34, 197, 94, 0.1);
+  color: #15803d;
+}
+
+.estado-inactivo {
+  background: var(--bg-neutral-light);
+  color: var(--text-secondary);
+}
+
+.punto-estado {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  background: currentColor;
+  flex-shrink: 0;
 }
 
 /* =========================================================
@@ -619,15 +647,20 @@ tbody tr:hover {
 ========================================================= */
 
 .avatar-detalle {
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+
   border-radius: var(--radius-full);
-  color: #7d5a4f;
-  font-size: var(--font-size-lg);
+
+  background: var(--bg-neutral-light);
+  color: var(--color-primary);
+
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
 }
 

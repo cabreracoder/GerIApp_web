@@ -36,15 +36,15 @@
 
   <!-- CONTADOR -->
   <div class="mb-5">
-    <p class="text-sm text-[#6C757D]">
 
+    <p class="text-sm text-[#6C757D]">
       Cuidadores registrados:
 
       <span class="font-bold text-[#212529]">
         {{ cuidadoresFiltrados.length }}
       </span>
-
     </p>
+
   </div>
 
 
@@ -58,40 +58,27 @@
 
         <tr class="bg-[#3B5BDB]">
 
-          <!-- CUIDADOR -->
           <th (click)="ordenarCuidadores()"
             class="px-5 py-4 text-left text-sm font-semibold !text-white rounded-l-lg cursor-pointer">
-
             CUIDADOR
-
           </th>
 
-
-          <!-- DOCUMENTO -->
           <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
             DOCUMENTO
           </th>
 
-
-          <!-- TURNO -->
           <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
             TURNO
           </th>
 
-
-          <!-- PACIENTES -->
           <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
             PACIENTES
           </th>
 
-
-          <!-- ESTADO -->
           <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
             ESTADO
           </th>
 
-
-          <!-- ACCIONES -->
           <th class="px-5 py-4 text-center text-sm font-semibold !text-white rounded-r-lg">
             ACCIONES
           </th>
@@ -101,7 +88,7 @@
       </thead>
 
 
-      <!-- CUERPO DE LA TABLA -->
+      <!-- CUERPO -->
       <tbody>
 
         <!-- SIN RESULTADOS -->
@@ -126,15 +113,15 @@
         </tr>
 
 
-
         <!-- REGISTROS -->
         <tr *ngFor="let caregiver of cuidadoresFiltrados" class="bg-[#F4F7FF]">
+
+          <!-- CUIDADOR -->
           <td class="px-5 py-4 rounded-l-lg">
 
             <div class="flex items-center gap-3">
 
-              <div class="avatar-cuidador" [style.background]="obtenerColorAvatar(caregiver.id)">
-
+              <div class="avatar-cuidador">
                 {{
                 obtenerIniciales(
                 caregiver.nombreCompleto || caregiver.nombre
@@ -159,11 +146,8 @@
 
                 </strong>
 
-
                 <span class="text-xs text-[#6C757D]">
-
                   {{ caregiver.correo }}
-
                 </span>
 
               </div>
@@ -211,13 +195,12 @@
           <!-- ESTADO -->
           <td class="px-5 py-4">
 
-            <span class="badge-estado">
+            <span class="badge-estado" [class.estado-activo]="caregiver.estado === 'activo'"
+              [class.estado-inactivo]="caregiver.estado !== 'activo'">
 
-              {{
-              caregiver.estado === 'activo'
-              ? 'Activo'
-              : 'Inactivo'
-              }}
+              <span class="punto-estado"></span>
+
+              {{ caregiver.estado === 'activo' ? 'Activo' : 'Inactivo' }}
 
             </span>
 
@@ -240,8 +223,7 @@
 
 
               <!-- EDITAR -->
-              <button type="button" class="boton-icono" title="Editar cuidador"
-                (click)="abrirFormulario('editar', caregiver.id)">
+              <button type="button" class="boton-icono" title="Editar cuidador" (click)="confirmarEdicion(caregiver)">
 
                 <span class="material-symbols-outlined">
                   edit
@@ -251,7 +233,11 @@
 
 
               <!-- CAMBIAR ESTADO -->
-              <button type="button" class="boton-icono" title="Cambiar estado">
+              <button type="button" class="boton-icono" [title]="
+                  caregiver.estado === 'activo'
+                    ? 'Desactivar cuidador'
+                    : 'Activar cuidador'
+                " (click)="cambiarEstado(caregiver)">
 
                 <span class="material-symbols-outlined">
                   toggle_on
@@ -296,12 +282,15 @@
       <div class="encabezado-modal">
 
         <h3>
+
           {{
           modoFormulario === 'crear'
           ? 'Nuevo Cuidador'
           : 'Editar Cuidador'
           }}
+
         </h3>
+
 
         <button class="boton-cerrar" type="button" (click)="cerrarFormulario()">
 
@@ -314,7 +303,7 @@
       </div>
 
 
-      <!-- CUERPO -->
+      <!-- FORMULARIO -->
       <form class="cuerpo-modal" (ngSubmit)="guardarCuidador()">
 
 
@@ -325,6 +314,7 @@
         <div class="seccion-formulario">
           Información personal
         </div>
+
 
         <div class="rejilla-formulario">
 
@@ -463,6 +453,7 @@
           Información profesional
         </div>
 
+
         <div class="rejilla-formulario">
 
 
@@ -524,6 +515,7 @@
           Información laboral
         </div>
 
+
         <div class="rejilla-formulario">
 
 
@@ -567,14 +559,8 @@
         <!-- DOCUMENTOS -->
         <!-- ============================= -->
 
-        <div class="seccion-formulario documentos-seccion">
-
-          <div class="titulo-seccion-formulario">
-
-            Documentos
-
-          </div>
-
+        <div class="seccion-formulario">
+          Documentos
         </div>
 
 
@@ -592,15 +578,19 @@
               Cédula
             </span>
 
-            <span class="estado-documento" [class.con-archivo]="formulario.cedulaFile">
+            <span class="estado-documento" [class.con-archivo]="
+                formulario.cedulaFile ||
+                formulario.archivos?.cedula
+              ">
 
               {{
-              formulario.cedulaFile
-              ? formulario.cedulaFile.name
-              : 'Seleccionar archivo'
+              formulario.cedulaFile?.name ||
+              formulario.archivos?.cedula ||
+              'Seleccionar archivo'
               }}
 
             </span>
+
 
             <span class="boton-examinar">
 
@@ -611,6 +601,7 @@
               Examinar
 
             </span>
+
 
             <input type="file" hidden accept=".pdf,.png,.jpg,.jpeg" (change)="onFileSelected($event, 'cedula')">
 
@@ -628,15 +619,19 @@
               Tarjeta profesional
             </span>
 
-            <span class="estado-documento" [class.con-archivo]="formulario.tarjetaProfesionalFile">
+            <span class="estado-documento" [class.con-archivo]="
+                formulario.tarjetaProfesionalFile ||
+                formulario.archivos?.tarjeta_profesional
+              ">
 
               {{
-              formulario.tarjetaProfesionalFile
-              ? formulario.tarjetaProfesionalFile.name
-              : 'Seleccionar archivo'
+              formulario.tarjetaProfesionalFile?.name ||
+              formulario.archivos?.tarjeta_profesional ||
+              'Seleccionar archivo'
               }}
 
             </span>
+
 
             <span class="boton-examinar">
 
@@ -647,6 +642,7 @@
               Examinar
 
             </span>
+
 
             <input type="file" hidden accept=".pdf,.png,.jpg,.jpeg"
               (change)="onFileSelected($event, 'tarjetaProfesional')">
@@ -665,15 +661,19 @@
               Antecedentes
             </span>
 
-            <span class="estado-documento" [class.con-archivo]="formulario.antecedentesFile">
+            <span class="estado-documento" [class.con-archivo]="
+                formulario.antecedentesFile ||
+                formulario.archivos?.antecedentes
+              ">
 
               {{
-              formulario.antecedentesFile
-              ? formulario.antecedentesFile.name
-              : 'Seleccionar archivo'
+              formulario.antecedentesFile?.name ||
+              formulario.archivos?.antecedentes ||
+              'Seleccionar archivo'
               }}
 
             </span>
+
 
             <span class="boton-examinar">
 
@@ -684,6 +684,7 @@
               Examinar
 
             </span>
+
 
             <input type="file" hidden accept=".pdf,.png,.jpg,.jpeg" (change)="onFileSelected($event, 'antecedentes')">
 
@@ -701,15 +702,19 @@
               Hoja de vida
             </span>
 
-            <span class="estado-documento" [class.con-archivo]="formulario.hojaDeVidaFile">
+            <span class="estado-documento" [class.con-archivo]="
+                formulario.hojaDeVidaFile ||
+                formulario.archivos?.hoja_de_vida
+              ">
 
               {{
-              formulario.hojaDeVidaFile
-              ? formulario.hojaDeVidaFile.name
-              : 'Seleccionar archivo'
+              formulario.hojaDeVidaFile?.name ||
+              formulario.archivos?.hoja_de_vida ||
+              'Seleccionar archivo'
               }}
 
             </span>
+
 
             <span class="boton-examinar">
 
@@ -720,6 +725,7 @@
               Examinar
 
             </span>
+
 
             <input type="file" hidden accept=".pdf,.doc,.docx" (change)="onFileSelected($event, 'hojaDeVida')">
 
@@ -739,6 +745,7 @@
             Cancelar
 
           </button>
+
 
           <button type="submit" class="boton-guardar" [disabled]="guardando">
 
@@ -765,8 +772,7 @@
 
   <div class="fondo-modal" [class.abierto]="detalleAbierto" (click)="cerrarDetallePorOverlay($event)">
 
-    <div *ngIf="cuidadorSeleccionado" class="ventana-modal max-w-2xl w-full" (click)="$event.stopPropagation()">
-
+    <div *ngIf="cuidadorSeleccionado" class="ventana-modal" (click)="$event.stopPropagation()">
 
       <!-- ENCABEZADO -->
       <div class="encabezado-modal">
@@ -776,11 +782,9 @@
         </h3>
 
         <button class="boton-cerrar" type="button" (click)="cerrarDetalle()">
-
           <span class="material-symbols-outlined">
             close
           </span>
-
         </button>
 
       </div>
@@ -790,10 +794,10 @@
       <div class="cuerpo-modal">
 
 
-        <!-- DATOS PRINCIPALES -->
+        <!-- PERFIL -->
         <div class="flex items-center gap-4 mb-6">
 
-          <div class="avatar-detalle" [style.background]="obtenerColorAvatar(cuidadorSeleccionado.id)">
+          <div class="avatar-detalle">
 
             {{
             obtenerIniciales(
@@ -807,19 +811,21 @@
 
           <div>
 
-            <h2 class="text-xl font-bold">
+            <h2 class="text-xl font-bold text-[#212529]">
 
               {{
               cuidadorSeleccionado.nombreCompleto ||
-              cuidadorSeleccionado.nombre
+              (
+              cuidadorSeleccionado.nombre +
+              ' ' +
+              (cuidadorSeleccionado.apellido || '')
+              )
               }}
 
             </h2>
 
             <p class="text-[#6C757D]">
-
               {{ cuidadorSeleccionado.correo }}
-
             </p>
 
           </div>
@@ -827,33 +833,71 @@
         </div>
 
 
-        <!-- INFORMACIÓN -->
+        <!-- ============================= -->
+        <!-- INFORMACIÓN PERSONAL -->
+        <!-- ============================= -->
+
+        <div class="seccion-formulario">
+          Información personal
+        </div>
+
+
         <div class="rejilla-formulario">
 
 
+          <!-- NOMBRES -->
           <div class="campo-formulario">
 
             <label class="etiqueta-formulario">
-              Documento
+              Nombres
             </label>
 
-            <input class="campo-entrada" [value]="
-                (
-                  cuidadorSeleccionado.tipoDocumento
-                    ? cuidadorSeleccionado.tipoDocumento + ' - '
-                    : ''
-                )
-                +
-                (
-                  cuidadorSeleccionado.numeroDocumento ||
-                  cuidadorSeleccionado.documento ||
-                  ''
-                )
-              " readonly>
+            <input class="campo-entrada" [value]="cuidadorSeleccionado.nombre || ''" readonly>
 
           </div>
 
 
+          <!-- APELLIDOS -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Apellidos
+            </label>
+
+            <input class="campo-entrada" [value]="cuidadorSeleccionado.apellido || ''" readonly>
+
+          </div>
+
+
+          <!-- TIPO DOCUMENTO -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Tipo de documento
+            </label>
+
+            <input class="campo-entrada" [value]="cuidadorSeleccionado.tipoDocumento || ''" readonly>
+
+          </div>
+
+
+          <!-- NÚMERO DOCUMENTO -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Número de documento
+            </label>
+
+            <input class="campo-entrada" [value]="
+              cuidadorSeleccionado.numeroDocumento ||
+              cuidadorSeleccionado.documento ||
+              ''
+            " readonly>
+
+          </div>
+
+
+          <!-- TELÉFONO -->
           <div class="campo-formulario">
 
             <label class="etiqueta-formulario">
@@ -865,10 +909,61 @@
           </div>
 
 
+          <!-- CORREO -->
           <div class="campo-formulario">
 
             <label class="etiqueta-formulario">
-              Especialidad
+              Correo electrónico
+            </label>
+
+            <input class="campo-entrada" [value]="cuidadorSeleccionado.correo || ''" readonly>
+
+          </div>
+
+
+          <!-- FECHA NACIMIENTO -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Fecha de nacimiento
+            </label>
+
+            <input type="date" class="campo-entrada" [value]="cuidadorSeleccionado.fechaNacimiento || ''" readonly>
+
+          </div>
+
+
+          <!-- EDAD -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Edad
+            </label>
+
+            <input type="number" class="campo-entrada" [value]="cuidadorSeleccionado.edad ?? ''" readonly>
+
+          </div>
+
+        </div>
+
+
+        <!-- ============================= -->
+        <!-- INFORMACIÓN PROFESIONAL -->
+        <!-- ============================= -->
+
+        <div class="seccion-formulario">
+          Información profesional
+        </div>
+
+
+        <div class="rejilla-formulario">
+
+
+          <!-- ESPECIALIDAD -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Especialidad / Rol
             </label>
 
             <input class="campo-entrada" [value]="cuidadorSeleccionado.especialidad || ''" readonly>
@@ -876,17 +971,31 @@
           </div>
 
 
+          <!-- LICENCIA -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Licencia / tarjeta profesional
+            </label>
+
+            <input class="campo-entrada" [value]="cuidadorSeleccionado.licencia || ''" readonly>
+
+          </div>
+
+
+          <!-- EXPERIENCIA -->
           <div class="campo-formulario">
 
             <label class="etiqueta-formulario">
               Experiencia
             </label>
 
-            <input class="campo-entrada" [value]="cuidadorSeleccionado.experiencia ?? ''" readonly>
+            <input type="number" class="campo-entrada" [value]="cuidadorSeleccionado.experiencia ?? ''" readonly>
 
           </div>
 
 
+          <!-- INSTITUCIÓN -->
           <div class="campo-formulario">
 
             <label class="etiqueta-formulario">
@@ -897,7 +1006,22 @@
 
           </div>
 
+        </div>
 
+
+        <!-- ============================= -->
+        <!-- INFORMACIÓN LABORAL -->
+        <!-- ============================= -->
+
+        <div class="seccion-formulario">
+          Información laboral
+        </div>
+
+
+        <div class="rejilla-formulario">
+
+
+          <!-- TURNO -->
           <div class="campo-formulario">
 
             <label class="etiqueta-formulario">
@@ -909,6 +1033,19 @@
           </div>
 
 
+          <!-- PACIENTES -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Pacientes asignados
+            </label>
+
+            <input type="number" class="campo-entrada" [value]="cuidadorSeleccionado.pacientes ?? 0" readonly>
+
+          </div>
+
+
+          <!-- ESTADO -->
           <div class="campo-formulario">
 
             <label class="etiqueta-formulario">
@@ -916,21 +1053,143 @@
             </label>
 
             <input class="campo-entrada" [value]="
-                cuidadorSeleccionado.estado === 'activo'
-                  ? 'Activo'
-                  : 'Inactivo'
-              " readonly>
+              cuidadorSeleccionado.estado === 'activo'
+                ? 'Activo'
+                : 'Inactivo'
+            " readonly>
 
           </div>
 
 
+          <!-- FECHA INGRESO -->
           <div class="campo-formulario">
 
             <label class="etiqueta-formulario">
               Fecha de ingreso
             </label>
 
-            <input class="campo-entrada" [value]="cuidadorSeleccionado.fechaIngreso || ''" readonly>
+            <input type="date" class="campo-entrada" [value]="cuidadorSeleccionado.fechaIngreso || ''" readonly>
+
+          </div>
+
+
+          <!-- DÍAS DISPONIBLES -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Días disponibles
+            </label>
+
+            <input class="campo-entrada" [value]="
+              cuidadorSeleccionado.diasDisponibles?.join(', ') ||
+              'Sin especificar'
+            " readonly>
+
+          </div>
+
+        </div>
+
+
+        <!-- ============================= -->
+        <!-- DOCUMENTOS -->
+        <!-- ============================= -->
+
+        <div class="seccion-formulario mt-6">
+          Documentos
+        </div>
+
+
+        <div class="grid-documentos">
+
+
+          <!-- CÉDULA -->
+          <div class="tarjeta-documento">
+
+            <span class="material-symbols-outlined">
+              badge
+            </span>
+
+            <span class="nombre-documento">
+              Cédula
+            </span>
+
+            <span class="estado-documento" [class.con-archivo]="
+              cuidadorSeleccionado.archivos?.cedula
+            ">
+              {{
+              cuidadorSeleccionado.archivos?.cedula ||
+              'No registrado'
+              }}
+            </span>
+
+          </div>
+
+
+          <!-- TARJETA PROFESIONAL -->
+          <div class="tarjeta-documento">
+
+            <span class="material-symbols-outlined">
+              card_membership
+            </span>
+
+            <span class="nombre-documento">
+              Tarjeta profesional
+            </span>
+
+            <span class="estado-documento" [class.con-archivo]="
+              cuidadorSeleccionado.archivos?.tarjeta_profesional
+            ">
+              {{
+              cuidadorSeleccionado.archivos?.tarjeta_profesional ||
+              'No registrado'
+              }}
+            </span>
+
+          </div>
+
+
+          <!-- ANTECEDENTES -->
+          <div class="tarjeta-documento">
+
+            <span class="material-symbols-outlined">
+              verified_user
+            </span>
+
+            <span class="nombre-documento">
+              Antecedentes
+            </span>
+
+            <span class="estado-documento" [class.con-archivo]="
+              cuidadorSeleccionado.archivos?.antecedentes
+            ">
+              {{
+              cuidadorSeleccionado.archivos?.antecedentes ||
+              'No registrado'
+              }}
+            </span>
+
+          </div>
+
+
+          <!-- HOJA DE VIDA -->
+          <div class="tarjeta-documento">
+
+            <span class="material-symbols-outlined">
+              description
+            </span>
+
+            <span class="nombre-documento">
+              Hoja de vida
+            </span>
+
+            <span class="estado-documento" [class.con-archivo]="
+              cuidadorSeleccionado.archivos?.hoja_de_vida
+            ">
+              {{
+              cuidadorSeleccionado.archivos?.hoja_de_vida ||
+              'No registrado'
+              }}
+            </span>
 
           </div>
 
@@ -942,7 +1201,6 @@
 
   </div>
 
-
   <!-- ===================================================== -->
   <!-- MODAL CONFIRMACIÓN ELIMINAR -->
   <!-- ===================================================== -->
@@ -951,11 +1209,14 @@
 
     <div class="ventana-modal max-w-md w-full" (click)="$event.stopPropagation()">
 
+
+      <!-- ENCABEZADO -->
       <div class="encabezado-modal">
 
         <h3>
           Confirmar eliminación
         </h3>
+
 
         <button class="boton-cerrar" type="button" (click)="cerrarConfirmacion()">
 
@@ -968,6 +1229,7 @@
       </div>
 
 
+      <!-- CUERPO -->
       <div class="cuerpo-modal">
 
         <p class="text-[#495057]">
@@ -977,6 +1239,7 @@
       </div>
 
 
+      <!-- PIE -->
       <div class="pie-modal">
 
         <button type="button" class="boton-cancelar" (click)="cerrarConfirmacion()">
@@ -984,6 +1247,7 @@
           Cancelar
 
         </button>
+
 
         <button type="button" class="boton-guardar" (click)="confirmarEliminacion()">
 
