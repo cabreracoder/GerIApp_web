@@ -1,0 +1,345 @@
+<div class="px-8 pt-4 pb-8">
+
+<!-- =========================================================
+     ENCABEZADO
+========================================================== -->
+
+<div class="flex justify-between items-center mb-8">
+
+    <div>
+        <h1 class="text-3xl font-bold text-[#212529]">
+            Gestión de Usuarios
+        </h1>
+
+        <p class="text-[#6C757D] mt-1">
+            Administración y asignación de roles de los usuarios
+        </p>
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     BUSCADOR
+========================================================== -->
+
+<section class="tarjeta-buscador">
+
+    <span class="material-symbols-outlined icono-busqueda">
+        search
+    </span>
+
+    <input
+        type="search"
+        placeholder="Buscar por documento, nombre o correo..."
+        aria-label="Buscar usuario"
+        autocomplete="off"
+        [(ngModel)]="searchText"
+    >
+
+    <span
+        class="contador-resultados"
+        *ngIf="searchText"
+    >
+        {{ filteredUsers.length }}
+        resultado{{ filteredUsers.length === 1 ? '' : 's' }}
+    </span>
+
+</section>
+
+
+<!-- =========================================================
+     CONTADOR
+========================================================== -->
+
+<div class="mb-5">
+
+    <p class="text-sm text-[#6C757D]">
+        Usuarios registrados:
+
+        <span class="font-semibold text-[#212529]">
+            {{ filteredUsers.length }}
+        </span>
+    </p>
+
+</div>
+
+
+<!-- =========================================================
+     MENSAJE DE ÉXITO
+========================================================== -->
+
+<div
+    *ngIf="successMessage"
+    class="mb-5 px-4 py-3 rounded-lg
+           bg-[#E8F5E9]
+           border border-[#C8E6C9]
+           text-[#2E7D32]"
+>
+
+    {{ successMessage }}
+
+</div>
+
+
+<!-- =========================================================
+     MENSAJE DE ERROR
+========================================================== -->
+
+<div
+    *ngIf="errorMessage"
+    class="mb-5 px-4 py-3 rounded-lg
+           bg-[#FFF5F5]
+           border border-[#F5C2C7]
+           text-[#DC3545]"
+>
+
+    {{ errorMessage }}
+
+</div>
+
+
+<!-- =========================================================
+     TABLA
+========================================================== -->
+
+<div class="overflow-x-auto">
+
+    <table class="w-full border-separate border-spacing-y-2">
+
+        <thead>
+
+            <tr class="bg-[#3B5BDB]">
+
+                <!-- USUARIO -->
+
+                <th
+                    class="px-5 py-4 text-left text-sm font-semibold !text-white rounded-l-lg"
+                >
+                    Usuario
+                </th>
+
+
+                <!-- DOCUMENTO -->
+
+                <th
+                    class="px-5 py-4 text-left text-sm font-semibold !text-white"
+                >
+                    Documento
+                </th>
+
+
+                <!-- CORREO -->
+
+                <th
+                    class="px-5 py-4 text-left text-sm font-semibold !text-white"
+                >
+                    Correo
+                </th>
+
+
+                <!-- TELÉFONO -->
+
+                <th
+                    class="px-5 py-4 text-left text-sm font-semibold !text-white"
+                >
+                    Teléfono
+                </th>
+
+
+                <!-- ROL -->
+
+                <th
+                    class="px-5 py-4 text-left text-sm font-semibold !text-white"
+                >
+                    Rol
+                </th>
+
+
+                <!-- ACCIÓN -->
+
+                <th
+                    class="px-5 py-4 text-center text-sm font-semibold !text-white rounded-r-lg"
+                >
+                    Acción
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+
+            <!-- =================================================
+                 SIN RESULTADOS
+            ================================================== -->
+
+            <tr *ngIf="filteredUsers.length === 0">
+
+                <td
+                    colspan="6"
+                    class="px-5 py-12 text-center text-[#6C757D]"
+                >
+
+                    No se encontraron usuarios.
+
+                </td>
+
+            </tr>
+
+
+            <!-- =================================================
+                 USUARIOS
+            ================================================== -->
+
+            <tr
+                *ngFor="let user of filteredUsers; let i = index"
+                [class]="i % 2 === 0
+                    ? 'bg-[#F4F7FF] text-gray-800'
+                    : 'bg-white text-gray-800'"
+            >
+
+
+                <!-- =================================================
+                     USUARIO
+                ================================================== -->
+
+                <td class="px-5 py-4 rounded-l-lg">
+
+                    <div class="font-medium text-[#212529]">
+
+                        {{ user.nombres }}
+                        {{ user.apellidos }}
+
+                    </div>
+
+                </td>
+
+
+                <!-- =================================================
+                     DOCUMENTO
+                ================================================== -->
+
+                <td class="px-5 py-4 text-sm text-[#495057]">
+
+                    <span class="font-medium">
+                        {{ user.tipo_documento }}
+                    </span>
+
+                    {{ user.numero_documento }}
+
+                </td>
+
+
+                <!-- =================================================
+                     CORREO
+                ================================================== -->
+
+                <td class="px-5 py-4 text-sm text-[#495057]">
+
+                    {{ user.correo }}
+
+                </td>
+
+
+                <!-- =================================================
+                     TELÉFONO
+                ================================================== -->
+
+                <td class="px-5 py-4 text-sm text-[#495057]">
+
+                    {{ user.telefono || 'No registrado' }}
+
+                </td>
+
+
+                <!-- =================================================
+                     SELECTOR DE ROL
+                ================================================== -->
+
+                <td class="px-5 py-4">
+
+                    <select
+                        class="selector-rol"
+                        [ngModel]="user.id_rol"
+                        (ngModelChange)="onRoleChange(user, $event)"
+                    >
+
+                        <!-- SIN ROL -->
+
+                        <option
+                            [ngValue]="null"
+                        >
+                            Sin rol asignado
+                        </option>
+
+
+                        <!-- ROLES -->
+
+                        <option
+                            *ngFor="let role of roles"
+                            [ngValue]="role.id_rol"
+                        >
+                            {{ role.nombre }}
+                        </option>
+
+                    </select>
+
+                </td>
+
+
+                <!-- =================================================
+                     ACCIÓN
+                ================================================== -->
+
+                <td class="px-5 py-4 rounded-r-lg">
+
+                    <div class="flex justify-center">
+
+                        <button
+                            type="button"
+                            (click)="saveRole(user)"
+                            [disabled]="savingUserId === user.id_usuario"
+                            title="Guardar rol"
+                            class="boton-guardar-rol"
+                        >
+
+                            <span
+                                *ngIf="savingUserId !== user.id_usuario"
+                                class="material-symbols-outlined text-[20px]"
+                            >
+                                save
+                            </span>
+
+                            <span
+                                *ngIf="savingUserId === user.id_usuario"
+                                class="material-symbols-outlined text-[20px]"
+                            >
+                                sync
+                            </span>
+
+                            <span>
+                                {{
+                                    savingUserId === user.id_usuario
+                                        ? 'Guardando...'
+                                        : 'Guardar'
+                                }}
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+</div>

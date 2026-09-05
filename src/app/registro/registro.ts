@@ -1,14 +1,18 @@
+
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { RouterLink } from '@angular/router';
-import { AuthService } from '../services/auth';
+import { HttpClient } from '@angular/common/http';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-registro',
   standalone: true,
-imports: [CommonModule, FormsModule, RouterLink],
+  imports: [
+    CommonModule,
+    FormsModule
+  ],
   templateUrl: './registro.html',
   styleUrl: './registro.css'
 })
@@ -29,60 +33,125 @@ export class Registro {
   cargando = false;
 
   constructor(
-    private authService: AuthService,
+    private http: HttpClient,
     private router: Router
   ) {}
 
   registrar(): void {
 
+    // Limpiar mensajes anteriores
     this.mensaje = '';
     this.error = '';
 
+    // Validar campos obligatorios
     if (
-      !this.usuario.tipo_documento ||
-      !this.usuario.numero_documento ||
-      !this.usuario.nombres ||
-      !this.usuario.apellidos ||
-      !this.usuario.correo ||
-      !this.usuario.contrasena
+      !this.usuario.tipo_documento.trim() ||
+      !this.usuario.numero_documento.trim() ||
+      !this.usuario.nombres.trim() ||
+      !this.usuario.apellidos.trim() ||
+      !this.usuario.correo.trim() ||
+      !this.usuario.contrasena.trim()
     ) {
-      this.error = 'Por favor completa todos los campos obligatorios.';
+
+      Swal.fire({
+        title: 'Campos vacíos',
+        text: 'Por favor completa todos los campos obligatorios.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#ff9100'
+      });
+
       return;
     }
 
     this.cargando = true;
 
-    this.authService.registrarUsuario(this.usuario).subscribe({
+    // Conexión directa con la API de Django
+    this.http.post<any>(
+      'http://127.0.0.1:8000/api/usuarios/registro/',
+      this.usuario
+    ).subscribe({
 
       next: (respuesta) => {
+
         this.cargando = false;
 
-        this.mensaje = respuesta.mensaje;
+        console.log(
+          'Usuario registrado correctamente:',
+          respuesta
+        );
 
-        console.log('Usuario registrado:', respuesta);
+        Swal.fire({
+          title: 'Registro exitoso',
+          text: 'Tu usuario ha sido registrado correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Continuar',
+          confirmButtonColor: '#4f46e5'
+        }).then(() => {
 
-        // Después de registrarse, ir al login
-        setTimeout(() => {
+          // Después de registrarse, ir al login
           this.router.navigate(['/login']);
-        }, 1500);
+
+        });
       },
 
-      error: (error) => {
+      error: (respuestaError) => {
+
         this.cargando = false;
 
-        console.error('Error en registro:', error);
+        console.error(
+          'Error en el registro:',
+          respuestaError
+        );
 
-        if (error.error?.correo) {
-          this.error = error.error.correo[0];
-        } else if (error.error?.numero_documento) {
-          this.error = error.error.numero_documento[0];
-        } else if (error.error?.error) {
-          this.error = error.error.error;
-        } else {
-          this.error = 'No fue posible registrar el usuario.';
+        let mensajeError =
+          'No fue posible registrar el usuario.';
+
+        if (respuestaError.error?.correo) {
+
+          mensajeError = Array.isArray(
+            respuestaError.error.correo
+          )
+            ? respuestaError.error.correo[0]
+            : respuestaError.error.correo;
+
+        } else if (respuestaError.error?.numero_documento) {
+
+          mensajeError = Array.isArray(
+            respuestaError.error.numero_documento
+          )
+            ? respuestaError.error.numero_documento[0]
+            : respuestaError.error.numero_documento;
+
+        } else if (respuestaError.error?.error) {
+
+          mensajeError = respuestaError.error.error;
+
+        } else if (respuestaError.status === 0) {
+
+          mensajeError =
+            'No se pudo conectar con el servidor. ' +
+            'Verifica que Django esté ejecutándose.';
         }
-      }
 
+        this.error = mensajeError;
+
+        Swal.fire({
+          title: 'Error',
+          text: mensajeError,
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#ff2a00'
+        });
+      }
     });
   }
+
+  login(): void {
+
+    // Ir al formulario de inicio de sesión
+    this.router.navigate(['/login']);
+
+  }
 }
+

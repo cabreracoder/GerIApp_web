@@ -41,23 +41,6 @@
     <!-- MENÚ INFERIOR -->
     <div class="layout-sidebar-footer">
 
-      <!-- CONFIGURACIÓN -->
-      <a
-        [routerLink]="configuracion.ruta"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="layout-menu-button"
-        [attr.title]="configuracion.nombre"
-      >
-        <span class="material-symbols-outlined">
-          {{ configuracion.icono }}
-        </span>
-
-        <span class="layout-menu-tooltip">
-          {{ configuracion.nombre }}
-        </span>
-      </a>
-
 
       <!-- CERRAR SESIÓN -->
       <button

@@ -1,3 +1,4 @@
+
 <div class="registro-container">
 
   <div class="registro-card">
@@ -8,10 +9,16 @@
       Regístrate para comenzar a utilizar GerIApp
     </p>
 
-    <form (ngSubmit)="registrar()" #registroForm="ngForm">
+    <form
+      (ngSubmit)="registrar()"
+      #registroForm="ngForm"
+    >
 
       <div class="campo">
-        <label for="tipo_documento">Tipo de documento</label>
+
+        <label for="tipo_documento">
+          Tipo de documento
+        </label>
 
         <select
           id="tipo_documento"
@@ -19,15 +26,30 @@
           [(ngModel)]="usuario.tipo_documento"
           required
         >
-          <option value="">Selecciona una opción</option>
-          <option value="CC">Cédula de ciudadanía</option>
-          <option value="TI">Tarjeta de identidad</option>
-          <option value="CE">Cédula de extranjería</option>
+          <option value="">
+            Selecciona una opción
+          </option>
+
+          <option value="CC">
+            Cédula de ciudadanía
+          </option>
+
+          <option value="TI">
+            Tarjeta de identidad
+          </option>
+
+          <option value="CE">
+            Cédula de extranjería
+          </option>
         </select>
+
       </div>
 
       <div class="campo">
-        <label for="numero_documento">Número de documento</label>
+
+        <label for="numero_documento">
+          Número de documento
+        </label>
 
         <input
           type="text"
@@ -37,10 +59,14 @@
           placeholder="Ingresa tu número de documento"
           required
         >
+
       </div>
 
       <div class="campo">
-        <label for="nombres">Nombres</label>
+
+        <label for="nombres">
+          Nombres
+        </label>
 
         <input
           type="text"
@@ -50,10 +76,14 @@
           placeholder="Ingresa tus nombres"
           required
         >
+
       </div>
 
       <div class="campo">
-        <label for="apellidos">Apellidos</label>
+
+        <label for="apellidos">
+          Apellidos
+        </label>
 
         <input
           type="text"
@@ -63,10 +93,14 @@
           placeholder="Ingresa tus apellidos"
           required
         >
+
       </div>
 
       <div class="campo">
-        <label for="correo">Correo electrónico</label>
+
+        <label for="correo">
+          Correo electrónico
+        </label>
 
         <input
           type="email"
@@ -76,10 +110,14 @@
           placeholder="ejemplo@correo.com"
           required
         >
+
       </div>
 
       <div class="campo">
-        <label for="telefono">Teléfono</label>
+
+        <label for="telefono">
+          Teléfono
+        </label>
 
         <input
           type="text"
@@ -88,10 +126,14 @@
           [(ngModel)]="usuario.telefono"
           placeholder="Ingresa tu teléfono"
         >
+
       </div>
 
       <div class="campo">
-        <label for="contrasena">Contraseña</label>
+
+        <label for="contrasena">
+          Contraseña
+        </label>
 
         <input
           type="password"
@@ -101,6 +143,7 @@
           placeholder="Ingresa una contraseña"
           required
         >
+
       </div>
 
       <div
@@ -127,10 +170,19 @@
     </form>
 
     <p class="login-link">
+
       ¿Ya tienes una cuenta?
-      <a routerLink="/login">Inicia sesión</a>
+
+      <button
+        type="button"
+        (click)="login()"
+      >
+        Inicia sesión
+      </button>
+
     </p>
 
   </div>
 
 </div>
+

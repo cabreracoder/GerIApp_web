@@ -205,87 +205,112 @@ export class Cuidadores implements OnInit {
   // ==========================================
   // CARGAR CUIDADORES
   // ==========================================
-  cargarCuidadores() {
+  // ==========================================
+  // CARGAR CUIDADORES
+  // ==========================================
+  cargarCuidadores(): void {
 
     this.http
-      .get<any[]>(
-        'https://geriapp-web-1.onrender.com/api/usuarios/'
-      )
+      .get<ICuidador[]>(this.apiUrl)
       .subscribe({
 
-        next: (respuesta) => {
+        next: (data) => {
 
-          console.log(
-            'Respuesta de la API:',
-            respuesta
+          const cuidadoresFiltrados = data.filter(
+            (usuario) => usuario.id_rol === 5
           );
 
-          this.cuidadores = respuesta
-            .filter(usuario => usuario.id_rol === 5)
-            .map(usuario => {
+          this.cuidadores = cuidadoresFiltrados.map((c) => {
 
-              return {
-                id: usuario.id_usuario,
-                nombre: usuario.nombres,
-                apellido: usuario.apellidos,
+            const idReg =
+              c.id_usuario || c.id;
 
-                nombreCompleto:
-                  usuario.nombres +
-                  ' ' +
-                  usuario.apellidos,
+            const nom =
+              c.nombres ||
+              c.nombre ||
+              '';
 
-                correo: usuario.correo,
+            const ape =
+              c.apellidos ||
+              c.apellido ||
+              '';
 
-                telefono: usuario.telefono,
+            const fullNombre =
+              c.nombreCompleto ||
+              `${nom} ${ape}`.trim() ||
+              nom;
 
-                tipoDocumento:
-                  usuario.tipo_documento,
+            const docNum =
+              c.numero_documento ||
+              c.numeroDocumento ||
+              c.documento ||
+              '';
 
-                numeroDocumento:
-                  usuario.numero_documento,
+            const docTipo =
+              c.tipo_documento ||
+              c.tipoDocumento ||
+              'CC';
 
-                estado:
-                  usuario.estado
-                    ? 'activo'
-                    : 'inactivo',
+            const esActivo =
+              c.estado === true ||
+              c.estado === 'activo';
 
-                id_rol:
-                  usuario.id_rol,
+            return {
 
-                pacientes: 0,
+              ...c,
 
-                turno: 'Sin asignar'
-              };
+              id: idReg,
 
-            });
+              nombre: nom,
 
-          this.cuidadoresFiltrados =
-            [...this.cuidadores];
+              apellido: ape,
+
+              nombreCompleto: fullNombre,
+
+              tipoDocumento: docTipo,
+
+              numeroDocumento: docNum,
+
+              documento: docNum,
+
+              estado: esActivo
+                ? 'activo'
+                : 'inactivo',
+
+              disponible:
+                c.disponible ??
+                (
+                  esActivo &&
+                  (!c.pacientes ||
+                    c.pacientes < 3)
+                ),
+
+            };
+
+          });
 
           this.actualizarMetricas();
 
-          console.log(
-            'Cuidadores encontrados:',
-            this.cuidadores
-          );
+          this.filtrarCuidadores();
 
           this.cdr.detectChanges();
 
         },
 
-        error: (error) => {
+        error: (err) => {
 
           console.error(
-            'Error al cargar:',
-            error
+            'Error al obtener cuidadores desde Render:',
+            err
           );
+
+          this.cdr.detectChanges();
 
         }
 
       });
 
   }
-
 
   // ==========================================
   // MÉTRICAS
