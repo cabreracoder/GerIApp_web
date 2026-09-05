@@ -402,14 +402,24 @@
 
 .contenedor-tabla th {
   padding: var(--spacing-sm) var(--spacing-md);
-  border-bottom: 1px solid var(--border-color);
-  background: var(--bg-neutral-light);
-  color: var(--text-secondary);
+  border-bottom: none;
+  background: var(--color-primary);
+  color: var(--bg-surface);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
   text-align: left;
   text-transform: uppercase;
   letter-spacing: 0.03em;
+}
+
+.contenedor-tabla thead th:first-child {
+  border-top-left-radius: var(--radius-full);
+  border-bottom-left-radius: var(--radius-full);
+}
+
+.contenedor-tabla thead th:last-child {
+  border-top-right-radius: var(--radius-full);
+  border-bottom-right-radius: var(--radius-full);
 }
 
 .contenedor-tabla td {

@@ -143,7 +143,7 @@ this.http.get<Usuario[]>(
     );
 
     this.users = respuesta;
-
+    this.cdr.detectChanges();
 
     // Guardamos el rol original de cada usuario.
 

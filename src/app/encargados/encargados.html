@@ -301,15 +301,15 @@
             </th>
 
             <th>
-              Cargo
+              Documento
             </th>
 
             <th>
-              Área
+              Telefono
             </th>
 
             <th>
-              Teléfono
+              Fecha de ingreso
             </th>
 
             <th>
@@ -379,6 +379,19 @@
 
             </td>
 
+            <!-- DOCUMENTO -->
+
+            <td>
+
+              <span class="telefono-tabla">
+
+                {{ encargado.tipoDocumento }} {{ encargado.documento }}
+
+              </span>
+
+            </td>
+
+
             <!-- TELÉFONO -->
 
             <td>
@@ -386,6 +399,19 @@
               <span class="telefono-tabla">
 
                 {{ encargado.telefono }}
+
+              </span>
+
+            </td>
+
+
+            <!-- FECHA DE INGRESO -->
+
+            <td>
+
+              <span class="telefono-tabla">
+
+                {{ formatearFechaIngreso(encargado.fechaIngreso) }}
 
               </span>
 

@@ -1,10 +1,34 @@
+
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import {
-  ConfiguracionService,
-  IUsuario
-} from './configuracion.service';
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  inject
+} from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+
+interface Usuario {
+  id_usuario: number;
+  id_rol: number | null;
+  tipo_documento: string;
+  numero_documento: string;
+  nombres: string;
+  apellidos: string;
+  correo: string;
+  telefono: string | null;
+  fecha_ingreso: string;
+  estado: boolean;
+  contrasena?: string;
+}
+
+interface Rol {
+  id_rol: number;
+  nombre: string;
+  descripcion: string;
+  estado: boolean;
+}
 
 @Component({
   selector: 'app-configuracion',
@@ -18,39 +42,50 @@ import {
 })
 export class Configuracion implements OnInit {
 
-  private configuracionService = inject(ConfiguracionService);
+  private readonly http = inject(HttpClient);
+  private readonly cdr = inject(ChangeDetectorRef);
+
+  private readonly apiUrl =
+    'http://127.0.0.1:8000/api';
 
   // =====================================================
-  // DATOS DEL USUARIO
+  // USUARIO
   // =====================================================
 
   idUsuario: number | null = null;
 
+  nombresUsuario: string = '';
+  apellidosUsuario: string = '';
   nombreUsuario: string = '';
+
   correoUsuario: string = '';
   telefonoUsuario: string = '';
+
   cargoUsuario: string = '';
   inicialesUsuario: string = '';
 
+  private usuarioOriginal: Usuario | null = null;
+
   // =====================================================
-  // PREFERENCIAS
+  // ROLES
   // =====================================================
 
-  notificacionesCorreo: boolean = true;
-  notificacionesSms: boolean = false;
-  alertasCriticas: boolean = true;
+  roles: Rol[] = [];
+
 
   // =====================================================
   // ESTADOS
   // =====================================================
 
+  cargandoUsuario: boolean = false;
+  cargandoRoles: boolean = false;
   guardando: boolean = false;
 
   mensajeExito: string = '';
   mensajeError: string = '';
 
   // =====================================================
-  // SEGURIDAD
+  // CONTRASEÑA
   // =====================================================
 
   contrasenaActual: string = '';
@@ -58,7 +93,7 @@ export class Configuracion implements OnInit {
   confirmarContrasena: string = '';
 
   // =====================================================
-  // INICIALIZACIÓN
+  // INICIO
   // =====================================================
 
   ngOnInit(): void {
@@ -71,86 +106,339 @@ export class Configuracion implements OnInit {
 
   cargarUsuario(): void {
 
+    this.mensajeError = '';
+    this.mensajeExito = '';
+    this.cargandoUsuario = true;
+
     const usuarioGuardado =
       localStorage.getItem('usuario');
 
     if (!usuarioGuardado) {
 
-      console.error(
-        'No hay un usuario almacenado en localStorage.'
-      );
+      this.cargandoUsuario = false;
 
       this.mensajeError =
         'No se encontró la información del usuario.';
+
+      this.cdr.detectChanges();
 
       return;
     }
 
     try {
 
-      const usuario: IUsuario =
+      const usuarioLocal: Usuario =
         JSON.parse(usuarioGuardado);
 
+      // -------------------------------------------------
+      // SOLAMENTE USAMOS EL ID DEL LOCALSTORAGE
+      // -------------------------------------------------
+
+      if (!usuarioLocal.id_usuario) {
+
+        this.cargandoUsuario = false;
+
+        this.mensajeError =
+          'No se encontró el ID del usuario.';
+
+        this.cdr.detectChanges();
+
+        return;
+      }
+
+      this.idUsuario =
+        usuarioLocal.id_usuario;
+
       console.log(
-        'USUARIO LEÍDO EN CONFIGURACIÓN:',
-        JSON.stringify(usuario, null, 2)
+        'ID DEL USUARIO LOGUEADO:',
+        this.idUsuario
       );
 
-      // ID
-      this.idUsuario =
-        usuario.id_usuario ?? null;
+      // -------------------------------------------------
+      // CONSULTAMOS DIRECTAMENTE AL USUARIO
+      // -------------------------------------------------
 
-      // NOMBRE
-      this.nombreUsuario =
-        `${usuario.nombres ?? ''} ${usuario.apellidos ?? ''}`.trim();
+      this.http.get<Usuario>(
+        `${this.apiUrl}/usuarios/${this.idUsuario}/`
+      ).subscribe({
 
-      // CORREO
-      this.correoUsuario =
-        usuario.correo ?? '';
+        next: (usuarioApi) => {
 
-      // TELÉFONO
-      this.telefonoUsuario =
-        usuario.telefono ?? '';
+          console.log(
+            'USUARIO OBTENIDO DESDE API:',
+            usuarioApi
+          );
 
-      // INICIALES
-      this.inicialesUsuario =
-        this.obtenerIniciales(
-          this.nombreUsuario
-        );
+          this.usuarioOriginal =
+            { ...usuarioApi };
 
-      // CARGO
-      // Por ahora se mantiene como Administrador.
-      // Después lo conectamos con la tabla roles.
-      this.cargoUsuario =
-        'Administrador';
+          // ---------------------------------------------
+          // MOSTRAR DATOS DEL USUARIO
+          // ---------------------------------------------
+
+          this.asignarDatosUsuario(
+            usuarioApi
+          );
+
+          // ---------------------------------------------
+          // ACTUALIZAR LOCALSTORAGE
+          // ---------------------------------------------
+
+          const usuarioAnterior =
+            localStorage.getItem('usuario');
+
+          let datosUsuario =
+            usuarioApi;
+
+          if (usuarioAnterior) {
+
+            try {
+
+              const anterior: Usuario =
+                JSON.parse(usuarioAnterior);
+
+              datosUsuario = {
+                ...anterior,
+                ...usuarioApi
+              };
+
+            } catch (error) {
+
+              console.error(
+                'ERROR AL LEER USUARIO ANTERIOR:',
+                error
+              );
+            }
+          }
+
+          localStorage.setItem(
+            'usuario',
+            JSON.stringify(datosUsuario)
+          );
+
+          // ---------------------------------------------
+          // CARGAR ROLES
+          // ---------------------------------------------
+
+          this.cargarRoles();
+
+          this.cargandoUsuario = false;
+
+          this.cdr.detectChanges();
+        },
+
+        error: (error) => {
+
+          console.error(
+            'ERROR AL CARGAR USUARIO:',
+            error
+          );
+
+          this.cargandoUsuario = false;
+
+          if (error.status === 404) {
+
+            this.mensajeError =
+              'El usuario no existe en el servidor.';
+
+          } else if (error.status === 0) {
+
+            this.mensajeError =
+              'No se pudo conectar con el servidor.';
+
+          } else {
+
+            this.mensajeError =
+              'No fue posible cargar la información del usuario.';
+          }
+
+          this.cdr.detectChanges();
+        }
+
+      });
 
     } catch (error) {
 
       console.error(
-        'Error al leer los datos del usuario:',
+        'ERROR AL LEER LOCALSTORAGE:',
         error
       );
 
+      this.cargandoUsuario = false;
+
       this.mensajeError =
         'No fue posible cargar los datos del usuario.';
+
+      this.cdr.detectChanges();
     }
+  }
+
+  // =====================================================
+  // ASIGNAR DATOS DEL USUARIO
+  // =====================================================
+
+  private asignarDatosUsuario(
+    usuario: Usuario
+  ): void {
+
+    this.idUsuario =
+      usuario.id_usuario;
+
+    this.nombresUsuario =
+      usuario.nombres ?? '';
+
+    this.apellidosUsuario =
+      usuario.apellidos ?? '';
+
+    this.nombreUsuario =
+      `${this.nombresUsuario} ${this.apellidosUsuario}`
+        .trim();
+
+    this.correoUsuario =
+      usuario.correo ?? '';
+
+    this.telefonoUsuario =
+      usuario.telefono ?? '';
+
+    this.inicialesUsuario =
+      this.obtenerIniciales(
+        this.nombreUsuario
+      );
+
+    // El cargo se actualiza cuando
+    // se carguen los roles.
+    this.cargoUsuario =
+      'Cargando...';
+  }
+
+  // =====================================================
+  // CARGAR ROLES
+  // =====================================================
+
+  cargarRoles(): void {
+
+    this.cargandoRoles = true;
+
+    this.http.get<Rol[]>(
+      `${this.apiUrl}/roles/`
+    ).subscribe({
+
+      next: (roles) => {
+
+        console.log(
+          'ROLES OBTENIDOS:',
+          roles
+        );
+
+        this.roles =
+          roles.filter(
+            rol => rol.estado === true
+          );
+
+        this.cargandoRoles = false;
+
+        // ---------------------------------------------
+        // BUSCAR EL ROL DEL USUARIO
+        // ---------------------------------------------
+
+        if (
+          this.usuarioOriginal &&
+          this.usuarioOriginal.id_rol !== null
+        ) {
+
+          const rolUsuario =
+            this.roles.find(
+              rol =>
+                rol.id_rol ===
+                this.usuarioOriginal!.id_rol
+            );
+
+          if (rolUsuario) {
+
+            this.cargoUsuario =
+              rolUsuario.nombre;
+
+          } else {
+
+            this.cargoUsuario =
+              'Rol no encontrado';
+          }
+
+        } else {
+
+          this.cargoUsuario =
+            'Sin rol asignado';
+        }
+
+        console.log(
+          'CARGO DEL USUARIO:',
+          this.cargoUsuario
+        );
+
+        this.cdr.detectChanges();
+      },
+
+      error: (error) => {
+
+        console.error(
+          'ERROR AL CARGAR ROLES:',
+          error
+        );
+
+        this.cargandoRoles = false;
+
+        this.cargoUsuario =
+          'No disponible';
+
+        this.cdr.detectChanges();
+      }
+
+    });
+  }
+
+  // =====================================================
+  // OBTENER NOMBRE DEL ROL
+  // =====================================================
+
+  private obtenerNombreRolLocal(
+    idRol: number | null
+  ): string {
+
+    if (idRol === null) {
+
+      return 'Sin rol asignado';
+    }
+
+    const rol =
+      this.roles.find(
+        item =>
+          item.id_rol === idRol
+      );
+
+    return rol?.nombre ??
+      'Rol no encontrado';
   }
 
   // =====================================================
   // OBTENER INICIALES
   // =====================================================
 
-  obtenerIniciales(nombre: string): string {
+  obtenerIniciales(
+    nombre: string
+  ): string {
 
-    if (!nombre) {
+    if (!nombre.trim()) {
+
       return '';
     }
 
     const palabras =
       nombre
-        .split(' ')
+        .trim()
+        .split(/\s+/)
         .filter(
-          palabra => palabra.length > 0
+          palabra =>
+            palabra.length > 0
         );
 
     if (palabras.length === 1) {
@@ -158,7 +446,6 @@ export class Configuracion implements OnInit {
       return palabras[0]
         .substring(0, 2)
         .toUpperCase();
-
     }
 
     return (
@@ -168,30 +455,92 @@ export class Configuracion implements OnInit {
   }
 
   // =====================================================
-  // GUARDAR CAMBIOS
+  // GUARDAR CAMBIOS DEL PERFIL
   // =====================================================
 
   guardarCambios(): void {
 
-    // Limpiar mensajes anteriores
     this.mensajeExito = '';
     this.mensajeError = '';
 
-    // Verificar ID
+    if (this.guardando) {
+
+      return;
+    }
+
     if (this.idUsuario === null) {
 
       this.mensajeError =
         'No se encontró el ID del usuario.';
 
-      console.error(
-        'No se encontró el ID del usuario.'
-      );
+      return;
+    }
+
+    // -------------------------------------------------
+    // NOMBRE
+    // -------------------------------------------------
+
+    const nombreCompleto =
+      this.nombreUsuario.trim();
+
+    if (!nombreCompleto) {
+
+      this.mensajeError =
+        'El nombre completo es obligatorio.';
 
       return;
     }
 
-    // Verificar correo
-    if (!this.correoUsuario.trim()) {
+    const partesNombre =
+      nombreCompleto
+        .split(/\s+/)
+        .filter(
+          parte =>
+            parte.length > 0
+        );
+
+    let nombres = '';
+    let apellidos = '';
+
+    if (partesNombre.length === 1) {
+
+      nombres =
+        partesNombre[0];
+
+    } else {
+
+      if (partesNombre.length >= 3) {
+
+        nombres =
+          partesNombre
+            .slice(0, -2)
+            .join(' ');
+
+        apellidos =
+          partesNombre
+            .slice(-2)
+            .join(' ');
+
+      } else {
+
+        nombres =
+          partesNombre[0];
+
+        apellidos =
+          partesNombre
+            .slice(1)
+            .join(' ');
+      }
+    }
+
+    // -------------------------------------------------
+    // CORREO
+    // -------------------------------------------------
+
+    const correo =
+      this.correoUsuario.trim();
+
+    if (!correo) {
 
       this.mensajeError =
         'El correo electrónico es obligatorio.';
@@ -199,20 +548,35 @@ export class Configuracion implements OnInit {
       return;
     }
 
-    // Verificar que no esté guardando
-    if (this.guardando) {
+    const correoValido =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        .test(correo);
+
+    if (!correoValido) {
+
+      this.mensajeError =
+        'Ingresa un correo electrónico válido.';
+
       return;
     }
 
-    // Datos que enviaremos al backend
-    const datos: Partial<IUsuario> = {
+    // -------------------------------------------------
+    // TELÉFONO
+    // -------------------------------------------------
 
-      correo:
-        this.correoUsuario.trim(),
+    const telefono =
+      this.telefonoUsuario.trim();
 
-      telefono:
-        this.telefonoUsuario.trim()
+    // -------------------------------------------------
+    // DATOS A ACTUALIZAR
+    // -------------------------------------------------
 
+    const datos: Partial<Usuario> = {
+
+      nombres,
+      apellidos,
+      correo,
+      telefono
     };
 
     console.log(
@@ -227,143 +591,159 @@ export class Configuracion implements OnInit {
 
     this.guardando = true;
 
-    // ===================================================
-    // PETICIÓN PATCH
-    // ===================================================
+    // -------------------------------------------------
+    // ACTUALIZAR USUARIO
+    // -------------------------------------------------
 
-    this.configuracionService
-      .actualizarUsuario(
-        this.idUsuario,
-        datos
-      )
-      .subscribe({
+    this.http.patch<Usuario>(
+      `${this.apiUrl}/usuarios/${this.idUsuario}/`,
+      datos
+    ).subscribe({
 
-        // ===============================================
-        // ÉXITO
-        // ===============================================
+      next: (usuarioActualizado) => {
 
-        next: (
-          usuarioActualizado: IUsuario
-        ) => {
+        console.log(
+          'USUARIO ACTUALIZADO:',
+          usuarioActualizado
+        );
 
-          console.log(
-            'PERFIL ACTUALIZADO CORRECTAMENTE:',
-            usuarioActualizado
+        // ---------------------------------------------
+        // ACTUALIZAR INFORMACIÓN EN PANTALLA
+        // ---------------------------------------------
+
+        this.nombresUsuario =
+          usuarioActualizado.nombres ?? '';
+
+        this.apellidosUsuario =
+          usuarioActualizado.apellidos ?? '';
+
+        this.nombreUsuario =
+          `${this.nombresUsuario} ${this.apellidosUsuario}`
+            .trim();
+
+        this.correoUsuario =
+          usuarioActualizado.correo ?? '';
+
+        this.telefonoUsuario =
+          usuarioActualizado.telefono ?? '';
+
+        this.inicialesUsuario =
+          this.obtenerIniciales(
+            this.nombreUsuario
           );
 
-          this.guardando = false;
+        this.usuarioOriginal =
+          {
+            ...this.usuarioOriginal,
+            ...usuarioActualizado
+          };
 
-          // ---------------------------------------------
-          // Actualizar localStorage
-          // ---------------------------------------------
+        // ---------------------------------------------
+        // ACTUALIZAR LOCALSTORAGE
+        // ---------------------------------------------
 
-          const usuarioAnterior =
-            localStorage.getItem('usuario');
+        const usuarioAnterior =
+          localStorage.getItem('usuario');
 
-          let datosUsuario: IUsuario =
-            usuarioActualizado;
+        let datosUsuario =
+          usuarioActualizado;
 
-          if (usuarioAnterior) {
+        if (usuarioAnterior) {
 
-            try {
+          try {
 
-              const anterior: IUsuario =
-                JSON.parse(usuarioAnterior);
+            const anterior: Usuario =
+              JSON.parse(usuarioAnterior);
 
-              datosUsuario = {
-                ...anterior,
-                ...usuarioActualizado
-              };
+            datosUsuario = {
 
-            } catch (error) {
+              ...anterior,
+              ...usuarioActualizado
 
-              console.error(
-                'Error al actualizar localStorage:',
-                error
-              );
+            };
 
-            }
-          }
+          } catch (error) {
 
-          localStorage.setItem(
-            'usuario',
-            JSON.stringify(datosUsuario)
-          );
-
-          // ---------------------------------------------
-          // Actualizar información mostrada
-          // ---------------------------------------------
-
-          this.correoUsuario =
-            datosUsuario.correo ?? '';
-
-          this.telefonoUsuario =
-            datosUsuario.telefono ?? '';
-
-          this.nombreUsuario =
-            `${datosUsuario.nombres ?? ''} ${datosUsuario.apellidos ?? ''}`.trim();
-
-          this.inicialesUsuario =
-            this.obtenerIniciales(
-              this.nombreUsuario
+            console.error(
+              'ERROR AL LEER USUARIO ANTERIOR:',
+              error
             );
-
-          // ---------------------------------------------
-          // Mensaje
-          // ---------------------------------------------
-
-          this.mensajeExito =
-            'Cambios guardados correctamente.';
-
-          // Quitar mensaje después de 3 segundos
-          setTimeout(() => {
-
-            this.mensajeExito = '';
-
-          }, 3000);
-        },
-
-        // ===============================================
-        // ERROR
-        // ===============================================
-
-        error: (error) => {
-
-          this.guardando = false;
-
-          console.error(
-            'ERROR AL ACTUALIZAR PERFIL:',
-            error
-          );
-
-          console.error(
-            'RESPUESTA DEL SERVIDOR:',
-            error.error
-          );
-
-          if (error.error?.detail) {
-
-            this.mensajeError =
-              error.error.detail;
-
-          } else if (error.error?.error) {
-
-            this.mensajeError =
-              error.error.error;
-
-          } else if (error.error) {
-
-            this.mensajeError =
-              'El servidor rechazó la actualización.';
-
-          } else {
-
-            this.mensajeError =
-              'No fue posible guardar los cambios.';
           }
         }
 
-      });
+        localStorage.setItem(
+          'usuario',
+          JSON.stringify(datosUsuario)
+        );
+
+        // ---------------------------------------------
+        // FINALIZAR
+        // ---------------------------------------------
+
+        this.guardando = false;
+
+        this.mensajeExito =
+          'Cambios guardados correctamente.';
+
+        this.cdr.detectChanges();
+
+        setTimeout(() => {
+
+          this.mensajeExito = '';
+
+          this.cdr.detectChanges();
+
+        }, 3000);
+      },
+
+      error: (error) => {
+
+        console.error(
+          'ERROR AL ACTUALIZAR PERFIL:',
+          error
+        );
+
+        console.error(
+          'RESPUESTA DEL SERVIDOR:',
+          error.error
+        );
+
+        this.guardando = false;
+
+        if (error.error?.detail) {
+
+          this.mensajeError =
+            error.error.detail;
+
+        } else if (error.error?.error) {
+
+          this.mensajeError =
+            error.error.error;
+
+        } else if (
+          error.error &&
+          typeof error.error === 'object'
+        ) {
+
+          const errores =
+            Object.values(error.error)
+              .flat()
+              .join(' ');
+
+          this.mensajeError =
+            errores ||
+            'El servidor rechazó la actualización.';
+
+        } else {
+
+          this.mensajeError =
+            'No fue posible guardar los cambios.';
+        }
+
+        this.cdr.detectChanges();
+      }
+
+    });
   }
 
   // =====================================================
@@ -372,27 +752,19 @@ export class Configuracion implements OnInit {
 
   cambiarFoto(): void {
 
-    console.log(
-      'Cambiar foto seleccionado.'
-    );
-
     alert(
       'La actualización de la foto se implementará posteriormente.'
     );
   }
 
   // =====================================================
-  // ACTUALIZAR CONTRASEÑA
+  // CAMBIAR CONTRASEÑA
   // =====================================================
 
   actualizarContrasena(): void {
 
     this.mensajeExito = '';
     this.mensajeError = '';
-
-    // ---------------------------------------------
-    // Validar contraseña actual
-    // ---------------------------------------------
 
     if (!this.contrasenaActual.trim()) {
 
@@ -402,10 +774,6 @@ export class Configuracion implements OnInit {
       return;
     }
 
-    // ---------------------------------------------
-    // Validar nueva contraseña
-    // ---------------------------------------------
-
     if (!this.nuevaContrasena.trim()) {
 
       this.mensajeError =
@@ -414,10 +782,6 @@ export class Configuracion implements OnInit {
       return;
     }
 
-    // ---------------------------------------------
-    // Validar confirmación
-    // ---------------------------------------------
-
     if (!this.confirmarContrasena.trim()) {
 
       this.mensajeError =
@@ -425,10 +789,6 @@ export class Configuracion implements OnInit {
 
       return;
     }
-
-    // ---------------------------------------------
-    // Comparar contraseñas
-    // ---------------------------------------------
 
     if (
       this.nuevaContrasena !==
@@ -441,10 +801,6 @@ export class Configuracion implements OnInit {
       return;
     }
 
-    // ---------------------------------------------
-    // Longitud mínima
-    // ---------------------------------------------
-
     if (this.nuevaContrasena.length < 8) {
 
       this.mensajeError =
@@ -453,24 +809,15 @@ export class Configuracion implements OnInit {
       return;
     }
 
+    this.mensajeError =
+      'El cambio de contraseña todavía no está conectado con la API.';
+
     console.log(
-      'Solicitud de actualización de contraseña:',
+      'SOLICITUD DE CAMBIO DE CONTRASEÑA:',
       {
         idUsuario: this.idUsuario
       }
     );
-
-    /*
-     * La API para cambiar contraseña todavía
-     * no está conectada.
-     *
-     * Cuando creemos ese endpoint, aquí
-     * realizaremos la petición al backend.
-     */
-
-    alert(
-      'La actualización de contraseña todavía no está conectada con la API.'
-    );
   }
-
 }
+
