@@ -1,7 +1,8 @@
+from django.core.serializers import python
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import (check_password,make_password)
 
 from .models import (
     HistoriaClinicas,
@@ -78,6 +79,7 @@ from .serializers import (
     FamiliarResponsableSerializer,
     PerfilProfesionalSerializer,
     DisponibilidadUsuarioSerializer,
+    CambiarContrasenaSerializer,
 )
 #Esta parte hace que se pueda registrar un usuario, validando que no exista otro con el mismo correo o número de documento.
 #Si el registro es exitoso, devuelve un mensaje de éxito y los datos del usuario registrado. Si hay errores en la validación,
@@ -180,6 +182,131 @@ def login_usuario(request):
         },
         status=status.HTTP_200_OK
     )
+
+#Aqui hacemos que un usuario pueda cambiar su contraseña, 
+#validando la contraseña actual y asegurando que la nueva contraseña sea diferente a la actual.    
+
+@api_view(['POST'])
+def cambiar_contrasena(request):
+
+    id_usuario = request.data.get(
+        'id_usuario'
+    )
+
+    if not id_usuario:
+
+        return Response(
+            {
+                'error':
+                'El ID del usuario es obligatorio.'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+
+        usuario = Usuarios.objects.get(
+            id_usuario=id_usuario
+        )
+
+    except Usuarios.DoesNotExist:
+
+        return Response(
+            {
+                'error':
+                'El usuario no existe.'
+            },
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    serializer = CambiarContrasenaSerializer(
+        data=request.data
+    )
+
+    if not serializer.is_valid():
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    contrasena_actual = (
+        serializer.validated_data[
+            'contrasena_actual'
+        ]
+    )
+
+    nueva_contrasena = (
+        serializer.validated_data[
+            'nueva_contrasena'
+        ]
+    )
+
+    # =====================================================
+    # VERIFICAR CONTRASEÑA ACTUAL
+    # =====================================================
+
+    if not usuario.contrasena:
+
+        return Response(
+            {
+                'error':
+                'Este usuario no tiene una contraseña registrada.'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    if not check_password(
+        contrasena_actual,
+        usuario.contrasena
+    ):
+
+        return Response(
+            {
+                'error':
+                'La contraseña actual es incorrecta.'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # =====================================================
+    # EVITAR USAR LA MISMA CONTRASEÑA
+    # =====================================================
+
+    if check_password(
+        nueva_contrasena,
+        usuario.contrasena
+    ):
+
+        return Response(
+            {
+                'error':
+                'La nueva contraseña debe ser diferente a la actual.'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # =====================================================
+    # GUARDAR NUEVA CONTRASEÑA HASHEADA
+    # =====================================================
+
+    usuario.contrasena = make_password(
+        nueva_contrasena
+    )
+
+    usuario.save(
+        update_fields=['contrasena']
+    )
+
+    return Response(
+        {
+            'mensaje':
+            'Contraseña actualizada correctamente.'
+        },
+        status=status.HTTP_200_OK
+    )
+
+
 
 class PacientesViewSet(viewsets.ModelViewSet):
     queryset = Pacientes.objects.all()
