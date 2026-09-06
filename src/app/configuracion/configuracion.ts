@@ -21,6 +21,7 @@ interface Usuario {
   fecha_ingreso: string;
   estado: boolean;
   contrasena?: string;
+  rol?: string;
 }
 
 interface Rol {
@@ -43,7 +44,9 @@ interface Rol {
 export class Configuracion implements OnInit {
 
   private readonly http = inject(HttpClient);
-  private readonly cdr = inject(ChangeDetectorRef);
+
+  private readonly cdr =
+    inject(ChangeDetectorRef);
 
   private readonly apiUrl =
     'http://127.0.0.1:8000/api';
@@ -55,13 +58,27 @@ export class Configuracion implements OnInit {
   idUsuario: number | null = null;
 
   nombresUsuario: string = '';
+
   apellidosUsuario: string = '';
+
+  // -----------------------------------------------------
+  // NOMBRE QUE SE MUESTRA COMO INFORMACIÓN GUARDADA
+  // -----------------------------------------------------
+
   nombreUsuario: string = '';
 
+  // -----------------------------------------------------
+  // NOMBRE QUE SE ESTÁ EDITANDO EN EL FORMULARIO
+  // -----------------------------------------------------
+
+  nombreUsuarioEdicion: string = '';
+
   correoUsuario: string = '';
+
   telefonoUsuario: string = '';
 
   cargoUsuario: string = '';
+
   inicialesUsuario: string = '';
 
   private usuarioOriginal: Usuario | null = null;
@@ -72,16 +89,18 @@ export class Configuracion implements OnInit {
 
   roles: Rol[] = [];
 
-
   // =====================================================
   // ESTADOS
   // =====================================================
 
   cargandoUsuario: boolean = false;
+
   cargandoRoles: boolean = false;
+
   guardando: boolean = false;
 
   mensajeExito: string = '';
+
   mensajeError: string = '';
 
   // =====================================================
@@ -89,7 +108,9 @@ export class Configuracion implements OnInit {
   // =====================================================
 
   contrasenaActual: string = '';
+
   nuevaContrasena: string = '';
+
   confirmarContrasena: string = '';
 
   // =====================================================
@@ -107,7 +128,9 @@ export class Configuracion implements OnInit {
   cargarUsuario(): void {
 
     this.mensajeError = '';
+
     this.mensajeExito = '';
+
     this.cargandoUsuario = true;
 
     const usuarioGuardado =
@@ -169,6 +192,10 @@ export class Configuracion implements OnInit {
             usuarioApi
           );
 
+          // ---------------------------------------------
+          // GUARDAR USUARIO ORIGINAL
+          // ---------------------------------------------
+
           this.usuarioOriginal =
             { ...usuarioApi };
 
@@ -187,7 +214,7 @@ export class Configuracion implements OnInit {
           const usuarioAnterior =
             localStorage.getItem('usuario');
 
-          let datosUsuario =
+          let datosUsuario: Usuario =
             usuarioApi;
 
           if (usuarioAnterior) {
@@ -290,9 +317,20 @@ export class Configuracion implements OnInit {
     this.apellidosUsuario =
       usuario.apellidos ?? '';
 
+    // ---------------------------------------------------
+    // NOMBRE GUARDADO
+    // ---------------------------------------------------
+
     this.nombreUsuario =
       `${this.nombresUsuario} ${this.apellidosUsuario}`
         .trim();
+
+    // ---------------------------------------------------
+    // NOMBRE PARA EDITAR
+    // ---------------------------------------------------
+
+    this.nombreUsuarioEdicion =
+      this.nombreUsuario;
 
     this.correoUsuario =
       usuario.correo ?? '';
@@ -305,8 +343,6 @@ export class Configuracion implements OnInit {
         this.nombreUsuario
       );
 
-    // El cargo se actualiza cuando
-    // se carguen los roles.
     this.cargoUsuario =
       'Cargando...';
   }
@@ -461,10 +497,10 @@ export class Configuracion implements OnInit {
   guardarCambios(): void {
 
     this.mensajeExito = '';
+
     this.mensajeError = '';
 
     if (this.guardando) {
-
       return;
     }
 
@@ -476,12 +512,12 @@ export class Configuracion implements OnInit {
       return;
     }
 
-    // -------------------------------------------------
-    // NOMBRE
-    // -------------------------------------------------
+    // ===================================================
+    // NOMBRE COMPLETO
+    // ===================================================
 
     const nombreCompleto =
-      this.nombreUsuario.trim();
+      this.nombreUsuarioEdicion.trim();
 
     if (!nombreCompleto) {
 
@@ -500,6 +536,7 @@ export class Configuracion implements OnInit {
         );
 
     let nombres = '';
+
     let apellidos = '';
 
     if (partesNombre.length === 1) {
@@ -533,9 +570,9 @@ export class Configuracion implements OnInit {
       }
     }
 
-    // -------------------------------------------------
+    // ===================================================
     // CORREO
-    // -------------------------------------------------
+    // ===================================================
 
     const correo =
       this.correoUsuario.trim();
@@ -560,22 +597,25 @@ export class Configuracion implements OnInit {
       return;
     }
 
-    // -------------------------------------------------
+    // ===================================================
     // TELÉFONO
-    // -------------------------------------------------
+    // ===================================================
 
     const telefono =
       this.telefonoUsuario.trim();
 
-    // -------------------------------------------------
+    // ===================================================
     // DATOS A ACTUALIZAR
-    // -------------------------------------------------
+    // ===================================================
 
     const datos: Partial<Usuario> = {
 
       nombres,
+
       apellidos,
+
       correo,
+
       telefono
     };
 
@@ -591,9 +631,11 @@ export class Configuracion implements OnInit {
 
     this.guardando = true;
 
-    // -------------------------------------------------
-    // ACTUALIZAR USUARIO
-    // -------------------------------------------------
+    this.cdr.detectChanges();
+
+    // ===================================================
+    // ACTUALIZAR USUARIO EN API
+    // ===================================================
 
     this.http.patch<Usuario>(
       `${this.apiUrl}/usuarios/${this.idUsuario}/`,
@@ -607,45 +649,72 @@ export class Configuracion implements OnInit {
           usuarioActualizado
         );
 
-        // ---------------------------------------------
-        // ACTUALIZAR INFORMACIÓN EN PANTALLA
-        // ---------------------------------------------
+        // =================================================
+        // ACTUALIZAR DATOS GUARDADOS EN LA PANTALLA
+        // =================================================
 
         this.nombresUsuario =
-          usuarioActualizado.nombres ?? '';
+          usuarioActualizado.nombres ??
+          nombres;
 
         this.apellidosUsuario =
-          usuarioActualizado.apellidos ?? '';
+          usuarioActualizado.apellidos ??
+          apellidos;
+
+        // -------------------------------------------------
+        // AHORA SÍ ACTUALIZAMOS EL NOMBRE MOSTRADO
+        // -------------------------------------------------
 
         this.nombreUsuario =
           `${this.nombresUsuario} ${this.apellidosUsuario}`
             .trim();
 
+        // -------------------------------------------------
+        // EL CAMPO DE EDICIÓN TAMBIÉN QUEDA SINCRONIZADO
+        // -------------------------------------------------
+
+        this.nombreUsuarioEdicion =
+          this.nombreUsuario;
+
         this.correoUsuario =
-          usuarioActualizado.correo ?? '';
+          usuarioActualizado.correo ??
+          correo;
 
         this.telefonoUsuario =
-          usuarioActualizado.telefono ?? '';
+          usuarioActualizado.telefono ??
+          telefono;
 
         this.inicialesUsuario =
           this.obtenerIniciales(
             this.nombreUsuario
           );
 
-        this.usuarioOriginal =
-          {
+        // =================================================
+        // ACTUALIZAR USUARIO ORIGINAL
+        // =================================================
+
+        if (this.usuarioOriginal) {
+
+          this.usuarioOriginal = {
             ...this.usuarioOriginal,
             ...usuarioActualizado
           };
 
-        // ---------------------------------------------
+        } else {
+
+          this.usuarioOriginal = {
+            ...usuarioActualizado
+          };
+        }
+
+        // =================================================
         // ACTUALIZAR LOCALSTORAGE
-        // ---------------------------------------------
+        // =================================================
 
         const usuarioAnterior =
           localStorage.getItem('usuario');
 
-        let datosUsuario =
+        let datosUsuario: Usuario =
           usuarioActualizado;
 
         if (usuarioAnterior) {
@@ -656,10 +725,8 @@ export class Configuracion implements OnInit {
               JSON.parse(usuarioAnterior);
 
             datosUsuario = {
-
               ...anterior,
               ...usuarioActualizado
-
             };
 
           } catch (error) {
@@ -676,16 +743,44 @@ export class Configuracion implements OnInit {
           JSON.stringify(datosUsuario)
         );
 
-        // ---------------------------------------------
+        // =================================================
+        // AVISAR AL LAYOUT QUE EL USUARIO CAMBIÓ
+        // =================================================
+
+        window.dispatchEvent(
+          new CustomEvent(
+            'usuarioActualizado',
+            {
+              detail: datosUsuario
+            }
+          )
+        );
+
+        // =================================================
         // FINALIZAR
-        // ---------------------------------------------
+        // =================================================
 
         this.guardando = false;
+
+        this.mensajeError = '';
 
         this.mensajeExito =
           'Cambios guardados correctamente.';
 
+        console.log(
+          'DATOS ACTUALIZADOS EN PANTALLA:',
+          {
+            nombre: this.nombreUsuario,
+            correo: this.correoUsuario,
+            telefono: this.telefonoUsuario
+          }
+        );
+
         this.cdr.detectChanges();
+
+        // =================================================
+        // OCULTAR MENSAJE
+        // =================================================
 
         setTimeout(() => {
 
@@ -742,7 +837,6 @@ export class Configuracion implements OnInit {
 
         this.cdr.detectChanges();
       }
-
     });
   }
 
@@ -764,6 +858,7 @@ export class Configuracion implements OnInit {
   actualizarContrasena(): void {
 
     this.mensajeExito = '';
+
     this.mensajeError = '';
 
     if (!this.contrasenaActual.trim()) {
@@ -820,4 +915,3 @@ export class Configuracion implements OnInit {
     );
   }
 }
-

@@ -1,17 +1,23 @@
-
-import { Component } from '@angular/core';
+import {Component,OnDestroy,ChangeDetectorRef} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  RouterLink,
-  RouterLinkActive,
-  RouterOutlet,
-  Router
-} from '@angular/router';
+
+import {RouterLink, RouterLinkActive, RouterOutlet, Router} from '@angular/router';
 
 interface OpcionMenu {
   nombre: string;
   icono: string;
   ruta: string;
+}
+
+interface UsuarioActualizado {
+  id_usuario: number;
+  id_rol: number | null;
+  nombres: string;
+  apellidos: string;
+  correo?: string;
+  telefono?: string | null;
+  rol?: string;
+  [key: string]: any;
 }
 
 @Component({
@@ -28,39 +34,99 @@ interface OpcionMenu {
   templateUrl: './layout.html',
   styleUrl: './layout.css'
 })
-export class Layout {
+export class Layout implements OnDestroy {
 
-  constructor(private router: Router) {
+  // =====================================================
+  // LISTENER PARA CAMBIOS DEL USUARIO
+  // =====================================================
+
+  private readonly usuarioActualizadoListener =
+    (event: Event): void => {
+
+      const evento =
+        event as CustomEvent<UsuarioActualizado>;
+
+      const usuario =
+        evento.detail;
+
+      if (!usuario) {
+        return;
+      }
+
+      console.log(
+        'LAYOUT - USUARIO ACTUALIZADO:',
+        usuario
+      );
+
+      // ---------------------------------------------------
+      // ACTUALIZAR LOS DATOS
+      // ---------------------------------------------------
+
+      this.actualizarDatosUsuario(
+        usuario
+      );
+
+      // ---------------------------------------------------
+      // FORZAR ACTUALIZACIÓN VISUAL DEL LAYOUT
+      // ---------------------------------------------------
+
+      this.cdr.detectChanges();
+
+    };
+
+
+  constructor(
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {
+
     this.cargarUsuario();
+
+    // ===================================================
+    // ESCUCHAR CAMBIOS DE CONFIGURACIÓN
+    // ===================================================
+
+    window.addEventListener(
+      'usuarioActualizado',
+      this.usuarioActualizadoListener
+    );
   }
 
-  // =========================================================
+
+  // =====================================================
   // DATOS GENERALES DE LA APLICACIÓN
-  // =========================================================
+  // =====================================================
 
-  nombreAplicacion = 'GerIApp';
+  nombreAplicacion =
+    'GerIApp';
 
-  textoNuevoRegistro = 'Nuevo Registro';
+  textoNuevoRegistro =
+    'Nuevo Registro';
 
-  textoCerrarSesion = 'Cerrar sesión';
+  textoCerrarSesion =
+    'Cerrar sesión';
 
-  placeholderBuscador = 'Buscar por nombre o documento...';
+  placeholderBuscador =
+    'Buscar por nombre o documento...';
 
 
-  // =========================================================
+  // =====================================================
   // DATOS DEL USUARIO AUTENTICADO
-  // =========================================================
+  // =====================================================
 
-  nombreUsuario = '';
+  nombreUsuario =
+    '';
 
-  rolUsuario = '';
+  rolUsuario =
+    '';
 
-  inicialesUsuario = '';
+  inicialesUsuario =
+    '';
 
 
-  // =========================================================
+  // =====================================================
   // MENÚ
-  // =========================================================
+  // =====================================================
 
   menu: OpcionMenu[] = [
 
@@ -109,36 +175,33 @@ export class Layout {
   ];
 
 
-  // =========================================================
+  // =====================================================
   // CARGAR USUARIO DESDE LOCALSTORAGE
-  // =========================================================
+  // =====================================================
 
   cargarUsuario(): void {
 
-    const usuarioGuardado = localStorage.getItem('usuario');
+    const usuarioGuardado =
+      localStorage.getItem('usuario');
 
     if (!usuarioGuardado) {
-      console.warn('No hay un usuario guardado en localStorage.');
+
+      console.warn(
+        'No hay un usuario guardado en localStorage.'
+      );
+
       return;
     }
 
     try {
 
-      const usuario = JSON.parse(usuarioGuardado);
+      const usuario:
+        UsuarioActualizado =
+        JSON.parse(usuarioGuardado);
 
-      // Nombre completo
-      this.nombreUsuario =
-        `${usuario.nombres ?? ''} ${usuario.apellidos ?? ''}`.trim();
-
-      // Rol
-      this.rolUsuario = usuario.rol ?? '';
-
-      // Iniciales
-      const nombres = usuario.nombres ?? '';
-      const apellidos = usuario.apellidos ?? '';
-
-      this.inicialesUsuario =
-        `${nombres.charAt(0)}${apellidos.charAt(0)}`.toUpperCase();
+      this.actualizarDatosUsuario(
+        usuario
+      );
 
     } catch (error) {
 
@@ -146,23 +209,81 @@ export class Layout {
         'Error al leer el usuario guardado en localStorage:',
         error
       );
-
     }
   }
 
 
-  // =========================================================
+  // =====================================================
+  // ACTUALIZAR DATOS DEL USUARIO
+  // =====================================================
+
+  private actualizarDatosUsuario(
+    usuario: UsuarioActualizado
+  ): void {
+
+    // ---------------------------------------------------
+    // NOMBRE COMPLETO
+    // ---------------------------------------------------
+
+    this.nombreUsuario =
+      `${usuario.nombres ?? ''} ${usuario.apellidos ?? ''}`
+        .trim();
+
+
+    // ---------------------------------------------------
+    // ROL
+    // ---------------------------------------------------
+
+    this.rolUsuario =
+      usuario.rol ?? '';
+
+
+    // ---------------------------------------------------
+    // INICIALES
+    // ---------------------------------------------------
+
+    const nombres =
+      usuario.nombres ?? '';
+
+    const apellidos =
+      usuario.apellidos ?? '';
+
+    this.inicialesUsuario =
+      `${nombres.charAt(0)}${apellidos.charAt(0)}`
+        .toUpperCase();
+  }
+
+
+  // =====================================================
   // CERRAR SESIÓN
-  // =========================================================
+  // =====================================================
 
   cerrarSesion(): void {
 
-    console.log('Cerrando sesión...');
+    console.log(
+      'Cerrando sesión...'
+    );
 
-    localStorage.removeItem('usuario');
+    localStorage.removeItem(
+      'usuario'
+    );
 
-    this.router.navigate(['/login']);
+    this.router.navigate([
+      '/login'
+    ]);
   }
 
+
+  // =====================================================
+  // DESTRUIR COMPONENTE
+  // =====================================================
+
+  ngOnDestroy(): void {
+
+    window.removeEventListener(
+      'usuarioActualizado',
+      this.usuarioActualizadoListener
+    );
+  }
 }
 
