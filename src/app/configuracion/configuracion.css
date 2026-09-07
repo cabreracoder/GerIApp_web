@@ -218,6 +218,10 @@ box-shadow:
 .campo-formulario-configuracion input::placeholder {
 color: var(--text-secondary);
 }
+.asterisco-obligatorio {
+  color: #dc3545;
+  font-weight: 700;
+}
 
 /* ==========================================================================
 SEGURIDAD

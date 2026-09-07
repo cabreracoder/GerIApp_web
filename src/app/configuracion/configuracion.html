@@ -1,36 +1,22 @@
 <main class="pagina">
 
-  <!-- =====================================================
-       CABECERA
-  ====================================================== -->
-
+  <!-- CABECERA -->
   <header class="encabezado-configuracion">
-
     <div class="contenido-encabezado-configuracion">
-
       <h1 class="titulo-configuracion">
         Perfil
       </h1>
 
       <p class="subtitulo-configuracion">
-        Congigure su perfil y cambie su contraseña para mantener su cuenta segura.
+        Configure su perfil y cambie su contraseña para mantener su cuenta segura.
       </p>
-
     </div>
-
   </header>
 
-
-  <!-- =====================================================
-       PERFIL DE ADMINISTRADOR
-  ====================================================== -->
-
+  <!-- PERFIL DE ADMINISTRADOR -->
   <section class="tarjeta-configuracion">
 
-    <!-- TÍTULO -->
-
     <div class="titulo-seccion-configuracion">
-
       <span class="material-symbols-outlined">
         manage_accounts
       </span>
@@ -38,27 +24,16 @@
       <h3>
         Perfil de Administrador
       </h3>
-
     </div>
 
-
-    <!-- ===================================================
-         INFORMACIÓN DEL PERFIL
-    ==================================================== -->
-
+    <!-- INFORMACIÓN DEL PERFIL -->
     <div class="fila-perfil-configuracion">
-
-      <!-- AVATAR -->
 
       <div class="avatar-administrador">
         {{ inicialesUsuario }}
       </div>
 
-
-      <!-- INFORMACIÓN -->
-
       <div class="informacion-perfil">
-
         <div class="nombre-perfil">
           {{ nombreUsuario }}
         </div>
@@ -66,86 +41,63 @@
         <div class="datos-perfil">
           {{ cargoUsuario }} · {{ correoUsuario }}
         </div>
-
       </div>
-
-
-      <!-- CAMBIAR FOTO -->
 
       <button
         type="button"
         class="boton-secundario-configuracion"
         (click)="cambiarFoto()">
-
         Cambiar foto
-
       </button>
 
     </div>
 
-
-    <!-- ===================================================
-         CAMPOS DEL PERFIL
-    ==================================================== -->
-
+    <!-- CAMPOS DEL PERFIL -->
     <div class="cuadricula-formulario-configuracion">
 
-
-      <!-- NOMBRE COMPLETO -->
-
       <div class="campo-formulario-configuracion">
-
         <label for="configuracionNombre">
           Nombre Completo
+          <span class="asterisco-obligatorio">*</span>
         </label>
 
         <input
           id="configuracionNombre"
           type="text"
           [(ngModel)]="nombreUsuarioEdicion"
-          autocomplete="name">
-
+          autocomplete="name"
+          required>
       </div>
 
-
-      <!-- CORREO -->
-
       <div class="campo-formulario-configuracion">
-
         <label for="configuracionEmail">
           Correo Electrónico
+          <span class="asterisco-obligatorio">*</span>
         </label>
 
         <input
           id="configuracionEmail"
           type="email"
           [(ngModel)]="correoUsuario"
-          autocomplete="email">
-
+          autocomplete="email"
+          required>
       </div>
 
-
-      <!-- TELÉFONO -->
-
       <div class="campo-formulario-configuracion">
-
         <label for="configuracionTelefono">
           Teléfono
+          <span class="asterisco-obligatorio">*</span>
         </label>
 
         <input
           id="configuracionTelefono"
           type="tel"
           [(ngModel)]="telefonoUsuario"
-          autocomplete="tel">
-
+          autocomplete="tel"
+          required>
       </div>
 
-
-      <!-- CARGO -->
-
       <div class="campo-formulario-configuracion">
-
         <label for="configuracionCargo">
           Cargo
         </label>
@@ -155,20 +107,12 @@
           type="text"
           [(ngModel)]="cargoUsuario"
           readonly>
-
       </div>
 
     </div>
 
-
-    <!-- ===================================================
-         FOOTER DEL PERFIL
-    ==================================================== -->
-
+    <!-- FOOTER DEL PERFIL -->
     <div class="pie-tarjeta-configuracion">
-
-
-      <!-- MENSAJE DE ÉXITO -->
 
       <div
         class="mensaje-exito-configuracion"
@@ -182,9 +126,6 @@
 
       </div>
 
-
-      <!-- MENSAJE DE ERROR -->
-
       <div
         class="mensaje-error-configuracion"
         *ngIf="mensajeError">
@@ -197,33 +138,19 @@
 
       </div>
 
-
-      <!-- BOTÓN GUARDAR -->
-
       <button
         type="button"
         class="boton-principal-configuracion"
         (click)="guardarCambios()"
         [disabled]="guardando">
 
-
-        <!-- INDICADOR DE CARGA -->
-
         <span
           class="indicador-carga-configuracion"
           *ngIf="guardando">
         </span>
 
-
-        <!-- TEXTO -->
-
         <span class="texto-boton-configuracion">
-
-          {{ guardando
-            ? 'Guardando...'
-            : 'Guardar cambios'
-          }}
-
+          {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
         </span>
 
       </button>
@@ -232,17 +159,10 @@
 
   </section>
 
-
-  <!-- =====================================================
-       SEGURIDAD
-  ====================================================== -->
-
+  <!-- SEGURIDAD -->
   <section class="tarjeta-configuracion">
 
-    <!-- TÍTULO -->
-
     <div class="titulo-seccion-configuracion">
-
       <span class="material-symbols-outlined">
         lock
       </span>
@@ -250,19 +170,12 @@
       <h3>
         Seguridad
       </h3>
-
     </div>
 
-
-    <!-- ===================================================
-         CAMPOS DE SEGURIDAD
-    ==================================================== -->
-
+    <!-- CAMPOS DE SEGURIDAD -->
     <div class="cuadricula-seguridad-configuracion">
 
-
       <!-- CONTRASEÑA ACTUAL -->
-
       <div class="campo-formulario-configuracion">
 
         <label for="configuracionPasswordActual">
@@ -278,54 +191,49 @@
 
       </div>
 
-
-      <!-- ESPACIO -->
-
       <div class="campo-formulario-vacio"></div>
 
-
       <!-- NUEVA CONTRASEÑA -->
-
       <div class="campo-formulario-configuracion">
 
         <label for="configuracionPasswordNueva">
           Nueva contraseña
+          <span class="asterisco-obligatorio">*</span>
         </label>
 
         <input
           id="configuracionPasswordNueva"
           type="password"
-          placeholder="••••••••"
+          placeholder="8 a 10 caracteres"
           [(ngModel)]="nuevaContrasena"
-          autocomplete="new-password">
+          autocomplete="new-password"
+          minlength="8"
+          maxlength="10">
 
       </div>
 
-
       <!-- CONFIRMAR CONTRASEÑA -->
-
       <div class="campo-formulario-configuracion">
 
         <label for="configuracionPasswordConfirmar">
           Confirmar contraseña
+          <span class="asterisco-obligatorio">*</span>
         </label>
 
         <input
           id="configuracionPasswordConfirmar"
           type="password"
-          placeholder="••••••••"
+          placeholder="8 a 10 caracteres"
           [(ngModel)]="confirmarContrasena"
-          autocomplete="new-password">
+          autocomplete="new-password"
+          minlength="8"
+          maxlength="10">
 
       </div>
 
     </div>
 
-
-    <!-- ===================================================
-         FOOTER SEGURIDAD
-    ==================================================== -->
-
+    <!-- FOOTER SEGURIDAD -->
     <div class="pie-seguridad-configuracion">
 
       <button
