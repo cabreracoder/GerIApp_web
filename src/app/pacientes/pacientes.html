@@ -29,31 +29,6 @@
 
     </div>
 
-    <!-- BUSCADOR -->
-
-    <section class="tarjeta-buscador">
-
-        <span class="material-symbols-outlined icono-busqueda">
-            search
-        </span>
-
-        <input
-            type="search"
-            placeholder="Buscar por documento o nombre..."
-            aria-label="Buscar paciente"
-            autocomplete="off"
-            [(ngModel)]="searchText"
-        >
-
-        <span
-            class="contador-resultados"
-            *ngIf="searchText"
-        >
-            {{ filteredPatients.length }}
-            resultado{{ filteredPatients.length === 1 ? '' : 's' }}
-        </span>
-
-    </section>
 
     <!-- CONTADOR -->
 
@@ -178,7 +153,6 @@
 
                     <!-- =====================================================
                          ACCIONES
-                         Mismo tamaño y estilo de Cuidadores
                     ====================================================== -->
 
                     <td class="px-5 py-4 rounded-r-lg">
@@ -287,11 +261,13 @@
                     Datos del paciente
                 </div>
 
+                <p class="text-xs text-[#6C757D] mb-4"> <span class="text-red-500">*</span> Los campos con asterisco son obligatorios. </p>
+
                 <div class="rejilla-formulario">
 
                     <div class="campo-formulario">
                         <label class="etiqueta-formulario">
-                            Nombres
+                            Nombres <span class="text-red-500 text-xs">*</span>
                         </label>
                         <input
                             class="campo-entrada"
@@ -303,7 +279,7 @@
 
                     <div class="campo-formulario">
                         <label class="etiqueta-formulario">
-                            Apellidos
+                            Apellidos <span class="text-red-500 text-xs">*</span>
                         </label>
                         <input
                             class="campo-entrada"
@@ -315,7 +291,7 @@
 
                     <div class="campo-formulario">
                         <label class="etiqueta-formulario">
-                            Tipo de identificación
+                            Tipo de identificación <span class="text-red-500 text-xs">*</span>
                         </label>
                         <select
                             class="campo-entrada"
@@ -330,7 +306,7 @@
 
                     <div class="campo-formulario">
                         <label class="etiqueta-formulario">
-                            Número de documento
+                            Número de documento <span class="text-red-500 text-xs">*</span>
                         </label>
                         <input
                             class="campo-entrada"
@@ -342,7 +318,7 @@
 
                     <div class="campo-formulario">
                         <label class="etiqueta-formulario">
-                            Fecha de nacimiento
+                            Fecha de nacimiento <span class="text-red-500 text-xs">*</span>
                         </label>
                         <input
                             class="campo-entrada"
@@ -366,7 +342,7 @@
 
                     <div class="campo-formulario">
                         <label class="etiqueta-formulario">
-                            Género
+                            Género <span class="text-red-500 text-xs">*</span>
                         </label>
                         <select
                             class="campo-entrada"
@@ -381,7 +357,7 @@
 
                     <div class="campo-formulario">
                         <label class="etiqueta-formulario">
-                            Grupo sanguíneo
+                            Grupo sanguíneo <span class="text-red-500 text-xs">*</span>
                         </label>
                         <select
                             class="campo-entrada"
@@ -397,7 +373,7 @@
 
                     <div class="campo-formulario">
                         <label class="etiqueta-formulario">
-                            RH
+                            RH <span class="text-red-500 text-xs">*</span>
                         </label>
                         <select
                             class="campo-entrada"
@@ -411,7 +387,7 @@
 
                     <div class="campo-formulario">
                         <label class="etiqueta-formulario">
-                            EPS
+                            EPS <span class="text-red-500 text-xs">*</span>
                         </label>
                         <input
                             class="campo-entrada"
@@ -423,7 +399,7 @@
 
                     <div class="campo-formulario">
                         <label class="etiqueta-formulario">
-                            Fecha de ingreso
+                            Fecha de ingreso <span class="text-red-500 text-xs">*</span>
                         </label>
                         <input
                             class="campo-entrada"
@@ -435,14 +411,14 @@
                 </div>
 
                 <div class="seccion-formulario">
-                    Familiar responsable
+                    Familiar responsable 
                 </div>
 
                 <div class="rejilla-formulario">
 
                     <div class="campo-formulario">
                         <label class="etiqueta-formulario">
-                            Nombres
+                            Nombres<span class="text-red-500 text-xs">*</span>
                         </label>
                         <input
                             class="campo-entrada"
@@ -454,7 +430,7 @@
 
                     <div class="campo-formulario">
                         <label class="etiqueta-formulario">
-                            Apellidos
+                            Apellidos <span class="text-red-500 text-xs">*</span>
                         </label>
                         <input
                             class="campo-entrada"
@@ -466,7 +442,7 @@
 
                     <div class="campo-formulario">
                         <label class="etiqueta-formulario">
-                            Parentesco
+                            Parentesco <span class="text-red-500 text-xs">*</span>
                         </label>
                         <input
                             class="campo-entrada"
@@ -478,7 +454,7 @@
 
                     <div class="campo-formulario">
                         <label class="etiqueta-formulario">
-                            Teléfono 1
+                            Teléfono 1 <span class="text-red-500 text-xs">*</span>
                         </label>
                         <input
                             class="campo-entrada"
@@ -502,7 +478,7 @@
 
                     <div class="campo-formulario">
                         <label class="etiqueta-formulario">
-                            Dirección
+                            Dirección <span class="text-red-500 text-xs">*</span>
                         </label>
                         <input
                             class="campo-entrada"
@@ -514,7 +490,7 @@
 
                     <div class="campo-formulario">
                         <label class="etiqueta-formulario">
-                            Correo electrónico
+                            Correo electrónico <span class="text-red-500 text-xs">*</span>
                         </label>
                         <input
                             class="campo-entrada"
@@ -526,7 +502,7 @@
 
                     <div class="campo-formulario">
                         <label class="etiqueta-formulario">
-                            Municipio
+                            Municipio <span class="text-red-500 text-xs">*</span>
                         </label>
                         <input
                             class="campo-entrada"
