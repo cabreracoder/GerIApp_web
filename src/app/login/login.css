@@ -1,73 +1,896 @@
-.login-container {
+* {
+  box-sizing: border-box;
+}
+
+:host {
+  display: block;
+  width: 100%;
   min-height: 100vh;
+}
+
+.login-container {
+  width: 100%;
+  min-height: 100vh;
+
   display: flex;
-  justify-content: center;
+
+  background: #f3f7fd;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  overflow: hidden;
+}
+
+
+/* panel  azul*/
+
+.branding-panel {
+  position: relative;
+
+  width: 44%;
+  min-height: 100vh;
+
+  display: flex;
   align-items: center;
-  padding: 30px;
+  justify-content: center;
+
+  background: #3b5bdb;
+
+  color: white;
+
+  overflow: hidden;
+
+  border-radius: 0 55% 55% 0;
+}
+
+
+/* Curva */
+
+.branding-panel::after {
+  content: "";
+
+  position: absolute;
+
+  width: 700px;
+  height: 1100px;
+
+  right: -470px;
+  top: -120px;
+
+  background: #2860e8;
+
+  border-radius: 50%;
+
+  z-index: 0;
+}
+
+
+/* Círculos */
+
+.branding-panel::before {
+  content: "";
+
+  position: absolute;
+
+  width: 190px;
+  height: 190px;
+
+  left: -60px;
+  bottom: 30px;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  border-radius: 50%;
+
+  box-shadow:
+    60px -105px 0 rgba(255, 255, 255, 0.07),
+    130px -175px 0 rgba(255, 255, 255, 0.04);
+
+  z-index: 1;
+}
+
+.branding-content {
+  position: relative;
+
+  z-index: 3;
+
+  width: 80%;
+  max-width: 420px;
+
+  text-align: center;
+
+  margin-left: -10px;
+}
+
+
+/* logo */
+
+.logo-gerIapp {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+
+.logo-gerIapp-img {
+  display: block;
+
+  width: 250px;
+
+  max-width: 100%;
+
+  height: auto;
+
+  object-fit: contain;
+
+  margin: 0 auto 8px;
+}
+
+
+/* Nombre */
+
+.logo-gerIapp h2 {
+  margin: 0;
+
+  color: white;
+
+  font-size: 42px;
+
+  line-height: 1;
+
+  font-weight: 700;
+
+  letter-spacing: -1px;
+}
+
+
+/* Gestión geriátrica */
+
+.logo-gerIapp p {
+  margin: 8px 0 0;
+
+  color: white;
+
+  font-size: 19px;
+}
+
+.linea-decorativa {
+  width: 40px;
+  height: 4px;
+
+  margin: 32px auto 24px;
+
+  background: white;
+
+  border-radius: 20px;
+}
+
+.branding-text h3 {
+  margin: 0 0 14px;
+
+  color: white;
+
+  font-size: 25px;
+
+  line-height: 1.25;
+}
+
+
+.branding-text p {
+  max-width: 340px;
+
+  margin: 0 auto;
+
+  color: rgba(255, 255, 255, 0.92);
+
+  font-size: 15px;
+
+  line-height: 1.55;
+}
+
+.login-panel {
+  width: 56%;
+  min-height: 100vh;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 40px 70px;
+
+  background: #f3f7fd;
 }
 
 .login-card {
   width: 100%;
-  max-width: 400px;
-  padding: 35px;
-  border-radius: 15px;
+
+  max-width: 540px;
+
+  padding: 42px 48px 38px;
+
   background: white;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+
+  border-radius: 18px;
+
+  border: 1px solid rgba(233, 236, 239, 0.8);
+
+  box-shadow:
+    0 12px 35px rgba(33, 37, 41, 0.08);
 }
 
-.login-card h1 {
+.login-header {
   text-align: center;
-  margin-bottom: 10px;
-}
 
-.subtitulo {
-  text-align: center;
   margin-bottom: 30px;
 }
 
-.campo {
-  margin-bottom: 18px;
+
+.login-header h1 {
+  margin: 0 0 8px;
+
+  color: #212529;
+
+  font-size: 29px;
+
+  line-height: 1.2;
+
+  font-weight: 700;
 }
 
-.campo label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 600;
-}
 
-.campo input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+.subtitulo {
+  margin: 0;
+
+  color: #6c757d;
+
   font-size: 15px;
 }
 
-button {
+.campo {
+  margin-bottom: 20px;
+}
+
+
+.campo label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #212529;
+
+  font-size: 14px;
+
+  font-weight: 600;
+}
+
+.input-container {
   width: 100%;
-  padding: 13px;
+
+  height: 52px;
+
+  display: flex;
+
+  align-items: center;
+
+  border: 1px solid #dfe3e8;
+
+  border-radius: 11px;
+
+  background: white;
+
+  transition: 0.2s ease;
+}
+
+
+.input-container:focus-within {
+  border-color: #3b5bdb;
+
+  box-shadow:
+    0 0 0 3px rgba(59, 91, 219, 0.1);
+}
+
+
+.input-icon {
+  width: 46px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  color: #6c757d;
+
+  font-size: 18px;
+}
+
+
+.input-container input {
+  flex: 1;
+
+  width: 100%;
+  height: 100%;
+
   border: none;
-  border-radius: 8px;
+  outline: none;
+
+  background: transparent;
+
+  color: #212529;
+
+  font-size: 15px;
+
+  padding: 0 5px;
+}
+
+
+.input-container input::placeholder {
+  color: #8a919a;
+}
+
+
+.password-icon {
+  width: 46px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  color: #6c757d;
+
   cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
 }
 
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
+.recuperar-container {
+  display: flex;
+
+  justify-content: flex-end;
+
+  margin-top: -3px;
+
+  margin-bottom: 22px;
 }
 
-.mensaje-exito,
-.mensaje-error {
+
+.recuperar-btn {
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: #3b5bdb;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.mensaje-exito {
+  padding: 10px 13px;
+
   margin-bottom: 15px;
-  padding: 10px;
-  border-radius: 6px;
-  text-align: center;
+
+  border-radius: 9px;
+
+  background: #eaf8ef;
+
+  border: 1px solid #c8ead3;
+
+  color: #28a745;
+
+  font-size: 13px;
 }
+
+
+.mensaje-error {
+  padding: 10px 13px;
+
+  margin-bottom: 15px;
+
+  border-radius: 9px;
+
+  background: #fff0f0;
+
+  border: 1px solid #f5caca;
+
+  color: #dc3545;
+
+  font-size: 13px;
+}
+
+.btn-login {
+  width: 100%;
+
+  height: 52px;
+
+  border: none;
+
+  border-radius: 11px;
+
+  background: #3b5bdb;
+
+  color: white;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+
+.btn-login:hover {
+  background: #2f50cb;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 7px 18px rgba(59, 91, 219, 0.22);
+}
+
+
+.btn-login:disabled {
+  opacity: 0.65;
+
+  cursor: not-allowed;
+
+  transform: none;
+
+  box-shadow: none;
+}
+
+
+.separador {
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  margin: 22px 0;
+}
+
+
+.separador span {
+  flex: 1;
+
+  height: 1px;
+
+  background: #e5e8ec;
+}
+
+
+.separador p {
+  margin: 0;
+
+  color: #7a8088;
+
+  font-size: 13px;
+}
+
+
+/* google */
+
+.btn-google {
+  width: 100%;
+
+  height: 52px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  border: 1px solid #dfe3e8;
+
+  border-radius: 11px;
+
+  background: white;
+
+  color: #212529;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+
+.google-icon {
+  font-size: 19px;
+
+  font-weight: 700;
+
+  color: #4285f4;
+}
+
+
+/* registro*/
 
 .registro-link {
+  margin: 24px 0 0;
+
   text-align: center;
-  margin-top: 20px;
+
+  color: #6c757d;
+
+  font-size: 14px;
+}
+
+
+.registro-link button {
+  margin-left: 4px;
+
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: #3b5bdb;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+@media (max-width: 1000px) {
+
+  .branding-panel {
+    width: 40%;
+  }
+
+  .login-panel {
+    width: 60%;
+
+    padding: 30px;
+  }
+
+  .login-card {
+    padding: 35px 32px;
+  }
+
+  .logo-gerIapp-img {
+    width: 210px;
+  }
+
+  .logo-gerIapp h2 {
+    font-size: 35px;
+  }
+
+  .logo-gerIapp p {
+    font-size: 17px;
+  }
+
+  .branding-text h3 {
+    font-size: 21px;
+  }
+
+}
+
+
+@media (max-width: 700px) {
+
+
+  .login-container {
+    width: 100%;
+
+    min-height: 100vh;
+
+    display: block;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    background: #f8fafc;
+  }
+
+
+  .branding-panel {
+    width: 100%;
+
+    height: 285px;
+
+    min-height: 285px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 0 0 50% 50%;
+
+    padding: 15px 20px;
+  }
+
+
+  .branding-panel::after {
+    width: 500px;
+    height: 360px;
+
+    right: -220px;
+    top: 70px;
+  }
+
+  .branding-panel::before {
+    width: 150px;
+    height: 150px;
+
+    left: -50px;
+    bottom: 10px;
+  }
+
+
+  .branding-content {
+    width: 100%;
+
+    max-width: 350px;
+
+    margin: 0;
+
+    padding: 0 10px;
+  }
+
+  .logo-gerIapp-img {
+    width: 155px;
+
+    max-height: 130px;
+
+    object-fit: contain;
+
+    margin-bottom: 3px;
+  }
+
+
+  .logo-gerIapp h2 {
+    margin: 0;
+
+    font-size: 30px;
+
+    line-height: 1;
+  }
+
+
+  .logo-gerIapp p {
+    margin-top: 5px;
+
+    font-size: 14px;
+  }
+
+  .linea-decorativa {
+    width: 32px;
+    height: 3px;
+
+    margin: 14px auto 10px;
+  }
+
+  .branding-text h3 {
+    margin: 0 0 5px;
+
+    font-size: 17px;
+
+    line-height: 1.2;
+  }
+
+
+  .branding-text p {
+    max-width: 280px;
+
+    margin: 0 auto;
+
+    font-size: 12px;
+
+    line-height: 1.35;
+  }
+
+  .login-panel {
+    width: 100%;
+
+    min-height: auto;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: center;
+
+    padding: 18px 14px 30px;
+
+    background: #f8fafc;
+  }
+
+
+
+  .login-card {
+    width: 100%;
+
+    max-width: 480px;
+
+    padding: 27px 20px 28px;
+
+    border-radius: 16px;
+
+    box-shadow:
+      0 5px 20px rgba(33, 37, 41, 0.06);
+  }
+
+
+  .login-header {
+    margin-bottom: 25px;
+  }
+
+
+  .login-header h1 {
+    font-size: 24px;
+
+    margin-bottom: 6px;
+  }
+
+
+  .subtitulo {
+    font-size: 14px;
+  }
+
+
+  .campo {
+    margin-bottom: 17px;
+  }
+
+
+  .campo label {
+    margin-bottom: 7px;
+
+    font-size: 13px;
+  }
+
+
+  .input-container {
+    height: 50px;
+
+    border-radius: 10px;
+  }
+
+
+  .input-icon {
+    width: 42px;
+
+    font-size: 17px;
+  }
+
+
+  .password-icon {
+    width: 42px;
+  }
+
+
+  .input-container input {
+    font-size: 14px;
+  }
+
+
+  .recuperar-container {
+    margin-top: 0;
+
+    margin-bottom: 20px;
+  }
+
+
+  .recuperar-btn {
+    font-size: 13px;
+  }
+
+
+  .btn-login {
+    height: 50px;
+
+    border-radius: 10px;
+
+    font-size: 15px;
+  }
+
+
+  .separador {
+    margin: 20px 0;
+  }
+
+
+  .btn-google {
+    height: 50px;
+
+    border-radius: 10px;
+
+    font-size: 14px;
+  }
+
+
+  .registro-link {
+    margin-top: 22px;
+
+    font-size: 13px;
+  }
+
+
+  .registro-link button {
+    font-size: 13px;
+  }
+
+}
+
+
+@media (max-width: 380px) {
+
+  .branding-panel {
+    height: 250px;
+
+    min-height: 250px;
+  }
+
+
+  .logo-gerIapp-img {
+    width: 135px;
+
+    max-height: 110px;
+  }
+
+
+  .logo-gerIapp h2 {
+    font-size: 27px;
+  }
+
+
+  .logo-gerIapp p {
+    font-size: 13px;
+  }
+
+
+  .linea-decorativa {
+    margin: 10px auto 7px;
+  }
+
+
+  .branding-text h3 {
+    font-size: 16px;
+  }
+
+
+  .branding-text p {
+    font-size: 11px;
+  }
+
+
+  .login-panel {
+    padding: 14px 10px 25px;
+  }
+
+
+  .login-card {
+    padding: 24px 17px;
+  }
+
+
+  .login-header h1 {
+    font-size: 22px;
+  }
+
 }

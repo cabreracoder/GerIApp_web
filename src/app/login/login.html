@@ -1,87 +1,199 @@
-
 <div class="login-container">
 
-  <div class="login-card">
+  <!-- PANEL IZQUIERDO - IDENTIDAD GER IAPP -->
+  <div class="branding-panel">
 
-    <h1>Iniciar sesión</h1>
+    <div class="branding-content">
 
-    <p class="subtitulo">
-      Ingresa a GerIApp
-    </p>
+      <!-- Logo -->
+      <div class="logo-gerIapp">
 
-    <form (ngSubmit)="iniciarSesion()">
-
-      <div class="campo">
-
-        <label for="correo">
-          Correo electrónico
-        </label>
-
-        <input
-          type="email"
-          id="correo"
-          name="correo"
-          [(ngModel)]="usuario.correo"
-          placeholder="ejemplo@correo.com"
-          required
+        <img
+          src="/loginLogo.png"
+          alt="GerIApp"
+          class="logo-gerIapp-img"
         >
 
+        <h2>GerIApp</h2>
+
       </div>
 
-      <div class="campo">
+      <div class="linea-decorativa"></div>
 
-        <label for="contrasena">
-          Contraseña
-        </label>
+      <div class="branding-text">
+        <h3>Cuidados que conectan</h3>
 
-        <input
-          type="password"
-          id="contrasena"
-          name="contrasena"
-          [(ngModel)]="usuario.contrasena"
-          placeholder="Ingresa tu contraseña"
-          required
+        <p>
+          Una plataforma para el bienestar
+          y cuidado de nuestros adultos mayores.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- PANEL DERECHO - LOGIN -->
+  <div class="login-panel">
+
+    <div class="login-card">
+
+      <!-- Encabezado -->
+      <div class="login-header">
+
+        <h1>Bienvenido de nuevo</h1>
+
+        <p class="subtitulo">
+          Inicia sesión para continuar
+        </p>
+
+      </div>
+
+
+      <!-- FORMULARIO -->
+      <form (ngSubmit)="iniciarSesion()">
+
+        <!-- CORREO -->
+        <div class="campo">
+
+          <label for="correo">
+            Correo electrónico
+          </label>
+
+          <div class="input-container">
+
+            <span class="input-icon">✉</span>
+
+            <input
+              type="email"
+              id="correo"
+              name="correo"
+              [(ngModel)]="usuario.correo"
+              placeholder="correo@ejemplo.com"
+              required
+            >
+
+          </div>
+
+        </div>
+
+
+        <!-- CONTRASEÑA -->
+        <div class="campo">
+
+          <label for="contrasena">
+            Contraseña
+          </label>
+
+          <div class="input-container">
+
+            <span class="input-icon"> *</span>
+
+            <input
+              type="password"
+              id="contrasena"
+              name="contrasena"
+              [(ngModel)]="usuario.contrasena"
+              placeholder="Ingresa tu contraseña"
+              required
+            >
+
+            <span class="password-icon">
+              *
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- RECUPERAR CONTRASEÑA -->
+        <div class="recuperar-container">
+
+          <button
+            type="button"
+            class="recuperar-btn"
+          >
+            ¿Olvidaste tu contraseña?
+          </button>
+
+        </div>
+
+
+        <!-- MENSAJE DE ÉXITO -->
+        <div
+          class="mensaje-exito"
+          *ngIf="mensaje"
+        >
+          {{ mensaje }}
+        </div>
+
+
+        <!-- MENSAJE DE ERROR -->
+        <div
+          class="mensaje-error"
+          *ngIf="error"
+        >
+          {{ error }}
+        </div>
+
+
+        <!-- BOTÓN LOGIN -->
+        <button
+          type="submit"
+          class="btn-login"
+          [disabled]="cargando"
         >
 
+          {{ cargando ? 'Ingresando...' : 'Iniciar sesión' }}
+
+        </button>
+
+      </form>
+
+
+      <!-- SEPARADOR -->
+      <div class="separador">
+
+        <span></span>
+
+        <p>o</p>
+
+        <span></span>
+
       </div>
 
-      <div
-        class="mensaje-exito"
-        *ngIf="mensaje"
-      >
-        {{ mensaje }}
-      </div>
 
-      <div
-        class="mensaje-error"
-        *ngIf="error"
-      >
-        {{ error }}
-      </div>
-
-      <button
-        type="submit"
-        [disabled]="cargando"
-      >
-        {{ cargando ? 'Ingresando...' : 'Iniciar sesión' }}
-      </button>
-
-    </form>
-
-    <p class="registro-link">
-
-      ¿No tienes una cuenta?
-
+      <!-- GOOGLE -->
       <button
         type="button"
-        (click)="registro()"
+        class="btn-google"
       >
-        Regístrate
+
+        <span class="google-icon">G</span>
+
+        <span>Continuar con Google</span>
+
       </button>
 
-    </p>
+
+      <!-- REGISTRO -->
+      <p class="registro-link">
+
+        ¿No tienes una cuenta?
+
+        <button
+          type="button"
+          (click)="registro()"
+        >
+          Crear cuenta
+        </button>
+
+      </p>
+
+    </div>
 
   </div>
 
 </div>
-
