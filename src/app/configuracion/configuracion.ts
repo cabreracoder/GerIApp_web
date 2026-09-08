@@ -1,12 +1,8 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-  inject
-} from '@angular/core';
+import {ChangeDetectorRef,Component,OnInit,inject} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http'
+import { API_URL } from '../config/api.config';
 
 interface Usuario {
   id_usuario: number;
@@ -45,7 +41,7 @@ export class Configuracion implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly cdr = inject(ChangeDetectorRef);
 
-  private readonly apiUrl = 'http://127.0.0.1:8000/api';
+  private readonly apiUrl = API_URL;
 
   // =====================================================
   // USUARIO
