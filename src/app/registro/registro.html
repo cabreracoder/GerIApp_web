@@ -1,188 +1,343 @@
-
 <div class="registro-container">
 
-  <div class="registro-card">
+  <!-- PANEL IZQUIERDO - GER IAPP -->
 
-    <h1>Crear cuenta</h1>
+  <div class="branding-panel">
 
-    <p class="subtitulo">
-      Regístrate para comenzar a utilizar GerIApp
-    </p>
+    <div class="branding-content">
 
-    <form
-      (ngSubmit)="registrar()"
-      #registroForm="ngForm"
-    >
+      <!-- LOGO -->
+      <div class="logo-gerIapp">
 
-      <div class="campo">
-
-        <label for="tipo_documento">
-          Tipo de documento
-        </label>
-
-        <select
-          id="tipo_documento"
-          name="tipo_documento"
-          [(ngModel)]="usuario.tipo_documento"
-          required
+        <img
+          src="/loginLogo.png"
+          alt="GerIApp"
+          class="logo-gerIapp-img"
         >
-          <option value="">
-            Selecciona una opción
-          </option>
 
-          <option value="CC">
-            Cédula de ciudadanía
-          </option>
-
-          <option value="TI">
-            Tarjeta de identidad
-          </option>
-
-          <option value="CE">
-            Cédula de extranjería
-          </option>
-        </select>
+        <h2>GerIApp</h2>
 
       </div>
 
-      <div class="campo">
 
-        <label for="numero_documento">
-          Número de documento
-        </label>
+      <!-- LÍNEA DECORATIVA -->
+      <div class="linea-decorativa"></div>
 
-        <input
-          type="text"
-          id="numero_documento"
-          name="numero_documento"
-          [(ngModel)]="usuario.numero_documento"
-          placeholder="Ingresa tu número de documento"
-          required
-        >
 
-      </div>
+      <!-- MENSAJE -->
+      <div class="branding-text">
 
-      <div class="campo">
+        <h3>
+          Personas que cuidan personas
+        </h3>
 
-        <label for="nombres">
-          Nombres
-        </label>
-
-        <input
-          type="text"
-          id="nombres"
-          name="nombres"
-          [(ngModel)]="usuario.nombres"
-          placeholder="Ingresa tus nombres"
-          required
-        >
+        <p>
+          Juntos por una mejor calidad de vida.
+        </p>
 
       </div>
 
-      <div class="campo">
+    </div>
 
-        <label for="apellidos">
-          Apellidos
-        </label>
+  </div>
 
-        <input
-          type="text"
-          id="apellidos"
-          name="apellidos"
-          [(ngModel)]="usuario.apellidos"
-          placeholder="Ingresa tus apellidos"
-          required
-        >
 
-      </div>
+  <!-- =====================================================
+       PANEL DERECHO - REGISTRO
+       ===================================================== -->
 
-      <div class="campo">
+  <div class="registro-panel">
 
-        <label for="correo">
-          Correo electrónico
-        </label>
+    <div class="registro-card">
 
-        <input
-          type="email"
-          id="correo"
-          name="correo"
-          [(ngModel)]="usuario.correo"
-          placeholder="ejemplo@correo.com"
-          required
-        >
+      <!-- ENCABEZADO -->
+      <div class="registro-header">
+
+        <h1>Crear cuenta</h1>
+
+        <p class="subtitulo">
+          Regístrate para comenzar a utilizar GerIApp
+        </p>
 
       </div>
 
-      <div class="campo">
 
-        <label for="telefono">
-          Teléfono
-        </label>
+      <!-- =================================================
+           FORMULARIO
+           ================================================= -->
 
-        <input
-          type="text"
-          id="telefono"
-          name="telefono"
-          [(ngModel)]="usuario.telefono"
-          placeholder="Ingresa tu teléfono"
-        >
-
-      </div>
-
-      <div class="campo">
-
-        <label for="contrasena">
-          Contraseña
-        </label>
-
-        <input
-          type="password"
-          id="contrasena"
-          name="contrasena"
-          [(ngModel)]="usuario.contrasena"
-          placeholder="Ingresa una contraseña"
-          required
-        >
-
-      </div>
-
-      <div
-        class="mensaje-exito"
-        *ngIf="mensaje"
+      <form
+        (ngSubmit)="registrar()"
+        #registroForm="ngForm"
       >
-        {{ mensaje }}
-      </div>
 
-      <div
-        class="mensaje-error"
-        *ngIf="error"
-      >
-        {{ error }}
-      </div>
+        <div class="form-grid">
 
-      <button
-        type="submit"
-        [disabled]="cargando"
-      >
-        {{ cargando ? 'Registrando...' : 'Registrarse' }}
-      </button>
 
-    </form>
+          <!-- TIPO DOCUMENTO -->
+          <div class="campo">
 
-    <p class="login-link">
+            <label for="tipo_documento">
+              Tipo de documento
+            </label>
 
-      ¿Ya tienes una cuenta?
+            <div class="input-container">
 
-      <button
-        type="button"
-        (click)="login()"
-      >
-        Inicia sesión
-      </button>
+              <span class="input-icon">
+                *
+              </span>
 
-    </p>
+              <select
+                id="tipo_documento"
+                name="tipo_documento"
+                [(ngModel)]="usuario.tipo_documento"
+                required
+              >
+
+                <option value="">
+                  Selecciona una opción
+                </option>
+
+                <option value="CC">
+                  Cédula de ciudadanía
+                </option>
+
+                <option value="TI">
+                  Tarjeta de identidad
+                </option>
+
+                <option value="CE">
+                  Cédula de extranjería
+                </option>
+
+              </select>
+
+            </div>
+
+          </div>
+
+
+          <!-- NÚMERO DOCUMENTO -->
+          <div class="campo">
+
+            <label for="numero_documento">
+              Número de documento
+            </label>
+
+            <div class="input-container">
+
+              <span class="input-icon">
+                #
+              </span>
+
+              <input
+                type="text"
+                id="numero_documento"
+                name="numero_documento"
+                [(ngModel)]="usuario.numero_documento"
+                placeholder="Número de documento"
+                required
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- NOMBRES -->
+          <div class="campo">
+
+            <label for="nombres">
+              Nombres
+            </label>
+
+            <div class="input-container">
+
+              <span class="input-icon">
+                *
+              </span>
+
+              <input
+                type="text"
+                id="nombres"
+                name="nombres"
+                [(ngModel)]="usuario.nombres"
+                placeholder="Ingresa tus nombres"
+                required
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- APELLIDOS -->
+          <div class="campo">
+
+            <label for="apellidos">
+              Apellidos
+            </label>
+
+            <div class="input-container">
+
+              <span class="input-icon">
+                *
+              </span>
+
+              <input
+                type="text"
+                id="apellidos"
+                name="apellidos"
+                [(ngModel)]="usuario.apellidos"
+                placeholder="Ingresa tus apellidos"
+                required
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- TELÉFONO -->
+          <div class="campo">
+
+            <label for="telefono">
+              Teléfono
+            </label>
+
+            <div class="input-container">
+
+              <span class="input-icon">
+                *
+              </span>
+
+              <input
+                type="text"
+                id="telefono"
+                name="telefono"
+                [(ngModel)]="usuario.telefono"
+                placeholder="300 000 0000"
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- CORREO -->
+          <div class="campo">
+
+            <label for="correo">
+              Correo electrónico
+            </label>
+
+            <div class="input-container">
+
+              <span class="input-icon">
+                ✉
+              </span>
+
+              <input
+                type="email"
+                id="correo"
+                name="correo"
+                [(ngModel)]="usuario.correo"
+                placeholder="correo@ejemplo.com"
+                required
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- CONTRASEÑA -->
+          <div class="campo campo-completo">
+
+            <label for="contrasena">
+              Contraseña
+            </label>
+
+            <div class="input-container">
+
+              <span class="input-icon">
+                *
+              </span>
+
+              <input
+                type="password"
+                id="contrasena"
+                name="contrasena"
+                [(ngModel)]="usuario.contrasena"
+                placeholder="Crea una contraseña"
+                required
+              >
+
+              <span class="password-icon">
+                *
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             MENSAJES
+             ================================================= -->
+
+        <div
+          class="mensaje-exito"
+          *ngIf="mensaje"
+        >
+          {{ mensaje }}
+        </div>
+
+
+        <div
+          class="mensaje-error"
+          *ngIf="error"
+        >
+          {{ error }}
+        </div>
+
+
+        <!-- =================================================
+             BOTÓN
+             ================================================= -->
+
+        <button
+          type="submit"
+          class="btn-registro"
+          [disabled]="cargando"
+        >
+          {{ cargando ? 'Registrando...' : 'Registrarse' }}
+        </button>
+
+      </form>
+
+
+      <!-- =================================================
+           LOGIN
+           ================================================= -->
+
+      <p class="login-link">
+
+        ¿Ya tienes una cuenta?
+
+        <button
+          type="button"
+          (click)="login()"
+        >
+          Inicia sesión
+        </button>
+
+      </p>
+
+    </div>
 
   </div>
 
 </div>
-

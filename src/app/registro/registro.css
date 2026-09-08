@@ -1,80 +1,941 @@
-.registro-container {
+* {
+  box-sizing: border-box;
+}
+
+:host {
+  display: block;
+
+  width: 100%;
+
   min-height: 100vh;
+}
+
+
+/* contenedor*/
+
+.registro-container {
+  width: 100%;
+
+  min-height: 100vh;
+
   display: flex;
-  justify-content: center;
+
+  background: #f3f7fd;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  overflow: hidden;
+}
+
+
+/* panel azul */
+
+.branding-panel {
+  position: relative;
+
+  width: 44%;
+
+  min-height: 100vh;
+
+  display: flex;
+
   align-items: center;
-  padding: 30px;
+
+  justify-content: center;
+
+  background: #3b5bdb;
+
+  color: white;
+
+  overflow: hidden;
+
+  border-radius: 0 55% 55% 0;
+}
+
+
+/* curva */
+
+.branding-panel::after {
+  content: "";
+
+  position: absolute;
+
+  width: 700px;
+
+  height: 1100px;
+
+  right: -470px;
+
+  top: -120px;
+
+  background: #2860e8;
+
+  border-radius: 50%;
+
+  z-index: 0;
+}
+
+
+/* circulos decorativos */
+
+.branding-panel::before {
+  content: "";
+
+  position: absolute;
+
+  width: 190px;
+
+  height: 190px;
+
+  left: -60px;
+
+  bottom: 30px;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  border-radius: 50%;
+
+  box-shadow:
+    60px -105px 0 rgba(255, 255, 255, 0.07),
+    130px -175px 0 rgba(255, 255, 255, 0.04);
+
+  z-index: 1;
+}
+
+.branding-content {
+  position: relative;
+
+  z-index: 3;
+
+  width: 80%;
+
+  max-width: 420px;
+
+  text-align: center;
+
+  margin-left: -10px;
+}
+
+
+/* logo */
+
+.logo-gerIapp {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+
+.logo-gerIapp-img {
+  display: block;
+
+  width: 250px;
+
+  max-width: 100%;
+
+  height: auto;
+
+  object-fit: contain;
+
+  margin: 0 auto 8px;
+}
+
+
+.logo-gerIapp h2 {
+  margin: 0;
+
+  color: white;
+
+  font-size: 42px;
+
+  line-height: 1;
+
+  font-weight: 700;
+
+  letter-spacing: -1px;
+}
+
+
+.logo-gerIapp p {
+  margin: 8px 0 0;
+
+  color: white;
+
+  font-size: 19px;
+}
+
+.linea-decorativa {
+  width: 40px;
+
+  height: 4px;
+
+  margin: 32px auto 24px;
+
+  background: white;
+
+  border-radius: 20px;
+}
+
+.branding-text h3 {
+  margin: 0 0 14px;
+
+  color: white;
+
+  font-size: 25px;
+
+  line-height: 1.25;
+}
+
+
+.branding-text p {
+  max-width: 340px;
+
+  margin: 0 auto;
+
+  color: rgba(255, 255, 255, 0.92);
+
+  font-size: 15px;
+
+  line-height: 1.55;
+}
+
+.registro-panel {
+  width: 56%;
+
+  min-height: 100vh;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 30px 65px;
+
+  background: #f3f7fd;
+
+  overflow-y: auto;
 }
 
 .registro-card {
   width: 100%;
-  max-width: 500px;
-  padding: 35px;
-  border-radius: 15px;
+
+  max-width: 650px;
+
+  padding: 32px 45px 28px;
+
   background: white;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+
+  border-radius: 18px;
+
+  border: 1px solid rgba(233, 236, 239, 0.8);
+
+  box-shadow:
+    0 12px 35px rgba(33, 37, 41, 0.08);
 }
 
-.registro-card h1 {
+.registro-header {
   text-align: center;
-  margin-bottom: 10px;
+
+  margin-bottom: 25px;
 }
+
+
+.registro-header h1 {
+  margin: 0 0 7px;
+
+  color: #212529;
+
+  font-size: 28px;
+
+  line-height: 1.2;
+
+  font-weight: 700;
+}
+
 
 .subtitulo {
-  text-align: center;
-  margin-bottom: 30px;
+  margin: 0;
+
+  color: #6c757d;
+
+  font-size: 14px;
+
+  line-height: 1.4;
+}
+
+.form-grid {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  column-gap: 20px;
+
+  row-gap: 0;
 }
 
 .campo {
-  margin-bottom: 18px;
+  width: 100%;
+
+  margin-bottom: 16px;
 }
+
+
+.campo-completo {
+  grid-column: 1 / -1;
+}
+
 
 .campo label {
   display: block;
-  margin-bottom: 6px;
+
+  margin-bottom: 7px;
+
+  color: #212529;
+
+  font-size: 13px;
+
   font-weight: 600;
 }
 
-.campo input,
-.campo select {
+.input-container {
   width: 100%;
-  box-sizing: border-box;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 15px;
+
+  height: 48px;
+
+  display: flex;
+
+  align-items: center;
+
+  background: white;
+
+  border: 1px solid #dfe3e8;
+
+  border-radius: 10px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-button {
+
+.input-container:hover {
+  border-color: #cbd2da;
+}
+
+
+.input-container:focus-within {
+  border-color: #3b5bdb;
+
+  box-shadow:
+    0 0 0 3px rgba(59, 91, 219, 0.10);
+}
+
+.input-icon {
+  width: 43px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: #6c757d;
+
+  font-size: 17px;
+}
+
+.input-container input {
   width: 100%;
-  padding: 13px;
+
+  height: 100%;
+
+  flex: 1;
+
+  min-width: 0;
+
+  padding: 0 5px;
+
   border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
+
+  outline: none;
+
+  background: transparent;
+
+  color: #212529;
+
+  font-family: inherit;
+
+  font-size: 14px;
 }
 
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
+
+.input-container input::placeholder {
+  color: #8a919a;
+
+  opacity: 1;
+}
+
+.input-container select {
+  width: 100%;
+
+  height: 100%;
+
+  flex: 1;
+
+  min-width: 0;
+
+  padding: 0 8px 0 2px;
+
+  border: none;
+
+  outline: none;
+
+  background: transparent;
+
+  color: #212529;
+
+  font-family: inherit;
+
+  font-size: 14px;
+
+  cursor: pointer;
+}
+
+
+.input-container select option {
+  color: #212529;
+}
+
+.password-icon {
+  width: 43px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: #6c757d;
+
+  font-size: 15px;
+
+  cursor: pointer;
 }
 
 .mensaje-exito {
-  margin-bottom: 15px;
-  padding: 10px;
-  border-radius: 6px;
-  text-align: center;
+  padding: 10px 13px;
+
+  margin-bottom: 14px;
+
+  border-radius: 9px;
+
+  background: #eaf8ef;
+
+  border: 1px solid #c8ead3;
+
+  color: #28a745;
+
+  font-size: 13px;
 }
 
 .mensaje-error {
-  margin-bottom: 15px;
-  padding: 10px;
-  border-radius: 6px;
-  text-align: center;
+  padding: 10px 13px;
+
+  margin-bottom: 14px;
+
+  border-radius: 9px;
+
+  background: #fff0f0;
+
+  border: 1px solid #f5caca;
+
+  color: #dc3545;
+
+  font-size: 13px;
+}
+
+.btn-registro {
+  width: 100%;
+
+  height: 51px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border: none;
+
+  border-radius: 11px;
+
+  background: #3b5bdb;
+
+  color: white;
+
+  font-family: inherit;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.btn-registro:hover {
+  background: #2f50cb;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 7px 18px rgba(59, 91, 219, 0.22);
+}
+
+
+.btn-registro:active {
+  transform: translateY(0);
+}
+
+
+.btn-registro:disabled {
+  opacity: 0.65;
+
+  cursor: not-allowed;
+
+  transform: none;
+
+  box-shadow: none;
 }
 
 .login-link {
+  margin: 20px 0 0;
+
   text-align: center;
-  margin-top: 20px;
+
+  color: #6c757d;
+
+  font-size: 13px;
+}
+
+
+.login-link button {
+  margin-left: 4px;
+
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: #3b5bdb;
+
+  font-family: inherit;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+
+.login-link button:hover {
+  color: #2848bc;
+
+  text-decoration: underline;
+}
+
+@media (min-width: 1400px) {
+
+  .branding-panel {
+    width: 43%;
+  }
+
+  .registro-panel {
+    width: 57%;
+
+    padding-left: 80px;
+
+    padding-right: 80px;
+  }
+
+  .registro-card {
+    max-width: 680px;
+
+    padding: 35px 48px 30px;
+  }
+
+}
+
+@media (max-width: 1100px) {
+
+  .branding-panel {
+    width: 40%;
+  }
+
+  .registro-panel {
+    width: 60%;
+
+    padding: 25px;
+  }
+
+  .registro-card {
+    max-width: 620px;
+
+    padding: 30px;
+  }
+
+  .logo-gerIapp-img {
+    width: 210px;
+  }
+
+  .logo-gerIapp h2 {
+    font-size: 35px;
+  }
+
+  .logo-gerIapp p {
+    font-size: 17px;
+  }
+
+  .branding-text h3 {
+    font-size: 21px;
+  }
+
+}
+
+@media (max-width: 850px) {
+
+  .branding-panel {
+    width: 36%;
+
+    border-radius: 0 42% 42% 0;
+  }
+
+  .registro-panel {
+    width: 64%;
+
+    padding: 20px;
+  }
+
+  .registro-card {
+    padding: 28px 24px;
+  }
+
+  .form-grid {
+    column-gap: 14px;
+  }
+
+  .logo-gerIapp-img {
+    width: 180px;
+  }
+
+  .logo-gerIapp h2 {
+    font-size: 31px;
+  }
+
+}
+
+@media (max-width: 700px) {
+
+  .registro-container {
+    width: 100%;
+
+    min-height: 100vh;
+
+    display: block;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+    background: #f8fafc;
+  }
+
+  .branding-panel {
+    width: 100%;
+
+    height: 285px;
+
+    min-height: 285px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 15px 20px;
+
+    border-radius: 0 0 50% 50%;
+  }
+
+
+  .branding-panel::after {
+    width: 500px;
+
+    height: 360px;
+
+    right: -220px;
+
+    top: 70px;
+  }
+
+
+  .branding-panel::before {
+    width: 150px;
+
+    height: 150px;
+
+    left: -50px;
+
+    bottom: 10px;
+  }
+
+  .branding-content {
+    width: 100%;
+
+    max-width: 350px;
+
+    margin: 0;
+
+    padding: 0 10px;
+  }
+
+
+  .logo-gerIapp-img {
+    width: 155px;
+
+    max-height: 130px;
+
+    object-fit: contain;
+
+    margin-bottom: 3px;
+  }
+
+
+  .logo-gerIapp h2 {
+    margin: 0;
+
+    font-size: 30px;
+
+    line-height: 1;
+  }
+
+
+  .logo-gerIapp p {
+    margin-top: 5px;
+
+    font-size: 14px;
+  }
+
+
+  .linea-decorativa {
+    width: 32px;
+
+    height: 3px;
+
+    margin: 14px auto 10px;
+  }
+
+
+  .branding-text h3 {
+    margin: 0 0 5px;
+
+    font-size: 17px;
+
+    line-height: 1.2;
+  }
+
+
+  .branding-text p {
+    max-width: 280px;
+
+    margin: 0 auto;
+
+    font-size: 12px;
+
+    line-height: 1.35;
+  }
+
+  .registro-panel {
+    width: 100%;
+
+    min-height: auto;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: center;
+
+    padding: 18px 14px 30px;
+
+    background: #f8fafc;
+  }
+
+  .registro-card {
+    width: 100%;
+
+    max-width: 480px;
+
+    padding: 27px 20px 28px;
+
+    border-radius: 16px;
+
+    box-shadow:
+      0 5px 20px rgba(33, 37, 41, 0.06);
+  }
+
+  .registro-header {
+    margin-bottom: 24px;
+  }
+
+
+  .registro-header h1 {
+    font-size: 24px;
+
+    margin-bottom: 6px;
+  }
+
+
+  .subtitulo {
+    font-size: 13px;
+  }
+
+  .form-grid {
+    display: grid;
+
+    grid-template-columns: 1fr;
+
+    column-gap: 0;
+  }
+
+
+  .campo {
+    margin-bottom: 17px;
+  }
+
+
+  .campo-completo {
+    grid-column: auto;
+  }
+
+  .campo label {
+    margin-bottom: 7px;
+
+    font-size: 13px;
+  }
+
+  .input-container {
+    height: 50px;
+
+    border-radius: 10px;
+  }
+
+
+  .input-icon {
+    width: 42px;
+
+    font-size: 17px;
+  }
+
+
+  .password-icon {
+    width: 42px;
+  }
+
+
+  .input-container input,
+  .input-container select {
+    font-size: 14px;
+  }
+
+  .btn-registro {
+    height: 50px;
+
+    border-radius: 10px;
+
+    font-size: 15px;
+  }
+
+  .login-link {
+    margin-top: 20px;
+
+    font-size: 13px;
+  }
+
+}
+
+@media (max-width: 380px) {
+
+  .branding-panel {
+    height: 250px;
+
+    min-height: 250px;
+  }
+
+
+  .logo-gerIapp-img {
+    width: 135px;
+
+    max-height: 110px;
+  }
+
+
+  .logo-gerIapp h2 {
+    font-size: 27px;
+  }
+
+
+  .logo-gerIapp p {
+    font-size: 13px;
+  }
+
+
+  .linea-decorativa {
+    margin: 10px auto 7px;
+  }
+
+
+  .branding-text h3 {
+    font-size: 16px;
+  }
+
+
+  .branding-text p {
+    font-size: 11px;
+  }
+
+
+  .registro-panel {
+    padding: 14px 10px 25px;
+  }
+
+
+  .registro-card {
+    padding: 24px 17px;
+  }
+
+
+  .registro-header h1 {
+    font-size: 22px;
+  }
+
 }
