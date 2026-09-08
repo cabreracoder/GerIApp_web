@@ -36,6 +36,7 @@ interface FormularioEncargado {
   nombres: string;
   apellidos: string;
   estado: 'Activo' | 'Inactivo';
+  contrasena: string;
   fechaIngreso: string;
   fechaNacimiento?: string;
   edad?: number;
@@ -57,6 +58,7 @@ interface ErroresFormulario {
   documento: boolean;
   nombres: boolean;
   apellidos: boolean;
+  contrasena: boolean;
   telefono: boolean;
   email: boolean;
   emailInvalido?: boolean;
@@ -174,6 +176,7 @@ export class Encargados implements OnInit {
     documento: false,
     nombres: false,
     apellidos: false,
+    contrasena: false,
     telefono: false,
     email: false,
     emailInvalido: false,
@@ -277,7 +280,8 @@ export class Encargados implements OnInit {
       documento: '',
       nombres: '',
       apellidos: '',
-      estado: 'Activo',
+      contrasena: '',
+      estado: 'Inactivo',
       fechaIngreso: '',
       fechaNacimiento: '',
       edad: undefined,
@@ -416,6 +420,7 @@ export class Encargados implements OnInit {
         documento: this.encargadoPrincipal.documento,
         nombres: this.encargadoPrincipal.nombres,
         apellidos: this.encargadoPrincipal.apellidos,
+        contrasena: '',
         estado: this.encargadoPrincipal.estado,
         fechaIngreso: this.encargadoPrincipal.fechaIngreso,
         fechaNacimiento: this.encargadoPrincipal.fechaNacimiento || '',
@@ -446,6 +451,7 @@ export class Encargados implements OnInit {
         documento: encargado.documento,
         nombres: encargado.nombres,
         apellidos: encargado.apellidos,
+        contrasena: '',
         estado: encargado.estado,
         fechaIngreso: encargado.fechaIngreso,
         fechaNacimiento: encargado.fechaNacimiento || '',
@@ -690,6 +696,18 @@ export class Encargados implements OnInit {
       valido = false;
     }
 
+    if (!this.modoEdicion) {
+
+      const contrasena = this.formulario.contrasena.trim();
+
+      if (contrasena.length < 8 || contrasena.length > 10) {
+
+        this.errores.contrasena = true;
+
+        valido = false;
+      }
+    }
+
 
     const telefono = this.formulario.telefono.trim();
 
@@ -732,6 +750,7 @@ export class Encargados implements OnInit {
       nombres: false,
       apellidos: false,
       telefono: false,
+      contrasena: false,
       email: false,
       emailInvalido: false,
     };
@@ -805,7 +824,7 @@ export class Encargados implements OnInit {
     this.guardando = true;
 
     // Cuerpo que espera la API (nombres de campos del backend, no los tuyos)
-    const cuerpo = {
+    const cuerpo: any = {
       tipo_documento: this.formulario.tipoDocumento,
       numero_documento: this.formulario.documento,
       nombres: this.formulario.nombres,
@@ -816,6 +835,10 @@ export class Encargados implements OnInit {
       estado: this.formulario.estado === 'Activo',
       id_rol: 6,
     };
+
+     if (!this.modoEdicion) {
+      cuerpo.contrasena = this.formulario.contrasena;
+    }
 
     if (this.modoEdicion && this.idEditando) {
 
@@ -1251,15 +1274,19 @@ export class Encargados implements OnInit {
   // FORMATEAR FECHA
   // =====================================================
 
-  formatearFechaIngreso(fecha: string): string {
+    formatearFechaIngreso(fecha: string): string {
 
     if (!fecha) {
       return 'Fecha no registrada';
     }
 
-
+    // La API puede devolver solo la fecha ("2026-09-08") o
+    // una fecha y hora completa en ISO ("2026-09-08T17:45:03Z").
+    // Si ya trae la "T", no le agregamos otra.
     const fechaObj =
-      new Date(`${fecha}T00:00:00`);
+      fecha.includes('T')
+        ? new Date(fecha)
+        : new Date(`${fecha}T00:00:00`);
 
 
     if (
@@ -1272,26 +1299,13 @@ export class Encargados implements OnInit {
     }
 
 
-    const meses = [
+    const dia = String(fechaObj.getDate()).padStart(2, '0');
 
-      'enero',
-      'febrero',
-      'marzo',
-      'abril',
-      'mayo',
-      'junio',
-      'julio',
-      'agosto',
-      'septiembre',
-      'octubre',
-      'noviembre',
-      'diciembre',
+    const mes = String(fechaObj.getMonth() + 1).padStart(2, '0');
 
-    ];
+    const anio = fechaObj.getFullYear();
 
 
-    return `Desde ${meses[fechaObj.getMonth()]
-      } ${fechaObj.getFullYear()
-      }`;
+    return `${dia}/${mes}/${anio}`;
   }
 }

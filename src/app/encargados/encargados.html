@@ -938,6 +938,55 @@
           </div>
 
         </div>
+
+                <div class="fila-formulario" *ngIf="!modoEdicion">
+
+          <!-- CONTRASEÑA (solo al crear) -->
+
+          <div class="grupo-formulario">
+
+            <label
+              class="etiqueta-formulario"
+              for="contrasena-encargado"
+            >
+
+              Contraseña
+
+              <span class="campo-obligatorio">
+                *
+              </span>
+
+            </label>
+
+
+            <input
+              id="contrasena-encargado"
+              type="password"
+              class="campo-formulario"
+              [class.campo-invalido]="errores.contrasena"
+              autocomplete="new-password"
+              minlength="8"
+              maxlength="10"
+              [(ngModel)]="formulario.contrasena"
+            />
+
+
+            <div
+              class="mensaje-error"
+              [class.mostrar]="errores.contrasena"
+            >
+
+              <span class="material-symbols-outlined">
+                error
+              </span>
+
+              La contraseña debe tener entre 8 y 10 caracteres.
+
+            </div>
+
+          </div>
+
+        </div>
      
 
 
