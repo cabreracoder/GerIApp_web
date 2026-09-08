@@ -1,4 +1,4 @@
-
+import { API_URL } from '../config/api.config';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -59,7 +59,7 @@ export class Login {
 
     // Enviar datos directamente a la API de Django
     this.http.post<any>(
-      'http://127.0.0.1:8000/api/usuarios/login/',
+      `${API_URL}/usuarios/login/`,
       {
         correo: this.usuario.correo.trim(),
         contrasena: this.usuario.contrasena
