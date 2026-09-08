@@ -1,3 +1,4 @@
+import { API_URL } from '../config/api.config';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -55,8 +56,7 @@ export class Usuarios implements OnInit {
   // =========================================================
   // URL BASE DE LA API
   // =========================================================
-
-  private readonly apiUrl = 'http://127.0.0.1:8000/api';
+private readonly apiUrl = API_URL;
 
   // =========================================================
   // USUARIOS
