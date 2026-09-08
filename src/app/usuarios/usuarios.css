@@ -64,54 +64,6 @@ line-height: 1.5;
 }
 
 /* =========================================================
-BUSCADOR
-========================================================= */
-
-.tarjeta-buscador {
-position: relative;
-display: flex;
-align-items: center;
-width: 100%;
-min-height: 50px;
-margin-bottom: var(--spacing-lg);
-padding: 0 var(--spacing-md);
-border: 1px solid var(--border-color);
-border-radius: var(--radius-md);
-background: var(--bg-surface);
-box-shadow: var(--shadow-sm);
-}
-
-.icono-busqueda {
-flex-shrink: 0;
-color: var(--text-secondary);
-font-size: var(--icon-size-md);
-}
-
-.tarjeta-buscador input {
-flex: 1;
-min-width: 0;
-height: 48px;
-padding: 0 var(--spacing-sm);
-border: none;
-outline: none;
-background: transparent;
-color: var(--text-primary);
-font-family: var(--font-family-base);
-font-size: var(--font-size-sm);
-}
-
-.tarjeta-buscador input::placeholder {
-color: var(--text-secondary);
-}
-
-.contador-resultados {
-flex-shrink: 0;
-color: var(--text-secondary);
-font-size: var(--font-size-xs);
-font-weight: var(--font-weight-medium);
-}
-
-/* =========================================================
 CONTADOR DE USUARIOS
 ========================================================= */
 
@@ -291,41 +243,49 @@ white-space: nowrap;
 }
 
 /* =========================================================
-SELECTOR DE ROL
+   SELECTOR DE ROL
 ========================================================= */
 
 .selector-rol {
-width: 190px;
-min-height: 40px;
-padding: 8px 11px;
-border: 1px solid var(--border-color);
-border-radius: var(--radius-md);
-outline: none;
-background: var(--bg-surface);
-color: var(--text-primary);
-font-family: var(--font-family-base);
-font-size: var(--font-size-sm);
-cursor: pointer;
-transition:
-border-color 0.15s ease,
-box-shadow 0.15s ease,
-background 0.15s ease;
-}
-
-.selector-rol:hover {
-border-color: var(--color-secondary);
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #D1D5DB;
+    border-radius: 8px;
+    background-color: white;
+    color: #212529;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
 }
 
 .selector-rol:focus {
-border-color: var(--color-primary);
-box-shadow:
-0 0 0 3px rgba(59, 91, 219, 0.1);
+    border-color: #3B5BDB;
+    box-shadow: 0 0 0 2px rgba(59, 91, 219, 0.12);
 }
 
-.selector-rol:disabled {
-opacity: 0.6;
-cursor: not-allowed;
+
+/* =========================================================
+   USUARIO SIN ROL
+========================================================= */
+
+.selector-rol-sin-rol {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #DC3545;
+    border-radius: 8px;
+    background-color: #FFF5F5;
+    color: #DC3545;
+    font-size: 14px;
+    font-weight: 500;
+    outline: none;
+    transition: all 0.2s ease;
 }
+
+.selector-rol-sin-rol:focus {
+    border-color: #DC3545;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.12);
+}
+
 
 /* =========================================================
 ACCIONES

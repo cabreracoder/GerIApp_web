@@ -1,3 +1,4 @@
+from django.core.serializers import python
 from rest_framework import serializers
 from django.utils import timezone
 
@@ -278,3 +279,40 @@ class RegistroUsuarioSerializer(serializers.ModelSerializer):
         usuario = Usuarios.objects.create(**validated_data)
 
         return usuario
+
+#Aqui lo que estamos haciendo es crear un serializer para cambiar la contraseña del usuario,
+#este serializer recibe la contraseña actual, la nueva contraseña y la confirmación de la
+#nueva contraseña, si las contraseñas nuevas no coinciden se lanza un error de validación. 
+
+class CambiarContrasenaSerializer(serializers.Serializer):
+    contrasena_actual = serializers.CharField(
+        write_only=True
+    )
+
+    nueva_contrasena = serializers.CharField(
+        write_only=True,
+        min_length=8
+    )
+
+    confirmar_contrasena = serializers.CharField(
+        write_only=True
+    )
+
+    def validate(self, data):
+
+        nueva_contrasena = data.get(
+            'nueva_contrasena'
+        )
+
+        confirmar_contrasena = data.get(
+            'confirmar_contrasena'
+        )
+
+        if nueva_contrasena != confirmar_contrasena:
+
+            raise serializers.ValidationError(
+                'Las contraseñas nuevas no coinciden.'
+            )
+
+        return data
+
