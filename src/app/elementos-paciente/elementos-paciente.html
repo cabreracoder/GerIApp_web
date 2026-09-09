@@ -1,0 +1,377 @@
+<main class="pagina-elementos">
+
+  <!-- =====================================================
+       ENCABEZADO
+  ====================================================== -->
+
+  <header class="encabezado-elementos">
+
+<div>
+  <h1>Elementos del paciente</h1>
+
+  <p>
+    Registre y consulte los medicamentos e insumos que pertenecen a cada paciente.
+  </p>
+</div>
+
+<button
+  type="button"
+  class="btn-nuevo-elemento"
+  (click)="abrirFormulario()"
+>
+  <span class="material-symbols-outlined">
+    add
+  </span>
+
+  Nuevo elemento
+</button>
+
+
+  </header>
+
+  <!-- =====================================================
+       MODAL NUEVO ELEMENTO
+  ====================================================== -->
+
+  <div
+    class="modal-overlay"
+    *ngIf="formularioAbierto"
+    (click)="cerrarFormulario()"
+  >
+
+
+<section
+  class="modal-formulario"
+  (click)="$event.stopPropagation()"
+>
+
+  <!-- ENCABEZADO DEL MODAL -->
+
+  <div class="modal-encabezado">
+
+    <div class="modal-titulo">
+
+      <div class="modal-icono">
+
+        <span class="material-symbols-outlined">
+          inventory_2
+        </span>
+
+      </div>
+
+      <div>
+
+        <h2>
+          Nuevo elemento
+        </h2>
+
+        <p>
+          Registre un medicamento o insumo del paciente.
+        </p>
+
+      </div>
+
+    </div>
+
+    <button
+      type="button"
+      class="btn-cerrar-modal"
+      title="Cerrar"
+      (click)="cerrarFormulario()"
+    >
+
+      <span class="material-symbols-outlined">
+        close
+      </span>
+
+    </button>
+
+  </div>
+
+
+  <!-- CONTENIDO DEL MODAL -->
+
+  <div class="modal-contenido">
+
+    <div class="seccion-formulario">
+
+      <span class="etiqueta-seccion">
+        Tipo de elemento
+      </span>
+
+      <p class="ayuda-seccion">
+        Seleccione el tipo de elemento que desea registrar.
+      </p>
+
+
+      <!-- OPCIONES -->
+
+      <div class="opciones-tipo">
+
+
+        <!-- MEDICAMENTO -->
+
+        <button
+          type="button"
+          class="opcion-tipo"
+          [class.seleccionada]="tipoElemento === 'medicamento'"
+          (click)="tipoElemento = 'medicamento'"
+        >
+
+          <div class="opcion-icono medicamento">
+
+            <span class="material-symbols-outlined">
+              medication
+            </span>
+
+          </div>
+
+          <div class="opcion-texto">
+
+            <strong>
+              Medicamento
+            </strong>
+
+            <span>
+              Registre medicamentos pertenecientes al paciente.
+            </span>
+
+          </div>
+
+          <span
+            *ngIf="tipoElemento === 'medicamento'"
+            class="material-symbols-outlined opcion-check"
+          >
+            check_circle
+          </span>
+
+        </button>
+
+
+        <!-- INSUMO -->
+
+        <button
+          type="button"
+          class="opcion-tipo"
+          [class.seleccionada]="tipoElemento === 'insumo'"
+          (click)="tipoElemento = 'insumo'"
+        >
+
+          <div class="opcion-icono insumo">
+
+            <span class="material-symbols-outlined">
+              medical_services
+            </span>
+
+          </div>
+
+          <div class="opcion-texto">
+
+            <strong>
+              Insumo
+            </strong>
+
+            <span>
+              Registre insumos pertenecientes al paciente.
+            </span>
+
+          </div>
+
+          <span
+            *ngIf="tipoElemento === 'insumo'"
+            class="material-symbols-outlined opcion-check"
+          >
+            check_circle
+          </span>
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- MENSAJE SEGÚN EL TIPO -->
+
+    <div
+      class="mensaje-seleccion"
+      *ngIf="tipoElemento"
+    >
+
+      <span class="material-symbols-outlined">
+
+        {{ tipoElemento === 'medicamento'
+          ? 'medication'
+          : 'medical_services' }}
+
+      </span>
+
+      <div>
+
+        <strong>
+
+          {{ tipoElemento === 'medicamento'
+            ? 'Medicamento seleccionado'
+            : 'Insumo seleccionado' }}
+
+        </strong>
+
+        <p>
+
+          {{ tipoElemento === 'medicamento'
+            ? 'En el siguiente paso podrá seleccionar el medicamento y registrar sus datos.'
+            : 'En el siguiente paso podrá seleccionar el tipo de insumo y registrar sus datos.' }}
+
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ACCIONES -->
+
+  <div class="modal-acciones">
+
+    <button
+      type="button"
+      class="btn-cancelar"
+      (click)="cerrarFormulario()"
+    >
+      Cancelar
+    </button>
+
+    <button
+      type="button"
+      class="btn-guardar"
+      [disabled]="!tipoElemento"
+    >
+
+      <span class="material-symbols-outlined">
+        arrow_forward
+      </span>
+
+      Continuar
+
+    </button>
+
+  </div>
+
+</section>
+
+
+  </div>
+
+  <!-- =====================================================
+       TABLA
+  ====================================================== -->
+
+  <section class="tarjeta-tabla">
+
+<!-- CABECERA DE TABLA -->
+
+<div class="cabecera-tabla">
+
+  <div>
+
+    <h2>
+      Elementos registrados
+    </h2>
+
+    <p>
+      Medicamentos e insumos asociados a los pacientes.
+    </p>
+
+  </div>
+
+  <span class="contador">
+    0 elementos
+  </span>
+
+</div>
+
+
+<!-- TABLA -->
+
+<div class="tabla-contenedor">
+
+  <table>
+
+    <thead>
+
+      <tr>
+
+        <th>
+          Paciente
+        </th>
+
+        <th>
+          Tipo
+        </th>
+
+        <th>
+          Elemento
+        </th>
+
+        <th>
+          Cantidad
+        </th>
+
+        <th>
+          Fecha ingreso
+        </th>
+
+        <th>
+          Vencimiento
+        </th>
+
+        <th>
+          Estado
+        </th>
+
+        <th>
+          Acciones
+        </th>
+
+      </tr>
+
+    </thead>
+
+
+    <tbody>
+
+      <tr>
+
+        <td
+          colspan="8"
+          class="sin-registros"
+        >
+
+          <span class="material-symbols-outlined">
+            inventory_2
+          </span>
+
+          <strong>
+            No hay elementos registrados
+          </strong>
+
+          <span>
+            Cuando registres un medicamento o insumo,
+            aparecerá aquí.
+          </span>
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>
+
+  </section>
+
+</main>
