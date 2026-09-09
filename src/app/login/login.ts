@@ -1,9 +1,10 @@
 import { API_URL } from '../config/api.config';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { finalize } from 'rxjs';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -29,21 +30,18 @@ export class Login {
 
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   iniciarSesion(): void {
-
-    // Limpiar mensajes anteriores
     this.mensaje = '';
     this.error = '';
 
-    // Validar campos
     if (
       !this.usuario.correo.trim() ||
       !this.usuario.contrasena.trim()
     ) {
-
       Swal.fire({
         title: 'Campos vacíos',
         text: 'Ingresa tu correo y contraseña.',
@@ -56,35 +54,37 @@ export class Login {
     }
 
     this.cargando = true;
+    this.cdr.detectChanges();
 
-    // Enviar datos directamente a la API de Django
     this.http.post<any>(
       `${API_URL}/usuarios/login/`,
       {
         correo: this.usuario.correo.trim(),
         contrasena: this.usuario.contrasena
       }
-    ).subscribe({
-
+    )
+    .pipe(
+      finalize(() => {
+        this.cargando = false;
+        this.cdr.detectChanges();
+      })
+    )
+    .subscribe({
       next: (respuesta) => {
 
-        this.cargando = false;
 
-        console.log('Respuesta del login:', respuesta);
-
-        // Guardar los datos del usuario autenticado
         if (respuesta.usuario) {
-
           localStorage.setItem(
             'usuario',
             JSON.stringify(respuesta.usuario)
           );
-
         }
 
         this.mensaje =
           respuesta.mensaje ||
           'Has iniciado sesión correctamente.';
+
+        this.cdr.detectChanges();
 
         Swal.fire({
           title: '¡Bienvenido!',
@@ -93,30 +93,29 @@ export class Login {
           confirmButtonText: 'Continuar',
           confirmButtonColor: '#4f46e5'
         }).then(() => {
-
           this.router.navigate(['/dashboard']);
-
         });
       },
 
       error: (respuestaError) => {
-        console.log(respuestaError);
-        Swal.fire({
-          title: "Error",
-          text: "Credenciales invalidas",
-          icon: "error",
-          confirmButtonText: "Continuar",
-          confirmButtonColor: "#ff2a00"
-        })
-      }
+        console.log('Error del login:', respuestaError);
 
+        this.error = 'Credenciales inválidas';
+        this.cdr.detectChanges();
+
+        Swal.fire({
+          title: 'Error',
+          text: 'Credenciales inválidas',
+          icon: 'error',
+          confirmButtonText: 'Continuar',
+          confirmButtonColor: '#ff2a00'
+        });
+      }
     });
   }
 
   registro(): void {
-
     this.router.navigate(['/registro']);
-
   }
 }
 
