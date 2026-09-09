@@ -401,14 +401,6 @@ export class Cuidadores implements OnInit {
   }
 
 
-  // =========================================================
-  // BÚSQUEDA
-  // =========================================================
-
-  buscarCuidadores(): void {
-    this.filtrarCuidadores();
-  }
-
 
   filtrarCuidadores(): void {
 
