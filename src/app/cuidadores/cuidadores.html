@@ -21,17 +21,6 @@
   </div>
 
 
-  <!-- BUSCADOR -->
-  <div class="tarjeta-buscador">
-
-    <span class="material-symbols-outlined icono-busqueda">
-      search
-    </span>
-
-    <input type="text" placeholder="Buscar por documento o nombre..." aria-label="Buscar cuidador" autocomplete="off"
-      [(ngModel)]="textoBusqueda" (input)="buscarCuidadores()" />
-
-  </div>
 
 
   <!-- CONTADOR -->
@@ -323,21 +312,19 @@
           <div class="campo-formulario">
 
             <label class="etiqueta-formulario">
-              Nombres
+              Nombres <span class="asterisco">*</span>
             </label>
 
             <input type="text" class="campo-entrada" [(ngModel)]="formulario.nombre" name="nombre" required>
 
           </div>
 
-
           <!-- APELLIDOS -->
           <div class="campo-formulario">
 
             <label class="etiqueta-formulario">
-              Apellidos
+              Apellidos <span class="asterisco">*</span>
             </label>
-
             <input type="text" class="campo-entrada" [(ngModel)]="formulario.apellido" name="apellido" required>
 
           </div>
@@ -347,7 +334,7 @@
           <div class="campo-formulario">
 
             <label class="etiqueta-formulario">
-              Tipo de documento
+              Tipo de documento <span class="asterisco">*</span>
             </label>
 
             <select class="campo-entrada" [(ngModel)]="formulario.tipoDocumento" name="tipoDocumento" required>
@@ -385,7 +372,7 @@
           <div class="campo-formulario">
 
             <label class="etiqueta-formulario">
-              Número de documento
+              Número de documento <span class="asterisco">*</span>
             </label>
 
             <input type="text" class="campo-entrada" [(ngModel)]="formulario.numeroDocumento" name="numeroDocumento"
@@ -398,7 +385,7 @@
           <div class="campo-formulario">
 
             <label class="etiqueta-formulario">
-              Teléfono
+              Teléfono <span class="asterisco">*</span>
             </label>
 
             <input type="tel" class="campo-entrada" [(ngModel)]="formulario.telefono" name="telefono">
@@ -410,7 +397,7 @@
           <div class="campo-formulario">
 
             <label class="etiqueta-formulario">
-              Correo electrónico
+              Correo electrónico <span class="asterisco">*</span>
             </label>
 
             <input type="email" class="campo-entrada" [(ngModel)]="formulario.correo" name="correo">
@@ -422,7 +409,7 @@
           <div class="campo-formulario">
 
             <label class="etiqueta-formulario">
-              Fecha de nacimiento
+              Fecha de nacimiento <span class="asterisco">*</span>
             </label>
 
             <input type="date" class="campo-entrada" [(ngModel)]="formulario.fechaNacimiento" name="fechaNacimiento"
@@ -485,7 +472,7 @@
           <div class="campo-formulario">
 
             <label class="etiqueta-formulario">
-              Experiencia
+              Experiencia <span class="asterisco">*</span>
             </label>
 
             <input type="number" class="campo-entrada" [(ngModel)]="formulario.experiencia" name="experiencia" min="0">
@@ -497,7 +484,7 @@
           <div class="campo-formulario">
 
             <label class="etiqueta-formulario">
-              Institución
+              Institución <span class="asterisco">*</span>
             </label>
 
             <input type="text" class="campo-entrada" [(ngModel)]="formulario.institucion" name="institucion">
@@ -545,7 +532,7 @@
           <div class="campo-formulario">
 
             <label class="etiqueta-formulario">
-              Fecha de ingreso
+              Fecha de ingreso <span class="asterisco">*</span>
             </label>
 
             <input type="date" class="campo-entrada" [(ngModel)]="formulario.fechaIngreso" name="fechaIngreso">

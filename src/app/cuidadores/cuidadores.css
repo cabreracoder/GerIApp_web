@@ -45,6 +45,16 @@
   white-space: nowrap;
 }
 
+.asterisco {
+  color: red;
+  margin-left: 3px;
+  font-weight: bold;
+}
+
+.input-error {
+  border: 1px solid red !important;
+}
+
 /* =========================================================
    BOTÓN NUEVO CUIDADOR
 ========================================================= */
