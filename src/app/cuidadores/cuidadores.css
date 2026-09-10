@@ -207,6 +207,14 @@ tbody tr:last-child td {
   border-bottom: none;
 }
 
+.fila-par {
+  background: var(--bg-surface);
+}
+
+.fila-impar {
+  background: #F4F7FF;
+}
+
 tbody tr:hover {
   background: var(--bg-primary);
 }
