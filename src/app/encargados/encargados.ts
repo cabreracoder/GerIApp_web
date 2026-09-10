@@ -64,19 +64,6 @@ interface ErroresFormulario {
   emailInvalido?: boolean;
 }
 
-interface RegistroCambio {
-  id: number;
-  fecha: string;
-  usuario: string;
-  accion:
-  | 'Creación'
-  | 'Actualización'
-  | 'Activación'
-  | 'Desactivación'
-  | 'Eliminación';
-  encargado: string;
-}
-
 
 // =====================================================
 // COMPONENTE
@@ -110,14 +97,6 @@ export class Encargados implements OnInit {
 
   encargados: Encargado[] = [];
 
-  encargadosFiltrados: Encargado[] = [];
-
-
-  // =====================================================
-  // BÚSQUEDA
-  // =====================================================
-
-  busqueda = '';
 
 
   // =====================================================
@@ -141,14 +120,6 @@ export class Encargados implements OnInit {
 
   encargadoSeleccionado: Encargado | null = null;
 
-
-  // =====================================================
-  // MODAL REGISTRO DE CAMBIOS
-  // =====================================================
-
-  modalRegistroCambiosAbierto = false;
-
-  registrosCambios: RegistroCambio[] = [];
 
 
   // =====================================================
@@ -242,8 +213,6 @@ export class Encargados implements OnInit {
           }));
 
         this.encargadoPrincipal = null;
-
-        this.filtrarEncargados();
 
         this.cargando = false;
 
@@ -341,39 +310,6 @@ export class Encargados implements OnInit {
       } else if (tipo === 'hojaDeVida') {
         this.formulario.hojaDeVidaFile = file;
       }
-    }
-  }
-  // =====================================================
-  // ABRIR REGISTRO DE CAMBIOS
-  // =====================================================
-
-  abrirRegistroCambios(): void {
-
-    this.modalRegistroCambiosAbierto = true;
-
-    this.cdr.detectChanges();
-  }
-
-
-  // =====================================================
-  // CERRAR REGISTRO DE CAMBIOS
-  // =====================================================
-
-  cerrarRegistroCambios(): void {
-
-    this.modalRegistroCambiosAbierto = false;
-    this.cdr.detectChanges();
-  }
-
-
-  // =====================================================
-  // CERRAR REGISTRO POR FONDO
-  // =====================================================
-
-  cerrarRegistroCambiosPorFondo(event: MouseEvent): void {
-
-    if (event.target === event.currentTarget) {
-      this.cerrarRegistroCambios();
     }
   }
 
@@ -1033,207 +969,6 @@ export class Encargados implements OnInit {
         },
       });
     });
-  }
-
-
-  // =====================================================
-  // FILTRAR
-  // =====================================================
-
-  filtrarEncargados(): void {
-
-    const termino =
-      this.busqueda.trim().toLowerCase();
-
-
-    if (!termino) {
-
-      this.encargadosFiltrados =
-        [...this.encargados];
-
-      this.cdr.detectChanges();
-
-      return;
-    }
-
-
-    this.encargadosFiltrados =
-      this.encargados.filter((encargado) => {
-
-        return (
-
-          encargado.documento
-            .toLowerCase()
-            .includes(termino)
-
-          ||
-
-          encargado.nombres
-            .toLowerCase()
-            .includes(termino)
-
-          ||
-
-          encargado.apellidos
-            .toLowerCase()
-            .includes(termino)
-
-          ||
-
-          encargado.email
-            .toLowerCase()
-            .includes(termino)
-
-          ||
-
-          encargado.telefono
-            .toLowerCase()
-            .includes(termino)
-        );
-      });
-
-
-    if (this.encargadosFiltrados.length === 0) {
-
-      this.mostrarAlertaBusqueda(termino);
-    }
-
-    this.cdr.detectChanges();
-  }
-
-
-  // =====================================================
-  // ALERTA BÚSQUEDA
-  // =====================================================
-
-  mostrarAlertaBusqueda(termino: string): void {
-
-    const esDocumento =
-      /^[0-9]+$/.test(termino);
-
-
-    if (esDocumento) {
-
-      Swal.fire({
-
-        title:
-          'Documento no encontrado',
-
-        html:
-          `No existe ningún encargado registrado con el documento <strong>${termino}</strong>.`,
-
-        icon:
-          'warning',
-
-        confirmButtonText:
-          'Aceptar',
-
-        confirmButtonColor:
-          '#3B5BDB',
-      });
-
-      return;
-    }
-
-
-    Swal.fire({
-
-      title:
-        'Sin resultados',
-
-      html:
-        `No se encontró ningún encargado que coincida con <strong>${termino}</strong>.`,
-
-      icon:
-        'info',
-
-      confirmButtonText:
-        'Aceptar',
-
-      confirmButtonColor:
-        '#3B5BDB',
-    });
-  }
-
-
-  // =====================================================
-  // BUSCAR
-  // =====================================================
-
-  buscarEncargado(): void {
-
-    this.filtrarEncargados();
-  }
-
-
-  // =====================================================
-  // LIMPIAR BÚSQUEDA
-  // =====================================================
-
-  limpiarBusqueda(): void {
-
-    this.busqueda = '';
-
-    this.encargadosFiltrados =
-      [...this.encargados];
-
-    this.cdr.detectChanges();
-  }
-
-
-  // =====================================================
-  // REGISTRAR CAMBIO
-  // =====================================================
-
-  registrarCambio(
-    accion:
-      | 'Creación'
-      | 'Actualización'
-      | 'Activación'
-      | 'Desactivación'
-      | 'Eliminación',
-
-    encargado: string,
-  ): void {
-
-    const nuevoRegistro: RegistroCambio = {
-
-      id:
-        this.registrosCambios.length > 0
-          ? Math.max(
-            ...this.registrosCambios.map(
-              registro => registro.id
-            )
-          ) + 1
-          : 1,
-
-      fecha:
-        new Date().toLocaleString(
-          'es-CO',
-          {
-            dateStyle: 'short',
-            timeStyle: 'medium',
-          }
-        ),
-
-      usuario:
-        this.usuarioActual,
-
-      accion,
-
-      encargado,
-
-    };
-
-
-    this.registrosCambios =
-      [
-        nuevoRegistro,
-        ...this.registrosCambios,
-      ];
-
-
-    this.cdr.detectChanges();
   }
 
 

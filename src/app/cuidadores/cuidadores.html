@@ -103,7 +103,9 @@
 
 
         <!-- REGISTROS -->
-        <tr *ngFor="let caregiver of cuidadoresFiltrados" class="bg-[#F4F7FF]">
+        <tr *ngFor="let caregiver of cuidadoresFiltrados; let i = index"
+          [class.fila-par]="i % 2 === 0"
+          [class.fila-impar]="i % 2 !== 0">
 
           <!-- CUIDADOR -->
           <td class="px-5 py-4 rounded-l-lg">
