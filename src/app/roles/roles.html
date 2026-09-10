@@ -16,6 +16,27 @@
 
   </header>
 
+  <!-- ===================================================== -->
+<!-- BUSCADOR -->
+<!-- ===================================================== -->
+
+<div class="tarjeta-buscador">
+
+  <span class="material-symbols-outlined icono-busqueda">
+    search
+  </span>
+
+  <input
+    type="text"
+    [(ngModel)]="searchText"
+    placeholder="Buscar por nombre del rol">
+
+  <span class="contador-resultados">
+    {{ filteredRoles.length }} resultados
+  </span>
+
+</div>
+
 
   <!-- ===================================================== -->
   <!-- GESTIÓN DE ROLES -->
@@ -170,12 +191,14 @@
       role="radiogroup"
       aria-label="Selección de rol">
 
+      
+
       <!-- ================================================= -->
       <!-- TARJETAS DE ROLES -->
       <!-- ================================================= -->
 
       <article
-        *ngFor="let role of roles"
+        *ngFor="let role of filteredRoles"
         class="role-card"
         [class.selected]="role.name === selectedRole"
         [style.--role-color]="role.color"

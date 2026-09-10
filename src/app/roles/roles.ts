@@ -1,4 +1,3 @@
-
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
@@ -108,6 +107,12 @@ export class Roles implements OnInit {
   roles: Rol[] = [];
 
   usuarios: UsuarioApi[] = [];
+
+  // =========================================================
+  // BUSCADOR
+  // =========================================================
+
+  searchText = '';
 
   // =========================================================
   // SELECCIÓN
@@ -382,6 +387,7 @@ export class Roles implements OnInit {
             UsuarioAsociado[] =
             usuariosDelRol.map(
               usuario => ({
+
                 id:
                   usuario.id_usuario,
 
@@ -493,6 +499,30 @@ export class Roles implements OnInit {
       role =>
         role.name ===
         this.selectedRole
+    );
+  }
+
+  // =========================================================
+  // ROLES FILTRADOS
+  // =========================================================
+
+  get filteredRoles(): Rol[] {
+
+    const texto =
+      this.searchText
+        .trim()
+        .toLowerCase();
+
+    if (!texto) {
+
+      return this.roles;
+    }
+
+    return this.roles.filter(
+      role =>
+        role.name
+          .toLowerCase()
+          .includes(texto)
     );
   }
 
@@ -1219,4 +1249,3 @@ export class Roles implements OnInit {
       .toLocaleString('es-CO');
   }
 }
-
