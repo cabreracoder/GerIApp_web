@@ -87,17 +87,17 @@ export class Roles implements OnInit {
 
     Administrador: {
       color: 'var(--color-primary)',
-      icon: 'admin_panel_settings'
+      icon: 'verified_user'
     },
 
     Cuidador: {
-      color: 'var(--color-secondary)',
-      icon: 'health_and_safety'
+      color: 'var(--color-primary)',
+      icon: 'favorite'
     },
 
     Encargado: {
-      color: 'var(--color-tertiary)',
-      icon: 'supervisor_account'
+      color: 'var(--color-primary)',
+      icon: 'person_check'
     }
   };
 
