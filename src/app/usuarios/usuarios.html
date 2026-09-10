@@ -3,16 +3,61 @@
   <!-- ENCABEZADO -->
   <div class="flex justify-between items-center mb-8">
     <div>
-      <h1 class="text-3xl font-bold text-[#212529]">Gestión de Usuarios</h1>
-      <p class="text-[#6C757D] mt-1">Administración y asignación de roles de los usuarios</p>
+      <h1 class="text-3xl font-bold text-[#212529]">
+        Gestión de Usuarios
+      </h1>
+
+      <p class="text-[#6C757D] mt-1">
+        Administración y asignación de roles de los usuarios
+      </p>
     </div>
   </div>
+
+  <!-- BUSCADOR -->
+  <section class="tarjeta-buscador">
+
+    <span class="material-symbols-outlined icono-busqueda">
+      search
+    </span>
+
+    <input
+      type="search"
+      placeholder="Buscar por documento, nombre o cargo..."
+      aria-label="Buscar usuario"
+      autocomplete="off"
+      [(ngModel)]="busqueda"
+      (input)="buscarUsuarios()"
+    />
+
+    <button
+      *ngIf="busqueda"
+      type="button"
+      class="boton-limpiar-busqueda"
+      (click)="limpiarBusqueda()"
+      title="Limpiar búsqueda"
+    >
+      <span class="material-symbols-outlined">
+        close
+      </span>
+    </button>
+
+    <span
+      class="contador-resultados"
+      *ngIf="busqueda"
+    >
+      {{ usuariosFiltrados.length }}
+      resultado{{ usuariosFiltrados.length === 1 ? '' : 's' }}
+    </span>
+
+  </section>
 
   <!-- CONTADOR -->
   <div class="mb-5">
     <p class="text-sm text-[#6C757D]">
       Usuarios registrados:
-      <span class="font-semibold text-[#212529]">{{ users.length }}</span>
+      <span class="font-semibold text-[#212529]">
+        {{ users.length }}
+      </span>
     </p>
   </div>
 
@@ -34,16 +79,37 @@
 
   <!-- TABLA -->
   <div class="overflow-x-auto">
+
     <table class="w-full border-separate border-spacing-y-2">
 
+      <!-- ENCABEZADO TABLA -->
       <thead>
         <tr class="bg-[#3B5BDB]">
-          <th class="px-5 py-4 text-left text-sm font-semibold !text-white rounded-l-lg">Usuario</th>
-          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">Documento</th>
-          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">Correo</th>
-          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">Teléfono</th>
-          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">Rol</th>
-          <th class="px-5 py-4 text-center text-sm font-semibold !text-white rounded-r-lg">Acción</th>
+
+          <th class="px-5 py-4 text-left text-sm font-semibold !text-white rounded-l-lg">
+            Usuario
+          </th>
+
+          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
+            Documento
+          </th>
+
+          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
+            Correo
+          </th>
+
+          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
+            Teléfono
+          </th>
+
+          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
+            Rol
+          </th>
+
+          <th class="px-5 py-4 text-center text-sm font-semibold !text-white rounded-r-lg">
+            Acción
+          </th>
+
         </tr>
       </thead>
 
@@ -51,28 +117,61 @@
 
         <!-- SIN USUARIOS -->
         <tr *ngIf="users.length === 0">
-          <td colspan="6" class="px-5 py-12 text-center text-[#6C757D]">
+
+          <td
+            colspan="6"
+            class="px-5 py-12 text-center text-[#6C757D]"
+          >
             No hay usuarios registrados.
           </td>
+
         </tr>
 
-        <!-- USUARIOS -->
+        <!-- SIN RESULTADOS DE BÚSQUEDA -->
         <tr
-          *ngFor="let user of users; let i = index"
-          [class]="i % 2 === 0 ? 'bg-[#F4F7FF] text-gray-800' : 'bg-white text-gray-800'"
+          *ngIf="users.length > 0 && usuariosFiltrados.length === 0"
+        >
+
+          <td
+            colspan="6"
+            class="px-5 py-12 text-center text-[#6C757D]"
+          >
+            No se encontraron usuarios para
+            "<span class="font-medium text-[#212529]">
+              {{ busqueda }}
+            </span>".
+          </td>
+
+        </tr>
+
+        <!-- USUARIOS FILTRADOS -->
+        <tr
+          *ngFor="let user of usuariosFiltrados; let i = index"
+          [class]="
+            i % 2 === 0
+              ? 'bg-[#F4F7FF] text-gray-800'
+              : 'bg-white text-gray-800'
+          "
         >
 
           <!-- USUARIO -->
           <td class="px-5 py-4 rounded-l-lg">
+
             <div class="font-medium text-[#212529]">
               {{ user.nombres }} {{ user.apellidos }}
             </div>
+
           </td>
 
           <!-- DOCUMENTO -->
           <td class="px-5 py-4 text-sm text-[#495057]">
-            <span class="font-medium">{{ user.tipo_documento }}</span>
+
+            <span class="font-medium">
+              {{ user.tipo_documento }}
+            </span>
+
             {{ user.numero_documento }}
+
           </td>
 
           <!-- CORREO -->
@@ -87,8 +186,9 @@
 
           <!-- ROL -->
           <td class="px-5 py-4">
+
             <div class="flex flex-col gap-1">
-                
+
               <select
                 [ngClass]="{
                   'selector-rol': user.id_rol !== null,
@@ -97,7 +197,10 @@
                 [ngModel]="user.id_rol"
                 (ngModelChange)="onRoleChange(user, $event)"
               >
-                <option [ngValue]="null">Sin rol asignado</option>
+
+                <option [ngValue]="null">
+                  Sin rol asignado
+                </option>
 
                 <option
                   *ngFor="let role of roles"
@@ -105,14 +208,18 @@
                 >
                   {{ role.nombre }}
                 </option>
+
               </select>
 
             </div>
+
           </td>
 
           <!-- ACCIÓN -->
           <td class="px-5 py-4 rounded-r-lg">
+
             <div class="flex justify-center">
+
               <button
                 type="button"
                 (click)="saveRole(user)"
@@ -120,6 +227,8 @@
                 title="Guardar rol"
                 class="boton-guardar-rol"
               >
+
+                <!-- ICONO NORMAL -->
                 <span
                   *ngIf="savingUserId !== user.id_usuario"
                   class="material-symbols-outlined text-[20px]"
@@ -127,6 +236,7 @@
                   save
                 </span>
 
+                <!-- ICONO GUARDANDO -->
                 <span
                   *ngIf="savingUserId === user.id_usuario"
                   class="material-symbols-outlined text-[20px]"
@@ -134,17 +244,27 @@
                   sync
                 </span>
 
+                <!-- TEXTO -->
                 <span>
-                  {{ savingUserId === user.id_usuario ? 'Guardando...' : 'Guardar' }}
+                  {{
+                    savingUserId === user.id_usuario
+                      ? 'Guardando...'
+                      : 'Guardar'
+                  }}
                 </span>
+
               </button>
+
             </div>
+
           </td>
 
         </tr>
+
       </tbody>
+
     </table>
+
   </div>
 
 </div>
-

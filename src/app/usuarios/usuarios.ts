@@ -56,13 +56,26 @@ export class Usuarios implements OnInit {
   // =========================================================
   // URL BASE DE LA API
   // =========================================================
-private readonly apiUrl = API_URL;
+
+  private readonly apiUrl = API_URL;
 
   // =========================================================
   // USUARIOS
   // =========================================================
 
   users: Usuario[] = [];
+
+  // =========================================================
+  // USUARIOS FILTRADOS
+  // =========================================================
+
+  usuariosFiltrados: Usuario[] = [];
+
+  // =========================================================
+  // TEXTO DE BÚSQUEDA
+  // =========================================================
+
+  busqueda = '';
 
   // =========================================================
   // ROLES
@@ -126,7 +139,11 @@ private readonly apiUrl = API_URL;
           respuesta
         );
 
+        // Guardamos todos los usuarios
         this.users = respuesta;
+
+        // Inicialmente mostramos todos
+        this.usuariosFiltrados = respuesta;
 
         // Guardamos el rol original de cada usuario
         this.users.forEach((usuario) => {
@@ -168,6 +185,76 @@ private readonly apiUrl = API_URL;
   }
 
   // =========================================================
+  // BUSCAR USUARIOS
+  // =========================================================
+
+  buscarUsuarios(): void {
+
+    const texto = this.busqueda
+      .trim()
+      .toLowerCase();
+
+    // Si el buscador está vacío,
+    // mostramos todos los usuarios
+    if (!texto) {
+
+      this.usuariosFiltrados = this.users;
+
+      return;
+    }
+
+    // Filtramos por nombre, apellido,
+    // correo, documento o rol
+    this.usuariosFiltrados = this.users.filter(
+      (usuario) => {
+
+        const nombreCompleto =
+          `${usuario.nombres} ${usuario.apellidos}`
+            .toLowerCase();
+
+        const correo =
+          usuario.correo
+            ?.toLowerCase() || '';
+
+        const documento =
+          usuario.numero_documento
+            ?.toLowerCase() || '';
+
+        const rol =
+          this.getRoleName(usuario.id_rol)
+            .toLowerCase();
+
+        return (
+          nombreCompleto.includes(texto) ||
+          correo.includes(texto) ||
+          documento.includes(texto) ||
+          rol.includes(texto)
+        );
+      }
+    );
+
+    console.log(
+      'Usuarios encontrados:',
+      this.usuariosFiltrados.length
+    );
+
+    this.cdr.detectChanges();
+  }
+
+  // =========================================================
+  // LIMPIAR BÚSQUEDA
+  // =========================================================
+
+  limpiarBusqueda(): void {
+
+    this.busqueda = '';
+
+    this.usuariosFiltrados = this.users;
+
+    this.cdr.detectChanges();
+  }
+
+  // =========================================================
   // LISTAR ROLES - GET
   // =========================================================
 
@@ -193,6 +280,10 @@ private readonly apiUrl = API_URL;
           'Roles disponibles:',
           this.roles
         );
+
+        // Volvemos a ejecutar la búsqueda por si
+        // el usuario ya había escrito algo
+        this.buscarUsuarios();
 
         this.cdr.detectChanges();
       },
