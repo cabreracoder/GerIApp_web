@@ -201,7 +201,6 @@ export class Cuidadores implements OnInit {
     'Sáb',
     'Dom'
   ];
-  cargarCuidadores: any;
 
 
   // =========================================================
@@ -400,14 +399,6 @@ export class Cuidadores implements OnInit {
 
   }
 
-
-  // =========================================================
-  // BÚSQUEDA
-  // =========================================================
-
-  buscarCuidadores(): void {
-    this.filtrarCuidadores();
-  }
 
 
   filtrarCuidadores(): void {
@@ -861,7 +852,7 @@ export class Cuidadores implements OnInit {
                 );
 
                 this.cerrarFormulario();
-                this.cargarCuidadores();
+                this.listar();
               },
 
               error: (errorDocumentos) => {
@@ -921,7 +912,7 @@ export class Cuidadores implements OnInit {
 
     this.cerrarFormulario();
 
-    this.cargarCuidadores();
+    this.listar();
   }
 
 

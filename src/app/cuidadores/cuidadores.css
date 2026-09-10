@@ -45,6 +45,16 @@
   white-space: nowrap;
 }
 
+.asterisco {
+  color: red;
+  margin-left: 3px;
+  font-weight: bold;
+}
+
+.input-error {
+  border: 1px solid red !important;
+}
+
 /* =========================================================
    BOTÓN NUEVO CUIDADOR
 ========================================================= */
@@ -195,6 +205,14 @@ td {
 
 tbody tr:last-child td {
   border-bottom: none;
+}
+
+.fila-par {
+  background: var(--bg-surface);
+}
+
+.fila-impar {
+  background: #F4F7FF;
 }
 
 tbody tr:hover {

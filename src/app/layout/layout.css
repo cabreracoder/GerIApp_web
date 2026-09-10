@@ -103,7 +103,7 @@
 
   flex: 1;
 
-  overflow-y: auto;
+  overflow: visible;
 
   scrollbar-width: none;
 }
@@ -111,7 +111,6 @@
 .layout-menu::-webkit-scrollbar {
   display: none;
 }
-
 
 /* =========================================================
    BOTONES DEL MENÚ
@@ -234,6 +233,80 @@
   visibility: visible;
 }
 
+/* =========================================================
+   MENÚ FLOTANTE DE PACIENTES
+========================================================= */
+
+.layout-pacientes-container {
+  position: relative;
+
+  width: 100%;
+  max-width: 52px;
+
+  display: flex;
+  justify-content: center;
+
+  flex-shrink: 0;
+}
+
+.layout-pacientes-menu {
+  position: absolute;
+
+  left: calc(100% + var(--spacing-sm));
+
+  top: 0;
+
+  width: 220px;
+
+  padding: var(--spacing-xs);
+
+  display: flex;
+  flex-direction: column;
+
+  background: var(--bg-surface);
+
+  border: 1px solid var(--border-color);
+
+  border-radius: var(--radius-md);
+
+  box-shadow: var(--shadow-lg);
+
+  z-index: 9999;
+}
+
+.layout-pacientes-option {
+  width: 100%;
+
+  padding: var(--spacing-sm);
+
+  display: block;
+
+  border-radius: var(--radius-sm);
+
+  color: var(--text-primary);
+
+  background: transparent;
+
+  text-decoration: none;
+
+  font-family: var(--font-family-base);
+
+  font-size: var(--font-size-sm);
+
+  font-weight: var(--font-weight-medium);
+
+  white-space: nowrap;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.layout-pacientes-option:hover {
+  background: var(--bg-neutral-light);
+
+  color: var(--color-primary);
+}
 
 /* =========================================================
    PARTE INFERIOR DEL SIDEBAR
