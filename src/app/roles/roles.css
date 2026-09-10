@@ -1,3 +1,6 @@
+.pagina {
+  padding-top: 20px;
+}
 
 /* =========================================================
    HOST
@@ -12,7 +15,6 @@
   font-family: var(--font-family-base);
 }
 
-
 /* =========================================================
    CONTENEDOR PRINCIPAL
 ========================================================= */
@@ -26,15 +28,13 @@
     var(--web-content-padding-bottom);
 }
 
-
 /* =========================================================
    CABECERA
 ========================================================= */
 
 .page-header {
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
 }
-
 
 /* =========================================================
    TÍTULOS DE SECCIÓN
@@ -61,7 +61,6 @@
   background: var(--border-color);
 }
 
-
 /* =========================================================
    BOTONES
 ========================================================= */
@@ -75,6 +74,7 @@
 }
 
 .role-actions {
+  margin-top: -30px;
   margin-bottom: var(--spacing-md);
 }
 
@@ -130,11 +130,35 @@
 }
 
 .small-button {
-  padding: var(--spacing-2xs) var(--spacing-sm);
-  border-radius: var(--radius-sm);
-  background: var(--color-primary);
-  color: var(--bg-surface);
-  font-size: var(--font-size-xs);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  font-size: 0;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.small-button:hover {
+  background: var(--bg-neutral-light);
+  border-color: var(--color-secondary);
+  color: var(--color-primary);
+}
+
+.small-button.delete-button:hover {
+  background: #f8d7da;
+  border-color: var(--color-danger);
+  color: var(--color-danger);
 }
 
 .close-button {
@@ -155,7 +179,6 @@
 .close-button .material-symbols-outlined {
   font-size: var(--icon-size-sm);
 }
-
 
 /* =========================================================
    FORMULARIO NUEVO ROL
@@ -259,77 +282,92 @@
   margin: 0;
 }
 
-
 /* =========================================================
    TARJETAS DE ROLES
 ========================================================= */
 
 .role-cards {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--spacing-md);
+  grid-template-columns: repeat(3, 260px);
+  gap: var(--spacing-lg);
   margin-bottom: var(--spacing-lg);
+  justify-content: center;
+  align-items: start;
 }
 
 .role-card {
   position: relative;
   min-width: 0;
-  padding: var(--spacing-lg);
-  overflow: hidden;
+  min-height: 300px;
+  padding: 48px var(--spacing-lg) var(--spacing-lg);
+  overflow: visible;
   background: var(--bg-surface);
-  border: 2px solid var(--border-color);
-  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
   transition:
-    border-color .18s ease,
-    box-shadow .18s ease,
-    transform .18s ease;
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
-.role-card::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto;
-  height: 4px;
-  background: var(--role-color, var(--color-primary));
+.role-card:hover {
+  transform: translateY(-2px) scale(1.04);
+  z-index: 2;
+  border-color: var(--role-color, var(--color-primary));
+  box-shadow: var(--shadow-md);
 }
 
-.role-card:hover,
 .role-card.selected {
   border-color: var(--role-color, var(--color-primary));
   box-shadow: var(--shadow-md);
 }
 
-.role-card:hover {
-  transform: translateY(-2px);
-}
-
-.role-card-header {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-sm);
-}
+/* =========================================================
+   ICONO SUPERIOR
+========================================================= */
 
 .role-icon-wrap {
-  width: 44px;
-  height: 44px;
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  width: 60px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
+  transform: translateX(-50%);
   flex-shrink: 0;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-full);
   background: var(--role-color, var(--color-primary));
+  box-shadow: var(--shadow-sm);
 }
 
 .role-icon-wrap .material-symbols-outlined {
   color: var(--bg-surface);
-  font-size: var(--icon-size-md);
+  font-size: 30px;
+}
+
+/* =========================================================
+   CONTENIDO DE LA CARD
+========================================================= */
+
+.role-card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  margin-bottom: var(--spacing-md);
 }
 
 .role-card-meta {
   min-width: 0;
-  flex: 1;
+  width: 100%;
 }
 
 .role-card-name {
@@ -337,11 +375,13 @@
   font-family: var(--font-heading-family);
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-bold);
+  text-align: center;
 }
 
 .role-user-count {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: var(--spacing-2xs);
   margin-top: var(--spacing-2xs);
   color: var(--text-secondary);
@@ -353,28 +393,12 @@
 }
 
 .role-card-desc {
-  margin: 0 0 var(--spacing-sm);
+  width: 100%;
+  margin: 0;
   color: var(--text-secondary);
   font-size: var(--font-size-xs);
   line-height: 1.5;
-}
-
-.selected-check {
-  position: absolute;
-  top: var(--spacing-sm);
-  right: var(--spacing-sm);
-  width: 22px;
-  height: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-full);
-  background: var(--role-color, var(--color-primary));
-}
-
-.selected-check .material-symbols-outlined {
-  color: var(--bg-surface);
-  font-size: var(--icon-size-sm);
+  text-align: center;
 }
 
 /* =========================================================
@@ -382,23 +406,20 @@
 ========================================================= */
 
 .role-card-actions {
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
-  gap: 12px;
-
-  margin-top: var(--spacing-md);
-
+  gap: 5px;
+  width: 100%;
+  margin-top: auto;
 }
 
 .role-card-actions .small-button {
-
   margin: 0;
+}
 
+.role-card-actions .material-symbols-outlined {
+  font-size: var(--icon-size-sm);
 }
 
 /* =========================================================
@@ -504,7 +525,6 @@
   text-transform: uppercase;
 }
 
-
 /* =========================================================
    USUARIOS
 ========================================================= */
@@ -609,7 +629,6 @@
   color: #c92a2a;
 }
 
-
 /* =========================================================
    MENSAJES
 ========================================================= */
@@ -644,12 +663,4 @@
   background: #fff5f5;
   color: #c92a2a;
   border-left: 4px solid #fa5252;
-}
-
-/* =========================================================
-   ICONOS DE BOTONES
-========================================================= */
-
-.role-card-actions .material-symbols-outlined {
-  font-size: 12px;
 }
