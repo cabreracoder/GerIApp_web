@@ -114,15 +114,13 @@ export class Cuidadores implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   private apiUrl =
-    'https://geriapp-web-1.onrender.com/api/usuarios/';
+  'https://geriapp-backend.onrender.com/api/usuarios/';
 
-  private perfilUrl =
-    'https://geriapp-web-1.onrender.com/api/perfil_profesional/';
+private perfilUrl =
+  'https://geriapp-backend.onrender.com/api/perfil_profesional/';
 
-  private documentosUrl =
-    'https://geriapp-web-1.onrender.com/api/documentos/';
-
-
+private documentosUrl =
+  'https://geriapp-backend.onrender.com/api/documentos/';
   // =========================================================
   // DATOS
   // =========================================================

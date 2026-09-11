@@ -86,7 +86,7 @@ export class Encargados implements OnInit {
   // =====================================================
 
   usuarioActual = 'Administrador';
-  private apiUrl = 'https://geriapp-web-1.onrender.com/api/usuarios/';
+  private apiUrl = 'https://geriapp-backend.onrender.com/api/usuarios/';
 
 
   // =====================================================
