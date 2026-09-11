@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
@@ -32,9 +32,7 @@ interface Medicamento {
 })
 export class BancoDatos implements OnInit {
 
-  constructor(
-    private http: HttpClient
-  ) {}
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
   // =========================================================
   // URL BASE DE LA API
@@ -59,14 +57,6 @@ export class BancoDatos implements OnInit {
     {
       nombre: 'Tipos de insumo',
       icono: 'category'
-    },
-    {
-      nombre: 'Tipos de emergencia',
-      icono: 'emergency'
-    },
-    {
-      nombre: 'Tipos de evento',
-      icono: 'event'
     },
     {
       nombre: 'Enfermedades',
@@ -133,83 +123,46 @@ export class BancoDatos implements OnInit {
   // =========================================================
 
   seleccionarCatalogo(nombre: string): void {
-    this.catalogoSeleccionado = nombre;
+  this.catalogoSeleccionado = nombre;
+  this.mensajeExito = '';
+  this.mensajeError = '';
 
-    this.mensajeExito = '';
-    this.mensajeError = '';
-
-    if (nombre === 'Medicamentos') {
-      this.cargarMedicamentos();
-    }
+  if (nombre === 'Medicamentos') {
+    this.cargarMedicamentos();
   }
 
-  // =========================================================
-  // DESPLAZAMIENTO HORIZONTAL
-  // =========================================================
-
-  desplazarHorizontal(event: WheelEvent): void {
-
-    const elemento =
-      event.currentTarget as HTMLElement;
-
-    if (!elemento) {
-      return;
-    }
-
-    const tieneDesplazamiento =
-      elemento.scrollWidth >
-      elemento.clientWidth;
-
-    if (!tieneDesplazamiento) {
-      return;
-    }
-
-    elemento.scrollLeft += event.deltaY;
-
-    event.preventDefault();
-  }
+  this.cdr.detectChanges();
+}
 
   // =========================================================
   // CARGAR MEDICAMENTOS
   // =========================================================
 
   cargarMedicamentos(): void {
+  this.cargandoMedicamentos = true;
+  this.mensajeError = '';
 
-    this.cargandoMedicamentos = true;
+  this.http
+    .get<Medicamento[]>(`${this.apiUrl}/medicamentos/`)
+    .subscribe({
+      next: (respuesta) => {
+        this.medicamentos = [...respuesta];
+        this.cargandoMedicamentos = false;
 
-    this.mensajeError = '';
+        // Fuerza la actualización visual de la tabla
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error al cargar medicamentos:', error);
 
-    this.http
-      .get<Medicamento[]>(
-        `${this.apiUrl}/medicamentos/`
-      )
-      .subscribe({
+        this.cargandoMedicamentos = false;
+        this.mensajeError =
+          'No fue posible cargar los medicamentos.';
 
-        next: (respuesta) => {
-
-          this.medicamentos =
-            respuesta;
-
-          this.cargandoMedicamentos =
-            false;
-        },
-
-        error: (error) => {
-
-          console.error(
-            'Error al cargar medicamentos:',
-            error
-          );
-
-          this.cargandoMedicamentos =
-            false;
-
-          this.mensajeError =
-            'No fue posible cargar los medicamentos.';
-        }
-
-      });
-  }
+        this.cdr.detectChanges();
+      }
+    });
+}
 
   // =========================================================
   // ABRIR NUEVO MEDICAMENTO

@@ -58,16 +58,13 @@ BARRA HORIZONTAL
 ===================================================== */
 
 .barra-catalogos {
-display: flex;
-align-items: center;
-gap: 6px;
-width: 100%;
-padding: 8px;
-overflow-x: auto;
-overflow-y: hidden;
-white-space: nowrap;
-scrollbar-width: thin;
-scrollbar-color: #CED4DA transparent;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 4px;
 }
 
 .barra-catalogos::-webkit-scrollbar {
