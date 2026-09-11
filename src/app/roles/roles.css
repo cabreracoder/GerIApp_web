@@ -134,15 +134,7 @@
   letter-spacing: .8px;
 }
 
-.section-label::after {
-  content: '';
 
-  flex: 1;
-
-  height: 1px;
-
-  background: var(--border-color);
-}
 
 /* =========================================================
    BOTONES
@@ -511,7 +503,7 @@
 }
 
 .role-card:hover {
-  transform: translateY(-2px) scale(1.8);
+  transform: translateY(-2px) scale(1.2);
 
   z-index: 2;
 
