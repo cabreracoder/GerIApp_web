@@ -29,6 +29,13 @@
 
     </div>
 
+    <!-- ========================================================= BUSCADOR ========================================================== --> 
+     <div class="tarjeta-buscador"> 
+        <span class="material-symbols-outlined icono-busqueda"> search </span> 
+        <input type="text" [(ngModel)]="searchText" placeholder="Buscar por nombre o documento" > 
+        <span class="contador-resultados"> {{ filteredPatients.length }} resultados </span> 
+    </div>
+
 
     <!-- CONTADOR -->
 

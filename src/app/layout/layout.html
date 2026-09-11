@@ -23,13 +23,38 @@
     <!-- MENÚ PRINCIPAL -->
     <nav class="layout-menu">
 
-      <a
-        *ngFor="let item of menu"
-        [routerLink]="item.ruta"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
+  <ng-container *ngFor="let item of menu">
+
+    <!-- OPCIONES NORMALES -->
+    <a
+      *ngIf="item.nombre !== 'Pacientes'"
+      [routerLink]="item.ruta"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="layout-menu-button"
+      [attr.title]="item.nombre"
+    >
+      <span class="material-symbols-outlined">
+        {{ item.icono }}
+      </span>
+
+      <span class="layout-menu-tooltip">
+        {{ item.nombre }}
+      </span>
+    </a>
+
+
+    <!-- PACIENTES -->
+    <div
+      *ngIf="item.nombre === 'Pacientes'"
+      class="layout-pacientes-container"
+    >
+
+      <button
+        type="button"
         class="layout-menu-button"
-        [attr.title]="item.nombre"
+        title="Pacientes"
+        (click)="togglePacientesMenu()"
       >
         <span class="material-symbols-outlined">
           {{ item.icono }}
@@ -38,9 +63,38 @@
         <span class="layout-menu-tooltip">
           {{ item.nombre }}
         </span>
-      </a>
+      </button>
 
-    </nav>
+
+      <!-- MENÚ FLOTANTE -->
+      <div
+        *ngIf="pacientesMenuAbierto"
+        class="layout-pacientes-menu"
+      >
+
+        <a
+          routerLink="/pacientes"
+          class="layout-pacientes-option"
+          (click)="cerrarPacientesMenu()"
+        >
+          Gestión de pacientes
+        </a>
+
+        <a
+            routerLink="/elementos-paciente"
+            class="layout-pacientes-option"
+            (click)="cerrarPacientesMenu()"
+    >
+            Elementos del paciente
+        </a>
+
+      </div>
+
+    </div>
+
+  </ng-container>
+
+</nav>
 
 
     <!-- MENÚ INFERIOR -->
