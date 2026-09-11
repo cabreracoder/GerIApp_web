@@ -3,6 +3,7 @@ import {ChangeDetectorRef,Component,OnInit,inject} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http'
 import { API_URL } from '../config/api.config';
+import Swal from 'sweetalert2';
 
 interface Usuario {
   id_usuario: number;
@@ -77,9 +78,6 @@ export class Configuracion implements OnInit {
   cargandoRoles = false;
   guardando = false;
 
-  mensajeExito = '';
-  mensajeError = '';
-
   // =====================================================
   // CONTRASEÑA
   // =====================================================
@@ -101,15 +99,21 @@ export class Configuracion implements OnInit {
   // =====================================================
 
   cargarUsuario(): void {
-    this.mensajeError = '';
-    this.mensajeExito = '';
     this.cargandoUsuario = true;
 
     const usuarioGuardado = localStorage.getItem('usuario');
 
     if (!usuarioGuardado) {
       this.cargandoUsuario = false;
-      this.mensajeError = 'No se encontró la información del usuario.';
+
+      Swal.fire({
+        title: 'Error',
+        text: 'No se encontró la información del usuario.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3B5BDB'
+      });
+
       this.cdr.detectChanges();
       return;
     }
@@ -117,9 +121,17 @@ export class Configuracion implements OnInit {
     try {
       const usuarioLocal: Usuario = JSON.parse(usuarioGuardado);
 
-      if (!usuarioLocal.id_usuario) {
+           if (!usuarioLocal.id_usuario) {
         this.cargandoUsuario = false;
-        this.mensajeError = 'No se encontró el ID del usuario.';
+
+        Swal.fire({
+          title: 'Error',
+          text: 'No se encontró el ID del usuario.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#3B5BDB'
+        });
+
         this.cdr.detectChanges();
         return;
       }
@@ -149,14 +161,21 @@ export class Configuracion implements OnInit {
 
           this.cargandoUsuario = false;
 
+          let textoError = 'No fue posible cargar la información del usuario.';
+
           if (error.status === 404) {
-            this.mensajeError = 'El usuario no existe en el servidor.';
+            textoError = 'El usuario no existe en el servidor.';
           } else if (error.status === 0) {
-            this.mensajeError = 'No se pudo conectar con el servidor.';
-          } else {
-            this.mensajeError =
-              'No fue posible cargar la información del usuario.';
+            textoError = 'No se pudo conectar con el servidor.';
           }
+
+          Swal.fire({
+            title: 'Error',
+            text: textoError,
+            icon: 'error',
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#3B5BDB'
+          });
 
           this.cdr.detectChanges();
         }
@@ -166,13 +185,18 @@ export class Configuracion implements OnInit {
       console.error('ERROR AL LEER LOCALSTORAGE:', error);
 
       this.cargandoUsuario = false;
-      this.mensajeError =
-        'No fue posible cargar los datos del usuario.';
+
+      Swal.fire({
+        title: 'Error',
+        text: 'No fue posible cargar los datos del usuario.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3B5BDB'
+      });
 
       this.cdr.detectChanges();
     }
   }
-
   // =====================================================
   // ASIGNAR DATOS DEL USUARIO
   // =====================================================
@@ -270,11 +294,19 @@ export class Configuracion implements OnInit {
         this.cdr.detectChanges();
       },
 
-      error: (error) => {
+            error: (error) => {
         console.error('ERROR AL CARGAR ROLES:', error);
 
         this.cargandoRoles = false;
         this.cargoUsuario = 'No disponible';
+
+        Swal.fire({
+          title: 'Error',
+          text: 'No se pudieron cargar los roles.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#3B5BDB'
+        });
 
         this.cdr.detectChanges();
       }
@@ -312,16 +344,19 @@ export class Configuracion implements OnInit {
   // =====================================================
 
   guardarCambios(): void {
-    this.mensajeExito = '';
-    this.mensajeError = '';
 
     if (this.guardando) {
       return;
     }
 
     if (this.idUsuario === null) {
-      this.mensajeError =
-        'No se encontró el ID del usuario.';
+      Swal.fire({
+        title: 'Error',
+        text: 'No se encontró el ID del usuario.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3B5BDB'
+      });
       return;
     }
 
@@ -333,8 +368,13 @@ export class Configuracion implements OnInit {
       this.nombreUsuarioEdicion.trim();
 
     if (!nombreCompleto) {
-      this.mensajeError =
-        'El nombre completo es obligatorio.';
+      Swal.fire({
+        title: 'Campo obligatorio',
+        text: 'El nombre completo es obligatorio.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3B5BDB'
+      });
       return;
     }
 
@@ -374,8 +414,13 @@ export class Configuracion implements OnInit {
     const correo = this.correoUsuario.trim();
 
     if (!correo) {
-      this.mensajeError =
-        'El correo electrónico es obligatorio.';
+      Swal.fire({
+        title: 'Campo obligatorio',
+        text: 'El correo electrónico es obligatorio.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3B5BDB'
+      });
       return;
     }
 
@@ -383,8 +428,13 @@ export class Configuracion implements OnInit {
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
 
     if (!correoValido) {
-      this.mensajeError =
-        'Ingresa un correo electrónico válido.';
+      Swal.fire({
+        title: 'Correo inválido',
+        text: 'Ingresa un correo electrónico válido.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3B5BDB'
+      });
       return;
     }
 
@@ -395,8 +445,13 @@ export class Configuracion implements OnInit {
     const telefono = this.telefonoUsuario.trim();
 
     if (!telefono) {
-      this.mensajeError =
-        'El teléfono es obligatorio.';
+      Swal.fire({
+        title: 'Campo obligatorio',
+        text: 'El teléfono es obligatorio.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3B5BDB'
+      });
       return;
     }
 
@@ -507,10 +562,14 @@ export class Configuracion implements OnInit {
         // -----------------------------------------------
 
         this.guardando = false;
-        this.mensajeError = '';
 
-        this.mensajeExito =
-          'Cambios guardados correctamente.';
+        Swal.fire({
+          title: 'Cambios guardados',
+          text: 'Tu perfil se actualizó correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#3B5BDB'
+        });
 
         console.log(
           'DATOS ACTUALIZADOS EN PANTALLA:',
@@ -522,11 +581,6 @@ export class Configuracion implements OnInit {
         );
 
         this.cdr.detectChanges();
-
-        setTimeout(() => {
-          this.mensajeExito = '';
-          this.cdr.detectChanges();
-        }, 3000);
       },
 
       error: (error) => {
@@ -542,13 +596,13 @@ export class Configuracion implements OnInit {
 
         this.guardando = false;
 
+        let textoError = 'No fue posible guardar los cambios.';
+
         if (error.error?.detail) {
-          this.mensajeError =
-            error.error.detail;
+          textoError = error.error.detail;
 
         } else if (error.error?.error) {
-          this.mensajeError =
-            error.error.error;
+          textoError = error.error.error;
 
         } else if (
           error.error &&
@@ -559,32 +613,36 @@ export class Configuracion implements OnInit {
               .flat()
               .join(' ');
 
-          this.mensajeError =
-            errores ||
-            'El servidor rechazó la actualización.';
+          textoError = errores || 'El servidor rechazó la actualización.';
 
         } else if (error.status === 0) {
-          this.mensajeError =
-            'No se pudo conectar con el servidor.';
-
-        } else {
-          this.mensajeError =
-            'No fue posible guardar los cambios.';
+          textoError = 'No se pudo conectar con el servidor.';
         }
+
+        Swal.fire({
+          title: 'Error',
+          text: textoError,
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#3B5BDB'
+        });
 
         this.cdr.detectChanges();
       }
     });
   }
-
   // =====================================================
   // CAMBIAR FOTO
   // =====================================================
 
-  cambiarFoto(): void {
-    alert(
-      'La actualización de la foto se implementará posteriormente.'
-    );
+   cambiarFoto(): void {
+    Swal.fire({
+      title: 'Próximamente',
+      text: 'La actualización de la foto se implementará posteriormente.',
+      icon: 'info',
+      confirmButtonText: 'Aceptar',
+      confirmButtonColor: '#3B5BDB'
+    });
   }
 
   // =====================================================
@@ -592,16 +650,19 @@ export class Configuracion implements OnInit {
   // =====================================================
 
   actualizarContrasena(): void {
-    this.mensajeExito = '';
-    this.mensajeError = '';
 
     // ===================================================
     // VALIDAR ID
     // ===================================================
 
     if (this.idUsuario === null) {
-      this.mensajeError =
-        'No se encontró el ID del usuario.';
+      Swal.fire({
+        title: 'Error',
+        text: 'No se encontró el ID del usuario.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3B5BDB'
+      });
       return;
     }
 
@@ -616,10 +677,14 @@ export class Configuracion implements OnInit {
     // ===================================================
     // VALIDAR CONTRASEÑA ACTUAL
     // ===================================================
-
-    if (!this.contrasenaActual.trim()) {
-      this.mensajeError =
-        'Ingresa tu contraseña actual.';
+        if (!this.contrasenaActual.trim()) {
+      Swal.fire({
+        title: 'Campo obligatorio',
+        text: 'Ingresa tu contraseña actual.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3B5BDB'
+      });
       return;
     }
 
@@ -628,8 +693,13 @@ export class Configuracion implements OnInit {
     // ===================================================
 
     if (!this.nuevaContrasena.trim()) {
-      this.mensajeError =
-        'Ingresa la nueva contraseña.';
+      Swal.fire({
+        title: 'Campo obligatorio',
+        text: 'Ingresa la nueva contraseña.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3B5BDB'
+      });
       return;
     }
 
@@ -638,8 +708,13 @@ export class Configuracion implements OnInit {
     // ===================================================
 
     if (!this.confirmarContrasena.trim()) {
-      this.mensajeError =
-        'Confirma la nueva contraseña.';
+      Swal.fire({
+        title: 'Campo obligatorio',
+        text: 'Confirma la nueva contraseña.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3B5BDB'
+      });
       return;
     }
 
@@ -648,8 +723,13 @@ export class Configuracion implements OnInit {
     // ===================================================
 
     if (this.nuevaContrasena.length < 8) {
-      this.mensajeError =
-        'La nueva contraseña debe tener al menos 8 caracteres.';
+      Swal.fire({
+        title: 'Contraseña muy corta',
+        text: 'La nueva contraseña debe tener al menos 8 caracteres.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3B5BDB'
+      });
       return;
     }
 
@@ -658,8 +738,13 @@ export class Configuracion implements OnInit {
     // ===================================================
 
     if (this.nuevaContrasena.length > 10) {
-      this.mensajeError =
-        'La nueva contraseña debe tener máximo 10 caracteres.';
+      Swal.fire({
+        title: 'Contraseña muy larga',
+        text: 'La nueva contraseña debe tener máximo 10 caracteres.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3B5BDB'
+      });
       return;
     }
 
@@ -668,8 +753,13 @@ export class Configuracion implements OnInit {
     // ===================================================
 
     if (this.confirmarContrasena.length > 10) {
-      this.mensajeError =
-        'La confirmación de la contraseña no puede superar los 10 caracteres.';
+      Swal.fire({
+        title: 'Confirmación muy larga',
+        text: 'La confirmación de la contraseña no puede superar los 10 caracteres.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3B5BDB'
+      });
       return;
     }
 
@@ -681,8 +771,13 @@ export class Configuracion implements OnInit {
       this.nuevaContrasena !==
       this.confirmarContrasena
     ) {
-      this.mensajeError =
-        'Las contraseñas nuevas no coinciden.';
+      Swal.fire({
+        title: 'Las contraseñas no coinciden',
+        text: 'Las contraseñas nuevas no coinciden.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3B5BDB'
+      });
       return;
     }
 
@@ -720,11 +815,14 @@ export class Configuracion implements OnInit {
         );
 
         this.guardando = false;
-        this.mensajeError = '';
 
-        this.mensajeExito =
-          respuesta?.mensaje ??
-          'Contraseña actualizada correctamente.';
+        Swal.fire({
+          title: 'Contraseña actualizada',
+          text: respuesta?.mensaje ?? 'Contraseña actualizada correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#3B5BDB'
+        });
 
         // -----------------------------------------------
         // LIMPIAR CAMPOS
@@ -735,11 +833,6 @@ export class Configuracion implements OnInit {
         this.confirmarContrasena = '';
 
         this.cdr.detectChanges();
-
-        setTimeout(() => {
-          this.mensajeExito = '';
-          this.cdr.detectChanges();
-        }, 3000);
       },
 
       error: (error) => {
@@ -755,13 +848,13 @@ export class Configuracion implements OnInit {
 
         this.guardando = false;
 
+        let textoError = 'No fue posible actualizar la contraseña.';
+
         if (error.error?.detail) {
-          this.mensajeError =
-            error.error.detail;
+          textoError = error.error.detail;
 
         } else if (error.error?.error) {
-          this.mensajeError =
-            error.error.error;
+          textoError = error.error.error;
 
         } else if (
           error.error &&
@@ -772,18 +865,19 @@ export class Configuracion implements OnInit {
               .flat()
               .join(' ');
 
-          this.mensajeError =
-            errores ||
-            'El servidor rechazó el cambio de contraseña.';
+          textoError = errores || 'El servidor rechazó el cambio de contraseña.';
 
         } else if (error.status === 0) {
-          this.mensajeError =
-            'No se pudo conectar con el servidor.';
-
-        } else {
-          this.mensajeError =
-            'No fue posible actualizar la contraseña.';
+          textoError = 'No se pudo conectar con el servidor.';
         }
+
+        Swal.fire({
+          title: 'Error',
+          text: textoError,
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#3B5BDB'
+        });
 
         this.cdr.detectChanges();
       }
