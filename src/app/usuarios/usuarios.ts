@@ -1,4 +1,3 @@
-import { API_URL } from '../config/api.config';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -50,11 +49,11 @@ interface Rol {
 })
 export class Usuarios implements OnInit {
 
-  // =========================================================
-  // URL BASE DE LA API
-  // =========================================================
+// =========================================================
+// URL BASE DE LA API
+// =========================================================
 
-  private readonly apiUrl = API_URL;
+private readonly apiUrl = 'https://geriapp-backend.onrender.com/api';
 
   // =========================================================
   // USUARIOS
