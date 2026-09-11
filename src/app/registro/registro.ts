@@ -58,7 +58,7 @@ export class Registro {
         text: 'Por favor completa todos los campos obligatorios.',
         icon: 'warning',
         confirmButtonText: 'Aceptar',
-        confirmButtonColor: '#ff9100'
+        confirmButtonColor: '#3B5BDB'
       });
 
       return;
@@ -86,7 +86,7 @@ export class Registro {
           text: 'Tu usuario ha sido registrado correctamente.',
           icon: 'success',
           confirmButtonText: 'Continuar',
-          confirmButtonColor: '#4f46e5'
+          confirmButtonColor: '#3B5BDB'
         }).then(() => {
 
           // Después de registrarse, ir al login
@@ -141,7 +141,7 @@ export class Registro {
           text: mensajeError,
           icon: 'error',
           confirmButtonText: 'Aceptar',
-          confirmButtonColor: '#ff2a00'
+          confirmButtonColor: '#3B5BDB'
         });
       }
     });

@@ -362,8 +362,10 @@ export class Pacientes {
               title:
                 'Paciente registrado correctamente',
               icon: 'success',
-              confirmButtonText:
-                'Aceptar'
+              confirmButtonText: 
+                'Aceptar',
+              confirmButtonColor:
+               '#3B5BDB'
             });
 
             this.listar();
@@ -387,7 +389,9 @@ export class Pacientes {
                 'No se pudo guardar el familiar responsable.',
               icon: 'warning',
               confirmButtonText:
-                'Aceptar'
+                'Aceptar',
+              confirmButtonColor:
+                '#3B5BDB'
             });
 
             this.listar();
@@ -412,7 +416,9 @@ export class Pacientes {
             'No se pudo guardar el paciente.',
           icon: 'error',
           confirmButtonText:
-            'Aceptar'
+            'Aceptar',
+          confirmButtonColor:
+            '#3B5BDB'
         });
       }
     });
@@ -717,7 +723,9 @@ export class Pacientes {
       confirmButtonText:
         'Eliminar',
       cancelButtonText:
-        'Cancelar'
+        'Cancelar',
+      confirmButtonColor:
+        '#3B5BDB'
     }).then((resultado) => {
       if (resultado.isConfirmed) {
         this.http.delete(
@@ -729,7 +737,9 @@ export class Pacientes {
                 'Paciente eliminado correctamente',
               icon: 'success',
               confirmButtonText:
-                'Aceptar'
+                'Aceptar',
+              confirmButtonColor:
+                '#3B5BDB'
             });
 
             this.listar();
@@ -745,7 +755,9 @@ export class Pacientes {
                 'Error al eliminar el paciente',
               icon: 'error',
               confirmButtonText:
-                'Aceptar'
+                'Aceptar',
+              confirmButtonColor:
+                '#3B5BDB'
             });
           }
         });

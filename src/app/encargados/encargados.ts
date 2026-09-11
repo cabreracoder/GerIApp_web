@@ -97,6 +97,10 @@ export class Encargados implements OnInit {
 
   encargados: Encargado[] = [];
 
+  encargadosFiltrados: Encargado[] = [];
+
+  busqueda = '';
+
 
 
   // =====================================================
@@ -212,7 +216,10 @@ export class Encargados implements OnInit {
             iniciales: this.generarIniciales(`${usuario.nombres} ${usuario.apellidos}`),
           }))
           .sort((a: Encargado, b: Encargado) => a.id - b.id);
+
         this.encargadoPrincipal = null;
+
+        this.filtrarEncargados();
 
         this.cargando = false;
 
@@ -1004,6 +1011,65 @@ export class Encargados implements OnInit {
     ).toUpperCase();
   }
 
+    // =====================================================
+  // FILTRAR
+  // =====================================================
+
+  filtrarEncargados(): void {
+
+    const termino =
+      this.busqueda.trim().toLowerCase();
+
+
+    if (!termino) {
+
+      this.encargadosFiltrados =
+        [...this.encargados];
+
+      this.cdr.detectChanges();
+
+      return;
+    }
+
+
+    this.encargadosFiltrados =
+      this.encargados.filter((encargado) => {
+
+        return (
+
+          encargado.documento
+            .toLowerCase()
+            .includes(termino)
+
+          ||
+
+          encargado.nombres
+            .toLowerCase()
+            .includes(termino)
+
+          ||
+
+          encargado.apellidos
+            .toLowerCase()
+            .includes(termino)
+
+          ||
+
+          encargado.email
+            .toLowerCase()
+            .includes(termino)
+
+          ||
+
+          encargado.telefono
+            .toLowerCase()
+            .includes(termino)
+        );
+      });
+
+
+    this.cdr.detectChanges();
+  }
 
   // =====================================================
   // FORMATEAR FECHA

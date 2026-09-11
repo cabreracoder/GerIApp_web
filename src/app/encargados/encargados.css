@@ -34,7 +34,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
 }
 
 .informacion-encabezado {
@@ -123,12 +123,13 @@
   position: relative;
   display: flex;
   align-items: center;
+  gap: 10px;
   width: 100%;
-  min-height: 50px;
-  margin-bottom: var(--spacing-lg);
-  padding: 0 var(--spacing-md);
+  min-height: 52px;
+  margin-bottom: var(--spacing-md);
+  padding: 0 14px;
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   background: var(--bg-surface);
   box-shadow: var(--shadow-sm);
 }
@@ -136,14 +137,14 @@
 .icono-busqueda {
   flex-shrink: 0;
   color: var(--text-secondary);
-  font-size: var(--icon-size-md);
+  font-size: 22px;
 }
 
 .tarjeta-buscador input {
   flex: 1;
   min-width: 0;
   height: 48px;
-  padding: 0 var(--spacing-sm);
+  padding: 0;
   border: none;
   outline: none;
   background: transparent;
@@ -164,7 +165,7 @@
 }
 
 .texto-contador-registros {
-  margin: 0 0 var(--spacing-sm);
+  margin: 0 0 20px;
   color: var(--text-secondary);
   font-size: var(--font-size-sm);
 }
@@ -412,7 +413,7 @@
 }
 
 .contenedor-tabla th {
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: 16px 20px;
   border-bottom: none;
   background: var(--color-primary);
   color: var(--bg-surface);
@@ -434,7 +435,7 @@
 }
 
 .contenedor-tabla td {
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: 16px 20px;
   border-bottom: 1px solid var(--border-color);
   color: var(--text-primary);
   font-size: var(--font-size-sm);

@@ -83,7 +83,7 @@ export class Login {
         text: 'Ingresa tu correo y contraseña.',
         icon: 'warning',
         confirmButtonText: 'Aceptar',
-        confirmButtonColor: '#ff9100'
+        confirmButtonColor: '#3B5BDB'
       });
 
 
@@ -151,9 +151,7 @@ export class Login {
           icon: 'success',
 
           confirmButtonText: 'Continuar',
-
-          confirmButtonColor: '#4f46e5'
-
+          confirmButtonColor: '#3B5BDB'
         }).then(() => {
 
 
@@ -290,8 +288,10 @@ export class Login {
 
         Swal.fire({
           title: 'Error',
-          text: error.error.error,
-          icon: 'error'
+          text: 'Credenciales inválidas',
+          icon: 'error',
+          confirmButtonText: 'Continuar',
+          confirmButtonColor: '#3B5BDB'
         });
 
       }

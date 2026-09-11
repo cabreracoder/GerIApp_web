@@ -7,6 +7,7 @@ import {
   Component,
   OnInit
 } from '@angular/core';
+import Swal from 'sweetalert2';
 
 // =========================================================
 // INTERFAZ USUARIO
@@ -82,13 +83,6 @@ export class Usuarios implements OnInit {
   // =========================================================
 
   roles: Rol[] = [];
-
-  // =========================================================
-  // MENSAJES
-  // =========================================================
-
-  successMessage = '';
-  errorMessage = '';
 
   // =========================================================
   // USUARIO QUE SE ESTÁ GUARDANDO
@@ -174,8 +168,13 @@ export class Usuarios implements OnInit {
           error.error
         );
 
-        this.errorMessage =
-          'No se pudieron cargar los usuarios.';
+        Swal.fire({
+          title: 'Error',
+          text: 'No se pudieron cargar los usuarios.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#3B5BDB'
+        });
 
         this.cdr.detectChanges();
       }
@@ -300,8 +299,13 @@ export class Usuarios implements OnInit {
           error.error
         );
 
-        this.errorMessage =
-          'No se pudieron cargar los roles.';
+        Swal.fire({
+          title: 'Error',
+          text: 'No se pudieron cargar los roles.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#3B5BDB'
+        });
 
         this.cdr.detectChanges();
       }
@@ -319,10 +323,7 @@ export class Usuarios implements OnInit {
     roleId: number | null
   ): void {
 
-    user.id_rol = roleId;
-
-    this.successMessage = '';
-    this.errorMessage = '';
+        user.id_rol = roleId;
 
   }
 
@@ -337,12 +338,8 @@ export class Usuarios implements OnInit {
       return;
     }
 
-    // Activamos "Guardando..."
+        // Activamos "Guardando..."
     this.savingUserId = user.id_usuario;
-
-    // Limpiamos mensajes
-    this.successMessage = '';
-    this.errorMessage = '';
 
     console.log(
       'Actualizando rol del usuario:',
@@ -387,13 +384,18 @@ export class Usuarios implements OnInit {
         // Quitamos "Guardando..."
         this.savingUserId = null;
 
-        // Mensaje de éxito
-        this.successMessage =
-          `Rol de ${user.nombres} ${user.apellidos} actualizado correctamente.`;
+                Swal.fire({
+          title: 'Rol actualizado',
+          text: `Rol de ${user.nombres} ${user.apellidos} actualizado correctamente.`,
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#3B5BDB'
+        });
 
         this.cdr.detectChanges();
 
       },
+  
 
       // =====================================================
       // ERROR
@@ -420,9 +422,13 @@ export class Usuarios implements OnInit {
         // Quitamos "Guardando..."
         this.savingUserId = null;
 
-        // Mostramos error
-        this.errorMessage =
-          'No se pudo actualizar el rol del usuario.';
+        Swal.fire({
+          title: 'Error',
+          text: 'No se pudo actualizar el rol del usuario.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#3B5BDB'
+        });
 
         this.cdr.detectChanges();
 
@@ -453,19 +459,6 @@ export class Usuarios implements OnInit {
     }
 
     return role.nombre;
-  }
-
-  // =========================================================
-  // LIMPIAR MENSAJES
-  // =========================================================
-
-  clearMessages(): void {
-
-    this.successMessage = '';
-    this.errorMessage = '';
-
-    this.cdr.detectChanges();
-
   }
 
 }
