@@ -197,9 +197,9 @@ export class Encargados implements OnInit {
 
       next: (respuesta: any[]) => {
 
-        this.encargados = respuesta
-          .filter((usuario) => usuario.id_rol === 6)
-          .map((usuario) => ({
+          this.encargados = respuesta
+          .filter((usuario: any) => usuario.id_rol === 6)
+          .map((usuario: any): Encargado => ({
             id: usuario.id_usuario,
             tipoDocumento: usuario.tipo_documento,
             documento: usuario.numero_documento,
@@ -210,8 +210,8 @@ export class Encargados implements OnInit {
             fechaIngreso: usuario.fecha_ingreso,
             estado: usuario.estado ? 'Activo' : 'Inactivo',
             iniciales: this.generarIniciales(`${usuario.nombres} ${usuario.apellidos}`),
-          }));
-
+          }))
+          .sort((a: Encargado, b: Encargado) => a.id - b.id);
         this.encargadoPrincipal = null;
 
         this.cargando = false;
