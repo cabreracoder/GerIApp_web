@@ -11,6 +11,7 @@ import { Login } from './login/login';
 import { Registro } from './registro/registro';
 import { Usuarios } from './usuarios/usuarios';
 import { ElementosPaciente } from './elementos-paciente/elementos-paciente';
+import { BancoDatos } from './banco-datos/banco-datos';
 
 export const routes: Routes = [
 
@@ -86,7 +87,12 @@ export const routes: Routes = [
       {
         path: 'elementos-paciente',
         component: ElementosPaciente
-      }
+      },
+
+      {
+        path: 'banco-datos',
+        component: BancoDatos
+      },
 
 
     ]

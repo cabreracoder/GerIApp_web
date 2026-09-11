@@ -1,0 +1,357 @@
+<div class="pagina-banco-datos">
+
+  <!-- ENCABEZADO -->
+
+  <header class="encabezado-banco-datos">
+    <h1>Banco de datos</h1>
+    <p>Administre la información base utilizada por GerIApp.</p>
+  </header>
+
+  <!-- CATÁLOGOS -->
+
+  <section class="contenedor-catalogos">
+    <div
+      class="barra-catalogos"
+      (wheel)="desplazarHorizontal($event)"
+    >
+      <button
+        *ngFor="let catalogo of catalogos"
+        type="button"
+        class="boton-catalogo"
+        [class.activo]="catalogoSeleccionado === catalogo.nombre"
+        (click)="seleccionarCatalogo(catalogo.nombre)"
+      >
+        <span>{{ catalogo.nombre }}</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- MENSAJE DE ÉXITO -->
+
+  <div
+    *ngIf="mensajeExito"
+    class="mensaje mensaje-exito"
+  >
+    <span class="material-symbols-outlined">check_circle</span>
+    <span>{{ mensajeExito }}</span>
+  </div>
+
+  <!-- MENSAJE DE ERROR -->
+
+  <div
+    *ngIf="mensajeError"
+    class="mensaje mensaje-error"
+  >
+    <span class="material-symbols-outlined">error</span>
+    <span>{{ mensajeError }}</span>
+  </div>
+
+  <!-- =====================================================
+       MEDICAMENTOS
+       ===================================================== -->
+
+  <section
+    *ngIf="catalogoSeleccionado === 'Medicamentos'"
+    class="contenido-catalogo"
+  >
+    <div class="pantalla-catalogo">
+
+  <!-- ENCABEZADO -->
+  <div class="encabezado-catalogo">
+    <div>
+      <h2>Medicamentos</h2>
+      <p>
+        Administre los medicamentos disponibles en GerIApp.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="boton-nuevo"
+      (click)="abrirNuevoMedicamento()"
+    >
+      <span class="material-symbols-outlined">add</span>
+      Nuevo medicamento
+    </button>
+  </div>
+
+  <!-- FORMULARIO -->
+  <div
+    *ngIf="mostrandoFormulario"
+    class="formulario-catalogo"
+  >
+    <div class="encabezado-formulario">
+      <div>
+        <h3>
+          {{ modoEdicion ? 'Editar medicamento' : 'Nuevo medicamento' }}
+        </h3>
+        <p>Complete la información del medicamento.</p>
+      </div>
+
+      <button
+        type="button"
+        class="boton-cerrar"
+        title="Cerrar"
+        (click)="cerrarFormulario()"
+      >
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <form
+      class="formulario-grid"
+      (ngSubmit)="guardarMedicamento()"
+    >
+
+      <!-- NOMBRE -->
+      <div class="campo-formulario">
+        <label for="nombreMedicamento">
+          Nombre
+        </label>
+
+        <input
+          id="nombreMedicamento"
+          name="nombre"
+          type="text"
+          [(ngModel)]="medicamentoActual.nombre"
+          placeholder="Ej. Acetaminofén"
+        >
+      </div>
+
+      <!-- PRINCIPIO ACTIVO -->
+      <div class="campo-formulario">
+        <label for="principioActivo">
+          Principio activo
+        </label>
+
+        <input
+          id="principioActivo"
+          name="principio_activo"
+          type="text"
+          [(ngModel)]="medicamentoActual.principio_activo"
+          placeholder="Ej. Paracetamol"
+        >
+      </div>
+
+      <!-- CONCENTRACIÓN -->
+      <div class="campo-formulario">
+        <label for="concentracion">
+          Concentración
+        </label>
+
+        <input
+          id="concentracion"
+          name="concentracion"
+          type="text"
+          [(ngModel)]="medicamentoActual.concentracion"
+          placeholder="Ej. 500 mg"
+        >
+      </div>
+
+      <!-- PRESENTACIÓN -->
+      <div class="campo-formulario">
+        <label for="presentacion">
+          Presentación
+        </label>
+
+        <input
+          id="presentacion"
+          name="presentacion"
+          type="text"
+          [(ngModel)]="medicamentoActual.presentacion"
+          placeholder="Ej. Tabletas"
+        >
+      </div>
+
+      <!-- UNIDAD DE MEDIDA -->
+      <div class="campo-formulario">
+        <label for="unidadMedida">
+          Unidad de medida
+        </label>
+
+        <input
+          id="unidadMedida"
+          name="unidad_medida"
+          type="text"
+          [(ngModel)]="medicamentoActual.unidad_medida"
+          placeholder="Ej. Unidad"
+        >
+      </div>
+
+      <!-- VENCIMIENTO -->
+      <div class="campo-formulario">
+        <label for="vencimiento">
+          Fecha de vencimiento
+        </label>
+
+        <input
+          id="vencimiento"
+          name="vencimiento"
+          type="date"
+          [(ngModel)]="medicamentoActual.vencimiento"
+        >
+      </div>
+
+      <!-- DESCRIPCIÓN -->
+      <div class="campo-formulario campo-completo">
+        <label for="descripcionMedicamento">
+          Descripción
+        </label>
+
+        <textarea
+          id="descripcionMedicamento"
+          name="descripcion"
+          rows="3"
+          [(ngModel)]="medicamentoActual.descripcion"
+          placeholder="Descripción del medicamento"
+        ></textarea>
+      </div>
+
+      <!-- ESTADO -->
+      <div class="campo-formulario">
+        <label for="estadoMedicamento">
+          Estado
+        </label>
+
+        <select
+          id="estadoMedicamento"
+          name="estado"
+          [(ngModel)]="medicamentoActual.estado"
+        >
+          <option [ngValue]="true">Activo</option>
+          <option [ngValue]="false">Inactivo</option>
+        </select>
+      </div>
+
+      <!-- BOTONES -->
+      <div class="acciones-formulario campo-completo">
+
+        <button
+          type="button"
+          class="boton-secundario"
+          (click)="cerrarFormulario()"
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="submit"
+          class="boton-guardar"
+        >
+          <span class="material-symbols-outlined">
+            save
+          </span>
+
+          {{
+            modoEdicion
+              ? 'Actualizar medicamento'
+              : 'Guardar medicamento'
+          }}
+        </button>
+
+      </div>
+
+    </form>
+  </div>
+
+  <!-- CARGANDO -->
+  <div
+    *ngIf="cargandoMedicamentos"
+    class="estado-cargando"
+  >
+    <span class="material-symbols-outlined">
+      progress_activity
+    </span>
+    Cargando medicamentos...
+  </div>
+
+  <!-- TABLA -->
+  <div
+    *ngIf="!cargandoMedicamentos"
+    class="tabla-contenedor"
+  >
+    <table>
+
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Principio activo</th>
+          <th>Concentración</th>
+          <th>Presentación</th>
+          <th>Unidad</th>
+          <th>Vencimiento</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <!-- REGISTROS -->
+        <tr
+          *ngFor="
+            let medicamento of medicamentos;
+            trackBy: trackByMedicamento
+          "
+        >
+          <td>{{ medicamento.nombre }}</td>
+          <td>{{ medicamento.principio_activo }}</td>
+          <td>{{ medicamento.concentracion }}</td>
+          <td>{{ medicamento.presentacion }}</td>
+          <td>{{ medicamento.unidad_medida }}</td>
+          <td>{{ medicamento.vencimiento }}</td>
+
+          <td>
+            <span
+              class="estado"
+              [class.estado-activo]="medicamento.estado"
+              [class.estado-inactivo]="!medicamento.estado"
+            >
+              {{ medicamento.estado ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+
+          <td>
+            <div class="acciones-tabla">
+
+              <button
+                type="button"
+                class="boton-accion boton-editar"
+                title="Editar medicamento"
+                (click)="editarMedicamento(medicamento)"
+              >
+                <span class="material-symbols-outlined">
+                  edit
+                </span>
+              </button>
+
+              <button
+                type
+
+="button"
+                class="boton-accion boton-eliminar"
+                title="Eliminar medicamento"
+                (click)="eliminarMedicamento(medicamento)"
+              >
+                <span class="material-symbols-outlined">
+                  delete
+                </span>
+              </button>
+
+            </div>
+          </td>
+        </tr>
+
+        <!-- SIN REGISTROS -->
+        <tr
+          *ngIf="!cargandoMedicamentos && medicamentos.length === 0"
+        >
+          <td colspan="8" class="sin-registros">
+            No hay medicamentos registrados.
+          </td>
+        </tr>
+
+      </tbody>
+
+    </table>
+  </div>
