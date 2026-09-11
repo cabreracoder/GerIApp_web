@@ -49,7 +49,7 @@
 
 
       <!-- FORMULARIO -->
-      <form (ngSubmit)="iniciarSesion()">
+      <form (ngSubmit)="iniciarSesion()" autocomplete="off">
 
         <!-- CORREO -->
         <div class="campo">
@@ -63,7 +63,7 @@
             <span class="input-icon">✉</span>
 
             <input type="email" id="correo" name="correo" [(ngModel)]="usuario.correo" placeholder="correo@ejemplo.com"
-              required>
+              autocomplete="off" required>
 
           </div>
 
@@ -82,7 +82,7 @@
             <span class="input-icon"> *</span>
 
             <input type="password" id="contrasena" name="contrasena" [(ngModel)]="usuario.contrasena"
-              placeholder="Ingresa tu contraseña" required>
+              placeholder="Ingresa tu contraseña" autocomplete="new-password" required>
 
             <span class="password-icon">
               *
@@ -246,8 +246,14 @@
           </label>
 
 
-          <input type="text" [(ngModel)]="codigo" placeholder="000000">
+          <input type="text" maxlength="6" [(ngModel)]="codigo" [class.input-error]="errorCodigo" placeholder="000000">
 
+
+          <p class="mensaje-error" *ngIf="errorCodigo">
+
+            {{errorCodigo}}
+
+          </p>
 
         </div>
 
@@ -298,15 +304,22 @@
 
 
           <input type="password" [(ngModel)]="confirmarContrasena" placeholder="Confirmar contraseña">
+          <p class="mensaje-error" *ngIf="errorPassword">
 
+            {{errorPassword}}
+
+          </p>
         </div>
 
 
 
 
-        <button class="btn-recuperar-modal" type="button" (click)="cambiarPasswordRecuperacion()">
+        <button class="btn-recuperar-modal" type="button" (click)="cambiarPasswordRecuperacion()"
+          [disabled]="cambiandoPassword">
 
-          Cambiar contraseña
+
+          {{ cambiandoPassword ? 'Actualizando...' : 'Cambiar contraseña' }}
+
 
         </button>
 
