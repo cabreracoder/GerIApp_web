@@ -1,0 +1,670 @@
+:host {
+display: block;
+width: 100%;
+min-width: 0;
+box-sizing: border-box;
+}
+
+:host * {
+box-sizing: border-box;
+}
+
+/* =====================================================
+PÁGINA
+===================================================== */
+
+.pagina-banco-datos {
+width: 100%;
+min-height: 100%;
+padding: 28px 32px 40px;
+background: var(--bg-primary);
+}
+
+/* =====================================================
+ENCABEZADO
+===================================================== */
+
+.encabezado-banco-datos {
+margin-bottom: 24px;
+}
+
+.encabezado-banco-datos h1 {
+margin: 0;
+color: #212529;
+font-size: 30px;
+font-weight: 700;
+}
+
+.encabezado-banco-datos p {
+margin: 6px 0 0;
+color: #6C757D;
+font-size: 15px;
+}
+
+/* =====================================================
+CONTENEDOR DE CATÁLOGOS
+===================================================== */
+
+.contenedor-catalogos {
+width: 100%;
+margin-bottom: 24px;
+background: #FFFFFF;
+border: 1px solid #CED4DA;
+border-radius: 10px;
+}
+
+/* =====================================================
+BARRA HORIZONTAL
+===================================================== */
+
+.barra-catalogos {
+display: flex;
+align-items: center;
+gap: 6px;
+width: 100%;
+padding: 8px;
+overflow-x: auto;
+overflow-y: hidden;
+white-space: nowrap;
+scrollbar-width: thin;
+scrollbar-color: #CED4DA transparent;
+}
+
+.barra-catalogos::-webkit-scrollbar {
+height: 6px;
+}
+
+.barra-catalogos::-webkit-scrollbar-track {
+background: transparent;
+}
+
+.barra-catalogos::-webkit-scrollbar-thumb {
+background: #CED4DA;
+border-radius: 10px;
+}
+
+.barra-catalogos::-webkit-scrollbar-thumb:hover {
+background: #ADB5BD;
+}
+
+/* =====================================================
+BOTONES DE CATÁLOGO
+===================================================== */
+
+.boton-catalogo {
+flex: 0 0 auto;
+min-width: 150px;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 7px;
+min-height: 42px;
+padding: 0 16px;
+border: 1px solid transparent;
+border-radius: 7px;
+background: transparent;
+color: #212529;
+font-family: inherit;
+font-size: 14px;
+font-weight: 700;
+white-space: nowrap;
+cursor: pointer;
+transition:
+background-color 0.2s ease,
+color 0.2s ease;
+}
+
+.boton-catalogo .material-symbols-outlined {
+font-size: 19px;
+color: #212529;
+}
+
+.boton-catalogo:hover {
+background: #F1F3F5;
+color: #212529;
+}
+
+.boton-catalogo:hover .material-symbols-outlined {
+color: #212529;
+}
+
+.boton-catalogo.activo {
+background: #3B5BDB;
+color: #FFFFFF;
+border-color: #3B5BDB;
+}
+
+.boton-catalogo.activo .material-symbols-outlined {
+color: #FFFFFF;
+}
+
+/* =====================================================
+CONTENIDO DEL CATÁLOGO
+===================================================== */
+
+.contenido-catalogo {
+width: 100%;
+}
+
+.pantalla-catalogo {
+width: 100%;
+padding: 24px;
+background: #FFFFFF;
+border: 1px solid #CED4DA;
+border-radius: 10px;
+}
+
+/* =====================================================
+ENCABEZADO DEL CRUD
+===================================================== */
+
+.encabezado-catalogo {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 20px;
+margin-bottom: 24px;
+}
+
+.encabezado-catalogo h2 {
+margin: 0;
+color: #212529;
+font-size: 22px;
+font-weight: 700;
+}
+
+.encabezado-catalogo p {
+margin: 6px 0 0;
+color: #6C757D;
+font-size: 14px;
+}
+
+/* =====================================================
+BOTÓN NUEVO
+===================================================== */
+
+.boton-nuevo {
+flex: 0 0 auto;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+min-height: 42px;
+padding: 0 16px;
+border: none;
+border-radius: 7px;
+background: #3B5BDB;
+color: #FFFFFF;
+font-family: inherit;
+font-size: 14px;
+font-weight: 700;
+cursor: pointer;
+transition: background-color 0.2s ease;
+}
+
+.boton-nuevo:hover {
+background: #2F4BC0;
+}
+
+.boton-nuevo .material-symbols-outlined {
+font-size: 19px;
+}
+
+/* =====================================================
+FORMULARIO
+===================================================== */
+
+.formulario-catalogo {
+width: 100%;
+margin-bottom: 24px;
+padding: 22px;
+background: #F8FAFC;
+border: 1px solid #CED4DA;
+border-radius: 8px;
+}
+
+/* =====================================================
+ENCABEZADO DEL FORMULARIO
+===================================================== */
+
+.encabezado-formulario {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 20px;
+margin-bottom: 22px;
+padding-bottom: 16px;
+border-bottom: 1px solid #CED4DA;
+}
+
+.encabezado-formulario h3 {
+margin: 0;
+color: #212529;
+font-size: 18px;
+font-weight: 700;
+}
+
+.encabezado-formulario p {
+margin: 5px 0 0;
+color: #6C757D;
+font-size: 13px;
+}
+
+/* =====================================================
+BOTÓN CERRAR
+===================================================== */
+
+.boton-cerrar {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 36px;
+height: 36px;
+padding: 0;
+border: 1px solid #CED4DA;
+border-radius: 6px;
+background: #FFFFFF;
+color: #6C757D;
+cursor: pointer;
+transition:
+background-color 0.2s ease,
+color 0.2s ease;
+}
+
+.boton-cerrar:hover {
+background: #F1F3F5;
+color: #212529;
+}
+
+.boton-cerrar .material-symbols-outlined {
+font-size: 20px;
+}
+
+/* =====================================================
+GRID DEL FORMULARIO
+===================================================== */
+
+.formulario-grid {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 18px 20px;
+width: 100%;
+}
+
+/* =====================================================
+CAMPOS
+===================================================== */
+
+.campo-formulario {
+display: flex;
+flex-direction: column;
+gap: 7px;
+min-width: 0;
+}
+
+.campo-formulario label {
+color: #212529;
+font-size: 13px;
+font-weight: 700;
+}
+
+.campo-formulario input,
+.campo-formulario select,
+.campo-formulario textarea {
+width: 100%;
+border: 1px solid #CED4DA;
+border-radius: 6px;
+background: #FFFFFF;
+color: #212529;
+font-family: inherit;
+font-size: 14px;
+outline: none;
+transition:
+border-color 0.2s ease,
+box-shadow 0.2s ease;
+}
+
+.campo-formulario input,
+.campo-formulario select {
+height: 42px;
+padding: 0 12px;
+}
+
+.campo-formulario textarea {
+min-height: 90px;
+padding: 11px 12px;
+resize: vertical;
+line-height: 1.4;
+}
+
+.campo-formulario input::placeholder,
+.campo-formulario textarea::placeholder {
+color: #ADB5BD;
+}
+
+.campo-formulario input:focus,
+.campo-formulario select:focus,
+.campo-formulario textarea:focus {
+border-color: #3B5BDB;
+box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.12);
+}
+
+/* =====================================================
+CAMPO COMPLETO
+===================================================== */
+
+.campo-completo {
+grid-column: 1 / -1;
+}
+
+/* =====================================================
+ACCIONES DEL FORMULARIO
+===================================================== */
+
+.acciones-formulario {
+display: flex;
+justify-content: flex-end;
+align-items: center;
+gap: 10px;
+padding-top: 4px;
+}
+
+/* =====================================================
+BOTÓN SECUNDARIO
+===================================================== */
+
+.boton-secundario {
+min-height: 42px;
+padding: 0 18px;
+border: 1px solid #CED4DA;
+border-radius: 6px;
+background: #FFFFFF;
+color: #212529;
+font-family: inherit;
+font-size: 14px;
+font-weight: 700;
+cursor: pointer;
+transition:
+background-color 0.2s ease,
+border-color 0.2s ease;
+}
+
+.boton-secundario:hover {
+background: #F1F3F5;
+border-color: #ADB5BD;
+}
+
+/* =====================================================
+BOTÓN GUARDAR
+===================================================== */
+
+.boton-guardar {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+min-height: 42px;
+padding: 0 18px;
+border: none;
+border-radius: 6px;
+background: #3B5BDB;
+color: #FFFFFF;
+font-family: inherit;
+font-size: 14px;
+font-weight: 700;
+cursor: pointer;
+transition: background-color 0.2s ease;
+}
+
+.boton-guardar:hover {
+background: #2F4BC0;
+}
+
+.boton-guardar .material-symbols-outlined {
+font-size: 18px;
+}
+
+/* =====================================================
+MENSAJES
+===================================================== */
+
+.mensaje {
+display: flex;
+align-items: center;
+gap: 8px;
+width: 100%;
+margin-bottom: 16px;
+padding: 12px 14px;
+border-radius: 7px;
+font-size: 14px;
+font-weight: 600;
+}
+
+.mensaje .material-symbols-outlined {
+font-size: 19px;
+}
+
+.mensaje-exito {
+background: #E8F5E9;
+border: 1px solid #A5D6A7;
+color: #2E7D32;
+}
+
+.mensaje-error {
+background: #FDECEC;
+border: 1px solid #F5B5B5;
+color: #C62828;
+}
+
+/* =====================================================
+ESTADO CARGANDO
+===================================================== */
+
+.estado-cargando {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+min-height: 120px;
+color: #6C757D;
+font-size: 14px;
+}
+
+.estado-cargando .material-symbols-outlined {
+font-size: 20px;
+}
+
+/* =====================================================
+TABLA
+===================================================== */
+
+.tabla-contenedor {
+width: 100%;
+overflow-x: auto;
+border: 1px solid #CED4DA;
+border-radius: 8px;
+}
+
+table {
+width: 100%;
+min-width: 850px;
+border-collapse: collapse;
+}
+
+thead {
+background: #F8FAFC;
+}
+
+th {
+padding: 14px 16px;
+text-align: left;
+color: #212529;
+font-size: 13px;
+font-weight: 700;
+border-bottom: 1px solid #CED4DA;
+white-space: nowrap;
+}
+
+td {
+padding: 14px 16px;
+color: #212529;
+font-size: 14px;
+border-bottom: 1px solid #CED4DA;
+}
+
+tbody tr:last-child td {
+border-bottom: none;
+}
+
+/* =====================================================
+ESTADO
+===================================================== */
+
+.estado {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+min-width: 70px;
+padding: 5px 9px;
+border-radius: 20px;
+font-size: 12px;
+font-weight: 700;
+}
+
+.estado-activo {
+background: #E8F5E9;
+color: #2E7D32;
+}
+
+.estado-inactivo {
+background: #FDECEC;
+color: #C62828;
+}
+
+/* =====================================================
+ACCIONES DE TABLA
+===================================================== */
+
+.acciones-tabla {
+display: flex;
+align-items: center;
+gap: 6px;
+}
+
+.boton-accion {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 34px;
+height: 34px;
+padding: 0;
+border: 1px solid #CED4DA;
+border-radius: 6px;
+background: #FFFFFF;
+cursor: pointer;
+transition:
+background-color 0.2s ease,
+border-color 0.2s ease;
+}
+
+.boton-accion .material-symbols-outlined {
+font-size: 18px;
+}
+
+.boton-editar {
+color: #3B5BDB;
+}
+
+.boton-editar:hover {
+background: #EEF2FF;
+border-color: #3B5BDB;
+}
+
+.boton-eliminar {
+color: #DC3545;
+}
+
+.boton-eliminar:hover {
+background: #FDECEC;
+border-color: #DC3545;
+}
+
+/* =====================================================
+SIN REGISTROS
+===================================================== */
+
+.sin-registros {
+padding: 40px 20px;
+text-align: center;
+color: #6C757D;
+}
+
+.sin-registros .material-symbols-outlined {
+font-size: 38px;
+margin-bottom: 8px;
+}
+
+.sin-registros p {
+margin: 0 0 5px;
+font-size: 15px;
+font-weight: 600;
+}
+
+.sin-registros small {
+font-size: 13px;
+}
+
+/* =====================================================
+RESPONSIVE
+===================================================== */
+
+@media (max-width: 900px) {
+.pagina-banco-datos {
+padding: 24px 20px 32px;
+}
+
+.encabezado-catalogo {
+align-items: flex-start;
+flex-direction: column;
+}
+
+.boton-nuevo {
+width: 100%;
+}
+
+.formulario-grid {
+grid-template-columns: 1fr;
+}
+
+.campo-completo {
+grid-column: auto;
+}
+}
+
+@media (max-width: 600px) {
+.pagina-banco-datos {
+padding: 20px 14px 28px;
+}
+
+.encabezado-banco-datos h1 {
+font-size: 26px;
+}
+
+.pantalla-catalogo {
+padding: 18px;
+}
+
+.formulario-catalogo {
+padding: 16px;
+}
+
+.acciones-formulario {
+flex-direction: column-reverse;
+align-items: stretch;
+}
+
+.boton-secundario,
+.boton-guardar {
+width: 100%;
+}
+}
