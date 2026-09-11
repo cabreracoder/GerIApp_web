@@ -128,7 +128,7 @@
   margin-bottom: var(--spacing-lg);
   padding: 0 var(--spacing-md);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-full);
   background: var(--bg-surface);
   box-shadow: var(--shadow-sm);
 }

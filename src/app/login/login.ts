@@ -47,7 +47,7 @@ export class Login {
         text: 'Ingresa tu correo y contraseña.',
         icon: 'warning',
         confirmButtonText: 'Aceptar',
-        confirmButtonColor: '#ff9100'
+        confirmButtonColor: '#3B5BDB'
       });
 
       return;
@@ -91,7 +91,7 @@ export class Login {
           text: this.mensaje,
           icon: 'success',
           confirmButtonText: 'Continuar',
-          confirmButtonColor: '#4f46e5'
+          confirmButtonColor: '#3B5BDB'
         }).then(() => {
           this.router.navigate(['/dashboard']);
         });
@@ -108,7 +108,7 @@ export class Login {
           text: 'Credenciales inválidas',
           icon: 'error',
           confirmButtonText: 'Continuar',
-          confirmButtonColor: '#ff2a00'
+          confirmButtonColor: '#3B5BDB'
         });
       }
     });

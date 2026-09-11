@@ -43,7 +43,30 @@
 
       </button>
 
-    </div>
+          </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       BUSCADOR
+  ====================================================== -->
+
+  <section class="tarjeta-buscador">
+
+    <span class="material-symbols-outlined icono-busqueda">
+      search
+    </span>
+
+    <input
+      type="search"
+      placeholder="Buscar por documento, nombre o cargo..."
+      aria-label="Buscar encargado"
+      autocomplete="off"
+      [(ngModel)]="busqueda"
+      (input)="filtrarEncargados()"
+      (keyup.enter)="filtrarEncargados()"
+    />
 
   </section>
 
@@ -187,7 +210,7 @@
   ====================================================== -->
   <section
     class="estado-vacio"
-    *ngIf="encargados.length === 0"
+    *ngIf="encargadosFiltrados.length === 0"
   >
 
     <span class="material-symbols-outlined">
@@ -195,11 +218,23 @@
     </span>
 
     <div class="titulo-estado-vacio">
-      No hay encargados
+
+      {{
+        busqueda
+          ? 'No se encontró ningún encargado'
+          : 'No hay encargados'
+      }}
+
     </div>
 
     <div class="subtitulo-estado-vacio">
-      Los encargados registrados aparecerán aquí.
+
+      {{
+        busqueda
+          ? 'Verifica el número de documento, nombre o criterio de búsqueda.'
+          : 'Los encargados registrados aparecerán aquí.'
+      }}
+
     </div>
 
   </section>
@@ -208,9 +243,9 @@
        TABLA DE ENCARGADOS
   ====================================================== -->
 
-    <section
+     <section
     class="tarjeta-tabla"
-    *ngIf="encargados.length > 0"
+    *ngIf="encargadosFiltrados.length > 0"
   >
 
     <div class="contenedor-tabla">
@@ -253,7 +288,7 @@
         <tbody>
 
           <tr
-            *ngFor="let encargado of encargados"
+            *ngFor="let encargado of encargadosFiltrados"
           >
 
             <!-- ENCARGADO -->
