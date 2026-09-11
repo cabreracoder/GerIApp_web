@@ -49,9 +49,9 @@ export class Login {
   confirmarContrasena = '';
   enviandoCodigo = false;
   verificandoCodigo = false;
-
-
-
+  cambiandoPassword = false;
+  errorCodigo = '';
+  errorPassword = '';
 
   constructor(
     private http: HttpClient,
@@ -59,10 +59,6 @@ export class Login {
     private cd: ChangeDetectorRef
 
   ) { }
-
-
-
-
 
   iniciarSesion(): void {
 
@@ -173,7 +169,8 @@ export class Login {
 
         console.log(respuestaError);
 
-
+        this.cargando = false;
+        this.cd.detectChanges();
 
         Swal.fire({
 
@@ -228,24 +225,21 @@ export class Login {
     this.codigo = '';
     this.nuevaContrasena = '';
     this.confirmarContrasena = '';
+    this.errorCodigo = '';
+    this.errorPassword = '';
   }
 
   cerrarRecuperacion(): void {
 
-
     this.mostrarRecuperacion = false;
-
-
     this.pasoRecuperacion = 1;
-
-
     this.correoRecuperacion = '';
-
     this.codigo = '';
-
     this.nuevaContrasena = '';
-
     this.confirmarContrasena = '';
+    this.cambiandoPassword = false;
+    this.errorPassword = '';
+    this.errorCodigo = '';
 
   }
   enviarCodigo() {
@@ -279,8 +273,15 @@ export class Login {
       next: (respuesta) => {
 
         this.enviandoCodigo = false;
+
+        this.codigo = '';
+
+        this.errorCodigo = '';
+
         this.pasoRecuperacion = 2;
+
         this.cd.detectChanges();
+
       },
 
 
@@ -300,55 +301,98 @@ export class Login {
 
   }
   verificarCodigo() {
+
     if (this.verificandoCodigo) {
       return;
     }
+
+
+    if (!this.codigo.trim()) {
+
+      this.errorCodigo = "Ingresa el código.";
+
+      return;
+
+    }
+
+
     this.verificandoCodigo = true;
+
+    this.errorCodigo = "";
 
 
     this.http.post<any>(
       `${API_URL}/usuarios/verificar-codigo/`,
       {
         correo: this.correoRecuperacion,
-        codigo: this.codigo
+        codigo: this.codigo.trim()
       }
 
     ).subscribe({
 
-      next: (respuesta) => {
+      next: () => {
+
+
         this.verificandoCodigo = false;
+
+
+        this.errorCodigo = "";
+
+
         this.pasoRecuperacion = 3;
+
+
         this.cd.detectChanges();
+
+
       },
 
 
       error: (error) => {
+
+
+        console.log("Error código:", error);
+
+
         this.verificandoCodigo = false;
-        Swal.fire({
-          title: 'Código incorrecto',
-          text: error.error.error,
-          icon: 'error'
-        });
+
+
+        this.errorCodigo =
+          error.error.error ||
+          "Código inválido.";
+
+
+        this.cd.detectChanges();
+
 
       }
 
     });
 
+
   }
   cambiarPasswordRecuperacion() {
 
 
+    if (this.cambiandoPassword) {
+      return;
+    }
+
+
     if (this.nuevaContrasena !== this.confirmarContrasena) {
 
-      Swal.fire({
-        title: 'Error',
-        text: 'Las contraseñas no coinciden.',
-        icon: 'warning'
-      });
+      this.errorPassword =
+        'Las contraseñas no coinciden';
 
       return;
 
     }
+
+
+    this.errorPassword = '';
+
+    this.cambiandoPassword = true;
+
 
 
     this.http.post<any>(
@@ -370,6 +414,22 @@ export class Login {
       next: (respuesta) => {
 
 
+        this.cambiandoPassword = false;
+
+        // cerrar modal de nueva contraseña
+        this.mostrarRecuperacion = false;
+        this.cd.detectChanges();
+        // reiniciar pasos
+        this.pasoRecuperacion = 1;
+
+        // limpiar campos
+        this.correoRecuperacion = '';
+        this.codigo = '';
+        this.nuevaContrasena = '';
+        this.confirmarContrasena = '';
+
+
+
         Swal.fire({
 
           title: 'Contraseña actualizada',
@@ -378,24 +438,9 @@ export class Login {
 
           icon: 'success',
 
-          confirmButtonText: 'Aceptar'
+          timer: 2000,
 
-        }).then(() => {
-
-
-          this.mostrarRecuperacion = false;
-
-          this.pasoRecuperacion = 1;
-
-          // limpiar datos del modal
-
-          this.correoRecuperacion = '';
-
-          this.codigo = '';
-
-          this.nuevaContrasena = '';
-
-          this.confirmarContrasena = '';
+          showConfirmButton: false
 
         });
 
@@ -406,11 +451,17 @@ export class Login {
       error: (error) => {
 
 
+        this.cambiandoPassword = false;
+
+        this.cd.detectChanges();
+
+
         Swal.fire({
 
           title: 'Error',
 
-          text: error.error.error || 'No se pudo cambiar la contraseña.',
+          text: error.error.error ||
+            'No se pudo cambiar la contraseña.',
 
           icon: 'error'
 
@@ -423,4 +474,5 @@ export class Login {
 
 
   }
+
 }

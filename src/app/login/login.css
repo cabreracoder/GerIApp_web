@@ -393,6 +393,16 @@
   font-size: 13px;
 }
 
+.input-error {
+  border: 1px solid #dc2626 !important;
+}
+
+
+.mensaje-error {
+  color: #dc2626;
+  font-size: 13px;
+  margin-top: 5px;
+}
 
 .mensaje-error {
   padding: 10px 13px;
@@ -1081,4 +1091,8 @@
 
   }
 
+}
+
+.swal2-container {
+  z-index: 10000 !important;
 }
