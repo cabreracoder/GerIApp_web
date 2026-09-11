@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import {ChangeDetectorRef,Component,OnInit} from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
 
 // =========================================================
@@ -49,11 +49,11 @@ interface Rol {
 })
 export class Usuarios implements OnInit {
 
-// =========================================================
-// URL BASE DE LA API
-// =========================================================
+  // =========================================================
+  // URL BASE DE LA API
+  // =========================================================
 
-private readonly apiUrl = 'https://geriapp-backend.onrender.com/api';
+  private readonly apiUrl = 'https://geriapp-backend.onrender.com/api';
 
   // =========================================================
   // USUARIOS
@@ -67,6 +67,18 @@ private readonly apiUrl = 'https://geriapp-backend.onrender.com/api';
 
   usuariosFiltrados: Usuario[] = [];
 
+  // =========================================================
+  // PAGINACIÓN
+  // =========================================================
+
+  usuariosPaginaActual: Usuario[] = [];
+
+  usuariosPorPagina = 10;
+
+  paginaActual = 1;
+
+  totalPaginas = 1;
+  paginas: number[] = [];
   // =========================================================
   // TEXTO DE BÚSQUEDA
   // =========================================================
@@ -100,7 +112,7 @@ private readonly apiUrl = 'https://geriapp-backend.onrender.com/api';
   constructor(
     private http: HttpClient,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   // =========================================================
   // INICIAR COMPONENTE
@@ -133,6 +145,8 @@ private readonly apiUrl = 'https://geriapp-backend.onrender.com/api';
 
         // Inicialmente mostramos todos
         this.usuariosFiltrados = respuesta;
+        this.paginaActual = 1;
+        this.actualizarPaginacion();
 
         // Guardamos el rol original de cada usuario
         this.users.forEach((usuario) => {
@@ -193,6 +207,8 @@ private readonly apiUrl = 'https://geriapp-backend.onrender.com/api';
     if (!texto) {
 
       this.usuariosFiltrados = this.users;
+      this.paginaActual = 1;
+      this.actualizarPaginacion();
 
       return;
     }
@@ -226,6 +242,8 @@ private readonly apiUrl = 'https://geriapp-backend.onrender.com/api';
         );
       }
     );
+    this.paginaActual = 1;
+    this.actualizarPaginacion();
 
     console.log(
       'Usuarios encontrados:',
@@ -242,9 +260,9 @@ private readonly apiUrl = 'https://geriapp-backend.onrender.com/api';
   limpiarBusqueda(): void {
 
     this.busqueda = '';
-
     this.usuariosFiltrados = this.users;
-
+    this.paginaActual = 1;
+    this.actualizarPaginacion();
     this.cdr.detectChanges();
   }
 
@@ -318,7 +336,7 @@ private readonly apiUrl = 'https://geriapp-backend.onrender.com/api';
     roleId: number | null
   ): void {
 
-        user.id_rol = roleId;
+    user.id_rol = roleId;
 
   }
 
@@ -333,7 +351,7 @@ private readonly apiUrl = 'https://geriapp-backend.onrender.com/api';
       return;
     }
 
-        // Activamos "Guardando..."
+    // Activamos "Guardando..."
     this.savingUserId = user.id_usuario;
 
     console.log(
@@ -379,7 +397,7 @@ private readonly apiUrl = 'https://geriapp-backend.onrender.com/api';
         // Quitamos "Guardando..."
         this.savingUserId = null;
 
-                Swal.fire({
+        Swal.fire({
           title: 'Rol actualizado',
           text: `Rol de ${user.nombres} ${user.apellidos} actualizado correctamente.`,
           icon: 'success',
@@ -390,7 +408,7 @@ private readonly apiUrl = 'https://geriapp-backend.onrender.com/api';
         this.cdr.detectChanges();
 
       },
-  
+
 
       // =====================================================
       // ERROR
@@ -411,7 +429,7 @@ private readonly apiUrl = 'https://geriapp-backend.onrender.com/api';
         // Restauramos el rol anterior
         user.id_rol =
           this.originalRoleIds[
-            user.id_usuario
+          user.id_usuario
           ] ?? null;
 
         // Quitamos "Guardando..."
@@ -432,7 +450,49 @@ private readonly apiUrl = 'https://geriapp-backend.onrender.com/api';
     });
 
   }
+  // =========================================================
+  // ACTUALIZAR PAGINACIÓN
+  // =========================================================
 
+  actualizarPaginacion(): void {
+
+    this.totalPaginas = Math.ceil(
+      this.usuariosFiltrados.length / this.usuariosPorPagina
+    );
+
+    this.paginas = Array.from(
+      { length: this.totalPaginas },
+      (_, i) => i + 1
+    );
+
+    const inicio =
+      (this.paginaActual - 1) * this.usuariosPorPagina;
+
+    const fin =
+      inicio + this.usuariosPorPagina;
+
+    this.usuariosPaginaActual =
+      this.usuariosFiltrados.slice(inicio, fin);
+  }
+
+
+  // =========================================================
+  // CAMBIAR PÁGINA
+  // =========================================================
+
+  cambiarPagina(pagina: number): void {
+
+    if (
+      pagina < 1 ||
+      pagina > this.totalPaginas
+    ) {
+      return;
+    }
+
+    this.paginaActual = pagina;
+
+    this.actualizarPaginacion();
+  }
   // =========================================================
   // OBTENER NOMBRE DEL ROL
   // =========================================================
