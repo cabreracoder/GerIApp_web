@@ -8,11 +8,7 @@
       <!-- Logo -->
       <div class="logo-gerIapp">
 
-        <img
-          src="/loginLogo.png"
-          alt="GerIApp"
-          class="logo-gerIapp-img"
-        >
+        <img src="/loginLogo.png" alt="GerIApp" class="logo-gerIapp-img">
 
         <h2>GerIApp</h2>
 
@@ -51,6 +47,7 @@
       </div>
 
 
+
       <!-- FORMULARIO -->
       <form (ngSubmit)="iniciarSesion()">
 
@@ -65,14 +62,8 @@
 
             <span class="input-icon">✉</span>
 
-            <input
-              type="email"
-              id="correo"
-              name="correo"
-              [(ngModel)]="usuario.correo"
-              placeholder="correo@ejemplo.com"
-              required
-            >
+            <input type="email" id="correo" name="correo" [(ngModel)]="usuario.correo" placeholder="correo@ejemplo.com"
+              required>
 
           </div>
 
@@ -90,14 +81,8 @@
 
             <span class="input-icon"> *</span>
 
-            <input
-              type="password"
-              id="contrasena"
-              name="contrasena"
-              [(ngModel)]="usuario.contrasena"
-              placeholder="Ingresa tu contraseña"
-              required
-            >
+            <input type="password" id="contrasena" name="contrasena" [(ngModel)]="usuario.contrasena"
+              placeholder="Ingresa tu contraseña" required>
 
             <span class="password-icon">
               *
@@ -111,40 +96,29 @@
         <!-- RECUPERAR CONTRASEÑA -->
         <div class="recuperar-container">
 
-          <button
-            type="button"
-            class="recuperar-btn"
-          >
+          <button type="button" class="recuperar-btn" (click)="abrirRecuperacion()">
+
             ¿Olvidaste tu contraseña?
+
           </button>
 
         </div>
 
 
         <!-- MENSAJE DE ÉXITO -->
-        <div
-          class="mensaje-exito"
-          *ngIf="mensaje"
-        >
+        <div class="mensaje-exito" *ngIf="mensaje">
           {{ mensaje }}
         </div>
 
 
         <!-- MENSAJE DE ERROR -->
-        <div
-          class="mensaje-error"
-          *ngIf="error"
-        >
+        <div class="mensaje-error" *ngIf="error">
           {{ error }}
         </div>
 
 
         <!-- BOTÓN LOGIN -->
-        <button
-          type="submit"
-          class="btn-login"
-          [disabled]="cargando"
-        >
+        <button type="submit" class="btn-login" [disabled]="cargando">
 
           {{ cargando ? 'Ingresando...' : 'Iniciar sesión' }}
 
@@ -166,10 +140,7 @@
 
 
       <!-- GOOGLE -->
-      <button
-        type="button"
-        class="btn-google"
-      >
+      <button type="button" class="btn-google">
 
         <span class="google-icon">G</span>
 
@@ -183,11 +154,10 @@
 
         ¿No tienes una cuenta?
 
-        <button
-          type="button"
-          (click)="registro()"
-        >
+        <button type="button" (click)="registro()">
+
           Crear cuenta
+
         </button>
 
       </p>
@@ -196,4 +166,155 @@
 
   </div>
 
-</div>
+
+
+  <!-- MODAL RECUPERAR CONTRASEÑA -->
+
+  <div class="modal-overlay" *ngIf="mostrarRecuperacion">
+
+
+    <div class="modal-recuperacion">
+
+
+      <button class="cerrar-modal" type="button" (click)="cerrarRecuperacion()">
+        ×
+      </button>
+
+
+
+      <!-- PASO 1 -->
+
+      <div *ngIf="pasoRecuperacion === 1">
+
+
+        <h2>
+          Recuperar contraseña
+        </h2>
+
+
+        <p>
+          Ingresa el correo asociado a tu cuenta
+        </p>
+
+
+        <div class="campo">
+
+          <label>
+            Correo electrónico
+          </label>
+
+
+          <input type="email" [(ngModel)]="correoRecuperacion" placeholder="correo@ejemplo.com">
+
+
+        </div>
+
+
+
+        <button type="button" class="btn-recuperar-modal" (click)="enviarCodigo()" [disabled]="enviandoCodigo">
+
+          {{ enviandoCodigo ? 'Enviando...' : 'Enviar código' }}
+
+        </button>
+
+
+      </div>
+
+
+
+
+
+      <!-- PASO 2 -->
+
+      <div *ngIf="pasoRecuperacion === 2">
+
+
+        <h2>
+          Verificar código
+        </h2>
+
+
+        <p>
+          Ingresa el código enviado a tu correo
+        </p>
+
+
+        <div class="campo">
+
+          <label>
+            Código
+          </label>
+
+
+          <input type="text" [(ngModel)]="codigo" placeholder="000000">
+
+
+        </div>
+
+
+
+        <button class="btn-recuperar-modal" type="button" (click)="verificarCodigo()" [disabled]="verificandoCodigo">
+
+          {{ verificandoCodigo ? 'Verificando...' : 'Confirmar código' }}
+
+        </button>
+
+
+      </div>
+
+
+
+
+
+      <!-- PASO 3 -->
+
+      <div *ngIf="pasoRecuperacion === 3">
+
+
+        <h2>
+          Nueva contraseña
+        </h2>
+
+
+
+        <div class="campo">
+
+          <label>
+            Nueva contraseña
+          </label>
+
+
+          <input type="password" [(ngModel)]="nuevaContrasena" placeholder="Nueva contraseña">
+
+        </div>
+
+
+
+        <div class="campo">
+
+          <label>
+            Confirmar contraseña
+          </label>
+
+
+          <input type="password" [(ngModel)]="confirmarContrasena" placeholder="Confirmar contraseña">
+
+        </div>
+
+
+
+
+        <button class="btn-recuperar-modal" type="button" (click)="cambiarPasswordRecuperacion()">
+
+          Cambiar contraseña
+
+        </button>
+
+
+      </div>
+
+
+    </div>
+
+
+  </div>
