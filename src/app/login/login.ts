@@ -1,4 +1,3 @@
-import { API_URL } from '../config/api.config';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -19,23 +18,30 @@ import Swal from 'sweetalert2';
 })
 export class Login {
 
+  // =========================================================
+  // URL BASE DE LA API
+  // =========================================================
+
+  private readonly apiUrl =
+    'https://geriapp-backend.onrender.com/api';
+
+  // =========================================================
+  // DATOS DEL USUARIO
+  // =========================================================
 
   usuario = {
     correo: '',
     contrasena: ''
   };
 
-
   mensaje = '';
   error = '';
   cargando = false;
   cargandoRecuperacion = false;
 
-
-
-  // ==========================
-  // RECUPERACIÓN CONTRASEÑA
-  // ==========================
+  // =========================================================
+  // RECUPERACIÓN DE CONTRASEÑA
+  // =========================================================
 
   mostrarRecuperacion = false;
 
@@ -47,32 +53,37 @@ export class Login {
 
   nuevaContrasena = '';
   confirmarContrasena = '';
+
   enviandoCodigo = false;
   verificandoCodigo = false;
   cambiandoPassword = false;
+
   errorCodigo = '';
   errorPassword = '';
+
+  // =========================================================
+  // CONSTRUCTOR
+  // =========================================================
 
   constructor(
     private http: HttpClient,
     private router: Router,
     private cd: ChangeDetectorRef
-
   ) { }
+
+  // =========================================================
+  // INICIAR SESIÓN
+  // =========================================================
 
   iniciarSesion(): void {
 
-
     this.mensaje = '';
     this.error = '';
-
-
 
     if (
       !this.usuario.correo.trim() ||
       !this.usuario.contrasena.trim()
     ) {
-
 
       Swal.fire({
         title: 'Campos vacíos',
@@ -82,165 +93,131 @@ export class Login {
         confirmButtonColor: '#3B5BDB'
       });
 
-
       return;
-
     }
-
-
 
     this.cargando = true;
 
-
-
     this.http.post<any>(
-      `${API_URL}/usuarios/login/`,
+      `${this.apiUrl}/usuarios/login/`,
       {
         correo: this.usuario.correo.trim(),
         contrasena: this.usuario.contrasena
       }
-
     ).subscribe({
-
-
 
       next: (respuesta) => {
 
-
         this.cargando = false;
-
-
 
         console.log(
           'Respuesta del login:',
           respuesta
         );
 
-
-
         if (respuesta.usuario) {
-
 
           localStorage.setItem(
             'usuario',
             JSON.stringify(respuesta.usuario)
           );
-
-
         }
-
-
 
         this.mensaje =
           respuesta.mensaje ||
           'Has iniciado sesión correctamente.';
 
-
-
-
         Swal.fire({
-
           title: '¡Bienvenido!',
-
           text: this.mensaje,
-
           icon: 'success',
-
           confirmButtonText: 'Continuar',
           confirmButtonColor: '#3B5BDB'
         }).then(() => {
 
-
           this.router.navigate(['/dashboard']);
-
 
         });
 
-
-
       },
 
-
-
       error: (respuestaError) => {
-
 
         console.log(respuestaError);
 
         this.cargando = false;
+
         this.cd.detectChanges();
 
         Swal.fire({
-
-          title: "Error",
-
-          text: "Credenciales invalidas",
-
-          icon: "error",
-
-          confirmButtonText: "Continuar",
-
-          confirmButtonColor: "#ff2a00"
-
+          title: 'Error',
+          text: 'Credenciales invalidas',
+          icon: 'error',
+          confirmButtonText: 'Continuar',
+          confirmButtonColor: '#ff2a00'
         });
-
 
       }
 
-
-
     });
-
-
-
   }
 
-
-
-
+  // =========================================================
+  // REGISTRO
+  // =========================================================
 
   registro(): void {
 
-
     this.router.navigate(['/registro']);
-
 
   }
 
-
-
-
-
-  // ==========================
-  // MODAL RECUPERACIÓN
-  // ==========================
-
+  // =========================================================
+  // ABRIR MODAL DE RECUPERACIÓN
+  // =========================================================
 
   abrirRecuperacion(): void {
+
     this.mostrarRecuperacion = true;
+
     this.pasoRecuperacion = 1;
+
     this.correoRecuperacion = '';
     this.codigo = '';
     this.nuevaContrasena = '';
     this.confirmarContrasena = '';
+
     this.errorCodigo = '';
     this.errorPassword = '';
   }
+
+  // =========================================================
+  // CERRAR MODAL DE RECUPERACIÓN
+  // =========================================================
 
   cerrarRecuperacion(): void {
 
     this.mostrarRecuperacion = false;
+
     this.pasoRecuperacion = 1;
+
     this.correoRecuperacion = '';
     this.codigo = '';
     this.nuevaContrasena = '';
     this.confirmarContrasena = '';
+
     this.cambiandoPassword = false;
+
     this.errorPassword = '';
     this.errorCodigo = '';
-
   }
-  enviarCodigo() {
+
+  // =========================================================
+  // ENVIAR CÓDIGO DE RECUPERACIÓN
+  // =========================================================
+
+  enviarCodigo(): void {
+
     if (!this.correoRecuperacion.trim()) {
 
       Swal.fire({
@@ -250,7 +227,6 @@ export class Login {
       });
 
       return;
-
     }
 
     if (this.enviandoCodigo) {
@@ -259,13 +235,11 @@ export class Login {
 
     this.enviandoCodigo = true;
 
-
     this.http.post<any>(
-      `${API_URL}/usuarios/recuperar-password/`,
+      `${this.apiUrl}/usuarios/recuperar-password/`,
       {
         correo: this.correoRecuperacion
       }
-
     ).subscribe({
 
       next: (respuesta) => {
@@ -279,9 +253,7 @@ export class Login {
         this.pasoRecuperacion = 2;
 
         this.cd.detectChanges();
-
       },
-
 
       error: (error) => {
 
@@ -298,181 +270,146 @@ export class Login {
       }
 
     });
-
   }
-  verificarCodigo() {
+
+  // =========================================================
+  // VERIFICAR CÓDIGO
+  // =========================================================
+
+  verificarCodigo(): void {
 
     if (this.verificandoCodigo) {
       return;
     }
 
-
     if (!this.codigo.trim()) {
 
-      this.errorCodigo = "Ingresa el código.";
+      this.errorCodigo = 'Ingresa el código.';
 
       return;
-
     }
-
 
     this.verificandoCodigo = true;
 
-    this.errorCodigo = "";
-
+    this.errorCodigo = '';
 
     this.http.post<any>(
-      `${API_URL}/usuarios/verificar-codigo/`,
+      `${this.apiUrl}/usuarios/verificar-codigo/`,
       {
         correo: this.correoRecuperacion,
         codigo: this.codigo.trim()
       }
-
     ).subscribe({
 
       next: () => {
 
-
         this.verificandoCodigo = false;
 
-
-        this.errorCodigo = "";
-
+        this.errorCodigo = '';
 
         this.pasoRecuperacion = 3;
 
-
         this.cd.detectChanges();
-
-
       },
-
 
       error: (error) => {
 
-
-        console.log("Error código:", error);
-
+        console.log(
+          'Error código:',
+          error
+        );
 
         this.verificandoCodigo = false;
 
-
         this.errorCodigo =
           error.error.error ||
-          "Código inválido.";
-
+          'Código inválido.';
 
         this.cd.detectChanges();
-
-
       }
 
     });
-
-
   }
-  cambiarPasswordRecuperacion() {
 
+  // =========================================================
+  // CAMBIAR CONTRASEÑA POR RECUPERACIÓN
+  // =========================================================
+
+  cambiarPasswordRecuperacion(): void {
 
     if (this.cambiandoPassword) {
       return;
     }
 
-
-    if (this.nuevaContrasena !== this.confirmarContrasena) {
+    if (
+      this.nuevaContrasena !==
+      this.confirmarContrasena
+    ) {
 
       this.errorPassword =
         'Las contraseñas no coinciden';
 
       return;
-
     }
-
 
     this.errorPassword = '';
 
     this.cambiandoPassword = true;
 
-
-
     this.http.post<any>(
-
-      `${API_URL}/usuarios/cambiar-password-recuperacion/`,
-
+      `${this.apiUrl}/usuarios/cambiar-password-recuperacion/`,
       {
-
         correo: this.correoRecuperacion,
-
         codigo: this.codigo,
-
         nueva_contrasena: this.nuevaContrasena
-
       }
-
     ).subscribe({
 
       next: (respuesta) => {
 
-
         this.cambiandoPassword = false;
 
-        // cerrar modal de nueva contraseña
+        // Cerrar modal
         this.mostrarRecuperacion = false;
+
         this.cd.detectChanges();
-        // reiniciar pasos
+
+        // Reiniciar pasos
         this.pasoRecuperacion = 1;
 
-        // limpiar campos
+        // Limpiar campos
         this.correoRecuperacion = '';
         this.codigo = '';
         this.nuevaContrasena = '';
         this.confirmarContrasena = '';
 
-
-
         Swal.fire({
-
           title: 'Contraseña actualizada',
-
           text: 'Ya puedes iniciar sesión.',
-
           icon: 'success',
-
           timer: 2000,
-
           showConfirmButton: false
-
         });
-
 
       },
 
-
       error: (error) => {
-
 
         this.cambiandoPassword = false;
 
         this.cd.detectChanges();
 
-
         Swal.fire({
-
           title: 'Error',
-
-          text: error.error.error ||
+          text:
+            error.error.error ||
             'No se pudo cambiar la contraseña.',
-
           icon: 'error'
-
         });
-
 
       }
 
     });
-
-
   }
 
 }

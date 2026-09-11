@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import {ChangeDetectorRef,Component,OnInit,inject} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http'
-import { API_URL } from '../config/api.config';
 import Swal from 'sweetalert2';
 
 interface Usuario {
@@ -42,7 +41,7 @@ export class Configuracion implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly cdr = inject(ChangeDetectorRef);
 
-  private readonly apiUrl = API_URL;
+  private readonly apiUrl = 'https://geriapp-backend.onrender.com/api';
 
   // =====================================================
   // USUARIO

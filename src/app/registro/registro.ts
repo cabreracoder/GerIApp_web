@@ -1,4 +1,3 @@
-import { API_URL } from '../config/api.config';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -68,7 +67,7 @@ export class Registro {
 
     // Conexión directa con la API de Django
     this.http.post<any>(
-      `${API_URL}/usuarios/registro/`,
+      'http://localhost:8000/usuarios/registro/',
       this.usuario
     ).subscribe({
 

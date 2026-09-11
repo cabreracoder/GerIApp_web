@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { API_URL } from '../config/api.config';
 
 interface Catalogo {
   nombre: string;
@@ -36,6 +35,17 @@ export class BancoDatos implements OnInit {
   constructor(
     private http: HttpClient
   ) {}
+
+  // =========================================================
+  // URL BASE DE LA API
+  // =========================================================
+
+  private readonly apiUrl =
+    'https://geriapp-backend.onrender.com/api';
+
+  // =========================================================
+  // CATÁLOGOS
+  // =========================================================
 
   catalogos: Catalogo[] = [
     {
@@ -74,6 +84,10 @@ export class BancoDatos implements OnInit {
 
   catalogoSeleccionado = 'Medicamentos';
 
+  // =========================================================
+  // MEDICAMENTOS
+  // =========================================================
+
   medicamentos: Medicamento[] = [];
 
   cargandoMedicamentos = false;
@@ -86,11 +100,20 @@ export class BancoDatos implements OnInit {
 
   mensajeError = '';
 
-  medicamentoActual: Medicamento = this.crearMedicamentoVacio();
+  medicamentoActual: Medicamento =
+    this.crearMedicamentoVacio();
+
+  // =========================================================
+  // INICIALIZACIÓN
+  // =========================================================
 
   ngOnInit(): void {
     this.cargarMedicamentos();
   }
+
+  // =========================================================
+  // CREAR MEDICAMENTO VACÍO
+  // =========================================================
 
   crearMedicamentoVacio(): Medicamento {
     return {
@@ -105,6 +128,10 @@ export class BancoDatos implements OnInit {
     };
   }
 
+  // =========================================================
+  // SELECCIONAR CATÁLOGO
+  // =========================================================
+
   seleccionarCatalogo(nombre: string): void {
     this.catalogoSeleccionado = nombre;
 
@@ -115,6 +142,10 @@ export class BancoDatos implements OnInit {
       this.cargarMedicamentos();
     }
   }
+
+  // =========================================================
+  // DESPLAZAMIENTO HORIZONTAL
+  // =========================================================
 
   desplazarHorizontal(event: WheelEvent): void {
 
@@ -138,6 +169,10 @@ export class BancoDatos implements OnInit {
     event.preventDefault();
   }
 
+  // =========================================================
+  // CARGAR MEDICAMENTOS
+  // =========================================================
+
   cargarMedicamentos(): void {
 
     this.cargandoMedicamentos = true;
@@ -146,7 +181,7 @@ export class BancoDatos implements OnInit {
 
     this.http
       .get<Medicamento[]>(
-        `${API_URL}/medicamentos/`
+        `${this.apiUrl}/medicamentos/`
       )
       .subscribe({
 
@@ -176,6 +211,10 @@ export class BancoDatos implements OnInit {
       });
   }
 
+  // =========================================================
+  // ABRIR NUEVO MEDICAMENTO
+  // =========================================================
+
   abrirNuevoMedicamento(): void {
 
     this.modoEdicion = false;
@@ -188,6 +227,10 @@ export class BancoDatos implements OnInit {
 
     this.mostrandoFormulario = true;
   }
+
+  // =========================================================
+  // EDITAR MEDICAMENTO
+  // =========================================================
 
   editarMedicamento(
     medicamento: Medicamento
@@ -205,6 +248,10 @@ export class BancoDatos implements OnInit {
     this.mostrandoFormulario = true;
   }
 
+  // =========================================================
+  // CERRAR FORMULARIO
+  // =========================================================
+
   cerrarFormulario(): void {
 
     this.mostrandoFormulario =
@@ -218,6 +265,10 @@ export class BancoDatos implements OnInit {
 
     this.mensajeError = '';
   }
+
+  // =========================================================
+  // GUARDAR MEDICAMENTO
+  // =========================================================
 
   guardarMedicamento(): void {
 
@@ -240,6 +291,10 @@ export class BancoDatos implements OnInit {
       this.crearMedicamento();
     }
   }
+
+  // =========================================================
+  // VALIDAR MEDICAMENTO
+  // =========================================================
 
   validarMedicamento(): boolean {
 
@@ -306,9 +361,14 @@ export class BancoDatos implements OnInit {
     return true;
   }
 
+  // =========================================================
+  // CREAR MEDICAMENTO
+  // =========================================================
+
   crearMedicamento(): void {
 
     const datos = {
+
       nombre:
         this.medicamentoActual.nombre.trim(),
 
@@ -336,7 +396,7 @@ export class BancoDatos implements OnInit {
 
     this.http
       .post<Medicamento>(
-        `${API_URL}/medicamentos/`,
+        `${this.apiUrl}/medicamentos/`,
         datos
       )
       .subscribe({
@@ -369,6 +429,10 @@ export class BancoDatos implements OnInit {
       });
   }
 
+  // =========================================================
+  // ACTUALIZAR MEDICAMENTO
+  // =========================================================
+
   actualizarMedicamento(): void {
 
     const id =
@@ -379,6 +443,7 @@ export class BancoDatos implements OnInit {
     }
 
     const datos = {
+
       nombre:
         this.medicamentoActual.nombre.trim(),
 
@@ -406,7 +471,7 @@ export class BancoDatos implements OnInit {
 
     this.http
       .patch<Medicamento>(
-        `${API_URL}/medicamentos/${id}/`,
+        `${this.apiUrl}/medicamentos/${id}/`,
         datos
       )
       .subscribe({
@@ -439,6 +504,10 @@ export class BancoDatos implements OnInit {
       });
   }
 
+  // =========================================================
+  // ELIMINAR MEDICAMENTO
+  // =========================================================
+
   eliminarMedicamento(
     medicamento: Medicamento
   ): void {
@@ -461,7 +530,7 @@ export class BancoDatos implements OnInit {
 
     this.http
       .delete(
-        `${API_URL}/medicamentos/${medicamento.id_medicamentos}/`
+        `${this.apiUrl}/medicamentos/${medicamento.id_medicamentos}/`
       )
       .subscribe({
 
@@ -489,6 +558,10 @@ export class BancoDatos implements OnInit {
 
       });
   }
+
+  // =========================================================
+  // OBTENER MENSAJE DE ERROR
+  // =========================================================
 
   obtenerMensajeError(
     error: any,
@@ -519,6 +592,10 @@ export class BancoDatos implements OnInit {
 
     return mensajePredeterminado;
   }
+
+  // =========================================================
+  // TRACKBY MEDICAMENTO
+  // =========================================================
 
   trackByMedicamento(
     index: number,
