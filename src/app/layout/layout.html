@@ -177,9 +177,14 @@
 
           </div>
 
-          <div class="layout-avatar">
-            {{ inicialesUsuario }}
-          </div>
+          <button
+                type="button"
+                class="layout-avatar"
+                title="Ver perfil"
+                (click)="abrirConfiguracion()"
+              > 
+                {{ inicialesUsuario }}
+          </button>
 
         </div>
 

@@ -159,9 +159,9 @@ export class Layout implements OnDestroy {
     },
 
     {
-      nombre: 'Configuración',
-      icono: 'person',
-      ruta: '/configuracion'
+      nombre: 'Banco de Datos',
+      icono: 'category',
+      ruta: '/banco-datos'
     }
 
   ];
@@ -264,6 +264,13 @@ export class Layout implements OnDestroy {
         .toUpperCase();
   }
 
+// =====================================================
+// ABRIR CONFIGURACIÓN DESDE LAS INICIALES
+// =====================================================
+
+abrirConfiguracion(): void {
+  this.router.navigate(['/configuracion']);
+}
 
   // =====================================================
   // CERRAR SESIÓN
