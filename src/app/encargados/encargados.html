@@ -1,4 +1,3 @@
-
 <main class="pagina">
 
   <!-- =====================================================
@@ -25,15 +24,11 @@
 
       <!-- NUEVO ENCARGADO -->
 
-           <button
-        type="button"
-        (click)="openModal('new')"
-        class="px-5 py-3 rounded-lg
+      <button type="button" (click)="openModal('new')" class="px-5 py-3 rounded-lg
                border border-[#3B5BDB]
                bg-[#3B5BDB] text-white
                hover:bg-[#324EC7] transition
-               flex items-center gap-2"
-      >
+               flex items-center gap-2">
 
         <span class="material-symbols-outlined">
           add
@@ -43,7 +38,7 @@
 
       </button>
 
-          </div>
+    </div>
 
   </section>
 
@@ -58,15 +53,8 @@
       search
     </span>
 
-    <input
-      type="search"
-      placeholder="Buscar por documento, nombre o cargo..."
-      aria-label="Buscar encargado"
-      autocomplete="off"
-      [(ngModel)]="busqueda"
-      (input)="filtrarEncargados()"
-      (keyup.enter)="filtrarEncargados()"
-    />
+    <input type="search" placeholder="Buscar por documento, nombre o cargo..." aria-label="Buscar encargado"
+      autocomplete="off" [(ngModel)]="busqueda" (input)="filtrarEncargados()" (keyup.enter)="filtrarEncargados()" />
 
   </section>
 
@@ -79,25 +67,15 @@
     Encargados registrados: <strong>{{ encargados.length }}</strong>
   </p>
 
-
-
   <!-- =====================================================
-       ENCARGADO PRINCIPAL
+       ENCARGAÑDO PRINCIPAL
   ====================================================== -->
 
-  <section
-    class="tarjeta-encargado-principal"
-    role="region"
-    aria-label="Encargado Principal"
-    *ngIf="encargadoPrincipal"
-  >
+  <section class="tarjeta-encargado-principal" role="region" aria-label="Encargado Principal"
+    *ngIf="encargadoPrincipal">
 
-    <button
-      class="boton-editar-principal"
-      type="button"
-      (click)="openModal('editPrincipal')"
-      title="Editar encargado principal"
-    >
+    <button class="boton-editar-principal" type="button" (click)="openModal('editPrincipal')"
+      title="Editar encargado principal">
 
       <span class="material-symbols-outlined">
         edit
@@ -114,14 +92,10 @@
 
       <div class="avatar-encargado-principal">
 
-        <ng-container
-          *ngIf="encargadoPrincipal.foto; else inicialesEncargadoPrincipal"
-        >
+        <ng-container *ngIf="encargadoPrincipal.foto; else inicialesEncargadoPrincipal">
 
-          <img
-            [src]="encargadoPrincipal.foto"
-            [alt]="'Foto de ' + encargadoPrincipal.nombres + ' ' + encargadoPrincipal.apellidos"
-          />
+          <img [src]="encargadoPrincipal.foto"
+            [alt]="'Foto de ' + encargadoPrincipal.nombres + ' ' + encargadoPrincipal.apellidos" />
 
         </ng-container>
 
@@ -208,10 +182,7 @@
   <!-- =====================================================
        ESTADO VACÍO
   ====================================================== -->
-  <section
-    class="estado-vacio"
-    *ngIf="encargadosFiltrados.length === 0"
-  >
+  <section class="estado-vacio" *ngIf="encargadosFiltrados.length === 0">
 
     <span class="material-symbols-outlined">
       group_off
@@ -220,9 +191,9 @@
     <div class="titulo-estado-vacio">
 
       {{
-        busqueda
-          ? 'No se encontró ningún encargado'
-          : 'No hay encargados'
+      busqueda
+      ? 'No se encontró ningún encargado'
+      : 'No hay encargados'
       }}
 
     </div>
@@ -230,9 +201,9 @@
     <div class="subtitulo-estado-vacio">
 
       {{
-        busqueda
-          ? 'Verifica el número de documento, nombre o criterio de búsqueda.'
-          : 'Los encargados registrados aparecerán aquí.'
+      busqueda
+      ? 'Verifica el número de documento, nombre o criterio de búsqueda.'
+      : 'Los encargados registrados aparecerán aquí.'
       }}
 
     </div>
@@ -243,10 +214,7 @@
        TABLA DE ENCARGADOS
   ====================================================== -->
 
-     <section
-    class="tarjeta-tabla"
-    *ngIf="encargadosFiltrados.length > 0"
-  >
+  <section class="tarjeta-tabla" *ngIf="encargadosFiltrados.length > 0">
 
     <div class="contenedor-tabla">
 
@@ -287,9 +255,7 @@
 
         <tbody>
 
-          <tr
-            *ngFor="let encargado of encargadosFiltrados"
-          >
+          <tr *ngFor="let encargado of encargadosPaginaActual">
 
             <!-- ENCARGADO -->
 
@@ -299,14 +265,9 @@
 
                 <div class="avatar-tabla">
 
-                  <ng-container
-                    *ngIf="encargado.foto; else inicialesTabla"
-                  >
+                  <ng-container *ngIf="encargado.foto; else inicialesTabla">
 
-                    <img
-                      [src]="encargado.foto"
-                      [alt]="'Foto de ' + encargado.nombres + ' ' + encargado.apellidos"
-                    />
+                    <img [src]="encargado.foto" [alt]="'Foto de ' + encargado.nombres + ' ' + encargado.apellidos" />
 
                   </ng-container>
 
@@ -337,7 +298,7 @@
 
               </div>
 
-                        </td>
+            </td>
 
             <!-- DOCUMENTO -->
 
@@ -382,11 +343,8 @@
 
             <td>
 
-              <span
-                class="insignia-estado"
-                [class.activo]="encargado.estado === 'Activo'"
-                [class.inactivo]="encargado.estado === 'Inactivo'"
-              >
+              <span class="insignia-estado" [class.activo]="encargado.estado === 'Activo'"
+                [class.inactivo]="encargado.estado === 'Inactivo'">
 
                 <span class="punto-estado"></span>
 
@@ -404,13 +362,8 @@
 
                 <!-- VER DETALLES -->
 
-                <button
-                  class="boton-accion detalles"
-                  type="button"
-                  title="Ver detalles del encargado"
-                  aria-label="Ver detalles del encargado"
-                  (click)="verDetalles(encargado)"
-                >
+                <button class="boton-accion detalles" type="button" title="Ver detalles del encargado"
+                  aria-label="Ver detalles del encargado" (click)="verDetalles(encargado)">
 
                   <span class="material-symbols-outlined">
                     visibility
@@ -421,13 +374,8 @@
 
                 <!-- EDITAR -->
 
-                <button
-                  class="boton-accion"
-                  type="button"
-                  title="Editar encargado"
-                  aria-label="Editar encargado"
-                  (click)="openModal('edit', encargado)"
-                >
+                <button class="boton-accion" type="button" title="Editar encargado" aria-label="Editar encargado"
+                  (click)="openModal('edit', encargado)">
 
                   <span class="material-symbols-outlined">
                     edit
@@ -436,23 +384,17 @@
                 </button>
 
 
-                                <!-- CAMBIAR ESTADO -->
+                <!-- CAMBIAR ESTADO -->
 
-                <button
-                  class="boton-accion advertencia"
-                  type="button"
-                  [title]="
+                <button class="boton-accion advertencia" type="button" [title]="
                     encargado.estado === 'Activo'
                       ? 'Desactivar encargado'
                       : 'Activar encargado'
-                  "
-                  [attr.aria-label]="
+                  " [attr.aria-label]="
                     encargado.estado === 'Activo'
                       ? 'Desactivar encargado'
                       : 'Activar encargado'
-                  "
-                  (click)="cambiarEstado(encargado)"
-                >
+                  " (click)="cambiarEstado(encargado)">
 
                   <span class="material-symbols-outlined">
                     toggle_on
@@ -463,15 +405,10 @@
 
                 <!-- ELIMINAR -->
 
-                <button
-                  class="boton-accion peligro"
-                  type="button"
-                  title="Eliminar encargado"
-                  aria-label="Eliminar encargado"
-                  (click)="eliminarEncargado(encargado.id)"
-                >
+                <button class="boton-accion peligro" type="button" title="Eliminar encargado"
+                  aria-label="Eliminar encargado" (click)="eliminarEncargado(encargado.id)">
 
-               
+
 
                   <span class="material-symbols-outlined">
                     delete
@@ -492,7 +429,40 @@
     </div>
 
   </section>
+  <!-- PAGINACIÓN -->
 
+  <div class="flex justify-center items-center gap-3 mt-6" *ngIf="totalPaginas > 1">
+
+
+    <!-- ANTERIOR -->
+    <button type="button" (click)="cambiarPagina(paginaActual - 1)" [disabled]="paginaActual === 1"
+      class="w-9 h-9 rounded-lg text-[#212529] disabled:opacity-40">
+      &lt;
+    </button>
+
+
+
+    <!-- NÚMEROS -->
+    <button type="button" *ngFor="let pagina of paginas" (click)="cambiarPagina(pagina)" [ngClass]="
+      paginaActual === pagina
+      ? 'bg-[#3B5BDB] text-white w-9 h-9 rounded-lg font-semibold'
+      : 'text-[#212529] w-9 h-9 rounded-lg hover:bg-[#F4F7FF]'
+    ">
+
+      {{pagina}}
+
+    </button>
+
+
+
+    <!-- SIGUIENTE -->
+    <button type="button" (click)="cambiarPagina(paginaActual + 1)" [disabled]="paginaActual === totalPaginas"
+      class="w-9 h-9 rounded-lg text-[#212529] disabled:opacity-40">
+      &gt;
+    </button>
+
+
+  </div>
 </main>
 
 
@@ -500,18 +470,9 @@
      MODAL NUEVO / EDITAR ENCARGADO
 ====================================================== -->
 
-<div
-  class="modal-overlay"
-  [class.open]="modalAbierto"
-  (click)="cerrarAlClickarFondo($event)"
->
+<div class="modal-overlay" [class.open]="modalAbierto" (click)="cerrarAlClickarFondo($event)">
 
-  <div
-    class="modal-encargado"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="titulo-modal-encargado"
-  >
+  <div class="modal-encargado" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-encargado">
 
     <!-- ENCABEZADO -->
 
@@ -528,15 +489,12 @@
 
       <div class="contenido-encabezado-modal">
 
-        <div
-          id="titulo-modal-encargado"
-          class="titulo-encabezado-modal"
-        >
+        <div id="titulo-modal-encargado" class="titulo-encabezado-modal">
 
           {{
-            modoEdicion
-              ? 'Editar Encargado'
-              : 'Nuevo Encargado'
+          modoEdicion
+          ? 'Editar Encargado'
+          : 'Nuevo Encargado'
           }}
 
         </div>
@@ -545,9 +503,9 @@
         <div class="subtitulo-encabezado-modal">
 
           {{
-            modoEdicion
-              ? 'Modifique los datos del encargado'
-              : 'Complete los datos del nuevo encargado'
+          modoEdicion
+          ? 'Modifique los datos del encargado'
+          : 'Complete los datos del nuevo encargado'
           }}
 
         </div>
@@ -555,12 +513,7 @@
       </div>
 
 
-      <button
-        class="boton-cerrar-modal"
-        type="button"
-        (click)="closeModal()"
-        aria-label="Cerrar modal"
-      >
+      <button class="boton-cerrar-modal" type="button" (click)="closeModal()" aria-label="Cerrar modal">
 
         <span class="material-symbols-outlined">
           close
@@ -590,16 +543,13 @@
         </div>
 
 
-                <div class="fila-formulario">
+        <div class="fila-formulario">
 
           <!-- NOMBRES -->
 
           <div class="grupo-formulario">
 
-            <label
-              class="etiqueta-formulario"
-              for="nombres-encargado"
-            >
+            <label class="etiqueta-formulario" for="nombres-encargado">
 
               Nombres
 
@@ -610,20 +560,11 @@
             </label>
 
 
-            <input
-              id="nombres-encargado"
-              type="text"
-              class="campo-formulario"
-              [class.campo-invalido]="errores.nombres"
-              autocomplete="off"
-              [(ngModel)]="formulario.nombres"
-            />
+            <input id="nombres-encargado" type="text" class="campo-formulario" [class.campo-invalido]="errores.nombres"
+              autocomplete="off" [(ngModel)]="formulario.nombres" />
 
 
-            <div
-              class="mensaje-error"
-              [class.mostrar]="errores.nombres"
-            >
+            <div class="mensaje-error" [class.mostrar]="errores.nombres">
 
               <span class="material-symbols-outlined">
                 error
@@ -639,10 +580,7 @@
 
           <div class="grupo-formulario">
 
-            <label
-              class="etiqueta-formulario"
-              for="apellidos-encargado"
-            >
+            <label class="etiqueta-formulario" for="apellidos-encargado">
 
               Apellidos
 
@@ -653,20 +591,11 @@
             </label>
 
 
-            <input
-              id="apellidos-encargado"
-              type="text"
-              class="campo-formulario"
-              [class.campo-invalido]="errores.apellidos"
-              autocomplete="off"
-              [(ngModel)]="formulario.apellidos"
-            />
+            <input id="apellidos-encargado" type="text" class="campo-formulario"
+              [class.campo-invalido]="errores.apellidos" autocomplete="off" [(ngModel)]="formulario.apellidos" />
 
 
-            <div
-              class="mensaje-error"
-              [class.mostrar]="errores.apellidos"
-            >
+            <div class="mensaje-error" [class.mostrar]="errores.apellidos">
 
               <span class="material-symbols-outlined">
                 error
@@ -682,16 +611,13 @@
 
 
 
-                <div class="fila-formulario">
+        <div class="fila-formulario">
 
           <!-- TIPO DE DOCUMENTO -->
 
           <div class="grupo-formulario">
 
-            <label
-              class="etiqueta-formulario"
-              for="tipo-documento-encargado"
-            >
+            <label class="etiqueta-formulario" for="tipo-documento-encargado">
 
               Tipo de documento
 
@@ -702,12 +628,8 @@
             </label>
 
 
-            <select
-              id="tipo-documento-encargado"
-              class="campo-select"
-              [class.campo-invalido]="errores.tipoDocumento"
-              [(ngModel)]="formulario.tipoDocumento"
-            >
+            <select id="tipo-documento-encargado" class="campo-select" [class.campo-invalido]="errores.tipoDocumento"
+              [(ngModel)]="formulario.tipoDocumento">
 
               <option value="">
                 Seleccionar tipo
@@ -722,10 +644,7 @@
             </select>
 
 
-            <div
-              class="mensaje-error"
-              [class.mostrar]="errores.tipoDocumento"
-            >
+            <div class="mensaje-error" [class.mostrar]="errores.tipoDocumento">
 
               <span class="material-symbols-outlined">
                 error
@@ -741,10 +660,7 @@
 
           <div class="grupo-formulario">
 
-            <label
-              class="etiqueta-formulario"
-              for="documento-encargado"
-            >
+            <label class="etiqueta-formulario" for="documento-encargado">
 
               Número de documento
 
@@ -755,21 +671,11 @@
             </label>
 
 
-            <input
-              id="documento-encargado"
-              type="text"
-              inputmode="numeric"
-              class="campo-formulario"
-              [class.campo-invalido]="errores.documento"
-              autocomplete="off"
-              [(ngModel)]="formulario.documento"
-            />
+            <input id="documento-encargado" type="text" inputmode="numeric" class="campo-formulario"
+              [class.campo-invalido]="errores.documento" autocomplete="off" [(ngModel)]="formulario.documento" />
 
 
-            <div
-              class="mensaje-error"
-              [class.mostrar]="errores.documento"
-            >
+            <div class="mensaje-error" [class.mostrar]="errores.documento">
 
               <span class="material-symbols-outlined">
                 error
@@ -784,16 +690,13 @@
         </div>
 
 
-                <div class="fila-formulario">
+        <div class="fila-formulario">
 
           <!-- TELÉFONO -->
 
           <div class="grupo-formulario">
 
-            <label
-              class="etiqueta-formulario"
-              for="telefono-encargado"
-            >
+            <label class="etiqueta-formulario" for="telefono-encargado">
 
               Teléfono
 
@@ -804,23 +707,12 @@
             </label>
 
 
-            <input
-              id="telefono-encargado"
-              type="tel"
-              inputmode="numeric"
-              class="campo-formulario"
-              [class.campo-invalido]="errores.telefono"
-              maxlength="10"
-              autocomplete="off"
-              [(ngModel)]="formulario.telefono"
-              (input)="soloNumerosTelefono($event)"
-            />
+            <input id="telefono-encargado" type="tel" inputmode="numeric" class="campo-formulario"
+              [class.campo-invalido]="errores.telefono" maxlength="10" autocomplete="off"
+              [(ngModel)]="formulario.telefono" (input)="soloNumerosTelefono($event)" />
 
 
-            <div
-              class="mensaje-error"
-              [class.mostrar]="errores.telefono"
-            >
+            <div class="mensaje-error" [class.mostrar]="errores.telefono">
 
               <span class="material-symbols-outlined">
                 error
@@ -837,10 +729,7 @@
 
           <div class="grupo-formulario">
 
-            <label
-              class="etiqueta-formulario"
-              for="correo-encargado"
-            >
+            <label class="etiqueta-formulario" for="correo-encargado">
 
               Correo electrónico
 
@@ -851,24 +740,13 @@
             </label>
 
 
-            <input
-              id="correo-encargado"
-              type="email"
-              name="correo"
-              class="campo-formulario"
-              [class.campo-invalido]="
+            <input id="correo-encargado" type="email" name="correo" class="campo-formulario" [class.campo-invalido]="
                 errores.email ||
                 errores.emailInvalido
-              "
-              autocomplete="off"
-              [(ngModel)]="formulario.email"
-            />
+              " autocomplete="off" [(ngModel)]="formulario.email" />
 
 
-            <div
-              class="mensaje-error"
-              [class.mostrar]="errores.email"
-            >
+            <div class="mensaje-error" [class.mostrar]="errores.email">
 
               <span class="material-symbols-outlined">
                 error
@@ -879,10 +757,7 @@
             </div>
 
 
-            <div
-              class="mensaje-error"
-              [class.mostrar]="errores.emailInvalido"
-            >
+            <div class="mensaje-error" [class.mostrar]="errores.emailInvalido">
 
               <span class="material-symbols-outlined">
                 error
@@ -903,22 +778,14 @@
 
           <div class="grupo-formulario">
 
-            <label
-              class="etiqueta-formulario"
-              for="fecha-ingreso"
-            >
+            <label class="etiqueta-formulario" for="fecha-ingreso">
 
               Fecha de ingreso
 
             </label>
 
 
-            <input
-              id="fecha-ingreso"
-              type="date"
-              class="campo-formulario"
-              [(ngModel)]="formulario.fechaIngreso"
-            />
+            <input id="fecha-ingreso" type="date" class="campo-formulario" [(ngModel)]="formulario.fechaIngreso" />
 
           </div>
 
@@ -926,21 +793,14 @@
 
           <div class="grupo-formulario">
 
-            <label
-              class="etiqueta-formulario"
-              for="estado-encargado"
-            >
+            <label class="etiqueta-formulario" for="estado-encargado">
 
               Estado
 
             </label>
 
 
-            <select
-              id="estado-encargado"
-              class="campo-select"
-              [(ngModel)]="formulario.estado"
-            >
+            <select id="estado-encargado" class="campo-select" [(ngModel)]="formulario.estado">
 
               <option value="Activo">Activo</option>
 
@@ -952,16 +812,13 @@
 
         </div>
 
-                <div class="fila-formulario" *ngIf="!modoEdicion">
+        <div class="fila-formulario" *ngIf="!modoEdicion">
 
           <!-- CONTRASEÑA (solo al crear) -->
 
           <div class="grupo-formulario">
 
-            <label
-              class="etiqueta-formulario"
-              for="contrasena-encargado"
-            >
+            <label class="etiqueta-formulario" for="contrasena-encargado">
 
               Contraseña
 
@@ -972,22 +829,12 @@
             </label>
 
 
-            <input
-              id="contrasena-encargado"
-              type="password"
-              class="campo-formulario"
-              [class.campo-invalido]="errores.contrasena"
-              autocomplete="new-password"
-              minlength="8"
-              maxlength="10"
-              [(ngModel)]="formulario.contrasena"
-            />
+            <input id="contrasena-encargado" type="password" class="campo-formulario"
+              [class.campo-invalido]="errores.contrasena" autocomplete="new-password" minlength="8" maxlength="10"
+              [(ngModel)]="formulario.contrasena" />
 
 
-            <div
-              class="mensaje-error"
-              [class.mostrar]="errores.contrasena"
-            >
+            <div class="mensaje-error" [class.mostrar]="errores.contrasena">
 
               <span class="material-symbols-outlined">
                 error
@@ -1000,7 +847,7 @@
           </div>
 
         </div>
-     
+
 
 
         <div class="fila-formulario">
@@ -1009,10 +856,7 @@
 
           <div class="grupo-formulario">
 
-            <label
-              class="etiqueta-formulario"
-              for="fecha-nacimiento-encargado"
-            >
+            <label class="etiqueta-formulario" for="fecha-nacimiento-encargado">
 
               Fecha de nacimiento
 
@@ -1023,13 +867,8 @@
             </label>
 
 
-            <input
-              id="fecha-nacimiento-encargado"
-              type="date"
-              class="campo-formulario"
-              [(ngModel)]="formulario.fechaNacimiento"
-              (change)="calcularEdad()"
-            />
+            <input id="fecha-nacimiento-encargado" type="date" class="campo-formulario"
+              [(ngModel)]="formulario.fechaNacimiento" (change)="calcularEdad()" />
 
           </div>
 
@@ -1042,7 +881,8 @@
               Edad calculada
             </label>
 
-            <div class="texto-edad-calculada" style="display: flex; align-items: center; gap: 8px; padding: 10px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <div class="texto-edad-calculada"
+              style="display: flex; align-items: center; gap: 8px; padding: 10px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
               <span class="material-symbols-outlined" style="color: #3b82f6;">cake</span>
               <span><strong>{{ formulario.edad }} años</strong></span>
             </div>
@@ -1053,7 +893,7 @@
 
       </section>
 
-            <!-- INFORMACIÓN PROFESIONAL -->
+      <!-- INFORMACIÓN PROFESIONAL -->
 
       <section class="seccion-formulario">
 
@@ -1069,14 +909,8 @@
               Especialidad
               <span class="campo-obligatorio">*</span>
             </label>
-            <input
-              id="especialidad-encargado"
-              type="text"
-              class="campo-formulario"
-              autocomplete="off"
-              placeholder="Especialidad"
-              [(ngModel)]="formulario.especialidad"
-            />
+            <input id="especialidad-encargado" type="text" class="campo-formulario" autocomplete="off"
+              placeholder="Especialidad" [(ngModel)]="formulario.especialidad" />
           </div>
 
           <div class="grupo-formulario">
@@ -1084,14 +918,8 @@
               Licencia
               <span class="campo-obligatorio">*</span>
             </label>
-            <input
-              id="licencia-encargado"
-              type="text"
-              class="campo-formulario"
-              autocomplete="off"
-              placeholder="Número de licencia"
-              [(ngModel)]="formulario.licencia"
-            />
+            <input id="licencia-encargado" type="text" class="campo-formulario" autocomplete="off"
+              placeholder="Número de licencia" [(ngModel)]="formulario.licencia" />
           </div>
 
         </div>
@@ -1102,28 +930,16 @@
             <label class="etiqueta-formulario" for="experiencia-encargado">
               Experiencia
             </label>
-            <input
-              id="experiencia-encargado"
-              type="text"
-              class="campo-formulario"
-              autocomplete="off"
-              placeholder="Años de experiencia"
-              [(ngModel)]="formulario.experiencia"
-            />
+            <input id="experiencia-encargado" type="text" class="campo-formulario" autocomplete="off"
+              placeholder="Años de experiencia" [(ngModel)]="formulario.experiencia" />
           </div>
 
           <div class="grupo-formulario">
             <label class="etiqueta-formulario" for="institucion-encargado">
               Institución
             </label>
-            <input
-              id="institucion-encargado"
-              type="text"
-              class="campo-formulario"
-              autocomplete="off"
-              placeholder="Institución"
-              [(ngModel)]="formulario.institucion"
-            />
+            <input id="institucion-encargado" type="text" class="campo-formulario" autocomplete="off"
+              placeholder="Institución" [(ngModel)]="formulario.institucion" />
           </div>
 
         </div>
@@ -1132,7 +948,7 @@
 
       <!-- DOCUMENTOS -->
 
-            <!-- DOCUMENTOS -->
+      <!-- DOCUMENTOS -->
 
       <section class="seccion-formulario">
 
@@ -1168,7 +984,8 @@
               <span class="material-symbols-outlined">upload</span>
               Examinar
             </span>
-            <input type="file" (change)="onFileSelected($event, 'tarjetaProfesional')" hidden accept=".pdf,.png,.jpg,.jpeg">
+            <input type="file" (change)="onFileSelected($event, 'tarjetaProfesional')" hidden
+              accept=".pdf,.png,.jpg,.jpeg">
           </label>
 
           <!-- ANTECEDENTES -->
@@ -1202,7 +1019,7 @@
         </div>
 
       </section>
-   
+
 
     </div>
 
@@ -1210,45 +1027,29 @@
 
     <div class="pie-modal">
 
-      <button
-        class="boton-cancelar"
-        type="button"
-        (click)="closeModal()"
-        [disabled]="guardando"
-      >
+      <button class="boton-cancelar" type="button" (click)="closeModal()" [disabled]="guardando">
 
         Cancelar
 
       </button>
 
 
-      <button
-        class="boton-guardar"
-        type="button"
-        [disabled]="guardando"
-        (click)="saveEncargado()"
-      >
+      <button class="boton-guardar" type="button" [disabled]="guardando" (click)="saveEncargado()">
 
-        <span
-          *ngIf="!guardando"
-          class="material-symbols-outlined"
-        >
+        <span *ngIf="!guardando" class="material-symbols-outlined">
           save
         </span>
 
 
-        <span
-          *ngIf="guardando"
-          class="indicador-carga"
-        ></span>
+        <span *ngIf="guardando" class="indicador-carga"></span>
 
 
         <span>
 
           {{
-            guardando
-              ? 'Guardando...'
-              : 'Guardar'
+          guardando
+          ? 'Guardando...'
+          : 'Guardar'
           }}
 
         </span>
@@ -1266,19 +1067,11 @@
      MODAL DETALLES
 ====================================================== -->
 
-<div
-  class="modal-overlay detalles-overlay"
-  [class.open]="modalDetallesAbierto"
-  (click)="cerrarModalDetallesPorFondo($event)"
->
+<div class="modal-overlay detalles-overlay" [class.open]="modalDetallesAbierto"
+  (click)="cerrarModalDetallesPorFondo($event)">
 
-  <div
-    class="modal-encargado modal-detalles"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="titulo-detalle-encargado"
-    *ngIf="encargadoSeleccionado"
-  >
+  <div class="modal-encargado modal-detalles" role="dialog" aria-modal="true" aria-labelledby="titulo-detalle-encargado"
+    *ngIf="encargadoSeleccionado">
 
     <!-- ENCABEZADO -->
 
@@ -1295,10 +1088,7 @@
 
       <div class="contenido-encabezado-modal">
 
-        <div
-          id="titulo-detalle-encargado"
-          class="titulo-encabezado-modal"
-        >
+        <div id="titulo-detalle-encargado" class="titulo-encabezado-modal">
 
           Perfil del Encargado
 
@@ -1314,12 +1104,7 @@
       </div>
 
 
-      <button
-        class="boton-cerrar-modal"
-        type="button"
-        (click)="cerrarModalDetalles()"
-        aria-label="Cerrar detalles"
-      >
+      <button class="boton-cerrar-modal" type="button" (click)="cerrarModalDetalles()" aria-label="Cerrar detalles">
 
         <span class="material-symbols-outlined">
           close
@@ -1340,14 +1125,10 @@
 
         <div class="avatar-detalle">
 
-          <ng-container
-            *ngIf="encargadoSeleccionado.foto; else inicialesDetalle"
-          >
+          <ng-container *ngIf="encargadoSeleccionado.foto; else inicialesDetalle">
 
-            <img
-              [src]="encargadoSeleccionado.foto"
-              [alt]="'Foto de ' + encargadoSeleccionado.nombres + ' ' + encargadoSeleccionado.apellidos"
-            />
+            <img [src]="encargadoSeleccionado.foto"
+              [alt]="'Foto de ' + encargadoSeleccionado.nombres + ' ' + encargadoSeleccionado.apellidos" />
 
           </ng-container>
 
@@ -1375,11 +1156,8 @@
 
 
 
-          <div
-            class="insignia-estado estado-detalle"
-            [class.activo]="encargadoSeleccionado.estado === 'Activo'"
-            [class.inactivo]="encargadoSeleccionado.estado === 'Inactivo'"
-          >
+          <div class="insignia-estado estado-detalle" [class.activo]="encargadoSeleccionado.estado === 'Activo'"
+            [class.inactivo]="encargadoSeleccionado.estado === 'Inactivo'">
 
             <span class="punto-estado"></span>
 
@@ -1538,11 +1316,8 @@
               Estado
             </span>
 
-            <span
-              class="insignia-estado"
-              [class.activo]="encargadoSeleccionado.estado === 'Activo'"
-              [class.inactivo]="encargadoSeleccionado.estado === 'Inactivo'"
-            >
+            <span class="insignia-estado" [class.activo]="encargadoSeleccionado.estado === 'Activo'"
+              [class.inactivo]="encargadoSeleccionado.estado === 'Inactivo'">
 
               <span class="punto-estado"></span>
 
@@ -1575,7 +1350,7 @@
         <div class="descripcion-detalle">
 
           {{
-            'Sin descripción registrada.'
+          'Sin descripción registrada.'
           }}
 
         </div>
@@ -1589,11 +1364,7 @@
 
     <div class="pie-modal">
 
-      <button
-        class="boton-cancelar"
-        type="button"
-        (click)="cerrarModalDetalles()"
-      >
+      <button class="boton-cancelar" type="button" (click)="cerrarModalDetalles()">
 
         <span class="material-symbols-outlined">
           close
@@ -1604,14 +1375,10 @@
       </button>
 
 
-      <button
-        class="boton-guardar"
-        type="button"
-        (click)="
+      <button class="boton-guardar" type="button" (click)="
           cerrarModalDetalles();
           openModal('edit', encargadoSeleccionado)
-        "
-      >
+        ">
 
         <span class="material-symbols-outlined">
           edit
@@ -1626,6 +1393,3 @@
   </div>
 
 </div>
-
-
-

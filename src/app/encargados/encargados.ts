@@ -1,6 +1,6 @@
 
 import { CommonModule } from '@angular/common';
-import {HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
@@ -99,6 +99,22 @@ export class Encargados implements OnInit {
 
   encargadosFiltrados: Encargado[] = [];
 
+
+  // =====================================================
+  // PAGINACIÓN
+  // =====================================================
+
+  encargadosPaginaActual: Encargado[] = [];
+
+  encargadosPorPagina = 10;
+
+  paginaActual = 1;
+
+  totalPaginas = 1;
+
+  paginas: number[] = [];
+
+
   busqueda = '';
 
 
@@ -181,7 +197,7 @@ export class Encargados implements OnInit {
   // INICIO
   // =====================================================
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit(): void {
     this.cargarEncargados();
@@ -195,13 +211,13 @@ export class Encargados implements OnInit {
   cargarEncargados(): void {
 
 
-     this.cargando = true;
+    this.cargando = true;
 
     this.http.get<any[]>(this.apiUrl).subscribe({
 
       next: (respuesta: any[]) => {
 
-          this.encargados = respuesta
+        this.encargados = respuesta
           .filter((usuario: any) => usuario.id_rol === 6)
           .map((usuario: any): Encargado => ({
             id: usuario.id_usuario,
@@ -718,17 +734,17 @@ export class Encargados implements OnInit {
       } else if (this.errores.emailInvalido) {
         mensaje = 'Ingresa un correo electrónico válido.';
       }
-  
 
-    /*
-     * AQUÍ NO SE CREAN OBJETOS QUEMADOS.
-     *
-     * El formulario debe enviarse mediante EncargadosService
-     * a la API de Django.
-     *
-     * Cuando me pases tu servicio/endpoints, esta parte
-     * se conecta directamente con POST, PUT/PATCH.
-     */
+
+      /*
+       * AQUÍ NO SE CREAN OBJETOS QUEMADOS.
+       *
+       * El formulario debe enviarse mediante EncargadosService
+       * a la API de Django.
+       *
+       * Cuando me pases tu servicio/endpoints, esta parte
+       * se conecta directamente con POST, PUT/PATCH.
+       */
       Swal.fire({
         title: 'Revisa el formulario',
         text: mensaje,
@@ -779,7 +795,7 @@ export class Encargados implements OnInit {
       id_rol: 6,
     };
 
-     if (!this.modoEdicion) {
+    if (!this.modoEdicion) {
       cuerpo.contrasena = this.formulario.contrasena;
     }
 
@@ -931,7 +947,7 @@ export class Encargados implements OnInit {
   // ELIMINAR
   // =====================================================
 
-    eliminarEncargado(id: number): void {
+  eliminarEncargado(id: number): void {
 
     Swal.fire({
 
@@ -1011,10 +1027,63 @@ export class Encargados implements OnInit {
     ).toUpperCase();
   }
 
-    // =====================================================
+  // =====================================================
   // FILTRAR
   // =====================================================
+  // =====================================================
+  // ACTUALIZAR PAGINACIÓN
+  // =====================================================
 
+  actualizarPaginacion(): void {
+
+    this.totalPaginas = Math.ceil(
+      this.encargadosFiltrados.length /
+      this.encargadosPorPagina
+    );
+
+
+    this.paginas = Array.from(
+      { length: this.totalPaginas },
+      (_, i) => i + 1
+    );
+
+
+    const inicio =
+      (this.paginaActual - 1) *
+      this.encargadosPorPagina;
+
+
+    const fin =
+      inicio +
+      this.encargadosPorPagina;
+
+
+    this.encargadosPaginaActual =
+      this.encargadosFiltrados.slice(
+        inicio,
+        fin
+      );
+
+  }
+
+
+  // =====================================================
+  // CAMBIAR PÁGINA
+  // =====================================================
+
+  cambiarPagina(pagina: number): void {
+
+    if (
+      pagina < 1 ||
+      pagina > this.totalPaginas
+    ) {
+      return;
+    }
+    this.paginaActual = pagina;
+
+    this.actualizarPaginacion();
+
+  }
   filtrarEncargados(): void {
 
     const termino =
@@ -1025,6 +1094,10 @@ export class Encargados implements OnInit {
 
       this.encargadosFiltrados =
         [...this.encargados];
+
+      this.paginaActual = 1;
+
+      this.actualizarPaginacion();
 
       this.cdr.detectChanges();
 
@@ -1069,13 +1142,16 @@ export class Encargados implements OnInit {
 
 
     this.cdr.detectChanges();
+    this.paginaActual = 1;
+    this.actualizarPaginacion();
+
   }
 
   // =====================================================
   // FORMATEAR FECHA
   // =====================================================
 
-    formatearFechaIngreso(fecha: string): string {
+  formatearFechaIngreso(fecha: string): string {
 
     if (!fecha) {
       return 'Fecha no registrada';
