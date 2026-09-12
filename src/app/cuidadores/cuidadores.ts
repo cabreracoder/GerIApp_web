@@ -108,14 +108,14 @@ export class Cuidadores implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   private apiUrl =
-  'https://geriapp-backend.onrender.com/api/usuarios/';
+    'https://geriapp-backend.onrender.com/api/usuarios/';
 
   private perfilUrl =
-  'https://geriapp-backend.onrender.com/api/perfil_profesional/';
+    'https://geriapp-backend.onrender.com/api/perfil_profesional/';
 
   private documentosUrl =
-  'https://geriapp-backend.onrender.com/api/documentos/';
-  
+    'https://geriapp-backend.onrender.com/api/documentos/';
+
   // =========================================================
   // DATOS
   // =========================================================
@@ -123,7 +123,16 @@ export class Cuidadores implements OnInit {
   cuidadores: ICuidador[] = [];
 
   cuidadoresFiltrados: ICuidador[] = [];
+  // =========================================================
+  // PAGINACIÓN
+  // =========================================================
+  cuidadoresPaginaActual: ICuidador[] = [];
+  cuidadoresPorPagina = 10;
+  paginaActual = 1;
 
+  totalPaginas = 1;
+
+  paginas: number[] = [];
   textoBusqueda = '';
 
   ordenNombre: 'asc' | 'desc' = 'asc';
@@ -438,10 +447,75 @@ export class Cuidadores implements OnInit {
       });
 
     this.aplicarOrdenamiento();
+    this.paginaActual = 1;
+    this.actualizarPaginacion();
+
+  }
+
+  // =========================================================
+  // ACTUALIZAR PAGINACIÓN
+  // =========================================================
+
+  actualizarPaginacion(): void {
+
+    this.totalPaginas = Math.ceil(
+      this.cuidadoresFiltrados.length /
+      this.cuidadoresPorPagina
+    );
+
+
+    this.paginas = Array.from(
+      { length: this.totalPaginas },
+      (_, i) => i + 1
+    );
+
+
+    if (this.paginaActual > this.totalPaginas) {
+
+      this.paginaActual =
+        this.totalPaginas || 1;
+
+    }
+
+
+    const inicio =
+      (this.paginaActual - 1) *
+      this.cuidadoresPorPagina;
+
+
+    const fin =
+      inicio +
+      this.cuidadoresPorPagina;
+
+
+    this.cuidadoresPaginaActual =
+      this.cuidadoresFiltrados.slice(
+        inicio,
+        fin
+      );
 
   }
 
 
+  // =========================================================
+  // CAMBIAR PÁGINA
+  // =========================================================
+
+  cambiarPagina(pagina: number): void {
+
+    if (
+      pagina < 1 ||
+      pagina > this.totalPaginas
+    ) {
+      return;
+    }
+
+
+    this.paginaActual = pagina;
+
+    this.actualizarPaginacion();
+
+  }
   // =========================================================
   // ORDENAR
   // =========================================================
@@ -491,7 +565,7 @@ export class Cuidadores implements OnInit {
       return 0;
 
     });
-
+    this.actualizarPaginacion();
   }
 
 
