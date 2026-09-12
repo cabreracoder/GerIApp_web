@@ -96,6 +96,22 @@ export class Login {
       return;
     }
 
+    // VALIDAR FORMATO DEL CORREO
+    const formatoCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!formatoCorreo.test(this.usuario.correo.trim())) {
+
+      Swal.fire({
+        title: 'Correo inválido',
+        text: 'Ingresa un correo electrónico válido.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3B5BDB'
+      });
+
+      return;
+    }
+
     this.cargando = true;
 
     this.http.post<any>(
