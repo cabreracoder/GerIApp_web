@@ -27,6 +27,8 @@ export class Registro {
     contrasena: ''
   };
 
+  confirmarContrasena = '';
+
   mensaje = '';
   error = '';
   cargando = false;
@@ -87,6 +89,20 @@ export class Registro {
       Swal.fire({
         title: 'Número de documento inválido',
         text: 'El número de documento debe contener exactamente 8 o 10 dígitos.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3B5BDB'
+      });
+
+      return;
+    }
+
+    // VALIDAR CONFIRMACIÓN DE CONTRASEÑA
+    if (this.usuario.contrasena !== this.confirmarContrasena) {
+
+      Swal.fire({
+        title: 'Contraseñas no coinciden',
+        text: 'La contraseña y su confirmación deben ser iguales.',
         icon: 'warning',
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#3B5BDB'
