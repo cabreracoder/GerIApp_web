@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 interface Catalogo {
   nombre: string;
@@ -391,8 +392,12 @@ export class BancoDatos implements OnInit {
       ).subscribe({
 
         next: () => {
-          this.mensajeExito =
-            'Medicamento actualizado correctamente.';
+          Swal.fire({
+            title: 'Actualizado',
+            text: 'Medicamento actualizado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
 
           this.limpiarFormularioMedicamento();
           this.mostrandoFormulario = false;
@@ -404,10 +409,12 @@ export class BancoDatos implements OnInit {
         error: (error) => {
           this.cargando = false;
 
-          this.mensajeError = this.obtenerMensajeError(
-            error,
-            'No se pudo actualizar el medicamento.'
-          );
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(error, 'No se pudo actualizar el medicamento.'),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
         }
       });
 
@@ -419,8 +426,12 @@ export class BancoDatos implements OnInit {
       ).subscribe({
 
         next: () => {
-          this.mensajeExito =
-            'Medicamento creado correctamente.';
+          Swal.fire({
+            title: 'Creado',
+            text: 'Medicamento creado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
 
           this.limpiarFormularioMedicamento();
           this.mostrandoFormulario = false;
@@ -432,10 +443,12 @@ export class BancoDatos implements OnInit {
         error: (error) => {
           this.cargando = false;
 
-          this.mensajeError = this.obtenerMensajeError(
-            error,
-            'No se pudo crear el medicamento.'
-          );
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(error, 'No se pudo crear el medicamento.'),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
         }
       });
     }
@@ -480,35 +493,48 @@ export class BancoDatos implements OnInit {
       return;
     }
 
-    const confirmar = window.confirm(
-      '¿Está seguro de eliminar este medicamento?'
-    );
+    Swal.fire({
+      title: 'Eliminar medicamento',
+      text: '¿Está seguro de eliminar este medicamento?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#3B5BDB'
+    }).then((resultado) => {
 
-    if (!confirmar) {
-      return;
-    }
-
-    this.cargando = true;
-
-    this.http.delete(
-      `https://geriapp-backend.onrender.com/api/medicamentos/${id}/`
-    ).subscribe({
-
-      next: () => {
-        this.mensajeExito =
-          'Medicamento eliminado correctamente.';
-
-        this.cargarMedicamentos();
-      },
-
-      error: (error) => {
-        this.cargando = false;
-
-        this.mensajeError = this.obtenerMensajeError(
-          error,
-          'No se pudo eliminar el medicamento.'
-        );
+      if (!resultado.isConfirmed) {
+        return;
       }
+
+      this.cargando = true;
+
+      this.http.delete(
+        `https://geriapp-backend.onrender.com/api/medicamentos/${id}/`
+      ).subscribe({
+
+        next: () => {
+          Swal.fire({
+            title: 'Eliminado',
+            text: 'Medicamento eliminado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
+
+          this.cargarMedicamentos();
+        },
+
+        error: (error) => {
+          this.cargando = false;
+
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(error, 'No se pudo eliminar el medicamento.'),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
+        }
+      });
     });
   }
 
@@ -540,15 +566,23 @@ export class BancoDatos implements OnInit {
   validarMedicamento(): boolean {
 
     if (!this.medicamentoForm.nombre.trim()) {
-      this.mensajeError =
-        'El nombre del medicamento es obligatorio.';
+      Swal.fire({
+        title: 'Campo obligatorio',
+        text: 'El nombre del medicamento es obligatorio.',
+        icon: 'warning',
+        confirmButtonColor: '#3B5BDB'
+      });
 
       return false;
     }
 
     if (!this.medicamentoForm.principio_activo.trim()) {
-      this.mensajeError =
-        'El principio activo es obligatorio.';
+      Swal.fire({
+        title: 'Campo obligatorio',
+        text: 'El principio activo es obligatorio.',
+        icon: 'warning',
+        confirmButtonColor: '#3B5BDB'
+      });
 
       return false;
     }
@@ -628,8 +662,12 @@ export class BancoDatos implements OnInit {
 
     if (!this.tipoInsumoForm.nombre.trim()) {
 
-      this.mensajeError =
-        'El nombre del tipo de insumo es obligatorio.';
+      Swal.fire({
+        title: 'Campo obligatorio',
+        text: 'El nombre del tipo de insumo es obligatorio.',
+        icon: 'warning',
+        confirmButtonColor: '#3B5BDB'
+      });
 
       return;
     }
@@ -645,8 +683,12 @@ export class BancoDatos implements OnInit {
 
         next: () => {
 
-          this.mensajeExito =
-            'Tipo de insumo actualizado correctamente.';
+          Swal.fire({
+            title: 'Actualizado',
+            text: 'Tipo de insumo actualizado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
 
           this.limpiarFormularioTipoInsumo();
 
@@ -660,10 +702,12 @@ export class BancoDatos implements OnInit {
 
           this.cargando = false;
 
-          this.mensajeError = this.obtenerMensajeError(
-            error,
-            'No se pudo actualizar el tipo de insumo.'
-          );
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(error, 'No se pudo actualizar el tipo de insumo.'),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
         }
       });
 
@@ -676,8 +720,12 @@ export class BancoDatos implements OnInit {
 
         next: () => {
 
-          this.mensajeExito =
-            'Tipo de insumo creado correctamente.';
+          Swal.fire({
+            title: 'Creado',
+            text: 'Tipo de insumo creado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
 
           this.limpiarFormularioTipoInsumo();
 
@@ -691,10 +739,12 @@ export class BancoDatos implements OnInit {
 
           this.cargando = false;
 
-          this.mensajeError = this.obtenerMensajeError(
-            error,
-            'No se pudo crear el tipo de insumo.'
-          );
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(error, 'No se pudo crear el tipo de insumo.'),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
         }
       });
     }
@@ -734,37 +784,50 @@ export class BancoDatos implements OnInit {
       return;
     }
 
-    const confirmar = window.confirm(
-      '¿Está seguro de eliminar este tipo de insumo?'
-    );
+    Swal.fire({
+      title: 'Eliminar tipo de insumo',
+      text: '¿Está seguro de eliminar este tipo de insumo?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#3B5BDB'
+    }).then((resultado) => {
 
-    if (!confirmar) {
-      return;
-    }
-
-    this.cargando = true;
-
-    this.http.delete(
-      `https://geriapp-backend.onrender.com/api/tipo_insumo/${id}/`
-    ).subscribe({
-
-      next: () => {
-
-        this.mensajeExito =
-          'Tipo de insumo eliminado correctamente.';
-
-        this.cargarTiposInsumo();
-      },
-
-      error: (error) => {
-
-        this.cargando = false;
-
-        this.mensajeError = this.obtenerMensajeError(
-          error,
-          'No se pudo eliminar el tipo de insumo.'
-        );
+      if (!resultado.isConfirmed) {
+        return;
       }
+
+      this.cargando = true;
+
+      this.http.delete(
+        `https://geriapp-backend.onrender.com/api/tipo_insumo/${id}/`
+      ).subscribe({
+
+        next: () => {
+
+          Swal.fire({
+            title: 'Eliminado',
+            text: 'Tipo de insumo eliminado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
+
+          this.cargarTiposInsumo();
+        },
+
+        error: (error) => {
+
+          this.cargando = false;
+
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(error, 'No se pudo eliminar el tipo de insumo.'),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
+        }
+      });
     });
   }
 
@@ -849,23 +912,30 @@ export class BancoDatos implements OnInit {
   // =========================================================
   // INSUMOS - GUARDAR
   // =========================================================
-
   guardarInsumo(): void {
 
     this.limpiarMensajes();
 
     if (!this.insumoForm.nombre.trim()) {
 
-      this.mensajeError =
-        'El nombre del insumo es obligatorio.';
+      Swal.fire({
+        title: 'Campo obligatorio',
+        text: 'El nombre del insumo es obligatorio.',
+        icon: 'warning',
+        confirmButtonColor: '#3B5BDB'
+      });
 
       return;
     }
 
     if (!this.insumoForm.id_tipo_insumo) {
 
-      this.mensajeError =
-        'Debe seleccionar un tipo de insumo.';
+      Swal.fire({
+        title: 'Campo obligatorio',
+        text: 'Debe seleccionar un tipo de insumo.',
+        icon: 'warning',
+        confirmButtonColor: '#3B5BDB'
+      });
 
       return;
     }
@@ -881,8 +951,12 @@ export class BancoDatos implements OnInit {
 
         next: () => {
 
-          this.mensajeExito =
-            'Insumo actualizado correctamente.';
+          Swal.fire({
+            title: 'Actualizado',
+            text: 'Insumo actualizado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
 
           this.limpiarFormularioInsumo();
 
@@ -896,10 +970,12 @@ export class BancoDatos implements OnInit {
 
           this.cargando = false;
 
-          this.mensajeError = this.obtenerMensajeError(
-            error,
-            'No se pudo actualizar el insumo.'
-          );
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(error, 'No se pudo actualizar el insumo.'),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
         }
       });
 
@@ -912,8 +988,12 @@ export class BancoDatos implements OnInit {
 
         next: () => {
 
-          this.mensajeExito =
-            'Insumo creado correctamente.';
+          Swal.fire({
+            title: 'Creado',
+            text: 'Insumo creado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
 
           this.limpiarFormularioInsumo();
 
@@ -927,10 +1007,12 @@ export class BancoDatos implements OnInit {
 
           this.cargando = false;
 
-          this.mensajeError = this.obtenerMensajeError(
-            error,
-            'No se pudo crear el insumo.'
-          );
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(error, 'No se pudo crear el insumo.'),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
         }
       });
     }
@@ -972,37 +1054,50 @@ export class BancoDatos implements OnInit {
       return;
     }
 
-    const confirmar = window.confirm(
-      '¿Está seguro de eliminar este insumo?'
-    );
+    Swal.fire({
+      title: 'Eliminar insumo',
+      text: '¿Está seguro de eliminar este insumo?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#3B5BDB'
+    }).then((resultado) => {
 
-    if (!confirmar) {
-      return;
-    }
-
-    this.cargando = true;
-
-    this.http.delete(
-      `https://geriapp-backend.onrender.com/api/insumos/${id}/`
-    ).subscribe({
-
-      next: () => {
-
-        this.mensajeExito =
-          'Insumo eliminado correctamente.';
-
-        this.cargarInsumos();
-      },
-
-      error: (error) => {
-
-        this.cargando = false;
-
-        this.mensajeError = this.obtenerMensajeError(
-          error,
-          'No se pudo eliminar el insumo.'
-        );
+      if (!resultado.isConfirmed) {
+        return;
       }
+
+      this.cargando = true;
+
+      this.http.delete(
+        `https://geriapp-backend.onrender.com/api/insumos/${id}/`
+      ).subscribe({
+
+        next: () => {
+
+          Swal.fire({
+            title: 'Eliminado',
+            text: 'Insumo eliminado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
+
+          this.cargarInsumos();
+        },
+
+        error: (error) => {
+
+          this.cargando = false;
+
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(error, 'No se pudo eliminar el insumo.'),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
+        }
+      });
     });
   }
 
@@ -1114,8 +1209,12 @@ export class BancoDatos implements OnInit {
 
     if (!this.permisoForm.nombre.trim()) {
 
-      this.mensajeError =
-        'El nombre del permiso es obligatorio.';
+      Swal.fire({
+        title: 'Campo obligatorio',
+        text: 'El nombre del permiso es obligatorio.',
+        icon: 'warning',
+        confirmButtonColor: '#3B5BDB'
+      });
 
       return;
     }
@@ -1131,8 +1230,12 @@ export class BancoDatos implements OnInit {
 
         next: () => {
 
-          this.mensajeExito =
-            'Permiso actualizado correctamente.';
+          Swal.fire({
+            title: 'Actualizado',
+            text: 'Permiso actualizado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
 
           this.limpiarFormularioPermiso();
 
@@ -1146,10 +1249,12 @@ export class BancoDatos implements OnInit {
 
           this.cargando = false;
 
-          this.mensajeError = this.obtenerMensajeError(
-            error,
-            'No se pudo actualizar el permiso.'
-          );
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(error, 'No se pudo actualizar el permiso.'),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
         }
       });
 
@@ -1162,8 +1267,12 @@ export class BancoDatos implements OnInit {
 
         next: () => {
 
-          this.mensajeExito =
-            'Permiso creado correctamente.';
+          Swal.fire({
+            title: 'Creado',
+            text: 'Permiso creado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
 
           this.limpiarFormularioPermiso();
 
@@ -1177,10 +1286,12 @@ export class BancoDatos implements OnInit {
 
           this.cargando = false;
 
-          this.mensajeError = this.obtenerMensajeError(
-            error,
-            'No se pudo crear el permiso.'
-          );
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(error, 'No se pudo crear el permiso.'),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
         }
       });
     }
@@ -1219,37 +1330,50 @@ export class BancoDatos implements OnInit {
       return;
     }
 
-    const confirmar = window.confirm(
-      '¿Está seguro de eliminar este permiso?'
-    );
+    Swal.fire({
+      title: 'Eliminar permiso',
+      text: '¿Está seguro de eliminar este permiso?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#3B5BDB'
+    }).then((resultado) => {
 
-    if (!confirmar) {
-      return;
-    }
-
-    this.cargando = true;
-
-    this.http.delete(
-      `https://geriapp-backend.onrender.com/api/permisos/${id}/`
-    ).subscribe({
-
-      next: () => {
-
-        this.mensajeExito =
-          'Permiso eliminado correctamente.';
-
-        this.cargarPermisos();
-      },
-
-      error: (error) => {
-
-        this.cargando = false;
-
-        this.mensajeError = this.obtenerMensajeError(
-          error,
-          'No se pudo eliminar el permiso.'
-        );
+      if (!resultado.isConfirmed) {
+        return;
       }
+
+      this.cargando = true;
+
+      this.http.delete(
+        `https://geriapp-backend.onrender.com/api/permisos/${id}/`
+      ).subscribe({
+
+        next: () => {
+
+          Swal.fire({
+            title: 'Eliminado',
+            text: 'Permiso eliminado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
+
+          this.cargarPermisos();
+        },
+
+        error: (error) => {
+
+          this.cargando = false;
+
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(error, 'No se pudo eliminar el permiso.'),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
+        }
+      });
     });
   }
 
@@ -1347,16 +1471,24 @@ export class BancoDatos implements OnInit {
 
     if (!this.turnoForm.nombre.trim()) {
 
-      this.mensajeError =
-        'El nombre del turno es obligatorio.';
+      Swal.fire({
+        title: 'Campo obligatorio',
+        text: 'El nombre del turno es obligatorio.',
+        icon: 'warning',
+        confirmButtonColor: '#3B5BDB'
+      });
 
       return;
     }
 
     if (!this.turnoForm.hora_inicio) {
 
-      this.mensajeError =
-        'La hora de inicio es obligatoria.';
+      Swal.fire({
+        title: 'Campo obligatorio',
+        text: 'La hora de inicio es obligatoria.',
+        icon: 'warning',
+        confirmButtonColor: '#3B5BDB'
+      });
 
       return;
     }
@@ -1372,8 +1504,12 @@ export class BancoDatos implements OnInit {
 
         next: () => {
 
-          this.mensajeExito =
-            'Turno actualizado correctamente.';
+          Swal.fire({
+            title: 'Actualizado',
+            text: 'Turno actualizado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
 
           this.limpiarFormularioTurno();
 
@@ -1387,10 +1523,12 @@ export class BancoDatos implements OnInit {
 
           this.cargando = false;
 
-          this.mensajeError = this.obtenerMensajeError(
-            error,
-            'No se pudo actualizar el turno.'
-          );
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(error, 'No se pudo actualizar el turno.'),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
         }
       });
 
@@ -1403,8 +1541,12 @@ export class BancoDatos implements OnInit {
 
         next: () => {
 
-          this.mensajeExito =
-            'Turno creado correctamente.';
+          Swal.fire({
+            title: 'Creado',
+            text: 'Turno creado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
 
           this.limpiarFormularioTurno();
 
@@ -1418,10 +1560,12 @@ export class BancoDatos implements OnInit {
 
           this.cargando = false;
 
-          this.mensajeError = this.obtenerMensajeError(
-            error,
-            'No se pudo crear el turno.'
-          );
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(error, 'No se pudo crear el turno.'),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
         }
       });
     }
@@ -1463,37 +1607,50 @@ export class BancoDatos implements OnInit {
       return;
     }
 
-    const confirmar = window.confirm(
-      '¿Está seguro de eliminar este turno?'
-    );
+    Swal.fire({
+      title: 'Eliminar turno',
+      text: '¿Está seguro de eliminar este turno?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#3B5BDB'
+    }).then((resultado) => {
 
-    if (!confirmar) {
-      return;
-    }
-
-    this.cargando = true;
-
-    this.http.delete(
-      `https://geriapp-backend.onrender.com/api/turnos/${id}/`
-    ).subscribe({
-
-      next: () => {
-
-        this.mensajeExito =
-          'Turno eliminado correctamente.';
-
-        this.cargarTurnos();
-      },
-
-      error: (error) => {
-
-        this.cargando = false;
-
-        this.mensajeError = this.obtenerMensajeError(
-          error,
-          'No se pudo eliminar el turno.'
-        );
+      if (!resultado.isConfirmed) {
+        return;
       }
+
+      this.cargando = true;
+
+      this.http.delete(
+        `https://geriapp-backend.onrender.com/api/turnos/${id}/`
+      ).subscribe({
+
+        next: () => {
+
+          Swal.fire({
+            title: 'Eliminado',
+            text: 'Turno eliminado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
+
+          this.cargarTurnos();
+        },
+
+        error: (error) => {
+
+          this.cargando = false;
+
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(error, 'No se pudo eliminar el turno.'),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
+        }
+      });
     });
   }
 
