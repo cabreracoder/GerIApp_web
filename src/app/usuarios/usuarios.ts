@@ -351,6 +351,22 @@ export class Usuarios implements OnInit {
       return;
     }
 
+    // Si el rol no cambió respecto al original, no hacemos nada
+    if (
+      this.originalRoleIds[user.id_usuario] === user.id_rol
+    ) {
+
+      Swal.fire({
+        title: 'Sin cambios',
+        text: 'No has modificado el rol de este usuario.',
+        icon: 'info',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3B5BDB'
+      });
+
+      return;
+    }
+
     // Activamos "Guardando..."
     this.savingUserId = user.id_usuario;
 

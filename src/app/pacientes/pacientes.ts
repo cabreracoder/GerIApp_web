@@ -132,27 +132,14 @@ export class Pacientes {
   listar() {
     this.http.get<any[]>(
       `${this.apiUrl}/pacientes/`
-    ).subscribe({
+).subscribe({
       next: (respuesta) => {
-
-        console.log(
-          'Pacientes recibidos:',
-          respuesta
+        console.log('Pacientes recibidos:', respuesta);
+        this.patients = [...respuesta].sort(
+          (a, b) => (a.id_paciente ?? 0) - (b.id_paciente ?? 0)
         );
-        this.patients = respuesta;
-        this.paginaActual = 1;
-        this.actualizarPaginacion();
-
-        console.log(
-          'TOTAL PACIENTES:',
-          this.patients.length
-        );
-
-        console.log(
-          'PRIMER PACIENTE:',
-          this.patients[0]
-        );
-
+        console.log('TOTAL PACIENTES:', this.patients.length);
+        console.log('PRIMER PACIENTE:', this.patients[0]);
         this.cdr.detectChanges();
       },
 
@@ -654,7 +641,6 @@ export class Pacientes {
       },
 
       error: (error) => {
-
         console.error(
           'Error al crear paciente:',
           error
@@ -665,18 +651,33 @@ export class Pacientes {
           error.error
         );
 
+        let detalle = 'No se pudo guardar el paciente.';
+
+        if (error.error && typeof error.error === 'object') {
+
+          const mensajes = Object.entries(error.error).map(
+            ([campo, valor]: [string, any]) =>
+              Array.isArray(valor)
+                ? `${campo}: ${valor.join(', ')}`
+                : `${campo}: ${valor}`
+          );
+
+          if (mensajes.length > 0) {
+            detalle = mensajes.join(' | ');
+          }
+
+        } else if (typeof error.error === 'string') {
+          detalle = error.error;
+        }
+
         Swal.fire({
           title:
             'Error al registrar el paciente',
-          text:
-            'No se pudo guardar el paciente.',
+          text: detalle,
           icon: 'error',
           confirmButtonText:
-            'Aceptar',
-          confirmButtonColor:
-            '#3B5BDB'
+            'Aceptar'
         });
-
       }
 
     });
@@ -867,23 +868,67 @@ export class Pacientes {
             } else {
 
               console.warn(
-                'No se encontró familiar responsable para el paciente:',
+                'No se encontró familiar responsable para el paciente, se creará uno nuevo:',
                 this.editingId
               );
 
-              Swal.fire({
-                title:
-                  'Paciente actualizado',
-                text:
-                  'El paciente se actualizó, pero no se encontró un familiar responsable asociado.',
-                icon: 'warning',
-                confirmButtonText:
-                  'Aceptar'
+              const nuevoFamiliar = {
+                nombres: this.form.familiarNombres,
+                apellidos: this.form.familiarApellidos,
+                parentesco: this.form.parentesco,
+                telefono_uno: this.form.telefono1,
+                telefono_dos: this.form.telefono2 || null,
+                direccion: this.form.direccion || null,
+                correo: this.form.correoElectronico || null,
+                municipio: this.form.municipio || null,
+                id_paciente: this.editingId
+              };
+
+              this.http.post(
+                `${this.apiUrl}/familiar_responsable/`,
+                nuevoFamiliar
+              ).subscribe({
+
+                next: (respuestaFamiliar) => {
+
+                  console.log(
+                    'Familiar responsable creado en edición:',
+                    respuestaFamiliar
+                  );
+
+                  Swal.fire({
+                    title:
+                      'Paciente actualizado correctamente',
+                    icon: 'success',
+                    confirmButtonText:
+                      'Aceptar'
+                  });
+
+                  this.listar();
+                  this.closeModal();
+                },
+
+                error: (errorFamiliar) => {
+
+                  console.error(
+                    'Error al crear el familiar responsable en edición:',
+                    errorFamiliar
+                  );
+
+                  Swal.fire({
+                    title:
+                      'Paciente actualizado',
+                    text:
+                      'El paciente se actualizó, pero no se pudo guardar el familiar responsable.',
+                    icon: 'warning',
+                    confirmButtonText:
+                      'Aceptar'
+                  });
+
+                  this.listar();
+                  this.closeModal();
+                }
               });
-
-              this.listar();
-
-              this.closeModal();
             }
 
           },
