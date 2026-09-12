@@ -7,12 +7,6 @@ import Swal from 'sweetalert2';
 // =========================================================
 // INTERFACES
 // =========================================================
-
-export interface ITurno {
-  nombre: string;
-  horario: string;
-}
-
 export interface ICuidador {
   id?: number;
   id_usuario?: number;
@@ -358,12 +352,11 @@ export class Cuidadores implements OnInit {
                     console.error('STATUS:', error.status);
                     console.error('MENSAJE DEL BACKEND:', error.error);
 
-                    this.cerrarConfirmacion();
-
                     Swal.fire({
                       title: 'Error',
-                      text: 'No se pudo eliminar el cuidador.',
-                      icon: 'error'
+                      text: 'No se pudieron cargar los documentos de los cuidadores.',
+                      icon: 'error',
+                      confirmButtonColor: '#3B5BDB'
                     });
 
                   }
@@ -379,6 +372,13 @@ export class Cuidadores implements OnInit {
                 error
               );
 
+              Swal.fire({
+                title: 'Error',
+                text: 'No se pudieron cargar los perfiles profesionales.',
+                icon: 'error',
+                confirmButtonColor: '#3B5BDB'
+              });
+
             }
 
           });
@@ -391,6 +391,13 @@ export class Cuidadores implements OnInit {
           'Error al obtener cuidadores:',
           error
         );
+
+        Swal.fire({
+          title: 'Error',
+          text: 'No se pudieron cargar los cuidadores.',
+          icon: 'error',
+          confirmButtonColor: '#3B5BDB'
+        });
 
       }
 
@@ -651,7 +658,12 @@ export class Cuidadores implements OnInit {
 
   guardarCuidador(): void {
     if (!this.validarFormulario()) {
-      alert('Por favor completa los campos obligatorios.');
+      Swal.fire({
+        title: 'Campos obligatorios',
+        text: 'Por favor completa los campos obligatorios.',
+        icon: 'warning',
+        confirmButtonColor: '#3B5BDB'
+      });
       return;
     }
 
@@ -701,7 +713,7 @@ export class Cuidadores implements OnInit {
           if (perfil?.id_perfil_profesional) {
 
             this.http.patch(
-              `https://geriapp-web-1.onrender.com/api/perfil_profesional/${perfil.id_perfil_profesional}/`,
+              `${this.perfilUrl}${perfil.id_perfil_profesional}/`,
               perfilProfesional
             ).subscribe({
               next: () => {
@@ -713,9 +725,12 @@ export class Cuidadores implements OnInit {
                   error
                 );
                 this.guardando = false;
-                alert(
-                  'El usuario se actualizó, pero ocurrió un error al actualizar el perfil profesional.'
-                );
+                Swal.fire({
+                  title: 'Actualización parcial',
+                  text: 'El usuario se actualizó, pero ocurrió un error al actualizar el perfil profesional.',
+                  icon: 'warning',
+                  confirmButtonColor: '#3B5BDB'
+                });
               }
             });
 
@@ -723,7 +738,7 @@ export class Cuidadores implements OnInit {
 
             // Si no existe perfil, lo crea
             this.http.post(
-              'https://geriapp-web-1.onrender.com/api/perfil_profesional/',
+              this.perfilUrl,
               perfilProfesional
             ).subscribe({
               next: () => {
@@ -735,9 +750,12 @@ export class Cuidadores implements OnInit {
                   error
                 );
                 this.guardando = false;
-                alert(
-                  'El usuario se actualizó, pero no se pudo crear el perfil profesional.'
-                );
+                Swal.fire({
+                  title: 'Actualización parcial',
+                  text: 'El usuario se actualizó, pero no se pudo crear el perfil profesional.',
+                  icon: 'warning',
+                  confirmButtonColor: '#3B5BDB'
+                });
               }
             });
           }
@@ -749,13 +767,17 @@ export class Cuidadores implements OnInit {
             error
           );
           this.guardando = false;
-          alert('No se pudo actualizar el cuidador.');
+          Swal.fire({
+            title: 'Error',
+            text: 'No se pudo actualizar el cuidador.',
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
         }
       });
 
       return;
     }
-
     // ============================
     // CREAR
     // ============================
@@ -764,7 +786,7 @@ export class Cuidadores implements OnInit {
 
     // API USUARIOS
     this.http.post<any>(
-      'https://geriapp-web-1.onrender.com/api/usuarios/',
+      this.apiUrl,
       cuidador
     ).subscribe({
       next: (respuestaUsuario) => {
@@ -780,9 +802,12 @@ export class Cuidadores implements OnInit {
           );
 
           this.guardando = false;
-          alert(
-            'El usuario fue creado, pero no se pudo crear su perfil profesional.'
-          );
+          Swal.fire({
+            title: 'Advertencia',
+            text: 'El usuario fue creado, pero no se pudo crear su perfil profesional.',
+            icon: 'warning',
+            confirmButtonColor: '#3B5BDB'
+          });
           return;
         }
 
@@ -801,7 +826,7 @@ export class Cuidadores implements OnInit {
 
         // API PERFIL PROFESIONAL
         this.http.post<any>(
-          'https://geriapp-web-1.onrender.com/api/perfil_profesional/',
+          this.perfilUrl,
           perfilProfesional
         ).subscribe({
           next: (respuestaPerfil) => {
@@ -834,7 +859,7 @@ export class Cuidadores implements OnInit {
 
             // API DOCUMENTOS
             this.http.post(
-              'https://geriapp-web-1.onrender.com/api/documentos/',
+              this.documentosUrl,
               documentos
             ).subscribe({
               next: (respuestaDocumentos) => {
@@ -846,9 +871,12 @@ export class Cuidadores implements OnInit {
 
                 this.guardando = false;
 
-                alert(
-                  'Cuidador registrado correctamente.'
-                );
+                Swal.fire({
+                  title: 'Cuidador registrado',
+                  text: 'El cuidador fue registrado correctamente.',
+                  icon: 'success',
+                  confirmButtonColor: '#3B5BDB'
+                });
 
                 this.cerrarFormulario();
                 this.listar();
@@ -863,9 +891,15 @@ export class Cuidadores implements OnInit {
 
                 this.guardando = false;
 
-                alert(
-                  'El cuidador fue creado, pero ocurrió un error al registrar los documentos.'
-                );
+                Swal.fire({
+                  title: 'Cuidador creado',
+                  text: 'El cuidador fue creado, pero ocurrió un error al registrar los documentos.',
+                  icon: 'warning',
+                  confirmButtonColor: '#3B5BDB'
+                });
+
+                this.cerrarFormulario();
+                this.listar();
               }
             });
           },
@@ -879,9 +913,15 @@ export class Cuidadores implements OnInit {
 
             this.guardando = false;
 
-            alert(
-              'El cuidador fue creado, pero ocurrió un error al crear su perfil profesional.'
-            );
+            Swal.fire({
+              title: 'Cuidador creado',
+              text: 'El cuidador fue creado, pero no se pudo crear su perfil profesional.',
+              icon: 'warning',
+              confirmButtonColor: '#3B5BDB'
+            });
+
+            this.cerrarFormulario();
+            this.listar();
           }
         });
       },
@@ -895,9 +935,12 @@ export class Cuidadores implements OnInit {
 
         this.guardando = false;
 
-        alert(
-          'No se pudo registrar el cuidador.'
-        );
+        Swal.fire({
+          title: 'Error',
+          text: 'No se pudo registrar el cuidador.',
+          icon: 'error',
+          confirmButtonColor: '#3B5BDB'
+        });
       }
     });
   }
@@ -907,456 +950,9 @@ export class Cuidadores implements OnInit {
 
     this.guardando = false;
 
-    alert('Cuidador actualizado correctamente.');
-
-    this.cerrarFormulario();
-
-    this.listar();
-  }
-
-
-  // =========================================================
-  // CREAR
-  // =========================================================
-
-  crear(): void {
-
-    this.guardando = true;
-
-    const usuario = {
-
-      tipo_documento:
-        this.formulario.tipoDocumento,
-
-      numero_documento:
-        this.formulario.numeroDocumento,
-
-      nombres:
-        this.formulario.nombre,
-
-      apellidos:
-        this.formulario.apellido,
-
-      correo:
-        this.formulario.correo,
-
-      telefono:
-        this.formulario.telefono,
-
-      fecha_ingreso:
-        this.formulario.fechaIngreso,
-
-      estado:
-        this.formulario.estado === 'activo',
-
-      id_rol: 5
-
-    };
-
-
-    this.http.post<any>(
-      this.apiUrl,
-      usuario
-    ).subscribe({
-
-      next: (respuestaUsuario) => {
-
-        const idUsuario =
-          respuestaUsuario.id_usuario;
-
-        if (!idUsuario) {
-
-          this.guardando = false;
-
-          Swal.fire({
-            title: 'Error',
-            text: 'La API no devolvió el ID del usuario.',
-            icon: 'error'
-          });
-
-          return;
-
-        }
-
-
-        const perfil = {
-
-          id_usuario:
-            idUsuario,
-
-          especialidad:
-            this.formulario.especialidad || null,
-
-          licencia:
-            this.formulario.licencia || null,
-
-          experiencia:
-            this.formulario.experiencia ?? null,
-
-          institucion:
-            this.formulario.institucion || null
-
-        };
-
-
-        this.http.post<any>(
-          this.perfilUrl,
-          perfil
-        ).subscribe({
-
-          next: () => {
-
-            const documentos = {
-
-              cedula:
-                this.formulario.cedulaFile?.name || null,
-
-              tarjeta_profesional:
-                this.formulario.tarjetaProfesionalFile?.name || null,
-
-              antecedentes:
-                this.formulario.antecedentesFile?.name || null,
-
-              hoja_de_vida:
-                this.formulario.hojaDeVidaFile?.name || null,
-
-              id_usuario:
-                idUsuario
-
-            };
-
-
-            this.http.post(
-              this.documentosUrl,
-              documentos
-            ).subscribe({
-
-              next: () => {
-
-                this.guardando = false;
-
-                Swal.fire({
-                  title: 'Cuidador registrado',
-                  text: 'El cuidador fue registrado correctamente.',
-                  icon: 'success',
-                  confirmButtonColor: '#3B5BDB'
-                });
-
-                this.cerrarFormulario();
-
-                this.listar();
-
-              },
-
-              error: error => {
-
-                console.error(
-                  'Error registrando documentos:',
-                  error
-                );
-
-                this.guardando = false;
-
-                Swal.fire({
-                  title: 'Cuidador creado',
-                  text: 'El cuidador se creó, pero hubo un problema con los documentos.',
-                  icon: 'warning',
-                  confirmButtonColor: '#3B5BDB'
-                });
-
-              }
-
-            });
-
-          },
-
-          error: error => {
-
-            console.error(
-              'Error creando perfil:',
-              error
-            );
-
-            this.guardando = false;
-
-            Swal.fire({
-              title: 'Error',
-              text: 'El cuidador fue creado, pero no se pudo crear su perfil profesional.',
-              icon: 'error'
-            });
-
-          }
-
-        });
-
-      },
-
-      error: error => {
-
-        console.error(
-          'Error creando usuario:',
-          error
-        );
-
-        this.guardando = false;
-
-        Swal.fire({
-          title: 'Error',
-          text: 'No se pudo registrar el cuidador.',
-          icon: 'error',
-          confirmButtonColor: '#3B5BDB'
-        });
-
-      }
-
-    });
-
-  }
-
-
-  // =========================================================
-  // ACTUALIZAR
-  // =========================================================
-
-  actualizar(): void {
-
-    if (this.idEditando === null) {
-      return;
-    }
-
-    this.guardando = true;
-
-    const cuidador =
-      this.cuidadores.find(
-        c => c.id === this.idEditando
-      );
-
-    if (!cuidador) {
-
-      this.guardando = false;
-
-      return;
-
-    }
-
-
-    const usuario = {
-
-      tipo_documento:
-        this.formulario.tipoDocumento,
-
-      numero_documento:
-        this.formulario.numeroDocumento,
-
-      nombres:
-        this.formulario.nombre,
-
-      apellidos:
-        this.formulario.apellido,
-
-      correo:
-        this.formulario.correo,
-
-      telefono:
-        this.formulario.telefono,
-
-      fecha_ingreso:
-        this.formulario.fechaIngreso,
-
-      estado:
-        this.formulario.estado === 'activo',
-
-      id_rol: 5
-
-    };
-
-
-    this.http.put<any>(
-      `${this.apiUrl}${this.idEditando}/`,
-      usuario
-    ).subscribe({
-
-      next: () => {
-
-        const perfil =
-        {
-
-          id_usuario:
-            this.idEditando,
-
-          especialidad:
-            this.formulario.especialidad || null,
-
-          licencia:
-            this.formulario.licencia || null,
-
-          experiencia:
-            this.formulario.experiencia ?? null,
-
-          institucion:
-            this.formulario.institucion || null
-
-        };
-
-
-        if (cuidador.id_usuario) {
-
-          this.http.put(
-            `${this.perfilUrl}${cuidador.id_usuario}/`,
-            perfil
-          ).subscribe({
-
-            next: () => {
-
-              this.actualizarDocumentos(
-                cuidador.id_usuario!
-              );
-
-            },
-
-            error: error => {
-
-              console.error(
-                'Error actualizando perfil:',
-                error
-              );
-
-              this.guardando = false;
-
-              Swal.fire({
-                title: 'Actualización parcial',
-                text: 'El usuario se actualizó, pero hubo un problema con el perfil profesional.',
-                icon: 'warning'
-              });
-
-            }
-
-          });
-
-        } else {
-
-          this.guardando = false;
-
-          this.finalizarActualizacion();
-
-        }
-
-      },
-
-      error: error => {
-
-        console.error(
-          'Error actualizando cuidador:',
-          error
-        );
-
-        this.guardando = false;
-
-        Swal.fire({
-          title: 'Error',
-          text: 'No se pudo actualizar el cuidador.',
-          icon: 'error'
-        });
-
-      }
-
-    });
-
-  }
-
-
-  // =========================================================
-  // ACTUALIZAR DOCUMENTOS
-  // =========================================================
-
-  actualizarDocumentos(
-    idUsuario: number
-  ): void {
-
-    const documentos = {
-
-      cedula:
-        this.formulario.cedulaFile?.name ||
-        this.formulario.archivos?.cedula ||
-        null,
-
-      tarjeta_profesional:
-        this.formulario.tarjetaProfesionalFile?.name ||
-        this.formulario.archivos?.tarjeta_profesional ||
-        null,
-
-      antecedentes:
-        this.formulario.antecedentesFile?.name ||
-        this.formulario.archivos?.antecedentes ||
-        null,
-
-      hoja_de_vida:
-        this.formulario.hojaDeVidaFile?.name ||
-        this.formulario.archivos?.hoja_de_vida ||
-        null,
-
-      id_usuario:
-        idUsuario
-
-    };
-
-
-    const idDocumento =
-      this.cuidadores
-        .find(c => c.id === this.idEditando)
-        ?.archivos
-        ? undefined
-        : undefined;
-
-
-    // Si todavía no tenemos el ID del documento,
-    // dejamos que la API cree uno nuevo.
-    if (!idDocumento) {
-
-      this.http.post(
-        this.documentosUrl,
-        documentos
-      ).subscribe({
-
-        next: () => {
-
-          this.finalizarActualizacion();
-
-        },
-
-        error: error => {
-
-          console.error(
-            'Error actualizando documentos:',
-            error
-          );
-
-          this.guardando = false;
-
-          this.finalizarActualizacion();
-
-        }
-
-      });
-
-      return;
-
-    }
-
-  }
-
-
-  // =========================================================
-  // FINALIZAR ACTUALIZACIÓN
-  // =========================================================
-
-  finalizarActualizacion(): void {
-
-    this.guardando = false;
-
     Swal.fire({
       title: 'Cuidador actualizado',
-      text: 'Los cambios fueron guardados correctamente.',
+      text: 'Cuidador actualizado correctamente.',
       icon: 'success',
       confirmButtonColor: '#3B5BDB'
     });
@@ -1364,9 +960,7 @@ export class Cuidadores implements OnInit {
     this.cerrarFormulario();
 
     this.listar();
-
   }
-
 
   // =========================================================
   // CAMBIAR ESTADO
@@ -1436,6 +1030,8 @@ export class Cuidadores implements OnInit {
 
           this.filtrarCuidadores();
 
+          this.cdr.detectChanges();
+
           Swal.fire({
             title: 'Estado actualizado',
             text:
@@ -1458,7 +1054,8 @@ export class Cuidadores implements OnInit {
           Swal.fire({
             title: 'Error',
             text: 'No se pudo cambiar el estado.',
-            icon: 'error'
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
           });
 
         }
@@ -1535,7 +1132,8 @@ export class Cuidadores implements OnInit {
         Swal.fire({
           title: 'Error',
           text: 'No se pudo eliminar el cuidador.',
-          icon: 'error'
+          icon: 'error',
+          confirmButtonColor: '#3B5BDB'
         });
 
       }
