@@ -39,50 +39,19 @@
       </span>
     </a>
 
-
-    <!-- PACIENTES -->
-    <div
-      *ngIf="item.nombre === 'Pacientes'"
-      class="layout-pacientes-container"
-    >
-
-      <button
-        type="button"
-        class="layout-menu-button"
-        title="Pacientes"
-        (click)="togglePacientesMenu()"
-      >
-        <span class="material-symbols-outlined">
-          {{ item.icono }}
-        </span>
-      </button>
-
-
-      <!-- MENÚ FLOTANTE -->
-      <div
-        *ngIf="pacientesMenuAbierto"
-        class="layout-pacientes-menu"
-      >
-
-        <a
-          routerLink="/pacientes"
-          class="layout-pacientes-option"
-          (click)="cerrarPacientesMenu()"
-        >
-          Gestión de pacientes
-        </a>
-
-        <a
-            routerLink="/elementos-paciente"
-            class="layout-pacientes-option"
-            (click)="cerrarPacientesMenu()"
-    >
-            Elementos del paciente
-        </a>
-
-      </div>
-
-    </div>
+   <!-- PACIENTES -->
+<a
+  *ngIf="item.nombre === 'Pacientes'"
+  [routerLink]="item.ruta"
+  routerLinkActive="active"
+  [routerLinkActiveOptions]="{ exact: true }"
+  class="layout-menu-button"
+  [attr.title]="item.nombre"
+>
+  <span class="material-symbols-outlined">
+    {{ item.icono }}
+  </span>
+</a>
 
   </ng-container>
 

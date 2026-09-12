@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient} from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ChangeDetectorRef, Component } from '@angular/core';
 import Swal from 'sweetalert2';
+import {RouterLink} from '@angular/router';
 
 interface PatientForm {
   nombre: string;
@@ -35,7 +36,8 @@ interface PatientForm {
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    RouterLink
   ],
   templateUrl: './pacientes.html',
   styleUrl: './pacientes.css'

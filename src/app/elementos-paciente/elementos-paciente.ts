@@ -1,30 +1,45 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
-selector: 'app-elementos-paciente',
-standalone: true,
-imports: [
-CommonModule,
-FormsModule
-],
-templateUrl: './elementos-paciente.html',
-styleUrl: './elementos-paciente.css'
+  selector: 'app-elementos-paciente',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule
+  ],
+  templateUrl: './elementos-paciente.html',
+  styleUrl: './elementos-paciente.css'
 })
-export class ElementosPaciente {
+export class ElementosPaciente implements OnInit {
 
-formularioAbierto = false;
+  formularioAbierto = false;
+  tipoElemento = '';
 
-tipoElemento = '';
+  idPaciente: number | null = null;
 
-abrirFormulario(): void {
-this.formularioAbierto = true;
-}
+  constructor(
+    private route: ActivatedRoute
+  ) {}
 
-cerrarFormulario(): void {
-this.formularioAbierto = false;
-this.tipoElemento = '';
-}
+  ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id');
 
+    if (id) {
+      this.idPaciente = Number(id);
+
+      console.log('ID DEL PACIENTE:', this.idPaciente);
+    }
+  }
+
+  abrirFormulario(): void {
+    this.formularioAbierto = true;
+  }
+
+  cerrarFormulario(): void {
+    this.formularioAbierto = false;
+    this.tipoElemento = '';
+  }
 }
