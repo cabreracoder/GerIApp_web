@@ -35,6 +35,12 @@ interface Insumo {
   estado: boolean;
 }
 
+interface Paciente {
+  id_paciente: number;
+  nombre: string;
+  apellido: string;
+}
+
 interface ElementoPaciente {
   id_elemento: number;
   cantidad: number;
@@ -74,6 +80,8 @@ export class ElementosPaciente implements OnInit {
   // =====================================================
 
   idPaciente: number | null = null;
+
+  pacientes: Paciente[] = [];
 
   // =====================================================
   // ELEMENTOS REGISTRADOS
@@ -145,20 +153,27 @@ export class ElementosPaciente implements OnInit {
 
       this.idPaciente = Number(id);
 
-      console.log('ID DEL PACIENTE:', this.idPaciente);
+      console.log(
+        'ID DEL PACIENTE:',
+        this.idPaciente
+      );
 
       // Cargar elementos registrados
       this.cargarElementos();
 
       // Cargar catálogos desde el inicio
-      // Esto permite mostrar los nombres en la tabla
       this.cargarMedicamentos();
       this.cargarInsumos();
       this.cargarTiposInsumo();
 
+      // Cargar pacientes para mostrar el nombre
+      this.cargarPacientes();
+
     } else {
 
-      console.error('No se recibió el ID del paciente.');
+      console.error(
+        'No se recibió el ID del paciente.'
+      );
 
       Swal.fire({
         icon: 'error',
@@ -202,7 +217,9 @@ export class ElementosPaciente implements OnInit {
   // SELECCIONAR TIPO
   // =====================================================
 
-  seleccionarTipo(tipo: 'medicamento' | 'insumo'): void {
+  seleccionarTipo(
+    tipo: 'medicamento' | 'insumo'
+  ): void {
 
     this.tipoElemento = tipo;
   }
@@ -332,6 +349,40 @@ export class ElementosPaciente implements OnInit {
           title: 'Error',
           text: 'No fue posible cargar los elementos del paciente.'
         });
+      }
+    });
+  }
+
+  // =====================================================
+  // CARGAR PACIENTES
+  // =====================================================
+
+  cargarPacientes(): void {
+
+    this.http.get<Paciente[]>(
+      `${API_URL}/pacientes/`
+    ).subscribe({
+
+      next: (respuesta) => {
+
+        console.log(
+          'PACIENTES RECIBIDOS:',
+          respuesta
+        );
+
+        this.pacientes = respuesta;
+
+        this.cdr.detectChanges();
+      },
+
+      error: (error) => {
+
+        console.error(
+          'ERROR AL CARGAR PACIENTES:',
+          error
+        );
+
+        this.pacientes = [];
       }
     });
   }
@@ -746,6 +797,34 @@ export class ElementosPaciente implements OnInit {
     this.fechaVencimiento = '';
 
     this.observaciones = '';
+  }
+
+  // =====================================================
+  // OBTENER NOMBRE DEL PACIENTE
+  // =====================================================
+
+  obtenerNombrePaciente(
+    id: number | null
+  ): string {
+
+    if (id === null) {
+
+      return 'Sin paciente';
+    }
+
+    const paciente =
+      this.pacientes.find(
+        item =>
+          Number(item.id_paciente) ===
+          Number(id)
+      );
+
+    if (!paciente) {
+
+      return `Paciente #${id}`;
+    }
+
+    return `${paciente.nombre} ${paciente.apellido}`;
   }
 
   // =====================================================
