@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {ChangeDetectorRef,Component,OnInit} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import Swal from 'sweetalert2';
 
 // =========================================================
 // INTERFACES
@@ -976,94 +977,98 @@ export class Roles implements OnInit {
     rol: Rol
   ): void {
 
-    const confirmar =
-      confirm(
-        `¿Está seguro de eliminar el rol "${rol.name}"?`
-      );
+    Swal.fire({
+      title: 'Eliminar rol',
+      text: `¿Está seguro de eliminar el rol "${rol.name}"?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#3B5BDB'
+    }).then((resultado) => {
 
-    if (!confirmar) {
+      if (!resultado.isConfirmed) {
+        return;
+      }
 
-      return;
-    }
+      this.eliminandoRolId =
+        rol.id;
 
-    this.eliminandoRolId =
-      rol.id;
+      this.http
+        .delete<void>(
+          `${this.apiUrl}/roles/${rol.id}/`
+        )
+        .subscribe({
 
-    this.http
-      .delete<void>(
-        `${this.apiUrl}/roles/${rol.id}/`
-      )
-      .subscribe({
+          next: () => {
 
-        next: () => {
-
-          console.log(
-            'ROL ELIMINADO:',
-            rol
-          );
-
-          const indice =
-            this.roles.findIndex(
-              item =>
-                item.id ===
-                rol.id
+            console.log(
+              'ROL ELIMINADO:',
+              rol
             );
 
-          if (
-            indice !== -1
-          ) {
+            const indice =
+              this.roles.findIndex(
+                item =>
+                  item.id ===
+                  rol.id
+              );
 
-            this.roles.splice(
-              indice,
-              1
+            if (
+              indice !== -1
+            ) {
+
+              this.roles.splice(
+                indice,
+                1
+              );
+            }
+
+            if (
+              this.selectedRole ===
+              rol.name
+            ) {
+
+              this.selectedRole =
+                this.roles.length > 0
+                  ? this.roles[0].name
+                  : '';
+            }
+
+            this.eliminandoRolId =
+              null;
+
+            this.ultimoRegistroAuditoria =
+              `Rol eliminado el ${this.obtenerFechaActual()}.`;
+
+            this.mostrarExito(
+              `El rol "${rol.name}" fue eliminado correctamente.`
             );
+
+            this.cdr.detectChanges();
+          },
+
+          error: (
+            error: unknown
+          ) => {
+
+            console.error(
+              'ERROR AL ELIMINAR EL ROL:',
+              error
+            );
+
+            this.eliminandoRolId =
+              null;
+
+            this.mostrarError(
+              'No fue posible eliminar el rol. Verifique si tiene usuarios asociados.'
+            );
+
+            this.cdr.detectChanges();
           }
-
-          if (
-            this.selectedRole ===
-            rol.name
-          ) {
-
-            this.selectedRole =
-              this.roles.length > 0
-                ? this.roles[0].name
-                : '';
-          }
-
-          this.eliminandoRolId =
-            null;
-
-          this.mostrarExito(
-            `El rol "${rol.name}" fue eliminado correctamente.`
-          );
-
-          this.ultimoRegistroAuditoria =
-            `Rol eliminado el ${this.obtenerFechaActual()}.`;
-
-          this.cdr.detectChanges();
-        },
-
-        error: (
-          error: unknown
-        ) => {
-
-          console.error(
-            'ERROR AL ELIMINAR EL ROL:',
-            error
-          );
-
-          this.eliminandoRolId =
-            null;
-
-          this.mostrarError(
-            'No fue posible eliminar el rol. Verifique si tiene usuarios asociados.'
-          );
-
-          this.cdr.detectChanges();
-        }
-      });
+        });
+    });
   }
-
   // =========================================================
   // FINALIZAR CREACIÓN
   // =========================================================
@@ -1072,17 +1077,18 @@ export class Roles implements OnInit {
     nuevoRol: Rol
   ): void {
 
-    this.cerrarFormularioRol();
+ this.cerrarFormularioRol();
+
+    this.ultimoRegistroAuditoria =
+      `Rol creado el ${this.obtenerFechaActual()}.`;
 
     this.mostrarExito(
       `El rol "${nuevoRol.name}" fue creado correctamente.`
     );
 
-    this.ultimoRegistroAuditoria =
-      `Rol creado el ${this.obtenerFechaActual()}.`;
-
     this.cdr.detectChanges();
   }
+
 
   // =========================================================
   // FINALIZAR ACTUALIZACIÓN
@@ -1094,12 +1100,12 @@ export class Roles implements OnInit {
 
     this.cerrarFormularioRol();
 
+    this.ultimoRegistroAuditoria =
+      `Rol actualizado el ${this.obtenerFechaActual()}.`;
+
     this.mostrarExito(
       `El rol "${rolApi.nombre}" fue actualizado correctamente.`
     );
-
-    this.ultimoRegistroAuditoria =
-      `Rol actualizado el ${this.obtenerFechaActual()}.`;
 
     this.cdr.detectChanges();
   }
@@ -1112,15 +1118,17 @@ export class Roles implements OnInit {
     usuario: UsuarioAsociado
   ): void {
 
-    alert(
-      [
-        'Detalle del usuario',
-        '',
-        `Nombre: ${usuario.name}`,
-        `Correo: ${usuario.email}`,
-        `Estado: ${usuario.estado.toUpperCase()}`
-      ].join('\n')
-    );
+    Swal.fire({
+      title: 'Detalle del usuario',
+      html: `
+        <p style="text-align: left;"><strong>Nombre:</strong> ${usuario.name}</p>
+        <p style="text-align: left;"><strong>Correo:</strong> ${usuario.email}</p>
+        <p style="text-align: left;"><strong>Estado:</strong> ${usuario.estado.toUpperCase()}</p>
+      `,
+      icon: 'info',
+      confirmButtonText: 'Cerrar',
+      confirmButtonColor: '#3B5BDB'
+    });
   }
 
   // =========================================================
@@ -1168,13 +1176,13 @@ export class Roles implements OnInit {
     mensaje: string
   ): void {
 
-    this.mensajeError =
-      mensaje;
-
-    this.mensajeExito =
-      '';
-
-    this.cdr.detectChanges();
+    Swal.fire({
+      title: 'Error',
+      text: mensaje,
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+      confirmButtonColor: '#3B5BDB'
+    });
   }
 
   // =========================================================
@@ -1185,25 +1193,14 @@ export class Roles implements OnInit {
     mensaje: string
   ): void {
 
-    this.mensajeExito =
-      mensaje;
-
-    this.mensajeError =
-      '';
-
-    this.cdr.detectChanges();
-
-    setTimeout(
-      () => {
-
-        this.mensajeExito =
-          '';
-
-        this.cdr.detectChanges();
-
-      },
-      4000
-    );
+    Swal.fire({
+      title: 'Éxito',
+      text: mensaje,
+      icon: 'success',
+      confirmButtonText: 'Aceptar',
+      confirmButtonColor: '#3B5BDB',
+      footer: `Auditoría: ${this.ultimoRegistroAuditoria}`
+    });
   }
 
   // =========================================================
