@@ -1079,8 +1079,6 @@ export class Encargados implements OnInit {
     ) {
       return;
     }
-
-
     this.paginaActual = pagina;
 
     this.actualizarPaginacion();
