@@ -1359,355 +1359,344 @@
 
 
 
-    <!-- ===================================================
-         TURNOS
-    ==================================================== -->
-    <section
-      class="pantalla-catalogo"
-      *ngIf="catalogoSeleccionado === 'Turnos'"
-    >
+<!-- ===================================================
+  TURNOS
+==================================================== -->
 
-      <div class="encabezado-catalogo">
+<section
+  class="pantalla-catalogo"
+  *ngIf="catalogoSeleccionado === 'Turnos'"
+>
 
-        <div>
-
-          <h2>Turnos</h2>
-
-          <p>
-            Administre los turnos disponibles en el sistema.
-          </p>
-
-        </div>
-
-        <button
-          type="button"
-          class="boton-nuevo"
-          *ngIf="!mostrandoFormularioTurno"
-          (click)="abrirNuevoTurno()"
-        >
-          <span class="material-symbols-outlined">
-            add
-          </span>
-
-          Nuevo registro
-        </button>
-
-      </div>
+  <div class="encabezado-catalogo">
 
 
-      <!-- FORMULARIO -->
-      <div
-        class="formulario-catalogo"
-        *ngIf="mostrandoFormularioTurno"
+<div>
+  <h2>Turnos</h2>
+
+  <p>
+    Administre los turnos disponibles en el sistema.
+  </p>
+</div>
+
+<button
+  type="button"
+  class="boton-nuevo"
+  *ngIf="!mostrandoFormularioTurno"
+  (click)="abrirNuevoTurno()"
+>
+  <span class="material-symbols-outlined">
+    add
+  </span>
+
+  Nuevo registro
+</button>
+
+
+  </div>
+
+  <!-- FORMULARIO -->
+
+  <div
+    class="formulario-catalogo"
+    *ngIf="mostrandoFormularioTurno"
+  >
+
+
+<div class="encabezado-formulario">
+
+  <div>
+
+    <h3>
+      {{
+        modoEdicionTurno
+          ? 'Editar turno'
+          : 'Nuevo turno'
+      }}
+    </h3>
+
+    <p>
+      {{
+        modoEdicionTurno
+          ? 'Modifique la información del turno.'
+          : 'Ingrese la información del nuevo turno.'
+      }}
+    </p>
+
+  </div>
+
+  <button
+    type="button"
+    class="boton-cerrar"
+    (click)="cerrarFormularioTurno()"
+  >
+    <span class="material-symbols-outlined">
+      close
+    </span>
+  </button>
+
+</div>
+
+
+<form
+  (ngSubmit)="guardarTurno()"
+  #formTurno="ngForm"
+>
+
+  <div class="formulario-grid">
+
+    <!-- NOMBRE -->
+    <div class="campo-formulario">
+
+      <label for="nombreTurno">
+        Nombre
+      </label>
+
+      <input
+        id="nombreTurno"
+        type="text"
+        [(ngModel)]="turnoActual.nombre"
+        name="nombreTurno"
+        placeholder="Ej. Turno mañana"
+        required
       >
 
-        <div class="encabezado-formulario">
+    </div>
 
-          <div>
 
-            <h3>
-              {{
-                modoEdicionTurno
-                  ? 'Editar turno'
-                  : 'Nuevo turno'
-              }}
-            </h3>
+    <!-- HORA DE INICIO -->
+    <div class="campo-formulario">
 
-            <p>
-              {{
-                modoEdicionTurno
-                  ? 'Modifique la información del turno.'
-                  : 'Ingrese la información del nuevo turno.'
-              }}
-            </p>
+      <label for="horaInicio">
+        Hora de inicio
+      </label>
 
-          </div>
+      <input
+        id="horaInicio"
+        type="time"
+        [(ngModel)]="turnoActual.hora_inicio"
+        name="horaInicio"
+        required
+      >
+
+    </div>
+
+
+    <!-- HORA DE FINALIZACIÓN -->
+    <div class="campo-formulario">
+
+      <label for="horaFin">
+        Hora de finalización
+      </label>
+
+      <input
+        id="horaFin"
+        type="time"
+        [(ngModel)]="turnoActual.hora_fin"
+        name="horaFin"
+      >
+
+    </div>
+
+
+    <!-- ESTADO -->
+    <div class="campo-formulario">
+
+      <label for="estadoTurno">
+        Estado
+      </label>
+
+      <select
+        id="estadoTurno"
+        [(ngModel)]="turnoActual.estado"
+        name="estadoTurno"
+      >
+
+        <option [ngValue]="true">
+          Activo
+        </option>
+
+        <option [ngValue]="false">
+          Inactivo
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- DESCRIPCIÓN -->
+    <div class="campo-formulario campo-completo">
+
+      <label for="descripcionTurno">
+        Descripción
+      </label>
+
+      <textarea
+        id="descripcionTurno"
+        [(ngModel)]="turnoActual.descripcion"
+        name="descripcionTurno"
+        placeholder="Ingrese una descripción del turno..."
+        rows="3"
+      ></textarea>
+
+    </div>
+
+  </div>
+
+
+  <!-- ACCIONES -->
+  <div class="acciones-formulario">
+
+    <button
+      type="button"
+      class="boton-secundario"
+      (click)="cerrarFormularioTurno()"
+    >
+      Cancelar
+    </button>
+
+    <button
+      type="submit"
+      class="boton-guardar"
+      [disabled]="formTurno.invalid"
+    >
+
+      <span class="material-symbols-outlined">
+        save
+      </span>
+
+      {{
+        modoEdicionTurno
+          ? 'Actualizar registro'
+          : 'Guardar registro'
+      }}
+
+    </button>
+
+  </div>
+
+</form>
+
+
+  </div>
+
+  <!-- TABLA -->
+
+  <div class="tabla-contenedor">
+
+
+<div
+  class="estado-cargando"
+  *ngIf="cargandoTurnos"
+>
+
+  <span class="material-symbols-outlined">
+    progress_activity
+  </span>
+
+  Cargando turnos...
+
+</div>
+
+
+<table *ngIf="!cargandoTurnos">
+
+  <thead>
+
+    <tr>
+      <th>Nombre</th>
+      <th>Hora inicio</th>
+      <th>Hora fin</th>
+      <th>Estado</th>
+      <th>Acciones</th>
+    </tr>
+
+  </thead>
+
+
+  <tbody>
+
+    <tr *ngFor="let turno of turnos">
+
+      <td>
+        {{ turno.nombre }}
+      </td>
+
+      <td>
+        {{ turno.hora_inicio }}
+      </td>
+
+      <td>
+        {{ turno.hora_fin || 'No definida' }}
+      </td>
+
+      <td>
+
+        <span
+          class="estado"
+          [class.estado-activo]="turno.estado"
+          [class.estado-inactivo]="!turno.estado"
+        >
+          {{
+            turno.estado
+              ? 'Activo'
+              : 'Inactivo'
+          }}
+        </span>
+
+      </td>
+
+      <td>
+
+        <div class="acciones-tabla">
 
           <button
             type="button"
-            class="boton-cerrar"
-            (click)="cerrarFormularioTurno()"
+            class="boton-accion boton-editar"
+            title="Editar"
+            (click)="editarTurno(turno)"
           >
             <span class="material-symbols-outlined">
-              close
+              edit
+            </span>
+          </button>
+
+          <button
+            type="button"
+            class="boton-accion boton-eliminar"
+            title="Eliminar"
+            (click)="eliminarTurno(turno)"
+          >
+            <span class="material-symbols-outlined">
+              delete
             </span>
           </button>
 
         </div>
 
+      </td>
 
-        <form
-          (ngSubmit)="guardarTurno()"
-          #formTurno="ngForm"
-        >
+    </tr>
 
-          <div class="formulario-grid">
 
-            <div class="campo-formulario">
+    <!-- SIN REGISTROS -->
+    <tr *ngIf="turnos.length === 0">
 
-              <label for="nombreTurno">
-                Nombre
-              </label>
+      <td
+        colspan="5"
+        class="sin-registros"
+      >
+        No hay turnos registrados.
+      </td>
 
-              <input
-                id="nombreTurno"
-                type="text"
-                [(ngModel)]="turnoActual.nombre"
-                name="nombreTurno"
-                placeholder="Ej. Turno mañana"
-                required
-              >
+    </tr>
 
-            </div>
+  </tbody>
 
+</table>
 
-            <div class="campo-formulario">
 
-              <label for="fechaTurno">
-                Fecha
-              </label>
+  </div>
 
-              <input
-                id="fechaTurno"
-                type="date"
-                [(ngModel)]="turnoActual.fecha"
-                name="fechaTurno"
-                required
-              >
-
-            </div>
-
-
-            <div class="campo-formulario">
-
-              <label for="horaInicio">
-                Hora de inicio
-              </label>
-
-              <input
-                id="horaInicio"
-                type="time"
-                [(ngModel)]="turnoActual.hora_inicio"
-                name="horaInicio"
-                required
-              >
-
-            </div>
-
-
-            <div class="campo-formulario">
-
-              <label for="horaFin">
-                Hora de finalización
-              </label>
-
-              <input
-                id="horaFin"
-                type="time"
-                [(ngModel)]="turnoActual.hora_fin"
-                name="horaFin"
-              >
-
-            </div>
-
-
-            <div class="campo-formulario">
-
-              <label for="estadoTurno">
-                Estado
-              </label>
-
-              <select
-                id="estadoTurno"
-                [(ngModel)]="turnoActual.estado"
-                name="estadoTurno"
-              >
-
-                <option [ngValue]="true">
-                  Activo
-                </option>
-
-                <option [ngValue]="false">
-                  Inactivo
-                </option>
-
-              </select>
-
-            </div>
-
-
-            <div class="campo-formulario campo-completo">
-
-              <label for="descripcionTurno">
-                Descripción
-              </label>
-
-              <textarea
-                id="descripcionTurno"
-                [(ngModel)]="turnoActual.descripcion"
-                name="descripcionTurno"
-                placeholder="Ingrese una descripción del turno..."
-                rows="3"
-              ></textarea>
-
-            </div>
-
-          </div>
-
-
-          <div class="acciones-formulario">
-
-            <button
-              type="button"
-              class="boton-secundario"
-              (click)="cerrarFormularioTurno()"
-            >
-              Cancelar
-            </button>
-
-            <button
-              type="submit"
-              class="boton-guardar"
-              [disabled]="formTurno.invalid"
-            >
-              <span class="material-symbols-outlined">
-                save
-              </span>
-
-              {{
-                modoEdicionTurno
-                  ? 'Actualizar registro'
-                  : 'Guardar registro'
-              }}
-            </button>
-
-          </div>
-
-        </form>
-
-      </div>
-
-
-      <!-- TABLA -->
-      <div class="tabla-contenedor">
-
-        <div
-          class="estado-cargando"
-          *ngIf="cargandoTurnos"
-        >
-          <span class="material-symbols-outlined">
-            progress_activity
-          </span>
-
-          Cargando turnos...
-        </div>
-
-
-        <table *ngIf="!cargandoTurnos">
-
-          <thead>
-
-            <tr>
-              <th>Nombre</th>
-              <th>Fecha</th>
-              <th>Hora inicio</th>
-              <th>Hora fin</th>
-              <th>Estado</th>
-
-              <th>Acciones</th>
-            </tr>
-
-          </thead>
-
-
-          <tbody>
-
-            <tr *ngFor="let turno of turnos">
-
-              <td>
-                {{ turno.nombre }}
-              </td>
-
-              <td>
-                {{ turno.fecha }}
-              </td>
-
-              <td>
-                {{ turno.hora_inicio }}
-              </td>
-
-              <td>
-                {{ turno.hora_fin || 'No definida' }}
-              </td>
-
-              <td>
-
-                <span
-                  class="estado"
-                  [class.estado-activo]="turno.estado"
-                  [class.estado-inactivo]="!turno.estado"
-                >
-                  {{
-                    turno.estado
-                      ? 'Activo'
-                      : 'Inactivo'
-                  }}
-                </span>
-
-              </td>
-
-              <td>
-
-                <div class="acciones-tabla">
-
-                  <button
-                    type="button"
-                    class="boton-accion boton-editar"
-                    title="Editar"
-                    (click)="editarTurno(turno)"
-                  >
-                    <span class="material-symbols-outlined">
-                      edit
-                    </span>
-                  </button>
-
-                  <button
-                    type="button"
-                    class="boton-accion boton-eliminar"
-                    title="Eliminar"
-                    (click)="eliminarTurno(turno)"
-                  >
-                    <span class="material-symbols-outlined">
-                      delete
-                    </span>
-                  </button>
-
-                </div>
-
-              </td>
-
-            </tr>
-
-
-            <tr *ngIf="turnos.length === 0">
-
-              <td
-                colspan="6"
-                class="sin-registros"
-              >
-                No hay turnos registrados.
-              </td>
-
-            </tr>
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-    </section>
-
-  </main>
-
-</div>
+</section>

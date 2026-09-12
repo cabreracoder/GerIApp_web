@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 
 interface Catalogo {
   nombre: string;
-  icono: string;
 }
 
 interface Medicamento {
@@ -44,7 +43,6 @@ interface Permiso {
 
 interface Turno {
   id_turno?: number;
-  fecha: string;
   hora_inicio: string;
   hora_fin: string | null;
   estado: boolean;
@@ -71,23 +69,21 @@ export class BancoDatos implements OnInit {
   catalogos: Catalogo[] = [
     {
       nombre: 'Medicamentos',
-      icono: 'medication'
     },
     {
       nombre: 'Tipos de insumo',
-      icono: 'category'
+
     },
     {
       nombre: 'Insumos',
-      icono: 'inventory_2'
     },
     {
       nombre: 'Permisos',
-      icono: 'lock'
+     
     },
     {
       nombre: 'Turnos',
-      icono: 'schedule'
+     
     }
   ];
 
@@ -189,7 +185,6 @@ export class BancoDatos implements OnInit {
   turnos: Turno[] = [];
 
   turnoForm: Turno = {
-    fecha: '',
     hora_inicio: '',
     hora_fin: null,
     estado: true,
@@ -1358,14 +1353,6 @@ export class BancoDatos implements OnInit {
       return;
     }
 
-    if (!this.turnoForm.fecha) {
-
-      this.mensajeError =
-        'La fecha del turno es obligatoria.';
-
-      return;
-    }
-
     if (!this.turnoForm.hora_inicio) {
 
       this.mensajeError =
@@ -1451,7 +1438,6 @@ export class BancoDatos implements OnInit {
 
     this.turnoForm = {
       id_turno: turno.id_turno,
-      fecha: turno.fecha,
       hora_inicio: turno.hora_inicio,
       hora_fin: turno.hora_fin,
       estado: turno.estado,
@@ -1521,7 +1507,6 @@ export class BancoDatos implements OnInit {
     this.modoEdicionTurno = false;
 
     this.turnoForm = {
-      fecha: '',
       hora_inicio: '',
       hora_fin: null,
       estado: true,
