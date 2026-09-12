@@ -986,85 +986,6 @@ export class Pacientes {
   }
 
   // =========================================================
-  // ELIMINAR PACIENTE
-  // =========================================================
-
-  eliminar(id: number) {
-
-    Swal.fire({
-
-      title:
-        '¿Está seguro de eliminar este paciente?',
-
-      icon: 'warning',
-
-      showCancelButton: true,
-
-      confirmButtonText:
-        'Eliminar',
-
-      cancelButtonText:
-        'Cancelar',
-
-      confirmButtonColor:
-        '#3B5BDB'
-
-    }).then((resultado) => {
-
-      if (resultado.isConfirmed) {
-
-        this.http.delete(
-          `${this.apiUrl}/pacientes/${id}/`
-        ).subscribe({
-
-          next: () => {
-
-            Swal.fire({
-              title:
-                'Paciente eliminado correctamente',
-
-              icon: 'success',
-
-              confirmButtonText:
-                'Aceptar',
-
-              confirmButtonColor:
-                '#3B5BDB'
-            });
-
-            this.listar();
-          },
-
-          error: (error) => {
-
-            console.error(
-              'Error al eliminar paciente:',
-              error
-            );
-
-            Swal.fire({
-              title:
-                'Error al eliminar el paciente',
-
-              icon: 'error',
-
-              confirmButtonText:
-                'Aceptar',
-
-              confirmButtonColor:
-                '#3B5BDB'
-            });
-
-          }
-
-        });
-
-      }
-
-    });
-  }
-
-  // =========================================================
   // INDICAR SI ESTÁ EDITANDO
   // =========================================================
 
@@ -1146,18 +1067,6 @@ export class Pacientes {
   savePatient() {
 
     this.guardar();
-
-  }
-
-  // =========================================================
-  // ELIMINAR PACIENTE
-  // =========================================================
-
-  deletePatient(
-    id: number
-  ) {
-
-    this.eliminar(id);
 
   }
 
