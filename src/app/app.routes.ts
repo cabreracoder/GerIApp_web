@@ -12,6 +12,7 @@ import { Registro } from './registro/registro';
 import { Usuarios } from './usuarios/usuarios';
 import { ElementosPaciente } from './elementos-paciente/elementos-paciente';
 import { BancoDatos } from './banco-datos/banco-datos';
+import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
 
@@ -36,6 +37,7 @@ export const routes: Routes = [
   {
     path: '',
     component: Layout,
+    canActivate: [authGuard],
     children: [
 
       {
