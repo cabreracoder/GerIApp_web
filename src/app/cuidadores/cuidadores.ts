@@ -315,6 +315,9 @@ export class Cuidadores implements OnInit {
                                 c.pacientes < 3)
                             ),
 
+                          id_perfil_profesional:
+                            perfil?.id_perfil_profesional,
+
                           especialidad:
                             perfil?.especialidad || '',
 
@@ -697,6 +700,8 @@ export class Cuidadores implements OnInit {
 
     this.formularioAbierto = true;
 
+    this.cdr.detectChanges();
+
   }
 
 
@@ -824,6 +829,7 @@ export class Cuidadores implements OnInit {
                   error
                 );
                 this.guardando = false;
+                this.cdr.detectChanges();
                 Swal.fire({
                   title: 'Actualización parcial',
                   text: 'El usuario se actualizó, pero no se pudo crear el perfil profesional.',
@@ -841,6 +847,7 @@ export class Cuidadores implements OnInit {
             error
           );
           this.guardando = false;
+          this.cdr.detectChanges();
           Swal.fire({
             title: 'Error',
             text: 'No se pudo actualizar el cuidador.',
@@ -876,6 +883,7 @@ export class Cuidadores implements OnInit {
           );
 
           this.guardando = false;
+          this.cdr.detectChanges();
           Swal.fire({
             title: 'Advertencia',
             text: 'El usuario fue creado, pero no se pudo crear su perfil profesional.',
@@ -944,6 +952,7 @@ export class Cuidadores implements OnInit {
                 );
 
                 this.guardando = false;
+                this.cdr.detectChanges();
 
                 Swal.fire({
                   title: 'Cuidador registrado',
@@ -964,6 +973,7 @@ export class Cuidadores implements OnInit {
                 );
 
                 this.guardando = false;
+                this.cdr.detectChanges();
 
                 Swal.fire({
                   title: 'Cuidador creado',
@@ -986,6 +996,7 @@ export class Cuidadores implements OnInit {
             );
 
             this.guardando = false;
+            this.cdr.detectChanges();
 
             Swal.fire({
               title: 'Cuidador creado',
@@ -1008,7 +1019,7 @@ export class Cuidadores implements OnInit {
         );
 
         this.guardando = false;
-
+        this.cdr.detectChanges();
         Swal.fire({
           title: 'Error',
           text: 'No se pudo registrar el cuidador.',
@@ -1023,6 +1034,7 @@ export class Cuidadores implements OnInit {
   private finalizarGuardadoEdicion(): void {
 
     this.guardando = false;
+    this.cdr.detectChanges();
 
     Swal.fire({
       title: 'Cuidador actualizado',

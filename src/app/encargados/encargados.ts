@@ -429,7 +429,29 @@ export class Encargados implements OnInit {
     }
   }
 
+  // =====================================================
+  // CONFIRMAR EDICIÓN
+  // =====================================================
 
+  confirmarEdicion(encargado: Encargado): void {
+
+    Swal.fire({
+      title: 'Editar encargado',
+      text: `¿Deseas editar a ${encargado.nombres} ${encargado.apellidos}?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, editar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#3B5BDB'
+    }).then((resultado) => {
+
+      if (resultado.isConfirmed) {
+        this.openModal('edit', encargado);
+        this.cdr.detectChanges();
+      }
+    });
+  }
+  
   // =====================================================
   // CERRAR MODAL
   // =====================================================
