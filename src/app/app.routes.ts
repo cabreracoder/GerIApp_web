@@ -85,8 +85,12 @@ export const routes: Routes = [
       },
 
       {
-        path: 'elementos-paciente',
-        component: ElementosPaciente
+        
+        path: 'elementos-paciente/:id',
+        loadComponent: () =>
+        import('./elementos-paciente/elementos-paciente')
+            .then(m => m.ElementosPaciente)
+
       },
 
       {
