@@ -147,7 +147,14 @@ export class ElementosPaciente implements OnInit {
 
       console.log('ID DEL PACIENTE:', this.idPaciente);
 
+      // Cargar elementos registrados
       this.cargarElementos();
+
+      // Cargar catálogos desde el inicio
+      // Esto permite mostrar los nombres en la tabla
+      this.cargarMedicamentos();
+      this.cargarInsumos();
+      this.cargarTiposInsumo();
 
     } else {
 
@@ -233,14 +240,24 @@ export class ElementosPaciente implements OnInit {
 
     this.vistaRegistro = 'formulario';
 
+    // Los datos ya fueron cargados al iniciar.
+    // Solo volvemos a cargarlos si todavía no existen.
+
     if (this.tipoElemento === 'medicamento') {
 
-      this.cargarMedicamentos();
+      if (this.medicamentos.length === 0) {
+        this.cargarMedicamentos();
+      }
 
     } else {
 
-      this.cargarTiposInsumo();
-      this.cargarInsumos();
+      if (this.tiposInsumo.length === 0) {
+        this.cargarTiposInsumo();
+      }
+
+      if (this.insumos.length === 0) {
+        this.cargarInsumos();
+      }
     }
   }
 
@@ -260,45 +277,65 @@ export class ElementosPaciente implements OnInit {
   // =====================================================
 
   cargarElementos(): void {
-  this.cargando = true;
 
-  this.http.get<ElementoPaciente[]>(
-    `${API_URL}/elementos_paciente/`
-  ).subscribe({
-    next: (respuesta) => {
-      console.log('ELEMENTOS RECIBIDOS:', respuesta);
+    this.cargando = true;
 
-      if (this.idPaciente !== null) {
-        this.elementos = respuesta.filter(
-          elemento => Number(elemento.id_paciente) === Number(this.idPaciente)
+    this.http.get<ElementoPaciente[]>(
+      `${API_URL}/elementos_paciente/`
+    ).subscribe({
+
+      next: (respuesta) => {
+
+        console.log(
+          'ELEMENTOS RECIBIDOS:',
+          respuesta
         );
-      } else {
+
+        if (this.idPaciente !== null) {
+
+          this.elementos = respuesta.filter(
+            elemento =>
+              Number(elemento.id_paciente) ===
+              Number(this.idPaciente)
+          );
+
+        } else {
+
+          this.elementos = [];
+        }
+
+        console.log(
+          'ELEMENTOS DEL PACIENTE:',
+          this.elementos
+        );
+
+        this.cargando = false;
+
+        this.cdr.detectChanges();
+      },
+
+      error: (error) => {
+
+        console.error(
+          'ERROR AL CARGAR ELEMENTOS:',
+          error
+        );
+
         this.elementos = [];
+
+        this.cargando = false;
+
+        this.cdr.detectChanges();
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No fue posible cargar los elementos del paciente.'
+        });
       }
+    });
+  }
 
-      console.log('ELEMENTOS DEL PACIENTE:', this.elementos);
-
-      this.cargando = false;
-
-      // Fuerza la actualización visual de la tabla
-      this.cdr.detectChanges();
-    },
-    error: (error) => {
-      console.error('ERROR AL CARGAR ELEMENTOS:', error);
-
-      this.elementos = [];
-      this.cargando = false;
-
-      this.cdr.detectChanges();
-
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'No fue posible cargar los elementos del paciente.'
-      });
-    }
-  });
-}
   // =====================================================
   // CARGAR MEDICAMENTOS
   // =====================================================
@@ -319,10 +356,18 @@ export class ElementosPaciente implements OnInit {
         );
 
         this.medicamentos = respuesta.filter(
-          medicamento => medicamento.estado === true
+          medicamento =>
+            medicamento.estado === true
+        );
+
+        console.log(
+          'MEDICAMENTOS DISPONIBLES:',
+          this.medicamentos
         );
 
         this.cargandoMedicamentos = false;
+
+        this.cdr.detectChanges();
       },
 
       error: (error) => {
@@ -331,6 +376,8 @@ export class ElementosPaciente implements OnInit {
           'ERROR AL CARGAR MEDICAMENTOS:',
           error
         );
+
+        this.medicamentos = [];
 
         this.cargandoMedicamentos = false;
 
@@ -348,31 +395,51 @@ export class ElementosPaciente implements OnInit {
   // =====================================================
 
   cargarTiposInsumo(): void {
-  this.cargandoTiposInsumo = true;
 
-  this.http.get<TipoInsumo[]>(
-    `${API_URL}/tipo_insumo/`
-  ).subscribe({
-    next: (respuesta) => {
-      console.log('TIPOS DE INSUMO RECIBIDOS:', respuesta);
+    this.cargandoTiposInsumo = true;
 
-      this.tiposInsumo = respuesta;
+    this.http.get<TipoInsumo[]>(
+      `${API_URL}/tipo_insumo/`
+    ).subscribe({
 
-      this.cargandoTiposInsumo = false;
-    },
-    error: (error) => {
-      console.error('ERROR AL CARGAR TIPOS DE INSUMO:', error);
+      next: (respuesta) => {
 
-      this.cargandoTiposInsumo = false;
+        console.log(
+          'TIPOS DE INSUMO RECIBIDOS:',
+          respuesta
+        );
 
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'No fue posible cargar los tipos de insumo.'
-      });
-    }
-  });
-}
+        this.tiposInsumo = respuesta;
+
+        console.log(
+          'TIPOS DE INSUMO DISPONIBLES:',
+          this.tiposInsumo
+        );
+
+        this.cargandoTiposInsumo = false;
+
+        this.cdr.detectChanges();
+      },
+
+      error: (error) => {
+
+        console.error(
+          'ERROR AL CARGAR TIPOS DE INSUMO:',
+          error
+        );
+
+        this.tiposInsumo = [];
+
+        this.cargandoTiposInsumo = false;
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No fue posible cargar los tipos de insumo.'
+        });
+      }
+    });
+  }
 
   // =====================================================
   // CARGAR INSUMOS
@@ -394,10 +461,18 @@ export class ElementosPaciente implements OnInit {
         );
 
         this.insumos = respuesta.filter(
-          insumo => insumo.estado === true
+          insumo =>
+            insumo.estado === true
+        );
+
+        console.log(
+          'INSUMOS DISPONIBLES:',
+          this.insumos
         );
 
         this.cargandoInsumos = false;
+
+        this.cdr.detectChanges();
       },
 
       error: (error) => {
@@ -406,6 +481,8 @@ export class ElementosPaciente implements OnInit {
           'ERROR AL CARGAR INSUMOS:',
           error
         );
+
+        this.insumos = [];
 
         this.cargandoInsumos = false;
 
@@ -431,7 +508,8 @@ export class ElementosPaciente implements OnInit {
 
     return this.insumos.filter(
       insumo =>
-        insumo.id_tipo_insumo === this.tipoInsumoSeleccionado
+        Number(insumo.id_tipo_insumo) ===
+        Number(this.tipoInsumoSeleccionado)
     );
   }
 
@@ -529,7 +607,7 @@ export class ElementosPaciente implements OnInit {
     // CREAR DATOS PARA LA API
     // ---------------------------------------------------
 
-    const datos: any = {
+    const datos = {
 
       cantidad: this.cantidad,
 
@@ -600,6 +678,7 @@ export class ElementosPaciente implements OnInit {
 
         this.cerrarFormulario();
 
+        // Recargar la tabla después del registro
         this.cargarElementos();
       },
 
@@ -622,7 +701,9 @@ export class ElementosPaciente implements OnInit {
             error.error
           );
 
-          if (typeof error.error === 'object') {
+          if (
+            typeof error.error === 'object'
+          ) {
 
             mensaje = Object.entries(error.error)
               .map(
@@ -671,14 +752,20 @@ export class ElementosPaciente implements OnInit {
   // OBTENER TIPO DEL ELEMENTO
   // =====================================================
 
-  obtenerTipo(elemento: ElementoPaciente): string {
+  obtenerTipo(
+    elemento: ElementoPaciente
+  ): string {
 
-    if (elemento.id_medicamentos !== null) {
+    if (
+      elemento.id_medicamentos !== null
+    ) {
 
       return 'Medicamento';
     }
 
-    if (elemento.id_insumo !== null) {
+    if (
+      elemento.id_insumo !== null
+    ) {
 
       return 'Insumo';
     }
@@ -702,7 +789,8 @@ export class ElementosPaciente implements OnInit {
     const medicamento =
       this.medicamentos.find(
         item =>
-          item.id_medicamentos === id
+          Number(item.id_medicamentos) ===
+          Number(id)
       );
 
     return medicamento
@@ -726,7 +814,8 @@ export class ElementosPaciente implements OnInit {
     const insumo =
       this.insumos.find(
         item =>
-          item.id_insumo === id
+          Number(item.id_insumo) ===
+          Number(id)
       );
 
     return insumo
@@ -734,4 +823,3 @@ export class ElementosPaciente implements OnInit {
       : `Insumo #${id}`;
   }
 }
-
