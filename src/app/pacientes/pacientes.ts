@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ChangeDetectorRef, Component } from '@angular/core';
 import Swal from 'sweetalert2';
-import {RouterLink} from '@angular/router';
+import { RouterLink } from '@angular/router';
 
 interface PatientForm {
   nombre: string;
@@ -56,7 +56,15 @@ export class Pacientes {
   // =========================================================
 
   patients: any[] = [];
+  patientsPaginaActual: any[] = [];
 
+  patientsPorPagina = 10;
+
+  paginaActual = 1;
+
+  totalPaginas = 1;
+
+  paginas: number[] = [];
   searchText = '';
 
   modalOpen = false;
@@ -75,7 +83,7 @@ export class Pacientes {
   constructor(
     private http: HttpClient,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   // =========================================================
   // INICIO
@@ -131,8 +139,9 @@ export class Pacientes {
           'Pacientes recibidos:',
           respuesta
         );
-
         this.patients = respuesta;
+        this.paginaActual = 1;
+        this.actualizarPaginacion();
 
         console.log(
           'TOTAL PACIENTES:',
@@ -191,6 +200,73 @@ export class Pacientes {
 
     });
   }
+  // =========================================================
+  // ACTUALIZAR PAGINACIÓN
+  // =========================================================
+
+  actualizarPaginacion(): void {
+
+
+    this.totalPaginas = Math.ceil(
+      this.filteredPatients.length /
+      this.patientsPorPagina
+    );
+
+
+    this.paginas = Array.from(
+      { length: this.totalPaginas },
+      (_, i) => i + 1
+    );
+
+
+    if (this.paginaActual > this.totalPaginas) {
+
+      this.paginaActual =
+        this.totalPaginas || 1;
+
+    }
+
+
+    const inicio =
+      (this.paginaActual - 1) *
+      this.patientsPorPagina;
+
+
+    const fin =
+      inicio +
+      this.patientsPorPagina;
+
+
+    this.patientsPaginaActual =
+      this.filteredPatients.slice(
+        inicio,
+        fin
+      );
+
+  }
+
+
+  // =========================================================
+  // CAMBIAR PÁGINA
+  // =========================================================
+
+  cambiarPagina(pagina: number): void {
+
+
+    if (
+      pagina < 1 ||
+      pagina > this.totalPaginas
+    ) {
+      return;
+    }
+
+
+    this.paginaActual = pagina;
+
+
+    this.actualizarPaginacion();
+
+  }
 
   // =========================================================
   // CALCULAR EDAD DE UN PACIENTE
@@ -222,7 +298,7 @@ export class Pacientes {
       (
         mes === 0 &&
         hoy.getDate() <
-          nacimiento.getDate()
+        nacimiento.getDate()
       )
     ) {
       edad--;
@@ -304,13 +380,13 @@ export class Pacientes {
 
       habitacion:
         patient.habitacion !== null &&
-        patient.habitacion !== undefined
+          patient.habitacion !== undefined
           ? patient.habitacion.toString()
           : '',
 
       cama:
         patient.cama !== null &&
-        patient.cama !== undefined
+          patient.cama !== undefined
           ? patient.cama.toString()
           : '',
 
@@ -1241,7 +1317,7 @@ export class Pacientes {
       (
         mes === 0 &&
         hoy.getDate() <
-          nacimiento.getDate()
+        nacimiento.getDate()
       )
     ) {
 
