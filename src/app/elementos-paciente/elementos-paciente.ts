@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -129,7 +129,8 @@ export class ElementosPaciente implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private http: HttpClient
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef
   ) {}
 
   // =====================================================
@@ -259,55 +260,45 @@ export class ElementosPaciente implements OnInit {
   // =====================================================
 
   cargarElementos(): void {
+  this.cargando = true;
 
-    this.cargando = true;
+  this.http.get<ElementoPaciente[]>(
+    `${API_URL}/elementos_paciente/`
+  ).subscribe({
+    next: (respuesta) => {
+      console.log('ELEMENTOS RECIBIDOS:', respuesta);
 
-    this.http.get<ElementoPaciente[]>(
-      `${API_URL}/elementos_paciente/`
-    ).subscribe({
-
-      next: (respuesta) => {
-
-        console.log('ELEMENTOS RECIBIDOS:', respuesta);
-
-        if (this.idPaciente !== null) {
-
-          this.elementos = respuesta.filter(
-            elemento =>
-              elemento.id_paciente === this.idPaciente
-          );
-
-        } else {
-
-          this.elementos = [];
-        }
-
-        console.log(
-          'ELEMENTOS DEL PACIENTE:',
-          this.elementos
+      if (this.idPaciente !== null) {
+        this.elementos = respuesta.filter(
+          elemento => Number(elemento.id_paciente) === Number(this.idPaciente)
         );
-
-        this.cargando = false;
-      },
-
-      error: (error) => {
-
-        console.error(
-          'ERROR AL CARGAR ELEMENTOS:',
-          error
-        );
-
-        this.cargando = false;
-
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'No fue posible cargar los elementos del paciente.'
-        });
+      } else {
+        this.elementos = [];
       }
-    });
-  }
 
+      console.log('ELEMENTOS DEL PACIENTE:', this.elementos);
+
+      this.cargando = false;
+
+      // Fuerza la actualización visual de la tabla
+      this.cdr.detectChanges();
+    },
+    error: (error) => {
+      console.error('ERROR AL CARGAR ELEMENTOS:', error);
+
+      this.elementos = [];
+      this.cargando = false;
+
+      this.cdr.detectChanges();
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No fue posible cargar los elementos del paciente.'
+      });
+    }
+  });
+}
   // =====================================================
   // CARGAR MEDICAMENTOS
   // =====================================================
