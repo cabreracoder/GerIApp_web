@@ -522,3 +522,294 @@ display: block;
 color: var(--text-secondary);
 font-size: var(--font-size-xs);
 }
+
+/* =====================================================
+   FORMULARIO DE MEDICAMENTO / INSUMO
+===================================================== */
+
+.formulario-elemento {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* El contenido del formulario no debe crecer demasiado */
+
+.modal-formulario:has(.formulario-elemento) {
+  max-width: 680px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Solo el contenido central tiene scroll */
+
+.modal-formulario:has(.formulario-elemento) .formulario-elemento {
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* =====================================================
+   BARRA DE BOTONES
+===================================================== */
+
+.modal-formulario:has(.formulario-elemento) .modal-acciones {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  background: var(--bg-surface);
+}
+
+/* =====================================================
+   FILAS DEL FORMULARIO
+===================================================== */
+
+.fila-formulario {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-md);
+}
+
+/* Campo que ocupa todo el ancho */
+
+.campo-completo {
+  grid-column: 1 / -1;
+}
+
+/* =====================================================
+   CAMPOS
+===================================================== */
+
+.campo-formulario {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.campo-formulario label {
+  display: block;
+  color: var(--text-primary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.campo-formulario label .obligatorio {
+  margin-left: 3px;
+  color: var(--color-danger);
+}
+
+/* =====================================================
+   INPUTS
+===================================================== */
+
+.campo-formulario input,
+.campo-formulario select,
+.campo-formulario textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+
+  background: var(--bg-surface);
+  color: var(--text-primary);
+
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+/* =====================================================
+   INPUT Y SELECT
+===================================================== */
+
+.campo-formulario input,
+.campo-formulario select {
+  height: 42px;
+  padding: 0 var(--spacing-sm);
+}
+
+.campo-formulario select {
+  cursor: pointer;
+}
+
+/* =====================================================
+   TEXTAREA
+===================================================== */
+
+.campo-formulario textarea {
+  min-height: 100px;
+  padding: var(--spacing-sm);
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* =====================================================
+   ESTADO FOCUS
+===================================================== */
+
+.campo-formulario input:focus,
+.campo-formulario select:focus,
+.campo-formulario textarea:focus {
+  border-color: var(--color-primary);
+
+  box-shadow:
+    0 0 0 3px rgba(59, 91, 219, 0.10);
+}
+
+/* =====================================================
+   PLACEHOLDER
+===================================================== */
+
+.campo-formulario input::placeholder,
+.campo-formulario textarea::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+/* =====================================================
+   CAMPOS DESHABILITADOS
+===================================================== */
+
+.campo-formulario input:disabled,
+.campo-formulario select:disabled,
+.campo-formulario textarea:disabled {
+  background: var(--bg-neutral-light);
+  color: var(--text-secondary);
+  cursor: not-allowed;
+}
+
+/* =====================================================
+   TEXTO DE AYUDA
+===================================================== */
+
+.texto-ayuda {
+  margin: 0;
+
+  color: var(--text-secondary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-xs);
+  line-height: 1.4;
+}
+
+/* =====================================================
+   INFORMACIÓN DEL ELEMENTO SELECCIONADO
+===================================================== */
+
+.info-elemento {
+  width: 100%;
+  padding: var(--spacing-md);
+
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+
+  box-sizing: border-box;
+
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+
+  background: var(--bg-neutral-light);
+}
+
+.info-elemento-icono {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: var(--radius-md);
+
+  background: rgba(59, 91, 219, 0.10);
+  color: var(--color-primary);
+}
+
+.info-elemento-icono .material-symbols-outlined {
+  font-size: 22px;
+}
+
+.info-elemento-contenido {
+  min-width: 0;
+}
+
+.info-elemento-contenido strong {
+  display: block;
+
+  margin-bottom: var(--spacing-2xs);
+
+  color: var(--text-primary);
+
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.info-elemento-contenido span {
+  display: block;
+
+  color: var(--text-secondary);
+
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-xs);
+
+  line-height: 1.4;
+}
+
+/* =====================================================
+   INDICADOR DE CARGA
+===================================================== */
+
+.cargando-formulario {
+  width: 100%;
+  min-height: 100px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--text-secondary);
+
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+}
+
+/* =====================================================
+   MENSAJE CUANDO NO HAY DATOS
+===================================================== */
+
+.sin-opciones {
+  padding: var(--spacing-md);
+
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+
+  background: var(--bg-neutral-light);
+
+  color: var(--text-secondary);
+
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-xs);
+  text-align: center;
+}
+
+/* =====================================================
+   SEPARADOR DEL FORMULARIO
+===================================================== */
+
+.separador-formulario {
+  width: 100%;
+  height: 1px;
+
+  background: var(--border-color);
+}

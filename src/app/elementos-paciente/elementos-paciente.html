@@ -6,28 +6,28 @@
 
   <header class="encabezado-elementos">
 
-<div>
-  <h1>Elementos del paciente</h1>
+    <div>
+      <h1>Elementos del paciente</h1>
 
-  <p>
-    Registre y consulte los medicamentos e insumos que pertenecen a cada paciente.
-  </p>
-</div>
+      <p>
+        Registre y consulte los medicamentos e insumos que pertenecen a cada paciente.
+      </p>
+    </div>
 
-<button
-  type="button"
-  class="btn-nuevo-elemento"
-  (click)="abrirFormulario()"
->
-  <span class="material-symbols-outlined">
-    add
-  </span>
+    <button
+      type="button"
+      class="btn-nuevo-elemento"
+      (click)="abrirFormulario()"
+    > 
+      <span class="material-symbols-outlined">
+        add
+      </span>
 
-  Nuevo elemento
-</button>
-
+      Nuevo elemento
+    </button>
 
   </header>
+
 
   <!-- =====================================================
        MODAL NUEVO ELEMENTO
@@ -39,230 +39,679 @@
     (click)="cerrarFormulario()"
   >
 
+    <section
+      class="modal-formulario"
+      (click)="$event.stopPropagation()"
+    >
 
-<section
-  class="modal-formulario"
-  (click)="$event.stopPropagation()"
->
+      <!-- =================================================
+           ENCABEZADO MODAL
+      ================================================== -->
 
-  <!-- ENCABEZADO DEL MODAL -->
+      <div class="modal-encabezado">
 
-  <div class="modal-encabezado">
+        <div class="modal-titulo">
 
-    <div class="modal-titulo">
+          <div class="modal-icono">
 
-      <div class="modal-icono">
+            <span class="material-symbols-outlined">
+              inventory_2
+            </span>
 
-        <span class="material-symbols-outlined">
-          inventory_2
-        </span>
+          </div>
+
+          <div>
+
+            <h2>
+              {{ vistaRegistro === 'seleccion'
+                ? 'Nuevo elemento'
+                : tipoElemento === 'medicamento'
+                  ? 'Registrar medicamento'
+                  : 'Registrar insumo'
+              }}
+            </h2>
+
+            <p>
+              {{ vistaRegistro === 'seleccion'
+                ? 'Registre un medicamento o insumo del paciente.'
+                : 'Complete la información del elemento.'
+              }}
+            </p>
+
+          </div>
+
+        </div>
+
+        <button
+          type="button"
+          class="btn-cerrar-modal"
+          title="Cerrar"
+          (click)="cerrarFormulario()"
+        >
+
+          <span class="material-symbols-outlined">
+            close
+          </span>
+
+        </button>
 
       </div>
 
-      <div>
 
-        <h2>
-          Nuevo elemento
-        </h2>
+      <!-- =====================================================
+           VISTA 1: SELECCIONAR TIPO
+      ====================================================== -->
 
-        <p>
-          Registre un medicamento o insumo del paciente.
+      <div
+        class="modal-contenido"
+        *ngIf="vistaRegistro === 'seleccion'"
+      >
+
+        <div class="seccion-formulario">
+
+          <span class="etiqueta-seccion">
+            Tipo de elemento
+          </span>
+
+          <p class="ayuda-seccion">
+            Seleccione el tipo de elemento que desea registrar.
+          </p>
+
+
+          <!-- =================================================
+               OPCIONES
+          ================================================== -->
+
+          <div class="opciones-tipo">
+
+
+            <!-- MEDICAMENTO -->
+
+            <button
+              type="button"
+              class="opcion-tipo"
+              [class.seleccionada]="tipoElemento === 'medicamento'"
+              (click)="seleccionarTipo('medicamento')"
+            >
+
+              <div class="opcion-icono medicamento">
+
+                <span class="material-symbols-outlined">
+                  medication
+                </span>
+
+              </div>
+
+              <div class="opcion-texto">
+
+                <strong>
+                  Medicamento
+                </strong>
+
+                <span>
+                  Registre medicamentos pertenecientes al paciente.
+                </span>
+
+              </div>
+
+              <span
+                *ngIf="tipoElemento === 'medicamento'"
+                class="material-symbols-outlined opcion-check"
+              >
+                check_circle
+              </span>
+
+            </button>
+
+
+            <!-- INSUMO -->
+
+            <button
+              type="button"
+              class="opcion-tipo"
+              [class.seleccionada]="tipoElemento === 'insumo'"
+              (click)="seleccionarTipo('insumo')"
+            >
+
+              <div class="opcion-icono insumo">
+
+                <span class="material-symbols-outlined">
+                  medical_services
+                </span>
+
+              </div>
+
+              <div class="opcion-texto">
+
+                <strong>
+                  Insumo
+                </strong>
+
+                <span>
+                  Registre insumos pertenecientes al paciente.
+                </span>
+
+              </div>
+
+              <span
+                *ngIf="tipoElemento === 'insumo'"
+                class="material-symbols-outlined opcion-check"
+              >
+                check_circle
+              </span>
+
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             MENSAJE DE SELECCIÓN
+        ================================================== -->
+
+        <div
+          class="mensaje-seleccion"
+          *ngIf="tipoElemento"
+        >
+
+          <span class="material-symbols-outlined">
+
+            {{
+              tipoElemento === 'medicamento'
+                ? 'medication'
+                : 'medical_services'
+            }}
+
+          </span>
+
+          <div>
+
+            <strong>
+
+              {{
+                tipoElemento === 'medicamento'
+                  ? 'Medicamento seleccionado'
+                  : 'Insumo seleccionado'
+              }}
+
+            </strong>
+
+            <p>
+
+              {{
+                tipoElemento === 'medicamento'
+                  ? 'En el siguiente paso podrá seleccionar el medicamento y registrar sus datos.'
+                  : 'En el siguiente paso podrá seleccionar el tipo de insumo y registrar sus datos.'
+              }}
+
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+<!-- =====================================================
+     VISTA 2: FORMULARIO DE REGISTRO
+====================================================== -->
+
+<div
+  class="modal-contenido formulario-elemento"
+  *ngIf="vistaRegistro === 'formulario'"
+>
+
+  <!-- ===================================================
+       INFORMACIÓN DEL ELEMENTO
+  ==================================================== -->
+
+  <div class="seccion-formulario">
+
+    <span class="etiqueta-seccion">
+      Información del elemento
+    </span>
+
+    <p class="ayuda-seccion">
+      Seleccione el elemento que desea asociar al paciente.
+    </p>
+
+
+    <!-- ================================================
+         MEDICAMENTO
+    ================================================= -->
+
+    <div *ngIf="tipoElemento === 'medicamento'">
+
+      <div class="campo-formulario campo-completo">
+
+        <label for="medicamento">
+          Medicamento
+          <span class="obligatorio">*</span>
+        </label>
+
+        <select
+          id="medicamento"
+          [(ngModel)]="medicamentoSeleccionado"
+          [disabled]="cargandoMedicamentos"
+        >
+
+          <option [ngValue]="null">
+            {{
+              cargandoMedicamentos
+                ? 'Cargando medicamentos...'
+                : 'Seleccione un medicamento'
+            }}
+          </option>
+
+          <option
+            *ngFor="let medicamento of medicamentos"
+            [ngValue]="medicamento.id_medicamentos"
+          >
+            {{ medicamento.nombre }}
+            <ng-container *ngIf="medicamento.concentracion">
+              - {{ medicamento.concentracion }}
+            </ng-container>
+          </option>
+
+        </select>
+
+        <p class="texto-ayuda">
+          Seleccione el medicamento registrado en el sistema.
         </p>
+
+      </div>
+
+
+      <!-- INFORMACIÓN SELECCIONADA -->
+
+      <div
+        *ngIf="medicamentoSeleccionado !== null"
+        class="info-elemento"
+      >
+
+        <div class="info-elemento-icono">
+
+          <span class="material-symbols-outlined">
+            medication
+          </span>
+
+        </div>
+
+        <div class="info-elemento-contenido">
+
+          <strong>
+            Medicamento seleccionado
+          </strong>
+
+          <span>
+            {{
+              obtenerNombreMedicamento(
+                medicamentoSeleccionado
+              )
+            }}
+          </span>
+
+        </div>
 
       </div>
 
     </div>
 
-    <button
-      type="button"
-      class="btn-cerrar-modal"
-      title="Cerrar"
-      (click)="cerrarFormulario()"
-    >
 
-      <span class="material-symbols-outlined">
-        close
-      </span>
+    <!-- ================================================
+         INSUMO
+    ================================================= -->
 
-    </button>
+    <div *ngIf="tipoElemento === 'insumo'">
 
-  </div>
+      <div class="fila-formulario">
 
+        <!-- TIPO DE INSUMO -->
 
-  <!-- CONTENIDO DEL MODAL -->
+        <div class="campo-formulario">
 
-  <div class="modal-contenido">
+          <label for="tipoInsumo">
+            Tipo de insumo
+            <span class="obligatorio">*</span>
+          </label>
 
-    <div class="seccion-formulario">
-
-      <span class="etiqueta-seccion">
-        Tipo de elemento
-      </span>
-
-      <p class="ayuda-seccion">
-        Seleccione el tipo de elemento que desea registrar.
-      </p>
-
-
-      <!-- OPCIONES -->
-
-      <div class="opciones-tipo">
-
-
-        <!-- MEDICAMENTO -->
-
-        <button
-          type="button"
-          class="opcion-tipo"
-          [class.seleccionada]="tipoElemento === 'medicamento'"
-          (click)="tipoElemento = 'medicamento'"
-        >
-
-          <div class="opcion-icono medicamento">
-
-            <span class="material-symbols-outlined">
-              medication
-            </span>
-
-          </div>
-
-          <div class="opcion-texto">
-
-            <strong>
-              Medicamento
-            </strong>
-
-            <span>
-              Registre medicamentos pertenecientes al paciente.
-            </span>
-
-          </div>
-
-          <span
-            *ngIf="tipoElemento === 'medicamento'"
-            class="material-symbols-outlined opcion-check"
+          <select
+            id="tipoInsumo"
+            [(ngModel)]="tipoInsumoSeleccionado"
+            [disabled]="cargandoTiposInsumo"
           >
-            check_circle
-          </span>
 
-        </button>
+            <option [ngValue]="null">
+              {{
+                cargandoTiposInsumo
+                  ? 'Cargando tipos...'
+                  : 'Seleccione un tipo'
+              }}
+            </option>
+
+            <option
+              *ngFor="let tipo of tiposInsumo"
+              [ngValue]="tipo.id_tipo_insumo"
+            >
+              {{ tipo.nombre }}
+            </option>
+
+          </select>
+
+        </div>
 
 
         <!-- INSUMO -->
 
-        <button
-          type="button"
-          class="opcion-tipo"
-          [class.seleccionada]="tipoElemento === 'insumo'"
-          (click)="tipoElemento = 'insumo'"
-        >
+        <div class="campo-formulario">
 
-          <div class="opcion-icono insumo">
+          <label for="insumo">
+            Insumo
+            <span class="obligatorio">*</span>
+          </label>
 
-            <span class="material-symbols-outlined">
-              medical_services
-            </span>
-
-          </div>
-
-          <div class="opcion-texto">
-
-            <strong>
-              Insumo
-            </strong>
-
-            <span>
-              Registre insumos pertenecientes al paciente.
-            </span>
-
-          </div>
-
-          <span
-            *ngIf="tipoElemento === 'insumo'"
-            class="material-symbols-outlined opcion-check"
+          <select
+            id="insumo"
+            [(ngModel)]="insumoSeleccionado"
+            [disabled]="
+              tipoInsumoSeleccionado === null ||
+              cargandoInsumos
+            "
           >
-            check_circle
+
+            <option [ngValue]="null">
+              {{
+                cargandoInsumos
+                  ? 'Cargando insumos...'
+                  : 'Seleccione un insumo'
+              }}
+            </option>
+
+            <option
+              *ngFor="let insumo of obtenerInsumosPorTipo()"
+              [ngValue]="insumo.id_insumo"
+            >
+              {{ insumo.nombre }}
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- INFORMACIÓN SELECCIONADA -->
+
+      <div
+        *ngIf="insumoSeleccionado !== null"
+        class="info-elemento"
+      >
+
+        <div class="info-elemento-icono">
+
+          <span class="material-symbols-outlined">
+            medical_services
           </span>
 
-        </button>
+        </div>
+
+        <div class="info-elemento-contenido">
+
+          <strong>
+            Insumo seleccionado
+          </strong>
+
+          <span>
+            {{
+              obtenerNombreInsumo(
+                insumoSeleccionado
+              )
+            }}
+          </span>
+
+        </div>
 
       </div>
 
     </div>
 
+  </div>
 
-    <!-- MENSAJE SEGÚN EL TIPO -->
 
-    <div
-      class="mensaje-seleccion"
-      *ngIf="tipoElemento"
-    >
+  <!-- ===================================================
+       SEPARADOR
+  ==================================================== -->
 
-      <span class="material-symbols-outlined">
+  <div class="separador-formulario"></div>
 
-        {{ tipoElemento === 'medicamento'
-          ? 'medication'
-          : 'medical_services' }}
 
-      </span>
+  <!-- ===================================================
+       DATOS DEL REGISTRO
+  ==================================================== -->
 
-      <div>
+  <div class="seccion-formulario">
 
-        <strong>
+    <span class="etiqueta-seccion">
+      Datos del registro
+    </span>
 
-          {{ tipoElemento === 'medicamento'
-            ? 'Medicamento seleccionado'
-            : 'Insumo seleccionado' }}
+    <p class="ayuda-seccion">
+      Complete la información correspondiente al ingreso del elemento.
+    </p>
 
-        </strong>
 
-        <p>
+    <!-- ================================================
+         CANTIDAD + FECHA INGRESO
+    ================================================= -->
 
-          {{ tipoElemento === 'medicamento'
-            ? 'En el siguiente paso podrá seleccionar el medicamento y registrar sus datos.'
-            : 'En el siguiente paso podrá seleccionar el tipo de insumo y registrar sus datos.' }}
+    <div class="fila-formulario">
 
+      <!-- CANTIDAD -->
+
+      <div class="campo-formulario">
+
+        <label for="cantidad">
+          Cantidad
+          <span class="obligatorio">*</span>
+        </label>
+
+        <input
+          id="cantidad"
+          type="number"
+          min="1"
+          [(ngModel)]="cantidad"
+          placeholder="Ingrese la cantidad"
+        >
+
+        <p class="texto-ayuda">
+          Cantidad de unidades que ingresan.
+        </p>
+
+      </div>
+
+
+      <!-- FECHA INGRESO -->
+
+      <div class="campo-formulario">
+
+        <label for="fechaIngreso">
+          Fecha de ingreso
+          <span class="obligatorio">*</span>
+        </label>
+
+        <input
+          id="fechaIngreso"
+          type="datetime-local"
+          [(ngModel)]="fechaIngreso"
+        >
+
+        <p class="texto-ayuda">
+          Fecha y hora de ingreso del elemento.
         </p>
 
       </div>
 
     </div>
 
+
+    <!-- ================================================
+         VENCIMIENTO
+    ================================================= -->
+
+    <div class="fila-formulario">
+
+      <div class="campo-formulario">
+
+        <label for="fechaVencimiento">
+          Fecha de vencimiento
+        </label>
+
+        <input
+          id="fechaVencimiento"
+          type="date"
+          [(ngModel)]="fechaVencimiento"
+        >
+
+        <p class="texto-ayuda">
+          Campo opcional.
+        </p>
+
+      </div>
+
+
+      <!-- ESPACIO -->
+
+      <div class="campo-formulario campo-vacio">
+      </div>
+
+    </div>
+
+
+    <!-- ================================================
+         OBSERVACIONES
+    ================================================= -->
+
+    <div class="campo-formulario campo-completo">
+
+      <label for="observaciones">
+        Observaciones
+      </label>
+
+      <textarea
+        id="observaciones"
+        rows="4"
+        [(ngModel)]="observaciones"
+        placeholder="Ingrese observaciones relacionadas con el elemento..."
+      ></textarea>
+
+      <p class="texto-ayuda">
+        Puede agregar información adicional sobre el registro.
+      </p>
+
+    </div>
+
   </div>
 
+</div>
 
-  <!-- ACCIONES -->
 
-  <div class="modal-acciones">
 
-    <button
-      type="button"
-      class="btn-cancelar"
-      (click)="cerrarFormulario()"
-    >
-      Cancelar
-    </button>
+      <!-- =====================================================
+           ACCIONES
+      ====================================================== -->
 
-    <button
-      type="button"
-      class="btn-guardar"
-      [disabled]="!tipoElemento"
-    >
+      <div class="modal-acciones">
 
-      <span class="material-symbols-outlined">
-        arrow_forward
-      </span>
 
-      Continuar
+        <!-- CANCELAR -->
 
-    </button>
+        <button
+          type="button"
+          class="btn-cancelar"
+          (click)="cerrarFormulario()"
+        >
+          Cancelar
+        </button>
+
+
+        <!-- VOLVER -->
+
+        <button
+          *ngIf="vistaRegistro === 'formulario'"
+          type="button"
+          class="btn-cancelar"
+          (click)="volverSeleccion()"
+        >
+
+          <span class="material-symbols-outlined">
+            arrow_back
+          </span>
+
+          Volver
+
+        </button>
+
+
+        <!-- CONTINUAR -->
+
+        <button
+          *ngIf="vistaRegistro === 'seleccion'"
+          type="button"
+          class="btn-guardar"
+          [disabled]="!tipoElemento"
+          (click)="continuarRegistro()"
+        >
+
+          <span class="material-symbols-outlined">
+            arrow_forward
+          </span>
+
+          Continuar
+
+        </button>
+
+
+        <!-- GUARDAR -->
+
+        <button
+          *ngIf="vistaRegistro === 'formulario'"
+          type="button"
+          class="btn-guardar"
+          [disabled]="guardando"
+          (click)="registrarElemento()"
+        >
+
+          <span
+            class="material-symbols-outlined"
+            *ngIf="!guardando"
+          >
+            save
+          </span>
+
+          <span
+            *ngIf="guardando"
+          >
+            Guardando...
+          </span>
+
+          <span
+            *ngIf="!guardando"
+          >
+            Guardar
+          </span>
+
+        </button>
+
+      </div>
+
+    </section>
 
   </div>
 
-</section>
-
-
-  </div>
 
   <!-- =====================================================
        TABLA
@@ -270,108 +719,294 @@
 
   <section class="tarjeta-tabla">
 
-<!-- CABECERA DE TABLA -->
+    <!-- CABECERA -->
 
-<div class="cabecera-tabla">
+    <div class="cabecera-tabla">
 
-  <div>
+      <div>
 
-    <h2>
-      Elementos registrados
-    </h2>
+        <h2>
+          Elementos registrados
+        </h2>
 
-    <p>
-      Medicamentos e insumos asociados a los pacientes.
-    </p>
+        <p>
+          Medicamentos e insumos asociados al paciente.
+        </p>
 
-  </div>
+      </div>
 
-  <span class="contador">
-    0 elementos
-  </span>
+      <span class="contador">
 
-</div>
+        {{ elementos.length }}
 
+        {{
+          elementos.length === 1
+            ? 'elemento'
+            : 'elementos'
+        }}
 
-<!-- TABLA -->
+      </span>
 
-<div class="tabla-contenedor">
-
-  <table>
-
-    <thead>
-
-      <tr>
-
-        <th>
-          Paciente
-        </th>
-
-        <th>
-          Tipo
-        </th>
-
-        <th>
-          Elemento
-        </th>
-
-        <th>
-          Cantidad
-        </th>
-
-        <th>
-          Fecha ingreso
-        </th>
-
-        <th>
-          Vencimiento
-        </th>
-
-        <th>
-          Estado
-        </th>
-
-        <th>
-          Acciones
-        </th>
-
-      </tr>
-
-    </thead>
+    </div>
 
 
-    <tbody>
+    <!-- TABLA -->
 
-      <tr>
+    <div class="tabla-contenedor">
 
-        <td
-          colspan="8"
-          class="sin-registros"
-        >
+      <table>
 
-          <span class="material-symbols-outlined">
-            inventory_2
-          </span>
+        <thead>
 
-          <strong>
-            No hay elementos registrados
-          </strong>
+          <tr>
 
-          <span>
-            Cuando registres un medicamento o insumo,
-            aparecerá aquí.
-          </span>
+            <th>
+              Paciente
+            </th>
 
-        </td>
+            <th>
+              Tipo
+            </th>
 
-      </tr>
+            <th>
+              Elemento
+            </th>
 
-    </tbody>
+            <th>
+              Cantidad
+            </th>
 
-  </table>
+            <th>
+              Fecha ingreso
+            </th>
 
-</div>
+            <th>
+              Vencimiento
+            </th>
+
+            <th>
+              Estado
+            </th>
+
+            <th>
+              Acciones
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+
+          <!-- =================================================
+               CARGANDO
+          ================================================== -->
+
+          <tr *ngIf="cargando">
+
+            <td
+              colspan="8"
+              class="sin-registros"
+            >
+
+              <span class="material-symbols-outlined">
+                progress_activity
+              </span>
+
+              <strong>
+                Cargando elementos...
+              </strong>
+
+            </td>
+
+          </tr>
+
+
+          <!-- =================================================
+               SIN REGISTROS
+          ================================================== -->
+
+          <tr
+            *ngIf="!cargando && elementos.length === 0"
+          >
+
+            <td
+              colspan="8"
+              class="sin-registros"
+            >
+
+              <span class="material-symbols-outlined">
+                inventory_2
+              </span>
+
+              <strong>
+                No hay elementos registrados
+              </strong>
+
+              <span>
+                Cuando registres un medicamento o insumo,
+                aparecerá aquí.
+              </span>
+
+            </td>
+
+          </tr>
+
+
+          <!-- =================================================
+               ELEMENTOS REGISTRADOS
+          ================================================== -->
+
+          <tr
+            *ngFor="let elemento of elementos"
+          >
+
+            <!-- PACIENTE -->
+
+            <td>
+              Paciente #{{ elemento.id_paciente }}
+            </td>
+
+
+            <!-- TIPO -->
+
+            <td>
+
+              <span
+                *ngIf="elemento.id_medicamentos !== null"
+              >
+                Medicamento
+              </span>
+
+              <span
+                *ngIf="elemento.id_insumo !== null"
+              >
+                Insumo
+              </span>
+
+            </td>
+
+
+            <!-- ELEMENTO -->
+
+            <td>
+
+              <span
+                *ngIf="elemento.id_medicamentos !== null"
+              >
+
+                {{
+                  obtenerNombreMedicamento(
+                    elemento.id_medicamentos
+                  )
+                }}
+
+              </span>
+
+              <span
+                *ngIf="elemento.id_insumo !== null"
+              >
+
+                {{
+                  obtenerNombreInsumo(
+                    elemento.id_insumo
+                  )
+                }}
+
+              </span>
+
+            </td>
+
+
+            <!-- CANTIDAD -->
+
+            <td>
+              {{ elemento.cantidad }}
+            </td>
+
+
+            <!-- FECHA INGRESO -->
+
+            <td>
+              {{ elemento.fecha_ingreso | date:'dd/MM/yyyy HH:mm' }}
+            </td>
+
+
+            <!-- VENCIMIENTO -->
+
+            <td>
+
+              <span
+                *ngIf="elemento.fecha_vencimiento"
+              >
+                {{ elemento.fecha_vencimiento | date:'dd/MM/yyyy' }}
+              </span>
+
+              <span
+                *ngIf="!elemento.fecha_vencimiento"
+              >
+                No aplica
+              </span>
+
+            </td>
+
+
+            <!-- ESTADO -->
+
+            <td>
+
+              <span
+                *ngIf="elemento.estado === true"
+                class="estado-activo"
+              >
+                Activo
+              </span>
+
+              <span
+                *ngIf="elemento.estado === false"
+                class="estado-inactivo"
+              >
+                Inactivo
+              </span>
+
+              <span
+                *ngIf="elemento.estado === null"
+              >
+                Sin estado
+              </span>
+
+            </td>
+
+
+            <!-- ACCIONES -->
+
+            <td>
+
+              <button
+                type="button"
+                class="btn-accion"
+                title="Ver elemento"
+              >
+
+                <span class="material-symbols-outlined">
+                  visibility
+                </span>
+
+              </button>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
 
   </section>
 
 </main>
+
