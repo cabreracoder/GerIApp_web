@@ -318,10 +318,6 @@
 
         </select>
 
-        <p class="texto-ayuda">
-          Seleccione el medicamento registrado en el sistema.
-        </p>
-
       </div>
 
 
@@ -558,31 +554,6 @@
     </div>
 
 
-    <!-- ================================================
-         VENCIMIENTO
-    ================================================= -->
-
-    <div class="fila-formulario">
-
-      <div class="campo-formulario">
-
-        <label for="fechaVencimiento">
-          Fecha de vencimiento
-        </label>
-
-        <input
-          id="fechaVencimiento"
-          type="date"
-          [(ngModel)]="fechaVencimiento"
-        >
-
-        <p class="texto-ayuda">
-          Campo opcional.
-        </p>
-
-      </div>
-
-
       <!-- ESPACIO -->
 
       <div class="campo-formulario campo-vacio">
@@ -615,8 +586,6 @@
     </div>
 
   </div>
-
-</div>
 
 
 
@@ -787,11 +756,6 @@
             <th>
               Estado
             </th>
-
-            <th>
-              Acciones
-            </th>
-
           </tr>
 
         </thead>
@@ -865,9 +829,9 @@
 
             <!-- PACIENTE -->
 
-            <td>
-              Paciente #{{ elemento.id_paciente }}
-            </td>
+              <td>
+                {{ obtenerNombrePaciente(elemento.id_paciente) }}
+              </td>
 
 
             <!-- TIPO -->
@@ -976,25 +940,6 @@
               >
                 Sin estado
               </span>
-
-            </td>
-
-
-            <!-- ACCIONES -->
-
-            <td>
-
-              <button
-                type="button"
-                class="btn-accion"
-                title="Ver elemento"
-              >
-
-                <span class="material-symbols-outlined">
-                  visibility
-                </span>
-
-              </button>
 
             </td>
 
