@@ -11,7 +11,6 @@ interface Catalogo {
 interface Medicamento {
   id_medicamentos?: number;
   nombre: string;
-  vencimiento: string;
   descripcion: string;
   principio_activo: string;
   concentracion: string;
@@ -34,12 +33,6 @@ interface Insumo {
   descripcion: string;
   unidad_medida: string;
   estado: boolean;
-}
-
-interface Permiso {
-  id_permisos?: number;
-  nombre: string;
-  descripcion: string;
 }
 
 interface Turno {
@@ -79,10 +72,6 @@ export class BancoDatos implements OnInit {
       nombre: 'Insumos',
     },
     {
-      nombre: 'Permisos',
-     
-    },
-    {
       nombre: 'Turnos',
      
     }
@@ -99,7 +88,6 @@ export class BancoDatos implements OnInit {
   cargandoMedicamentos = false;
   cargandoTiposInsumo = false;
   cargandoInsumos = false;
-  cargandoPermisos = false;
   cargandoTurnos = false;
 
   mensajeExito = '';
@@ -113,7 +101,6 @@ export class BancoDatos implements OnInit {
 
   medicamentoForm: Medicamento = {
     nombre: '',
-    vencimiento: '',
     descripcion: '',
     principio_activo: '',
     concentracion: '',
@@ -162,22 +149,6 @@ export class BancoDatos implements OnInit {
 
   mostrandoFormularioInsumo = false;
   modoEdicionInsumo = false;
-
-  // =========================================================
-  // PERMISOS
-  // =========================================================
-
-  permisos: Permiso[] = [];
-
-  permisoForm: Permiso = {
-    nombre: '',
-    descripcion: ''
-  };
-
-  permisoEditando: number | null = null;
-
-  mostrandoFormularioPermiso = false;
-  modoEdicionPermiso = false;
 
   // =========================================================
   // TURNOS
@@ -229,14 +200,6 @@ export class BancoDatos implements OnInit {
     this.insumoForm = valor;
   }
 
-  get permisoActual(): Permiso {
-    return this.permisoForm;
-  }
-
-  set permisoActual(valor: Permiso) {
-    this.permisoForm = valor;
-  }
-
   get turnoActual(): Turno {
     return this.turnoForm;
   }
@@ -286,10 +249,6 @@ export class BancoDatos implements OnInit {
         this.cargarInsumos();
         break;
 
-      case 'Permisos':
-        this.cargarPermisos();
-        break;
-
       case 'Turnos':
         this.cargarTurnos();
         break;
@@ -304,13 +263,10 @@ export class BancoDatos implements OnInit {
     this.mostrandoFormulario = false;
     this.mostrandoFormularioTipoInsumo = false;
     this.mostrandoFormularioInsumo = false;
-    this.mostrandoFormularioPermiso = false;
     this.mostrandoFormularioTurno = false;
-
     this.modoEdicion = false;
     this.modoEdicionTipoInsumo = false;
-    this.modoEdicionInsumo = false;
-    this.modoEdicionPermiso = false;
+    this.modoEdicionInsumo = false;;
     this.modoEdicionTurno = false;
   }
 
@@ -371,88 +327,114 @@ export class BancoDatos implements OnInit {
     });
   }
 
-  // =========================================================
-  // MEDICAMENTOS - GUARDAR
-  // =========================================================
+// =========================================================
+// MEDICAMENTOS - GUARDAR
+// =========================================================
 
-  guardarMedicamento(): void {
-    this.limpiarMensajes();
+guardarMedicamento(): void {
+  this.limpiarMensajes();
 
-    if (!this.validarMedicamento()) {
-      return;
-    }
-
-    this.cargando = true;
-
-    if (this.medicamentoEditando !== null) {
-
-      this.http.patch(
-        `https://geriapp-backend.onrender.com/api/medicamentos/${this.medicamentoEditando}/`,
-        this.medicamentoForm
-      ).subscribe({
-
-        next: () => {
-          Swal.fire({
-            title: 'Actualizado',
-            text: 'Medicamento actualizado correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
-
-          this.limpiarFormularioMedicamento();
-          this.mostrandoFormulario = false;
-          this.modoEdicion = false;
-
-          this.cargarMedicamentos();
-        },
-
-        error: (error) => {
-          this.cargando = false;
-
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(error, 'No se pudo actualizar el medicamento.'),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
-        }
-      });
-
-    } else {
-
-      this.http.post(
-        'https://geriapp-backend.onrender.com/api/medicamentos/',
-        this.medicamentoForm
-      ).subscribe({
-
-        next: () => {
-          Swal.fire({
-            title: 'Creado',
-            text: 'Medicamento creado correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
-
-          this.limpiarFormularioMedicamento();
-          this.mostrandoFormulario = false;
-          this.modoEdicion = false;
-
-          this.cargarMedicamentos();
-        },
-
-        error: (error) => {
-          this.cargando = false;
-
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(error, 'No se pudo crear el medicamento.'),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
-        }
-      });
-    }
+  if (!this.validarMedicamento()) {
+    return;
   }
+
+  this.cargando = true;
+
+  // Solo enviamos los campos que existen en la tabla medicamentos
+  const datosMedicamento = {
+    nombre: this.medicamentoForm.nombre,
+    descripcion: this.medicamentoForm.descripcion,
+    principio_activo: this.medicamentoForm.principio_activo,
+    concentracion: this.medicamentoForm.concentracion,
+    presentacion: this.medicamentoForm.presentacion,
+    estado: this.medicamentoForm.estado,
+    unidad_medida: this.medicamentoForm.unidad_medida
+  };
+
+  if (this.medicamentoEditando !== null) {
+
+    this.http.patch(
+      `https://geriapp-backend.onrender.com/api/medicamentos/${this.medicamentoEditando}/`,
+      datosMedicamento
+    ).subscribe({
+
+      next: () => {
+        this.cargando = false;
+
+        Swal.fire({
+          title: 'Actualizado',
+          text: 'Medicamento actualizado correctamente.',
+          icon: 'success',
+          confirmButtonColor: '#3B5BDB'
+        });
+
+        this.limpiarFormularioMedicamento();
+        this.mostrandoFormulario = false;
+        this.modoEdicion = false;
+
+        this.cargarMedicamentos();
+      },
+
+      error: (error) => {
+        this.cargando = false;
+
+        console.error('ERROR AL ACTUALIZAR MEDICAMENTO:', error);
+
+        Swal.fire({
+          title: 'Error',
+          text: this.obtenerMensajeError(
+            error,
+            'No se pudo actualizar el medicamento.'
+          ),
+          icon: 'error',
+          confirmButtonColor: '#3B5BDB'
+        });
+      }
+    });
+
+  } else {
+
+    this.http.post(
+      'https://geriapp-backend.onrender.com/api/medicamentos/',
+      datosMedicamento
+    ).subscribe({
+
+      next: () => {
+        this.cargando = false;
+
+        Swal.fire({
+          title: 'Creado',
+          text: 'Medicamento creado correctamente.',
+          icon: 'success',
+          confirmButtonColor: '#3B5BDB'
+        });
+
+        this.limpiarFormularioMedicamento();
+        this.mostrandoFormulario = false;
+        this.modoEdicion = false;
+
+        this.cargarMedicamentos();
+      },
+
+      error: (error) => {
+        this.cargando = false;
+
+        console.error('ERROR AL CREAR MEDICAMENTO:', error);
+        console.error('RESPUESTA DEL SERVIDOR:', error.error);
+
+        Swal.fire({
+          title: 'Error',
+          text: this.obtenerMensajeError(
+            error,
+            'No se pudo crear el medicamento.'
+          ),
+          icon: 'error',
+          confirmButtonColor: '#3B5BDB'
+        });
+      }
+    });
+  }
+}
 
   // =========================================================
   // MEDICAMENTOS - EDITAR
@@ -466,7 +448,6 @@ export class BancoDatos implements OnInit {
     this.medicamentoForm = {
       id_medicamentos: medicamento.id_medicamentos,
       nombre: medicamento.nombre,
-      vencimiento: medicamento.vencimiento,
       descripcion: medicamento.descripcion,
       principio_activo: medicamento.principio_activo,
       concentracion: medicamento.concentracion,
@@ -553,7 +534,6 @@ export class BancoDatos implements OnInit {
 
     this.medicamentoForm = {
       nombre: '',
-      vencimiento: '',
       descripcion: '',
       principio_activo: '',
       concentracion: '',
@@ -1133,265 +1113,6 @@ export class BancoDatos implements OnInit {
 
     return tipo?.nombre ?? 'Sin tipo';
   }
-
-  // =========================================================
-  // PERMISOS - ABRIR NUEVO
-  // =========================================================
-
-  abrirNuevoPermiso(): void {
-
-    this.limpiarFormularioPermiso();
-    this.limpiarMensajes();
-
-    this.modoEdicionPermiso = false;
-    this.mostrandoFormularioPermiso = true;
-  }
-
-  // =========================================================
-  // PERMISOS - CERRAR
-  // =========================================================
-
-  cerrarFormularioPermiso(): void {
-
-    this.limpiarFormularioPermiso();
-
-    this.mostrandoFormularioPermiso = false;
-    this.modoEdicionPermiso = false;
-
-    this.limpiarMensajes();
-  }
-
-  // =========================================================
-  // PERMISOS - LISTAR
-  // =========================================================
-
-  cargarPermisos(): void {
-
-    this.cargando = true;
-    this.cargandoPermisos = true;
-
-    this.http.get<Permiso[]>(
-      'https://geriapp-backend.onrender.com/api/permisos/'
-    ).subscribe({
-
-      next: (respuesta) => {
-
-        this.permisos = respuesta || [];
-
-        this.cargando = false;
-        this.cargandoPermisos = false;
-
-        this.cdr.detectChanges();
-      },
-
-      error: (error) => {
-
-        this.cargando = false;
-        this.cargandoPermisos = false;
-
-        this.mensajeError = this.obtenerMensajeError(
-          error,
-          'No se pudieron cargar los permisos.'
-        );
-
-        this.cdr.detectChanges();
-      }
-    });
-  }
-
-  // =========================================================
-  // PERMISOS - GUARDAR
-  // =========================================================
-
-  guardarPermiso(): void {
-
-    this.limpiarMensajes();
-
-    if (!this.permisoForm.nombre.trim()) {
-
-      Swal.fire({
-        title: 'Campo obligatorio',
-        text: 'El nombre del permiso es obligatorio.',
-        icon: 'warning',
-        confirmButtonColor: '#3B5BDB'
-      });
-
-      return;
-    }
-
-    this.cargando = true;
-
-    if (this.permisoEditando !== null) {
-
-      this.http.patch(
-        `https://geriapp-backend.onrender.com/api/permisos/${this.permisoEditando}/`,
-        this.permisoForm
-      ).subscribe({
-
-        next: () => {
-
-          Swal.fire({
-            title: 'Actualizado',
-            text: 'Permiso actualizado correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
-
-          this.limpiarFormularioPermiso();
-
-          this.mostrandoFormularioPermiso = false;
-          this.modoEdicionPermiso = false;
-
-          this.cargarPermisos();
-        },
-
-        error: (error) => {
-
-          this.cargando = false;
-
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(error, 'No se pudo actualizar el permiso.'),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
-        }
-      });
-
-    } else {
-
-      this.http.post(
-        'https://geriapp-backend.onrender.com/api/permisos/',
-        this.permisoForm
-      ).subscribe({
-
-        next: () => {
-
-          Swal.fire({
-            title: 'Creado',
-            text: 'Permiso creado correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
-
-          this.limpiarFormularioPermiso();
-
-          this.mostrandoFormularioPermiso = false;
-          this.modoEdicionPermiso = false;
-
-          this.cargarPermisos();
-        },
-
-        error: (error) => {
-
-          this.cargando = false;
-
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(error, 'No se pudo crear el permiso.'),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
-        }
-      });
-    }
-  }
-
-  // =========================================================
-  // PERMISOS - EDITAR
-  // =========================================================
-
-  editarPermiso(permiso: Permiso): void {
-
-    this.permisoEditando =
-      permiso.id_permisos ?? null;
-
-    this.permisoForm = {
-      id_permisos: permiso.id_permisos,
-      nombre: permiso.nombre,
-      descripcion: permiso.descripcion
-    };
-
-    this.limpiarMensajes();
-
-    this.modoEdicionPermiso = true;
-    this.mostrandoFormularioPermiso = true;
-  }
-
-  // =========================================================
-  // PERMISOS - ELIMINAR
-  // =========================================================
-
-  eliminarPermiso(permiso: Permiso): void {
-
-    const id = permiso.id_permisos;
-
-    if (!id) {
-      return;
-    }
-
-    Swal.fire({
-      title: 'Eliminar permiso',
-      text: '¿Está seguro de eliminar este permiso?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#3B5BDB'
-    }).then((resultado) => {
-
-      if (!resultado.isConfirmed) {
-        return;
-      }
-
-      this.cargando = true;
-
-      this.http.delete(
-        `https://geriapp-backend.onrender.com/api/permisos/${id}/`
-      ).subscribe({
-
-        next: () => {
-
-          Swal.fire({
-            title: 'Eliminado',
-            text: 'Permiso eliminado correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
-
-          this.cargarPermisos();
-        },
-
-        error: (error) => {
-
-          this.cargando = false;
-
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(error, 'No se pudo eliminar el permiso.'),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
-        }
-      });
-    });
-  }
-
-  cancelarEdicionPermiso(): void {
-    this.cerrarFormularioPermiso();
-  }
-
-  limpiarFormularioPermiso(): void {
-
-    this.permisoEditando = null;
-    this.modoEdicionPermiso = false;
-
-    this.permisoForm = {
-      nombre: '',
-      descripcion: ''
-    };
-  }
-
   // =========================================================
   // TURNOS - ABRIR NUEVO
   // =========================================================

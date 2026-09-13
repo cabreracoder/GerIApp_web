@@ -499,67 +499,113 @@
       Complete la información correspondiente al ingreso del elemento.
     </p>
 
+  <!-- ================================================
+       CANTIDAD + FECHA INGRESO
+  ================================================= -->
 
-    <!-- ================================================
-         CANTIDAD + FECHA INGRESO
-    ================================================= -->
+  <div class="fila-formulario">
 
-    <div class="fila-formulario">
+    <!-- CANTIDAD -->
 
-      <!-- CANTIDAD -->
+    <div class="campo-formulario">
 
-      <div class="campo-formulario">
+      <label for="cantidad">
+        Cantidad
+        <span class="obligatorio">*</span>
+      </label>
 
-        <label for="cantidad">
-          Cantidad
-          <span class="obligatorio">*</span>
-        </label>
+      <input
+        id="cantidad"
+        type="number"
+        min="1"
+        [(ngModel)]="cantidad"
+        placeholder="Ingrese la cantidad"
+      >
 
-        <input
-          id="cantidad"
-          type="number"
-          min="1"
-          [(ngModel)]="cantidad"
-          placeholder="Ingrese la cantidad"
-        >
-
-        <p class="texto-ayuda">
-          Cantidad de unidades que ingresan.
-        </p>
-
-      </div>
-
-
-      <!-- FECHA INGRESO -->
-
-      <div class="campo-formulario">
-
-        <label for="fechaIngreso">
-          Fecha de ingreso
-          <span class="obligatorio">*</span>
-        </label>
-
-        <input
-          id="fechaIngreso"
-          type="datetime-local"
-          [(ngModel)]="fechaIngreso"
-        >
-
-        <p class="texto-ayuda">
-          Fecha y hora de ingreso del elemento.
-        </p>
-
-      </div>
+      <p class="texto-ayuda">
+        Cantidad de unidades que ingresan.
+      </p>
 
     </div>
 
 
-      <!-- ESPACIO -->
+    <!-- FECHA INGRESO -->
 
-      <div class="campo-formulario campo-vacio">
-      </div>
+    <div class="campo-formulario">
+
+      <label for="fechaIngreso">
+        Fecha de ingreso
+        <span class="obligatorio">*</span>
+      </label>
+
+      <input
+        id="fechaIngreso"
+        type="datetime-local"
+        [(ngModel)]="fechaIngreso"
+      >
+
+      <p class="texto-ayuda">
+        Fecha y hora de ingreso del elemento.
+      </p>
 
     </div>
+
+  </div>
+
+
+  <!-- ================================================
+       FECHA DE VENCIMIENTO
+       SOLO PARA MEDICAMENTOS
+  ================================================= -->
+
+  <div
+    class="campo-formulario campo-completo"
+    *ngIf="tipoElemento === 'medicamento'"
+  >
+
+    <label for="fechaVencimiento">
+      Fecha de vencimiento
+      <span class="obligatorio">*</span>
+    </label>
+
+    <input
+      id="fechaVencimiento"
+      type="date"
+      [(ngModel)]="fechaVencimiento"
+    >
+
+    <p class="texto-ayuda">
+      Fecha de vencimiento del medicamento que ingresa.
+    </p>
+
+  </div>
+
+
+  <!-- ================================================
+       OBSERVACIONES
+  ================================================= -->
+
+  <div class="campo-formulario campo-completo">
+
+    <label for="observaciones">
+      Observaciones
+    </label>
+
+    <textarea
+      id="observaciones"
+      rows="4"
+      [(ngModel)]="observaciones"
+      placeholder="Ingrese observaciones relacionadas con el elemento..."
+    ></textarea>
+
+    <p class="texto-ayuda">
+      Puede agregar información adicional sobre el registro.
+    </p>
+
+  </div>
+
+</div>
+
 
 
     <!-- ================================================
