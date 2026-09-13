@@ -35,7 +35,7 @@
             search
         </span>
 
-        <input type="text" [(ngModel)]="searchText" placeholder="Buscar por nombre o documento">
+<input type="text" [(ngModel)]="searchText" (ngModelChange)="actualizarPaginacion()" placeholder="Buscar por nombre o documento">
 
         <span class="contador-resultados">
             {{ filteredPatients.length }} resultados

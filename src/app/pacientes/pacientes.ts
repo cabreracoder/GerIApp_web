@@ -140,6 +140,7 @@ export class Pacientes {
         );
         console.log('TOTAL PACIENTES:', this.patients.length);
         console.log('PRIMER PACIENTE:', this.patients[0]);
+         this.actualizarPaginacion();
         this.cdr.detectChanges();
       },
 
