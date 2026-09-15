@@ -29,15 +29,7 @@
     <div class="fila-perfil-configuracion">
 
       <div class="avatar-administrador">
-        <img
-          *ngIf="fotoUsuario"
-          [src]="fotoUsuario"
-          alt="Foto de perfil"
-          class="foto-administrador">
-
-        <span *ngIf="!fotoUsuario">
-          {{ inicialesUsuario }}
-        </span>
+        {{ inicialesUsuario }}
       </div>
 
       <div class="informacion-perfil">
