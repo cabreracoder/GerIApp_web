@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import {ChangeDetectorRef,Component,OnInit,inject} from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http'
+import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
 
 interface Usuario {
@@ -17,6 +17,7 @@ interface Usuario {
   estado: boolean;
   contrasena?: string;
   rol?: string;
+  foto?: string | null;
 }
 
 interface Rol {
@@ -41,7 +42,8 @@ export class Configuracion implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly cdr = inject(ChangeDetectorRef);
 
-  private readonly apiUrl = 'https://geriapp-backend.onrender.com/api';
+  private readonly apiUrl =
+    'https://geriapp-backend.onrender.com/api';
 
   // =====================================================
   // USUARIO
@@ -60,6 +62,9 @@ export class Configuracion implements OnInit {
 
   cargoUsuario = '';
   inicialesUsuario = '';
+
+  // Foto de perfil
+  fotoUsuario: string | null = null;
 
   private usuarioOriginal: Usuario | null = null;
 
@@ -100,7 +105,8 @@ export class Configuracion implements OnInit {
   cargarUsuario(): void {
     this.cargandoUsuario = true;
 
-    const usuarioGuardado = localStorage.getItem('usuario');
+    const usuarioGuardado =
+      localStorage.getItem('usuario');
 
     if (!usuarioGuardado) {
       this.cargandoUsuario = false;
@@ -118,9 +124,10 @@ export class Configuracion implements OnInit {
     }
 
     try {
-      const usuarioLocal: Usuario = JSON.parse(usuarioGuardado);
+      const usuarioLocal: Usuario =
+        JSON.parse(usuarioGuardado);
 
-           if (!usuarioLocal.id_usuario) {
+      if (!usuarioLocal.id_usuario) {
         this.cargandoUsuario = false;
 
         Swal.fire({
@@ -135,37 +142,62 @@ export class Configuracion implements OnInit {
         return;
       }
 
-      this.idUsuario = usuarioLocal.id_usuario;
+      this.idUsuario =
+        usuarioLocal.id_usuario;
 
-      console.log('ID DEL USUARIO LOGUEADO:', this.idUsuario);
+      console.log(
+        'ID DEL USUARIO LOGUEADO:',
+        this.idUsuario
+      );
 
       this.http.get<Usuario>(
         `${this.apiUrl}/usuarios/${this.idUsuario}/`
       ).subscribe({
+
         next: (usuarioApi) => {
-          console.log('USUARIO OBTENIDO DESDE API:', usuarioApi);
 
-          this.usuarioOriginal = { ...usuarioApi };
+          console.log(
+            'USUARIO OBTENIDO DESDE API:',
+            usuarioApi
+          );
 
-          this.asignarDatosUsuario(usuarioApi);
-          this.actualizarLocalStorage(usuarioApi);
+          this.usuarioOriginal =
+            { ...usuarioApi };
+
+          this.asignarDatosUsuario(
+            usuarioApi
+          );
+
+          this.actualizarLocalStorage(
+            usuarioApi
+          );
+
           this.cargarRoles();
 
           this.cargandoUsuario = false;
+
           this.cdr.detectChanges();
         },
 
         error: (error) => {
-          console.error('ERROR AL CARGAR USUARIO:', error);
+
+          console.error(
+            'ERROR AL CARGAR USUARIO:',
+            error
+          );
 
           this.cargandoUsuario = false;
 
-          let textoError = 'No fue posible cargar la información del usuario.';
+          let textoError =
+            'No fue posible cargar la información del usuario.';
 
           if (error.status === 404) {
-            textoError = 'El usuario no existe en el servidor.';
+            textoError =
+              'El usuario no existe en el servidor.';
+
           } else if (error.status === 0) {
-            textoError = 'No se pudo conectar con el servidor.';
+            textoError =
+              'No se pudo conectar con el servidor.';
           }
 
           Swal.fire({
@@ -181,7 +213,11 @@ export class Configuracion implements OnInit {
       });
 
     } catch (error) {
-      console.error('ERROR AL LEER LOCALSTORAGE:', error);
+
+      console.error(
+        'ERROR AL LEER LOCALSTORAGE:',
+        error
+      );
 
       this.cargandoUsuario = false;
 
@@ -196,48 +232,98 @@ export class Configuracion implements OnInit {
       this.cdr.detectChanges();
     }
   }
+
   // =====================================================
   // ASIGNAR DATOS DEL USUARIO
   // =====================================================
 
-  private asignarDatosUsuario(usuario: Usuario): void {
-    this.idUsuario = usuario.id_usuario;
+  private asignarDatosUsuario(
+    usuario: Usuario
+  ): void {
 
-    this.nombresUsuario = usuario.nombres ?? '';
-    this.apellidosUsuario = usuario.apellidos ?? '';
+    this.idUsuario =
+      usuario.id_usuario;
+
+    this.nombresUsuario =
+      usuario.nombres ?? '';
+
+    this.apellidosUsuario =
+      usuario.apellidos ?? '';
 
     this.nombreUsuario =
       `${this.nombresUsuario} ${this.apellidosUsuario}`.trim();
 
-    this.nombreUsuarioEdicion = this.nombreUsuario;
+    this.nombreUsuarioEdicion =
+      this.nombreUsuario;
 
-    this.correoUsuario = usuario.correo ?? '';
-    this.telefonoUsuario = usuario.telefono ?? '';
+    this.correoUsuario =
+      usuario.correo ?? '';
+
+    this.telefonoUsuario =
+      usuario.telefono ?? '';
 
     this.inicialesUsuario =
-      this.obtenerIniciales(this.nombreUsuario);
+      this.obtenerIniciales(
+        this.nombreUsuario
+      );
 
-    this.cargoUsuario = 'Cargando...';
+    // Cargar foto del usuario
+    this.fotoUsuario =
+      this.normalizarUrlFoto(
+        usuario.foto
+      );
+
+    this.cargoUsuario =
+      'Cargando...';
+  }
+
+  // =====================================================
+  // NORMALIZAR URL DE FOTO
+  // =====================================================
+
+  private normalizarUrlFoto(
+    foto: string | null | undefined
+  ): string | null {
+
+    if (!foto) {
+      return null;
+    }
+
+    if (foto.startsWith('http')) {
+      return foto;
+    }
+
+    return `https://geriapp-backend.onrender.com${foto}`;
   }
 
   // =====================================================
   // ACTUALIZAR LOCALSTORAGE
   // =====================================================
 
-  private actualizarLocalStorage(usuarioApi: Usuario): void {
-    const usuarioAnterior = localStorage.getItem('usuario');
+  private actualizarLocalStorage(
+    usuarioApi: Usuario
+  ): void {
 
-    let datosUsuario: Usuario = usuarioApi;
+    const usuarioAnterior =
+      localStorage.getItem('usuario');
+
+    let datosUsuario: Usuario =
+      usuarioApi;
 
     if (usuarioAnterior) {
+
       try {
-        const anterior: Usuario = JSON.parse(usuarioAnterior);
+
+        const anterior: Usuario =
+          JSON.parse(usuarioAnterior);
 
         datosUsuario = {
           ...anterior,
           ...usuarioApi
         };
+
       } catch (error) {
+
         console.error(
           'ERROR AL LEER USUARIO ANTERIOR:',
           error
@@ -256,17 +342,24 @@ export class Configuracion implements OnInit {
   // =====================================================
 
   cargarRoles(): void {
+
     this.cargandoRoles = true;
 
     this.http.get<Rol[]>(
       `${this.apiUrl}/roles/`
     ).subscribe({
-      next: (roles) => {
-        console.log('ROLES OBTENIDOS:', roles);
 
-        this.roles = roles.filter(
-          rol => rol.estado === true
+      next: (roles) => {
+
+        console.log(
+          'ROLES OBTENIDOS:',
+          roles
         );
+
+        this.roles =
+          roles.filter(
+            rol => rol.estado === true
+          );
 
         this.cargandoRoles = false;
 
@@ -274,15 +367,22 @@ export class Configuracion implements OnInit {
           this.usuarioOriginal &&
           this.usuarioOriginal.id_rol !== null
         ) {
-          const rolUsuario = this.roles.find(
-            rol => rol.id_rol === this.usuarioOriginal!.id_rol
-          );
+
+          const rolUsuario =
+            this.roles.find(
+              rol =>
+                rol.id_rol ===
+                this.usuarioOriginal!.id_rol
+            );
 
           this.cargoUsuario =
-            rolUsuario?.nombre ?? 'Rol no encontrado';
+            rolUsuario?.nombre ??
+            'Rol no encontrado';
 
         } else {
-          this.cargoUsuario = 'Sin rol asignado';
+
+          this.cargoUsuario =
+            'Sin rol asignado';
         }
 
         console.log(
@@ -293,11 +393,17 @@ export class Configuracion implements OnInit {
         this.cdr.detectChanges();
       },
 
-            error: (error) => {
-        console.error('ERROR AL CARGAR ROLES:', error);
+      error: (error) => {
+
+        console.error(
+          'ERROR AL CARGAR ROLES:',
+          error
+        );
 
         this.cargandoRoles = false;
-        this.cargoUsuario = 'No disponible';
+
+        this.cargoUsuario =
+          'No disponible';
 
         Swal.fire({
           title: 'Error',
@@ -316,17 +422,25 @@ export class Configuracion implements OnInit {
   // OBTENER INICIALES
   // =====================================================
 
-  obtenerIniciales(nombre: string): string {
+  obtenerIniciales(
+    nombre: string
+  ): string {
+
     if (!nombre.trim()) {
       return '';
     }
 
-    const palabras = nombre
-      .trim()
-      .split(/\s+/)
-      .filter(palabra => palabra.length > 0);
+    const palabras =
+      nombre
+        .trim()
+        .split(/\s+/)
+        .filter(
+          palabra =>
+            palabra.length > 0
+        );
 
     if (palabras.length === 1) {
+
       return palabras[0]
         .substring(0, 2)
         .toUpperCase();
@@ -349,6 +463,7 @@ export class Configuracion implements OnInit {
     }
 
     if (this.idUsuario === null) {
+
       Swal.fire({
         title: 'Error',
         text: 'No se encontró el ID del usuario.',
@@ -356,6 +471,7 @@ export class Configuracion implements OnInit {
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#3B5BDB'
       });
+
       return;
     }
 
@@ -367,6 +483,7 @@ export class Configuracion implements OnInit {
       this.nombreUsuarioEdicion.trim();
 
     if (!nombreCompleto) {
+
       Swal.fire({
         title: 'Campo obligatorio',
         text: 'El nombre completo es obligatorio.',
@@ -374,6 +491,7 @@ export class Configuracion implements OnInit {
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#3B5BDB'
       });
+
       return;
     }
 
@@ -381,38 +499,54 @@ export class Configuracion implements OnInit {
     // SEPARAR NOMBRES Y APELLIDOS
     // ===================================================
 
-    const partesNombre = nombreCompleto
-      .split(/\s+/)
-      .filter(parte => parte.length > 0);
+    const partesNombre =
+      nombreCompleto
+        .split(/\s+/)
+        .filter(
+          parte =>
+            parte.length > 0
+        );
 
     let nombres = '';
     let apellidos = '';
 
     if (partesNombre.length === 1) {
-      nombres = partesNombre[0];
+
+      nombres =
+        partesNombre[0];
+
     } else if (partesNombre.length >= 3) {
-      nombres = partesNombre
-        .slice(0, -2)
-        .join(' ');
 
-      apellidos = partesNombre
-        .slice(-2)
-        .join(' ');
+      nombres =
+        partesNombre
+          .slice(0, -2)
+          .join(' ');
+
+      apellidos =
+        partesNombre
+          .slice(-2)
+          .join(' ');
+
     } else {
-      nombres = partesNombre[0];
 
-      apellidos = partesNombre
-        .slice(1)
-        .join(' ');
+      nombres =
+        partesNombre[0];
+
+      apellidos =
+        partesNombre
+          .slice(1)
+          .join(' ');
     }
 
     // ===================================================
     // VALIDAR CORREO
     // ===================================================
 
-    const correo = this.correoUsuario.trim();
+    const correo =
+      this.correoUsuario.trim();
 
     if (!correo) {
+
       Swal.fire({
         title: 'Campo obligatorio',
         text: 'El correo electrónico es obligatorio.',
@@ -420,13 +554,16 @@ export class Configuracion implements OnInit {
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#3B5BDB'
       });
+
       return;
     }
 
     const correoValido =
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        .test(correo);
 
     if (!correoValido) {
+
       Swal.fire({
         title: 'Correo inválido',
         text: 'Ingresa un correo electrónico válido.',
@@ -434,6 +571,7 @@ export class Configuracion implements OnInit {
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#3B5BDB'
       });
+
       return;
     }
 
@@ -441,9 +579,11 @@ export class Configuracion implements OnInit {
     // VALIDAR TELÉFONO
     // ===================================================
 
-    const telefono = this.telefonoUsuario.trim();
+    const telefono =
+      this.telefonoUsuario.trim();
 
     if (!telefono) {
+
       Swal.fire({
         title: 'Campo obligatorio',
         text: 'El teléfono es obligatorio.',
@@ -451,6 +591,7 @@ export class Configuracion implements OnInit {
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#3B5BDB'
       });
+
       return;
     }
 
@@ -476,6 +617,7 @@ export class Configuracion implements OnInit {
     );
 
     this.guardando = true;
+
     this.cdr.detectChanges();
 
     // ===================================================
@@ -486,17 +628,21 @@ export class Configuracion implements OnInit {
       `${this.apiUrl}/usuarios/${this.idUsuario}/`,
       datos
     ).subscribe({
+
       next: (usuarioActualizado) => {
+
         console.log(
           'USUARIO ACTUALIZADO:',
           usuarioActualizado
         );
 
         this.nombresUsuario =
-          usuarioActualizado.nombres ?? nombres;
+          usuarioActualizado.nombres ??
+          nombres;
 
         this.apellidosUsuario =
-          usuarioActualizado.apellidos ?? apellidos;
+          usuarioActualizado.apellidos ??
+          apellidos;
 
         this.nombreUsuario =
           `${this.nombresUsuario} ${this.apellidosUsuario}`.trim();
@@ -505,10 +651,12 @@ export class Configuracion implements OnInit {
           this.nombreUsuario;
 
         this.correoUsuario =
-          usuarioActualizado.correo ?? correo;
+          usuarioActualizado.correo ??
+          correo;
 
         this.telefonoUsuario =
-          usuarioActualizado.telefono ?? telefono;
+          usuarioActualizado.telefono ??
+          telefono;
 
         this.inicialesUsuario =
           this.obtenerIniciales(
@@ -516,15 +664,30 @@ export class Configuracion implements OnInit {
           );
 
         // -----------------------------------------------
+        // MANTENER FOTO
+        // -----------------------------------------------
+
+        if (usuarioActualizado.foto !== undefined) {
+
+          this.fotoUsuario =
+            this.normalizarUrlFoto(
+              usuarioActualizado.foto
+            );
+        }
+
+        // -----------------------------------------------
         // ACTUALIZAR USUARIO ORIGINAL
         // -----------------------------------------------
 
         if (this.usuarioOriginal) {
+
           this.usuarioOriginal = {
             ...this.usuarioOriginal,
             ...usuarioActualizado
           };
+
         } else {
+
           this.usuarioOriginal = {
             ...usuarioActualizado
           };
@@ -540,7 +703,8 @@ export class Configuracion implements OnInit {
 
         const datosUsuario =
           JSON.parse(
-            localStorage.getItem('usuario') ?? '{}'
+            localStorage.getItem('usuario') ??
+            '{}'
           );
 
         // -----------------------------------------------
@@ -583,6 +747,7 @@ export class Configuracion implements OnInit {
       },
 
       error: (error) => {
+
         console.error(
           'ERROR AL ACTUALIZAR PERFIL:',
           error
@@ -595,27 +760,37 @@ export class Configuracion implements OnInit {
 
         this.guardando = false;
 
-        let textoError = 'No fue posible guardar los cambios.';
+        let textoError =
+          'No fue posible guardar los cambios.';
 
         if (error.error?.detail) {
-          textoError = error.error.detail;
+
+          textoError =
+            error.error.detail;
 
         } else if (error.error?.error) {
-          textoError = error.error.error;
+
+          textoError =
+            error.error.error;
 
         } else if (
           error.error &&
           typeof error.error === 'object'
         ) {
+
           const errores =
             Object.values(error.error)
               .flat()
               .join(' ');
 
-          textoError = errores || 'El servidor rechazó la actualización.';
+          textoError =
+            errores ||
+            'El servidor rechazó la actualización.';
 
         } else if (error.status === 0) {
-          textoError = 'No se pudo conectar con el servidor.';
+
+          textoError =
+            'No se pudo conectar con el servidor.';
         }
 
         Swal.fire({
@@ -630,17 +805,280 @@ export class Configuracion implements OnInit {
       }
     });
   }
+
   // =====================================================
   // CAMBIAR FOTO
   // =====================================================
 
-   cambiarFoto(): void {
-    Swal.fire({
-      title: 'Próximamente',
-      text: 'La actualización de la foto se implementará posteriormente.',
-      icon: 'info',
-      confirmButtonText: 'Aceptar',
-      confirmButtonColor: '#3B5BDB'
+  cambiarFoto(
+    selectorFoto: HTMLInputElement
+  ): void {
+
+    selectorFoto.click();
+  }
+
+  // =====================================================
+  // SELECCIONAR Y GUARDAR FOTO
+  // =====================================================
+
+  seleccionarFoto(
+    evento: Event
+  ): void {
+
+    if (this.idUsuario === null) {
+
+      Swal.fire({
+        title: 'Error',
+        text: 'No se encontró el ID del usuario.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3B5BDB'
+      });
+
+      return;
+    }
+
+    const input =
+      evento.target as HTMLInputElement;
+
+    if (
+      !input.files ||
+      input.files.length === 0
+    ) {
+      return;
+    }
+
+    const archivo =
+      input.files[0];
+
+    console.log(
+      'ID USUARIO PARA FOTO:',
+      this.idUsuario
+    );
+
+    console.log(
+      'ARCHIVO SELECCIONADO:',
+      archivo
+    );
+
+    // ===================================================
+    // VALIDAR FORMATO
+    // ===================================================
+
+    const tiposPermitidos = [
+      'image/jpeg',
+      'image/png',
+      'image/webp'
+    ];
+
+    if (
+      !tiposPermitidos.includes(
+        archivo.type
+      )
+    ) {
+
+      Swal.fire({
+        title: 'Formato no válido',
+        text: 'Selecciona una imagen JPG, PNG o WEBP.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3B5BDB'
+      });
+
+      input.value = '';
+
+      return;
+    }
+
+    // ===================================================
+    // VALIDAR TAMAÑO
+    // ===================================================
+
+    const tamanioMaximo =
+      5 * 1024 * 1024;
+
+    if (
+      archivo.size >
+      tamanioMaximo
+    ) {
+
+      Swal.fire({
+        title: 'Imagen demasiado grande',
+        text: 'La imagen no puede superar los 5 MB.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3B5BDB'
+      });
+
+      input.value = '';
+
+      return;
+    }
+
+    // ===================================================
+    // CREAR FORMULARIO MULTIPART
+    // ===================================================
+
+    const formulario =
+      new FormData();
+
+    formulario.append(
+      'foto',
+      archivo
+    );
+
+    console.log(
+      'ENVIANDO FOTO AL BACKEND...'
+    );
+
+    // ===================================================
+    // ENVIAR FOTO AL BACKEND
+    // ===================================================
+
+    this.http.patch<Usuario>(
+      `${this.apiUrl}/usuarios/${this.idUsuario}/`,
+      formulario
+    ).subscribe({
+
+      next: (usuarioActualizado) => {
+
+        console.log(
+          'USUARIO ACTUALIZADO CON FOTO:',
+          usuarioActualizado
+        );
+
+        // -----------------------------------------------
+        // ACTUALIZAR FOTO EN PANTALLA
+        // -----------------------------------------------
+
+        this.fotoUsuario =
+          this.normalizarUrlFoto(
+            usuarioActualizado.foto
+          );
+
+        // -----------------------------------------------
+        // ACTUALIZAR USUARIO ORIGINAL
+        // -----------------------------------------------
+
+        if (this.usuarioOriginal) {
+
+          this.usuarioOriginal = {
+            ...this.usuarioOriginal,
+            ...usuarioActualizado
+          };
+
+        } else {
+
+          this.usuarioOriginal = {
+            ...usuarioActualizado
+          };
+        }
+
+        // -----------------------------------------------
+        // ACTUALIZAR LOCALSTORAGE
+        // -----------------------------------------------
+
+        this.actualizarLocalStorage(
+          usuarioActualizado
+        );
+
+        const datosUsuario =
+          JSON.parse(
+            localStorage.getItem('usuario') ??
+            '{}'
+          );
+
+        // -----------------------------------------------
+        // AVISAR AL LAYOUT
+        // -----------------------------------------------
+
+        window.dispatchEvent(
+          new CustomEvent(
+            'usuarioActualizado',
+            {
+              detail: datosUsuario
+            }
+          )
+        );
+
+        // -----------------------------------------------
+        // LIMPIAR SELECTOR
+        // -----------------------------------------------
+
+        input.value = '';
+
+        this.cdr.detectChanges();
+
+        // -----------------------------------------------
+        // MENSAJE
+        // -----------------------------------------------
+
+        Swal.fire({
+          title: 'Foto actualizada',
+          text: 'Tu foto de perfil se actualizó correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#3B5BDB'
+        });
+      },
+
+      error: (error) => {
+
+        console.error(
+          'ERROR AL ACTUALIZAR FOTO:',
+          error
+        );
+
+        console.error(
+          'RESPUESTA DEL SERVIDOR:',
+          error.error
+        );
+
+        input.value = '';
+
+        let textoError =
+          'No fue posible actualizar la foto de perfil.';
+
+        if (error.error?.detail) {
+
+          textoError =
+            error.error.detail;
+
+        } else if (error.error?.error) {
+
+          textoError =
+            error.error.error;
+
+        } else if (
+          error.error &&
+          typeof error.error === 'object'
+        ) {
+
+          const errores =
+            Object.values(error.error)
+              .flat()
+              .join(' ');
+
+          textoError =
+            errores ||
+            'El servidor rechazó la imagen.';
+
+        } else if (error.status === 0) {
+
+          textoError =
+            'No se pudo conectar con el servidor.';
+        }
+
+        Swal.fire({
+          title: 'Error',
+          text: textoError,
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#3B5BDB'
+        });
+
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -676,7 +1114,8 @@ export class Configuracion implements OnInit {
     // ===================================================
     // VALIDAR CONTRASEÑA ACTUAL
     // ===================================================
-        if (!this.contrasenaActual.trim()) {
+
+    if (!this.contrasenaActual.trim()) {
       Swal.fire({
         title: 'Campo obligatorio',
         text: 'Ingresa tu contraseña actual.',
@@ -807,7 +1246,9 @@ export class Configuracion implements OnInit {
       `${this.apiUrl}/usuarios/cambiar-contrasena/`,
       datos
     ).subscribe({
+
       next: (respuesta) => {
+
         console.log(
           'CONTRASEÑA ACTUALIZADA:',
           respuesta
@@ -817,7 +1258,9 @@ export class Configuracion implements OnInit {
 
         Swal.fire({
           title: 'Contraseña actualizada',
-          text: respuesta?.mensaje ?? 'Contraseña actualizada correctamente.',
+          text:
+            respuesta?.mensaje ??
+            'Contraseña actualizada correctamente.',
           icon: 'success',
           confirmButtonText: 'Aceptar',
           confirmButtonColor: '#3B5BDB'
@@ -835,6 +1278,7 @@ export class Configuracion implements OnInit {
       },
 
       error: (error) => {
+
         console.error(
           'ERROR AL CAMBIAR CONTRASEÑA:',
           error
@@ -847,27 +1291,37 @@ export class Configuracion implements OnInit {
 
         this.guardando = false;
 
-        let textoError = 'No fue posible actualizar la contraseña.';
+        let textoError =
+          'No fue posible actualizar la contraseña.';
 
         if (error.error?.detail) {
-          textoError = error.error.detail;
+
+          textoError =
+            error.error.detail;
 
         } else if (error.error?.error) {
-          textoError = error.error.error;
+
+          textoError =
+            error.error.error;
 
         } else if (
           error.error &&
           typeof error.error === 'object'
         ) {
+
           const errores =
             Object.values(error.error)
               .flat()
               .join(' ');
 
-          textoError = errores || 'El servidor rechazó el cambio de contraseña.';
+          textoError =
+            errores ||
+            'El servidor rechazó el cambio de contraseña.';
 
         } else if (error.status === 0) {
-          textoError = 'No se pudo conectar con el servidor.';
+
+          textoError =
+            'No se pudo conectar con el servidor.';
         }
 
         Swal.fire({

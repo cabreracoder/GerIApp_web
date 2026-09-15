@@ -21,6 +21,7 @@ interface UsuarioActualizado {
   correo?: string;
   telefono?: string | null;
   rol?: string;
+  foto?: string | null;
   [key: string]: any;
 }
 
@@ -65,7 +66,6 @@ export class Layout implements OnDestroy {
       this.cdr.detectChanges();
     };
 
-
   constructor(
     private router: Router,
     private cdr: ChangeDetectorRef
@@ -83,7 +83,6 @@ export class Layout implements OnDestroy {
     );
   }
 
-
   // =====================================================
   // DATOS GENERALES DE LA APLICACIÓN
   // =====================================================
@@ -97,7 +96,6 @@ export class Layout implements OnDestroy {
   placeholderBuscador =
     'Buscar por nombre o documento...';
 
-
   // =====================================================
   // DATOS DEL USUARIO AUTENTICADO
   // =====================================================
@@ -108,13 +106,14 @@ export class Layout implements OnDestroy {
 
   inicialesUsuario = '';
 
+  // NUEVO: URL de la foto del usuario
+  fotoUsuario: string | null = null;
 
   // =====================================================
   // MENÚ FLOTANTE DE PACIENTES
   // =====================================================
 
   pacientesMenuAbierto = false;
-
 
   // =====================================================
   // MENÚ PRINCIPAL
@@ -166,7 +165,6 @@ export class Layout implements OnDestroy {
 
   ];
 
-
   // =====================================================
   // ABRIR / CERRAR MENÚ DE PACIENTES
   // =====================================================
@@ -177,7 +175,6 @@ export class Layout implements OnDestroy {
       !this.pacientesMenuAbierto;
   }
 
-
   // =====================================================
   // CERRAR MENÚ DE PACIENTES
   // =====================================================
@@ -186,7 +183,6 @@ export class Layout implements OnDestroy {
 
     this.pacientesMenuAbierto = false;
   }
-
 
   // =====================================================
   // CARGAR USUARIO DESDE LOCALSTORAGE
@@ -212,6 +208,11 @@ export class Layout implements OnDestroy {
         UsuarioActualizado =
         JSON.parse(usuarioGuardado);
 
+      console.log(
+        'LAYOUT - USUARIO DESDE LOCALSTORAGE:',
+        usuario
+      );
+
       this.actualizarDatosUsuario(usuario);
 
     } catch (error) {
@@ -222,7 +223,6 @@ export class Layout implements OnDestroy {
       );
     }
   }
-
 
   // =====================================================
   // ACTUALIZAR DATOS DEL USUARIO
@@ -240,14 +240,12 @@ export class Layout implements OnDestroy {
       `${usuario.nombres ?? ''} ${usuario.apellidos ?? ''}`
         .trim();
 
-
     // ---------------------------------------------------
     // ROL
     // ---------------------------------------------------
 
     this.rolUsuario =
       usuario.rol ?? '';
-
 
     // ---------------------------------------------------
     // INICIALES
@@ -262,15 +260,57 @@ export class Layout implements OnDestroy {
     this.inicialesUsuario =
       `${nombres.charAt(0)}${apellidos.charAt(0)}`
         .toUpperCase();
+
+    // ---------------------------------------------------
+    // FOTO DE PERFIL
+    // ---------------------------------------------------
+
+    this.fotoUsuario =
+      this.normalizarUrlFoto(usuario.foto);
+
+    console.log(
+      'LAYOUT - FOTO RECIBIDA:',
+      usuario.foto
+    );
+
+    console.log(
+      'LAYOUT - URL FINAL DE FOTO:',
+      this.fotoUsuario
+    );
   }
 
-// =====================================================
-// ABRIR CONFIGURACIÓN DESDE LAS INICIALES
-// =====================================================
+  // =====================================================
+  // NORMALIZAR URL DE LA FOTO
+  // =====================================================
 
-abrirConfiguracion(): void {
-  this.router.navigate(['/configuracion']);
-}
+  private normalizarUrlFoto(
+    foto: string | null | undefined
+  ): string | null {
+
+    if (!foto) {
+      return null;
+    }
+
+    // Si Django ya devuelve una URL completa
+    if (
+      foto.startsWith('http://') ||
+      foto.startsWith('https://')
+    ) {
+      return foto;
+    }
+
+    // Si Django devuelve una ruta como:
+    // /media/usuarios/foto.jpg
+    return `https://geriapp-backend.onrender.com${foto}`;
+  }
+
+  // =====================================================
+  // ABRIR CONFIGURACIÓN DESDE LAS INICIALES
+  // =====================================================
+
+  abrirConfiguracion(): void {
+    this.router.navigate(['/configuracion']);
+  }
 
   // =====================================================
   // CERRAR SESIÓN
@@ -290,7 +330,6 @@ abrirConfiguracion(): void {
       '/login'
     ]);
   }
-
 
   // =====================================================
   // DESTRUIR COMPONENTE

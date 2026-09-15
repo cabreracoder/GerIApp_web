@@ -1,7 +1,11 @@
 <main class="pagina">
- <!-- CABECERA -->
+
+  <!-- =====================================================
+       CABECERA
+  ====================================================== -->
   <header class="encabezado-configuracion">
     <div class="contenido-encabezado-configuracion">
+
       <h1 class="titulo-configuracion">
         Perfil
       </h1>
@@ -9,13 +13,18 @@
       <p class="subtitulo-configuracion">
         Configure su perfil y cambie su contraseña para mantener su cuenta segura.
       </p>
+
     </div>
   </header>
 
-  <!-- PERFIL DE ADMINISTRADOR -->
+
+  <!-- =====================================================
+       PERFIL DE ADMINISTRADOR
+  ====================================================== -->
   <section class="tarjeta-configuracion">
 
     <div class="titulo-seccion-configuracion">
+
       <span class="material-symbols-outlined">
         manage_accounts
       </span>
@@ -23,16 +32,35 @@
       <h3>
         Perfil de Administrador
       </h3>
+
     </div>
 
-    <!-- INFORMACIÓN DEL PERFIL -->
+
+    <!-- ===================================================
+         INFORMACIÓN DEL PERFIL
+    ==================================================== -->
     <div class="fila-perfil-configuracion">
 
+      <!-- AVATAR -->
       <div class="avatar-administrador">
-        {{ inicialesUsuario }}
+
+        <!-- Mostrar foto cuando existe -->
+        <img
+          *ngIf="fotoUsuario"
+          [src]="fotoUsuario"
+          alt="Foto de perfil">
+
+        <!-- Mostrar iniciales cuando no existe foto -->
+        <span *ngIf="!fotoUsuario">
+          {{ inicialesUsuario }}
+        </span>
+
       </div>
 
+
+      <!-- INFORMACIÓN -->
       <div class="informacion-perfil">
+
         <div class="nombre-perfil">
           {{ nombreUsuario }}
         </div>
@@ -40,24 +68,49 @@
         <div class="datos-perfil">
           {{ cargoUsuario }} · {{ correoUsuario }}
         </div>
+
       </div>
 
+
+      <!-- INPUT OCULTO PARA SELECCIONAR FOTO -->
+      <input
+        #selectorFoto
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        hidden
+        (change)="seleccionarFoto($event)">
+
+
+      <!-- BOTÓN CAMBIAR FOTO -->
       <button
         type="button"
         class="boton-secundario-configuracion"
-        (click)="cambiarFoto()">
+        (click)="cambiarFoto(selectorFoto)">
+
         Cambiar foto
+
       </button>
 
     </div>
 
-    <!-- CAMPOS DEL PERFIL -->
+
+    <!-- ===================================================
+         CAMPOS DEL PERFIL
+    ==================================================== -->
     <div class="cuadricula-formulario-configuracion">
 
+
+      <!-- NOMBRE -->
       <div class="campo-formulario-configuracion">
+
         <label for="configuracionNombre">
+
           Nombre Completo
-          <span class="asterisco-obligatorio">*</span>
+
+          <span class="asterisco-obligatorio">
+            *
+          </span>
+
         </label>
 
         <input
@@ -66,12 +119,21 @@
           [(ngModel)]="nombreUsuarioEdicion"
           autocomplete="name"
           required>
+
       </div>
 
+
+      <!-- CORREO -->
       <div class="campo-formulario-configuracion">
+
         <label for="configuracionEmail">
+
           Correo Electrónico
-          <span class="asterisco-obligatorio">*</span>
+
+          <span class="asterisco-obligatorio">
+            *
+          </span>
+
         </label>
 
         <input
@@ -80,12 +142,21 @@
           [(ngModel)]="correoUsuario"
           autocomplete="email"
           required>
+
       </div>
 
+
+      <!-- TELÉFONO -->
       <div class="campo-formulario-configuracion">
+
         <label for="configuracionTelefono">
+
           Teléfono
-          <span class="asterisco-obligatorio">*</span>
+
+          <span class="asterisco-obligatorio">
+            *
+          </span>
+
         </label>
 
         <input
@@ -94,9 +165,13 @@
           [(ngModel)]="telefonoUsuario"
           autocomplete="tel"
           required>
+
       </div>
 
+
+      <!-- CARGO -->
       <div class="campo-formulario-configuracion">
+
         <label for="configuracionCargo">
           Cargo
         </label>
@@ -106,11 +181,15 @@
           type="text"
           [(ngModel)]="cargoUsuario"
           readonly>
+
       </div>
 
     </div>
 
-    <!-- FOOTER DEL PERFIL -->
+
+    <!-- ===================================================
+         FOOTER DEL PERFIL
+    ==================================================== -->
     <div class="pie-tarjeta-configuracion">
 
       <button
@@ -134,10 +213,14 @@
 
   </section>
 
-  <!-- SEGURIDAD -->
+
+  <!-- =====================================================
+       SEGURIDAD
+  ====================================================== -->
   <section class="tarjeta-configuracion">
 
     <div class="titulo-seccion-configuracion">
+
       <span class="material-symbols-outlined">
         lock
       </span>
@@ -145,10 +228,15 @@
       <h3>
         Seguridad
       </h3>
+
     </div>
 
-    <!-- CAMPOS DE SEGURIDAD -->
+
+    <!-- ===================================================
+         CAMPOS DE SEGURIDAD
+    ==================================================== -->
     <div class="cuadricula-seguridad-configuracion">
+
 
       <!-- CONTRASEÑA ACTUAL -->
       <div class="campo-formulario-configuracion">
@@ -166,14 +254,21 @@
 
       </div>
 
+
       <div class="campo-formulario-vacio"></div>
+
 
       <!-- NUEVA CONTRASEÑA -->
       <div class="campo-formulario-configuracion">
 
         <label for="configuracionPasswordNueva">
+
           Nueva contraseña
-          <span class="asterisco-obligatorio">*</span>
+
+          <span class="asterisco-obligatorio">
+            *
+          </span>
+
         </label>
 
         <input
@@ -187,12 +282,18 @@
 
       </div>
 
+
       <!-- CONFIRMAR CONTRASEÑA -->
       <div class="campo-formulario-configuracion">
 
         <label for="configuracionPasswordConfirmar">
+
           Confirmar contraseña
-          <span class="asterisco-obligatorio">*</span>
+
+          <span class="asterisco-obligatorio">
+            *
+          </span>
+
         </label>
 
         <input
@@ -208,7 +309,10 @@
 
     </div>
 
-    <!-- FOOTER SEGURIDAD -->
+
+    <!-- ===================================================
+         FOOTER SEGURIDAD
+    ==================================================== -->
     <div class="pie-seguridad-configuracion">
 
       <button
@@ -225,3 +329,4 @@
   </section>
 
 </main>
+
