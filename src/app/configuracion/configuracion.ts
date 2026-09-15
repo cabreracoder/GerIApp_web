@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import {ChangeDetectorRef,Component,OnInit,inject} from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http'
+import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
 
 interface Usuario {
@@ -17,6 +17,7 @@ interface Usuario {
   estado: boolean;
   contrasena?: string;
   rol?: string;
+  foto?: string | null;
 }
 
 interface Rol {
@@ -60,6 +61,9 @@ export class Configuracion implements OnInit {
 
   cargoUsuario = '';
   inicialesUsuario = '';
+
+  fotoUsuario: string | null = null;
+  fotoSeleccionada: File | null = null;
 
   private usuarioOriginal: Usuario | null = null;
 
@@ -120,7 +124,7 @@ export class Configuracion implements OnInit {
     try {
       const usuarioLocal: Usuario = JSON.parse(usuarioGuardado);
 
-           if (!usuarioLocal.id_usuario) {
+      if (!usuarioLocal.id_usuario) {
         this.cargandoUsuario = false;
 
         Swal.fire({
@@ -160,7 +164,8 @@ export class Configuracion implements OnInit {
 
           this.cargandoUsuario = false;
 
-          let textoError = 'No fue posible cargar la información del usuario.';
+          let textoError =
+            'No fue posible cargar la información del usuario.';
 
           if (error.status === 404) {
             textoError = 'El usuario no existe en el servidor.';
@@ -196,6 +201,7 @@ export class Configuracion implements OnInit {
       this.cdr.detectChanges();
     }
   }
+
   // =====================================================
   // ASIGNAR DATOS DEL USUARIO
   // =====================================================
@@ -218,6 +224,9 @@ export class Configuracion implements OnInit {
       this.obtenerIniciales(this.nombreUsuario);
 
     this.cargoUsuario = 'Cargando...';
+
+    // Cargar foto del usuario
+    this.fotoUsuario = usuario.foto || null;
   }
 
   // =====================================================
@@ -293,7 +302,7 @@ export class Configuracion implements OnInit {
         this.cdr.detectChanges();
       },
 
-            error: (error) => {
+      error: (error) => {
         console.error('ERROR AL CARGAR ROLES:', error);
 
         this.cargandoRoles = false;
@@ -487,6 +496,7 @@ export class Configuracion implements OnInit {
       datos
     ).subscribe({
       next: (usuarioActualizado) => {
+
         console.log(
           'USUARIO ACTUALIZADO:',
           usuarioActualizado
@@ -595,7 +605,8 @@ export class Configuracion implements OnInit {
 
         this.guardando = false;
 
-        let textoError = 'No fue posible guardar los cambios.';
+        let textoError =
+          'No fue posible guardar los cambios.';
 
         if (error.error?.detail) {
           textoError = error.error.detail;
@@ -612,10 +623,13 @@ export class Configuracion implements OnInit {
               .flat()
               .join(' ');
 
-          textoError = errores || 'El servidor rechazó la actualización.';
+          textoError =
+            errores ||
+            'El servidor rechazó la actualización.';
 
         } else if (error.status === 0) {
-          textoError = 'No se pudo conectar con el servidor.';
+          textoError =
+            'No se pudo conectar con el servidor.';
         }
 
         Swal.fire({
@@ -630,17 +644,186 @@ export class Configuracion implements OnInit {
       }
     });
   }
+
   // =====================================================
   // CAMBIAR FOTO
   // =====================================================
 
-   cambiarFoto(): void {
-    Swal.fire({
-      title: 'Próximamente',
-      text: 'La actualización de la foto se implementará posteriormente.',
-      icon: 'info',
-      confirmButtonText: 'Aceptar',
-      confirmButtonColor: '#3B5BDB'
+  cambiarFoto(): void {
+    const input = document.createElement('input');
+
+    input.type = 'file';
+    input.accept = 'image/jpeg,image/png,image/webp';
+
+    input.onchange = (evento: Event) => {
+      const archivo =
+        (evento.target as HTMLInputElement).files?.[0];
+
+      if (!archivo) {
+        return;
+      }
+
+      // Validar el tipo de archivo
+      if (!archivo.type.startsWith('image/')) {
+        Swal.fire({
+          title: 'Archivo no válido',
+          text: 'Seleccione una imagen en formato JPG, PNG o WEBP.',
+          icon: 'warning',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#3B5BDB'
+        });
+        return;
+      }
+
+      // Validar tamaño máximo de 5 MB
+      if (archivo.size > 5 * 1024 * 1024) {
+        Swal.fire({
+          title: 'Imagen demasiado grande',
+          text: 'La imagen no puede superar los 5 MB.',
+          icon: 'warning',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#3B5BDB'
+        });
+        return;
+      }
+
+      // Guardar archivo seleccionado
+      this.fotoSeleccionada = archivo;
+
+      // Mostrar vista previa inmediatamente
+      const lector = new FileReader();
+
+      lector.onload = () => {
+        this.fotoUsuario =
+          lector.result as string;
+
+        this.cdr.detectChanges();
+      };
+
+      lector.readAsDataURL(archivo);
+
+      // Subir imagen al backend
+      this.subirFoto();
+    };
+
+    input.click();
+  }
+
+  // =====================================================
+  // SUBIR FOTO
+  // =====================================================
+
+  private subirFoto(): void {
+    if (!this.idUsuario || !this.fotoSeleccionada) {
+      return;
+    }
+
+    // Crear formulario para enviar la imagen
+    const formulario = new FormData();
+
+    formulario.append(
+      'foto',
+      this.fotoSeleccionada
+    );
+
+    // Enviar la imagen al backend
+    this.http.patch<Usuario>(
+      `${this.apiUrl}/usuarios/${this.idUsuario}/`,
+      formulario
+    ).subscribe({
+      next: (usuarioActualizado: Usuario) => {
+
+        console.log(
+          'FOTO ACTUALIZADA:',
+          usuarioActualizado
+        );
+
+        this.fotoUsuario =
+          usuarioActualizado.foto || null;
+
+        // Actualizar el usuario guardado en localStorage
+        const usuarioGuardado =
+          localStorage.getItem('usuario');
+
+        if (usuarioGuardado) {
+          const usuario =
+            JSON.parse(usuarioGuardado);
+
+          usuario.foto =
+            usuarioActualizado.foto;
+
+          localStorage.setItem(
+            'usuario',
+            JSON.stringify(usuario)
+          );
+        }
+
+        // Avisar al Layout que el usuario fue actualizado
+        window.dispatchEvent(
+          new CustomEvent(
+            'usuarioActualizado',
+            {
+              detail: usuarioActualizado
+            }
+          )
+        );
+
+        // Mostrar mensaje de éxito
+        Swal.fire({
+          title: 'Foto actualizada',
+          text: 'La foto de perfil se actualizó correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#3B5BDB'
+        });
+
+        this.fotoSeleccionada = null;
+        this.cdr.detectChanges();
+      },
+
+      error: (error) => {
+        console.error(
+          '===================================='
+        );
+
+        console.error(
+          'ERROR AL SUBIR LA FOTO'
+        );
+
+        console.error(
+          'STATUS:',
+          error.status
+        );
+
+        console.error(
+          'STATUS TEXT:',
+          error.statusText
+        );
+
+        console.error(
+          'ERROR COMPLETO:',
+          error
+        );
+
+        console.error(
+          'RESPUESTA DEL SERVIDOR:',
+          error.error
+        );
+
+        console.error(
+          '===================================='
+        );
+
+        Swal.fire({
+          title: `Error ${error.status}`,
+          text: error.error
+            ? JSON.stringify(error.error)
+            : 'No fue posible actualizar la foto de perfil.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#3B5BDB'
+        });
+      }
     });
   }
 
@@ -676,7 +859,8 @@ export class Configuracion implements OnInit {
     // ===================================================
     // VALIDAR CONTRASEÑA ACTUAL
     // ===================================================
-        if (!this.contrasenaActual.trim()) {
+
+    if (!this.contrasenaActual.trim()) {
       Swal.fire({
         title: 'Campo obligatorio',
         text: 'Ingresa tu contraseña actual.',
@@ -817,16 +1001,15 @@ export class Configuracion implements OnInit {
 
         Swal.fire({
           title: 'Contraseña actualizada',
-          text: respuesta?.mensaje ?? 'Contraseña actualizada correctamente.',
+          text:
+            respuesta?.mensaje ??
+            'Contraseña actualizada correctamente.',
           icon: 'success',
           confirmButtonText: 'Aceptar',
           confirmButtonColor: '#3B5BDB'
         });
 
-        // -----------------------------------------------
-        // LIMPIAR CAMPOS
-        // -----------------------------------------------
-
+        // Limpiar campos
         this.contrasenaActual = '';
         this.nuevaContrasena = '';
         this.confirmarContrasena = '';
@@ -847,7 +1030,8 @@ export class Configuracion implements OnInit {
 
         this.guardando = false;
 
-        let textoError = 'No fue posible actualizar la contraseña.';
+        let textoError =
+          'No fue posible actualizar la contraseña.';
 
         if (error.error?.detail) {
           textoError = error.error.detail;
@@ -864,10 +1048,13 @@ export class Configuracion implements OnInit {
               .flat()
               .join(' ');
 
-          textoError = errores || 'El servidor rechazó el cambio de contraseña.';
+          textoError =
+            errores ||
+            'El servidor rechazó el cambio de contraseña.';
 
         } else if (error.status === 0) {
-          textoError = 'No se pudo conectar con el servidor.';
+          textoError =
+            'No se pudo conectar con el servidor.';
         }
 
         Swal.fire({
@@ -883,4 +1070,3 @@ export class Configuracion implements OnInit {
     });
   }
 }
-
