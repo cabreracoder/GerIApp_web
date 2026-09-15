@@ -141,26 +141,42 @@ export class Configuracion implements OnInit {
 
       this.idUsuario = usuarioLocal.id_usuario;
 
-      console.log('ID DEL USUARIO LOGUEADO:', this.idUsuario);
+      console.log(
+        'ID DEL USUARIO LOGUEADO:',
+        this.idUsuario
+      );
 
       this.http.get<Usuario>(
         `${this.apiUrl}/usuarios/${this.idUsuario}/`
       ).subscribe({
         next: (usuarioApi) => {
-          console.log('USUARIO OBTENIDO DESDE API:', usuarioApi);
 
-          this.usuarioOriginal = { ...usuarioApi };
+          console.log(
+            'USUARIO OBTENIDO DESDE API:',
+            usuarioApi
+          );
+
+          this.usuarioOriginal = {
+            ...usuarioApi
+          };
 
           this.asignarDatosUsuario(usuarioApi);
+
           this.actualizarLocalStorage(usuarioApi);
+
           this.cargarRoles();
 
           this.cargandoUsuario = false;
+
           this.cdr.detectChanges();
         },
 
         error: (error) => {
-          console.error('ERROR AL CARGAR USUARIO:', error);
+
+          console.error(
+            'ERROR AL CARGAR USUARIO:',
+            error
+          );
 
           this.cargandoUsuario = false;
 
@@ -168,9 +184,12 @@ export class Configuracion implements OnInit {
             'No fue posible cargar la información del usuario.';
 
           if (error.status === 404) {
-            textoError = 'El usuario no existe en el servidor.';
+            textoError =
+              'El usuario no existe en el servidor.';
+
           } else if (error.status === 0) {
-            textoError = 'No se pudo conectar con el servidor.';
+            textoError =
+              'No se pudo conectar con el servidor.';
           }
 
           Swal.fire({
@@ -186,7 +205,11 @@ export class Configuracion implements OnInit {
       });
 
     } catch (error) {
-      console.error('ERROR AL LEER LOCALSTORAGE:', error);
+
+      console.error(
+        'ERROR AL LEER LOCALSTORAGE:',
+        error
+      );
 
       this.cargandoUsuario = false;
 
@@ -207,46 +230,76 @@ export class Configuracion implements OnInit {
   // =====================================================
 
   private asignarDatosUsuario(usuario: Usuario): void {
+
     this.idUsuario = usuario.id_usuario;
 
-    this.nombresUsuario = usuario.nombres ?? '';
-    this.apellidosUsuario = usuario.apellidos ?? '';
+    this.nombresUsuario =
+      usuario.nombres ?? '';
+
+    this.apellidosUsuario =
+      usuario.apellidos ?? '';
 
     this.nombreUsuario =
       `${this.nombresUsuario} ${this.apellidosUsuario}`.trim();
 
-    this.nombreUsuarioEdicion = this.nombreUsuario;
+    this.nombreUsuarioEdicion =
+      this.nombreUsuario;
 
-    this.correoUsuario = usuario.correo ?? '';
-    this.telefonoUsuario = usuario.telefono ?? '';
+    this.correoUsuario =
+      usuario.correo ?? '';
+
+    this.telefonoUsuario =
+      usuario.telefono ?? '';
 
     this.inicialesUsuario =
-      this.obtenerIniciales(this.nombreUsuario);
+      this.obtenerIniciales(
+        this.nombreUsuario
+      );
 
-    this.cargoUsuario = 'Cargando...';
+    this.cargoUsuario =
+      'Cargando...';
 
-    // Cargar foto del usuario
-    this.fotoUsuario = usuario.foto || null;
+    // ===================================================
+    // CARGAR FOTO DEL USUARIO
+    // ===================================================
+
+    this.fotoUsuario =
+      this.normalizarUrlFoto(usuario.foto);
+
+    console.log(
+      'URL DE FOTO:',
+      this.fotoUsuario
+    );
   }
 
   // =====================================================
   // ACTUALIZAR LOCALSTORAGE
   // =====================================================
 
-  private actualizarLocalStorage(usuarioApi: Usuario): void {
-    const usuarioAnterior = localStorage.getItem('usuario');
+  private actualizarLocalStorage(
+    usuarioApi: Usuario
+  ): void {
 
-    let datosUsuario: Usuario = usuarioApi;
+    const usuarioAnterior =
+      localStorage.getItem('usuario');
+
+    let datosUsuario: Usuario =
+      usuarioApi;
 
     if (usuarioAnterior) {
+
       try {
-        const anterior: Usuario = JSON.parse(usuarioAnterior);
+
+        const anterior: Usuario =
+          JSON.parse(usuarioAnterior);
 
         datosUsuario = {
           ...anterior,
           ...usuarioApi
         };
+
       } catch (error) {
+
         console.error(
           'ERROR AL LEER USUARIO ANTERIOR:',
           error
@@ -265,17 +318,24 @@ export class Configuracion implements OnInit {
   // =====================================================
 
   cargarRoles(): void {
+
     this.cargandoRoles = true;
 
     this.http.get<Rol[]>(
       `${this.apiUrl}/roles/`
     ).subscribe({
-      next: (roles) => {
-        console.log('ROLES OBTENIDOS:', roles);
 
-        this.roles = roles.filter(
-          rol => rol.estado === true
+      next: (roles) => {
+
+        console.log(
+          'ROLES OBTENIDOS:',
+          roles
         );
+
+        this.roles =
+          roles.filter(
+            rol => rol.estado === true
+          );
 
         this.cargandoRoles = false;
 
@@ -283,15 +343,22 @@ export class Configuracion implements OnInit {
           this.usuarioOriginal &&
           this.usuarioOriginal.id_rol !== null
         ) {
-          const rolUsuario = this.roles.find(
-            rol => rol.id_rol === this.usuarioOriginal!.id_rol
-          );
+
+          const rolUsuario =
+            this.roles.find(
+              rol =>
+                rol.id_rol ===
+                this.usuarioOriginal!.id_rol
+            );
 
           this.cargoUsuario =
-            rolUsuario?.nombre ?? 'Rol no encontrado';
+            rolUsuario?.nombre ??
+            'Rol no encontrado';
 
         } else {
-          this.cargoUsuario = 'Sin rol asignado';
+
+          this.cargoUsuario =
+            'Sin rol asignado';
         }
 
         console.log(
@@ -303,10 +370,16 @@ export class Configuracion implements OnInit {
       },
 
       error: (error) => {
-        console.error('ERROR AL CARGAR ROLES:', error);
+
+        console.error(
+          'ERROR AL CARGAR ROLES:',
+          error
+        );
 
         this.cargandoRoles = false;
-        this.cargoUsuario = 'No disponible';
+
+        this.cargoUsuario =
+          'No disponible';
 
         Swal.fire({
           title: 'Error',
@@ -326,16 +399,22 @@ export class Configuracion implements OnInit {
   // =====================================================
 
   obtenerIniciales(nombre: string): string {
+
     if (!nombre.trim()) {
       return '';
     }
 
-    const palabras = nombre
-      .trim()
-      .split(/\s+/)
-      .filter(palabra => palabra.length > 0);
+    const palabras =
+      nombre
+        .trim()
+        .split(/\s+/)
+        .filter(
+          palabra =>
+            palabra.length > 0
+        );
 
     if (palabras.length === 1) {
+
       return palabras[0]
         .substring(0, 2)
         .toUpperCase();
@@ -358,6 +437,7 @@ export class Configuracion implements OnInit {
     }
 
     if (this.idUsuario === null) {
+
       Swal.fire({
         title: 'Error',
         text: 'No se encontró el ID del usuario.',
@@ -365,6 +445,7 @@ export class Configuracion implements OnInit {
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#3B5BDB'
       });
+
       return;
     }
 
@@ -376,6 +457,7 @@ export class Configuracion implements OnInit {
       this.nombreUsuarioEdicion.trim();
 
     if (!nombreCompleto) {
+
       Swal.fire({
         title: 'Campo obligatorio',
         text: 'El nombre completo es obligatorio.',
@@ -383,6 +465,7 @@ export class Configuracion implements OnInit {
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#3B5BDB'
       });
+
       return;
     }
 
@@ -390,38 +473,54 @@ export class Configuracion implements OnInit {
     // SEPARAR NOMBRES Y APELLIDOS
     // ===================================================
 
-    const partesNombre = nombreCompleto
-      .split(/\s+/)
-      .filter(parte => parte.length > 0);
+    const partesNombre =
+      nombreCompleto
+        .split(/\s+/)
+        .filter(
+          parte =>
+            parte.length > 0
+        );
 
     let nombres = '';
     let apellidos = '';
 
     if (partesNombre.length === 1) {
-      nombres = partesNombre[0];
+
+      nombres =
+        partesNombre[0];
+
     } else if (partesNombre.length >= 3) {
-      nombres = partesNombre
-        .slice(0, -2)
-        .join(' ');
 
-      apellidos = partesNombre
-        .slice(-2)
-        .join(' ');
+      nombres =
+        partesNombre
+          .slice(0, -2)
+          .join(' ');
+
+      apellidos =
+        partesNombre
+          .slice(-2)
+          .join(' ');
+
     } else {
-      nombres = partesNombre[0];
 
-      apellidos = partesNombre
-        .slice(1)
-        .join(' ');
+      nombres =
+        partesNombre[0];
+
+      apellidos =
+        partesNombre
+          .slice(1)
+          .join(' ');
     }
 
     // ===================================================
     // VALIDAR CORREO
     // ===================================================
 
-    const correo = this.correoUsuario.trim();
+    const correo =
+      this.correoUsuario.trim();
 
     if (!correo) {
+
       Swal.fire({
         title: 'Campo obligatorio',
         text: 'El correo electrónico es obligatorio.',
@@ -429,13 +528,16 @@ export class Configuracion implements OnInit {
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#3B5BDB'
       });
+
       return;
     }
 
     const correoValido =
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        .test(correo);
 
     if (!correoValido) {
+
       Swal.fire({
         title: 'Correo inválido',
         text: 'Ingresa un correo electrónico válido.',
@@ -443,6 +545,7 @@ export class Configuracion implements OnInit {
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#3B5BDB'
       });
+
       return;
     }
 
@@ -450,9 +553,11 @@ export class Configuracion implements OnInit {
     // VALIDAR TELÉFONO
     // ===================================================
 
-    const telefono = this.telefonoUsuario.trim();
+    const telefono =
+      this.telefonoUsuario.trim();
 
     if (!telefono) {
+
       Swal.fire({
         title: 'Campo obligatorio',
         text: 'El teléfono es obligatorio.',
@@ -460,6 +565,7 @@ export class Configuracion implements OnInit {
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#3B5BDB'
       });
+
       return;
     }
 
@@ -485,6 +591,7 @@ export class Configuracion implements OnInit {
     );
 
     this.guardando = true;
+
     this.cdr.detectChanges();
 
     // ===================================================
@@ -495,6 +602,7 @@ export class Configuracion implements OnInit {
       `${this.apiUrl}/usuarios/${this.idUsuario}/`,
       datos
     ).subscribe({
+
       next: (usuarioActualizado) => {
 
         console.log(
@@ -503,10 +611,12 @@ export class Configuracion implements OnInit {
         );
 
         this.nombresUsuario =
-          usuarioActualizado.nombres ?? nombres;
+          usuarioActualizado.nombres ??
+          nombres;
 
         this.apellidosUsuario =
-          usuarioActualizado.apellidos ?? apellidos;
+          usuarioActualizado.apellidos ??
+          apellidos;
 
         this.nombreUsuario =
           `${this.nombresUsuario} ${this.apellidosUsuario}`.trim();
@@ -515,10 +625,12 @@ export class Configuracion implements OnInit {
           this.nombreUsuario;
 
         this.correoUsuario =
-          usuarioActualizado.correo ?? correo;
+          usuarioActualizado.correo ??
+          correo;
 
         this.telefonoUsuario =
-          usuarioActualizado.telefono ?? telefono;
+          usuarioActualizado.telefono ??
+          telefono;
 
         this.inicialesUsuario =
           this.obtenerIniciales(
@@ -530,14 +642,29 @@ export class Configuracion implements OnInit {
         // -----------------------------------------------
 
         if (this.usuarioOriginal) {
+
           this.usuarioOriginal = {
             ...this.usuarioOriginal,
             ...usuarioActualizado
           };
+
         } else {
+
           this.usuarioOriginal = {
             ...usuarioActualizado
           };
+        }
+
+        // -----------------------------------------------
+        // ACTUALIZAR FOTO
+        // -----------------------------------------------
+
+        if (usuarioActualizado.foto) {
+
+          this.fotoUsuario =
+            this.normalizarUrlFoto(
+              usuarioActualizado.foto
+            );
         }
 
         // -----------------------------------------------
@@ -557,15 +684,44 @@ export class Configuracion implements OnInit {
         // AVISAR AL LAYOUT
         // -----------------------------------------------
 
-        window.dispatchEvent(
-          new CustomEvent(
-            'usuarioActualizado',
-            {
-              detail: datosUsuario
-            }
-          )
-        );
+          const usuarioParaLayout =
+            localStorage.getItem('usuario');
 
+          if (usuarioParaLayout) {
+
+            try {
+
+              const usuarioCompleto: Usuario =
+                JSON.parse(usuarioParaLayout);
+
+              // Asegurar que la foto recién subida esté incluida
+              usuarioCompleto.foto =
+                usuarioActualizado.foto;
+
+              // Actualizar nuevamente localStorage
+              localStorage.setItem(
+                'usuario',
+                JSON.stringify(usuarioCompleto)
+              );
+
+              // Enviar usuario completo al Layout
+              window.dispatchEvent(
+                new CustomEvent(
+                  'usuarioActualizado',
+                  {
+                    detail: usuarioCompleto
+                  }
+                )
+              );
+
+            } catch (error) {
+
+              console.error(
+                'ERROR AL ACTUALIZAR EL LAYOUT:',
+                error
+              );
+            }
+          }
         // -----------------------------------------------
         // FINALIZAR
         // -----------------------------------------------
@@ -593,6 +749,7 @@ export class Configuracion implements OnInit {
       },
 
       error: (error) => {
+
         console.error(
           'ERROR AL ACTUALIZAR PERFIL:',
           error
@@ -609,15 +766,20 @@ export class Configuracion implements OnInit {
           'No fue posible guardar los cambios.';
 
         if (error.error?.detail) {
-          textoError = error.error.detail;
+
+          textoError =
+            error.error.detail;
 
         } else if (error.error?.error) {
-          textoError = error.error.error;
+
+          textoError =
+            error.error.error;
 
         } else if (
           error.error &&
           typeof error.error === 'object'
         ) {
+
           const errores =
             Object.values(error.error)
               .flat()
@@ -628,6 +790,7 @@ export class Configuracion implements OnInit {
             'El servidor rechazó la actualización.';
 
         } else if (error.status === 0) {
+
           textoError =
             'No se pudo conectar con el servidor.';
         }
@@ -650,61 +813,106 @@ export class Configuracion implements OnInit {
   // =====================================================
 
   cambiarFoto(): void {
-    const input = document.createElement('input');
+
+    console.log(
+      'CAMBIAR FOTO EJECUTÁNDOSE'
+    );
+
+    const input =
+      document.createElement('input');
 
     input.type = 'file';
-    input.accept = 'image/jpeg,image/png,image/webp';
 
-    input.onchange = (evento: Event) => {
-      const archivo =
-        (evento.target as HTMLInputElement).files?.[0];
+    input.accept =
+      'image/jpeg,image/png,image/webp';
 
-      if (!archivo) {
-        return;
-      }
+    input.onchange =
+      (evento: Event) => {
 
-      // Validar el tipo de archivo
-      if (!archivo.type.startsWith('image/')) {
-        Swal.fire({
-          title: 'Archivo no válido',
-          text: 'Seleccione una imagen en formato JPG, PNG o WEBP.',
-          icon: 'warning',
-          confirmButtonText: 'Aceptar',
-          confirmButtonColor: '#3B5BDB'
-        });
-        return;
-      }
+        const archivo =
+          (evento.target as HTMLInputElement)
+            .files?.[0];
 
-      // Validar tamaño máximo de 5 MB
-      if (archivo.size > 5 * 1024 * 1024) {
-        Swal.fire({
-          title: 'Imagen demasiado grande',
-          text: 'La imagen no puede superar los 5 MB.',
-          icon: 'warning',
-          confirmButtonText: 'Aceptar',
-          confirmButtonColor: '#3B5BDB'
-        });
-        return;
-      }
+        if (!archivo) {
+          return;
+        }
 
-      // Guardar archivo seleccionado
-      this.fotoSeleccionada = archivo;
+        // -----------------------------------------------
+        // VALIDAR TIPO
+        // -----------------------------------------------
 
-      // Mostrar vista previa inmediatamente
-      const lector = new FileReader();
+        if (
+          !archivo.type.startsWith('image/')
+        ) {
 
-      lector.onload = () => {
-        this.fotoUsuario =
-          lector.result as string;
+          Swal.fire({
+            title: 'Archivo no válido',
+            text: 'Seleccione una imagen en formato JPG, PNG o WEBP.',
+            icon: 'warning',
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#3B5BDB'
+          });
 
-        this.cdr.detectChanges();
+          return;
+        }
+
+        // -----------------------------------------------
+        // VALIDAR TAMAÑO
+        // -----------------------------------------------
+
+        if (
+          archivo.size >
+          5 * 1024 * 1024
+        ) {
+
+          Swal.fire({
+            title: 'Imagen demasiado grande',
+            text: 'La imagen no puede superar los 5 MB.',
+            icon: 'warning',
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#3B5BDB'
+          });
+
+          return;
+        }
+
+        console.log(
+          'IMAGEN SELECCIONADA:',
+          archivo
+        );
+
+        // -----------------------------------------------
+        // GUARDAR ARCHIVO
+        // -----------------------------------------------
+
+        this.fotoSeleccionada =
+          archivo;
+
+        // -----------------------------------------------
+        // VISTA PREVIA
+        // -----------------------------------------------
+
+        const lector =
+          new FileReader();
+
+        lector.onload = () => {
+
+          this.fotoUsuario =
+            lector.result as string;
+
+          this.cdr.detectChanges();
+        };
+
+        lector.readAsDataURL(
+          archivo
+        );
+
+        // -----------------------------------------------
+        // SUBIR AL BACKEND
+        // -----------------------------------------------
+
+        this.subirFoto();
       };
-
-      lector.readAsDataURL(archivo);
-
-      // Subir imagen al backend
-      this.subirFoto();
-    };
 
     input.click();
   }
@@ -714,23 +922,34 @@ export class Configuracion implements OnInit {
   // =====================================================
 
   private subirFoto(): void {
-    if (!this.idUsuario || !this.fotoSeleccionada) {
+
+    if (
+      !this.idUsuario ||
+      !this.fotoSeleccionada
+    ) {
       return;
     }
 
-    // Crear formulario para enviar la imagen
-    const formulario = new FormData();
+    // Crear formulario multipart
+    const formulario =
+      new FormData();
 
     formulario.append(
       'foto',
       this.fotoSeleccionada
     );
 
-    // Enviar la imagen al backend
+    console.log(
+      'SUBIENDO FOTO DEL USUARIO:',
+      this.idUsuario
+    );
+
+    // Enviar imagen al backend
     this.http.patch<Usuario>(
       `${this.apiUrl}/usuarios/${this.idUsuario}/`,
       formulario
     ).subscribe({
+
       next: (usuarioActualizado: Usuario) => {
 
         console.log(
@@ -738,27 +957,69 @@ export class Configuracion implements OnInit {
           usuarioActualizado
         );
 
-        this.fotoUsuario =
-          usuarioActualizado.foto || null;
+        // -----------------------------------------------
+        // GUARDAR URL CORRECTA DE LA FOTO
+        // -----------------------------------------------
 
-        // Actualizar el usuario guardado en localStorage
+        this.fotoUsuario =
+          this.normalizarUrlFoto(
+            usuarioActualizado.foto
+          );
+
+        console.log(
+          'URL FINAL DE FOTO:',
+          this.fotoUsuario
+        );
+
+        // -----------------------------------------------
+        // ACTUALIZAR LOCALSTORAGE
+        // -----------------------------------------------
+
         const usuarioGuardado =
           localStorage.getItem('usuario');
 
         if (usuarioGuardado) {
-          const usuario =
-            JSON.parse(usuarioGuardado);
 
-          usuario.foto =
-            usuarioActualizado.foto;
+          try {
 
-          localStorage.setItem(
-            'usuario',
-            JSON.stringify(usuario)
-          );
+            const usuario =
+              JSON.parse(
+                usuarioGuardado
+              );
+
+            usuario.foto =
+              usuarioActualizado.foto;
+
+            localStorage.setItem(
+              'usuario',
+              JSON.stringify(usuario)
+            );
+
+          } catch (error) {
+
+            console.error(
+              'ERROR AL ACTUALIZAR LOCALSTORAGE:',
+              error
+            );
+          }
         }
 
-        // Avisar al Layout que el usuario fue actualizado
+        // -----------------------------------------------
+        // ACTUALIZAR USUARIO ORIGINAL
+        // -----------------------------------------------
+
+        if (this.usuarioOriginal) {
+
+          this.usuarioOriginal = {
+            ...this.usuarioOriginal,
+            ...usuarioActualizado
+          };
+        }
+
+        // -----------------------------------------------
+        // AVISAR AL LAYOUT
+        // -----------------------------------------------
+
         window.dispatchEvent(
           new CustomEvent(
             'usuarioActualizado',
@@ -768,7 +1029,15 @@ export class Configuracion implements OnInit {
           )
         );
 
-        // Mostrar mensaje de éxito
+        // -----------------------------------------------
+        // FINALIZAR
+        // -----------------------------------------------
+
+        this.fotoSeleccionada =
+          null;
+
+        this.cdr.detectChanges();
+
         Swal.fire({
           title: 'Foto actualizada',
           text: 'La foto de perfil se actualizó correctamente.',
@@ -776,12 +1045,10 @@ export class Configuracion implements OnInit {
           confirmButtonText: 'Aceptar',
           confirmButtonColor: '#3B5BDB'
         });
-
-        this.fotoSeleccionada = null;
-        this.cdr.detectChanges();
       },
 
       error: (error) => {
+
         console.error(
           '===================================='
         );
@@ -828,6 +1095,27 @@ export class Configuracion implements OnInit {
   }
 
   // =====================================================
+  // NORMALIZAR URL DE LA FOTO
+  // =====================================================
+
+  private normalizarUrlFoto(
+    foto: string | null | undefined
+  ): string | null {
+
+    if (!foto) {
+      return null;
+    }
+
+    // Si el backend ya devuelve una URL completa
+    if (foto.startsWith('http')) {
+      return foto;
+    }
+
+    // Si devuelve /media/usuarios/archivo.jpg
+    return `https://geriapp-backend.onrender.com${foto}`;
+  }
+
+  // =====================================================
   // CAMBIAR CONTRASEÑA
   // =====================================================
 
@@ -838,6 +1126,7 @@ export class Configuracion implements OnInit {
     // ===================================================
 
     if (this.idUsuario === null) {
+
       Swal.fire({
         title: 'Error',
         text: 'No se encontró el ID del usuario.',
@@ -845,6 +1134,7 @@ export class Configuracion implements OnInit {
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#3B5BDB'
       });
+
       return;
     }
 
@@ -861,6 +1151,7 @@ export class Configuracion implements OnInit {
     // ===================================================
 
     if (!this.contrasenaActual.trim()) {
+
       Swal.fire({
         title: 'Campo obligatorio',
         text: 'Ingresa tu contraseña actual.',
@@ -868,6 +1159,7 @@ export class Configuracion implements OnInit {
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#3B5BDB'
       });
+
       return;
     }
 
@@ -876,6 +1168,7 @@ export class Configuracion implements OnInit {
     // ===================================================
 
     if (!this.nuevaContrasena.trim()) {
+
       Swal.fire({
         title: 'Campo obligatorio',
         text: 'Ingresa la nueva contraseña.',
@@ -883,6 +1176,7 @@ export class Configuracion implements OnInit {
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#3B5BDB'
       });
+
       return;
     }
 
@@ -891,6 +1185,7 @@ export class Configuracion implements OnInit {
     // ===================================================
 
     if (!this.confirmarContrasena.trim()) {
+
       Swal.fire({
         title: 'Campo obligatorio',
         text: 'Confirma la nueva contraseña.',
@@ -898,6 +1193,7 @@ export class Configuracion implements OnInit {
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#3B5BDB'
       });
+
       return;
     }
 
@@ -905,7 +1201,10 @@ export class Configuracion implements OnInit {
     // VALIDAR LONGITUD MÍNIMA
     // ===================================================
 
-    if (this.nuevaContrasena.length < 8) {
+    if (
+      this.nuevaContrasena.length < 8
+    ) {
+
       Swal.fire({
         title: 'Contraseña muy corta',
         text: 'La nueva contraseña debe tener al menos 8 caracteres.',
@@ -913,6 +1212,7 @@ export class Configuracion implements OnInit {
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#3B5BDB'
       });
+
       return;
     }
 
@@ -920,7 +1220,10 @@ export class Configuracion implements OnInit {
     // VALIDAR LONGITUD MÁXIMA
     // ===================================================
 
-    if (this.nuevaContrasena.length > 10) {
+    if (
+      this.nuevaContrasena.length > 10
+    ) {
+
       Swal.fire({
         title: 'Contraseña muy larga',
         text: 'La nueva contraseña debe tener máximo 10 caracteres.',
@@ -928,6 +1231,7 @@ export class Configuracion implements OnInit {
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#3B5BDB'
       });
+
       return;
     }
 
@@ -935,7 +1239,10 @@ export class Configuracion implements OnInit {
     // VALIDAR CONFIRMACIÓN MÁXIMA
     // ===================================================
 
-    if (this.confirmarContrasena.length > 10) {
+    if (
+      this.confirmarContrasena.length > 10
+    ) {
+
       Swal.fire({
         title: 'Confirmación muy larga',
         text: 'La confirmación de la contraseña no puede superar los 10 caracteres.',
@@ -943,6 +1250,7 @@ export class Configuracion implements OnInit {
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#3B5BDB'
       });
+
       return;
     }
 
@@ -954,6 +1262,7 @@ export class Configuracion implements OnInit {
       this.nuevaContrasena !==
       this.confirmarContrasena
     ) {
+
       Swal.fire({
         title: 'Las contraseñas no coinciden',
         text: 'Las contraseñas nuevas no coinciden.',
@@ -961,6 +1270,7 @@ export class Configuracion implements OnInit {
         confirmButtonText: 'Aceptar',
         confirmButtonColor: '#3B5BDB'
       });
+
       return;
     }
 
@@ -970,9 +1280,12 @@ export class Configuracion implements OnInit {
 
     const datos = {
       id_usuario: this.idUsuario,
-      contrasena_actual: this.contrasenaActual,
-      nueva_contrasena: this.nuevaContrasena,
-      confirmar_contrasena: this.confirmarContrasena
+      contrasena_actual:
+        this.contrasenaActual,
+      nueva_contrasena:
+        this.nuevaContrasena,
+      confirmar_contrasena:
+        this.confirmarContrasena
     };
 
     console.log(
@@ -981,6 +1294,7 @@ export class Configuracion implements OnInit {
     );
 
     this.guardando = true;
+
     this.cdr.detectChanges();
 
     // ===================================================
@@ -991,7 +1305,9 @@ export class Configuracion implements OnInit {
       `${this.apiUrl}/usuarios/cambiar-contrasena/`,
       datos
     ).subscribe({
+
       next: (respuesta) => {
+
         console.log(
           'CONTRASEÑA ACTUALIZADA:',
           respuesta
@@ -1018,6 +1334,7 @@ export class Configuracion implements OnInit {
       },
 
       error: (error) => {
+
         console.error(
           'ERROR AL CAMBIAR CONTRASEÑA:',
           error
@@ -1034,15 +1351,20 @@ export class Configuracion implements OnInit {
           'No fue posible actualizar la contraseña.';
 
         if (error.error?.detail) {
-          textoError = error.error.detail;
+
+          textoError =
+            error.error.detail;
 
         } else if (error.error?.error) {
-          textoError = error.error.error;
+
+          textoError =
+            error.error.error;
 
         } else if (
           error.error &&
           typeof error.error === 'object'
         ) {
+
           const errores =
             Object.values(error.error)
               .flat()
@@ -1053,6 +1375,7 @@ export class Configuracion implements OnInit {
             'El servidor rechazó el cambio de contraseña.';
 
         } else if (error.status === 0) {
+
           textoError =
             'No se pudo conectar con el servidor.';
         }

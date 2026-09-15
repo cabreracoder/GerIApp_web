@@ -21,6 +21,7 @@ interface UsuarioActualizado {
   correo?: string;
   telefono?: string | null;
   rol?: string;
+  foto?: string | null;
   [key: string]: any;
 }
 
@@ -107,6 +108,9 @@ export class Layout implements OnDestroy {
   rolUsuario = '';
 
   inicialesUsuario = '';
+
+  // URL de la foto del usuario
+  fotoUsuario: string | null = null;
 
 
   // =====================================================
@@ -262,15 +266,48 @@ export class Layout implements OnDestroy {
     this.inicialesUsuario =
       `${nombres.charAt(0)}${apellidos.charAt(0)}`
         .toUpperCase();
+
+
+    // ---------------------------------------------------
+    // FOTO DE PERFIL
+    // ---------------------------------------------------
+
+    this.fotoUsuario =
+      this.normalizarUrlFoto(usuario.foto);
   }
 
-// =====================================================
-// ABRIR CONFIGURACIÓN DESDE LAS INICIALES
-// =====================================================
 
-abrirConfiguracion(): void {
-  this.router.navigate(['/configuracion']);
-}
+  // =====================================================
+  // NORMALIZAR URL DE LA FOTO
+  // =====================================================
+
+  private normalizarUrlFoto(
+    foto: string | null | undefined
+  ): string | null {
+
+    if (!foto) {
+      return null;
+    }
+
+    if (foto.startsWith('http')) {
+      return foto;
+    }
+
+    return `https://geriapp-backend.onrender.com${foto}`;
+  }
+
+
+  // =====================================================
+  // ABRIR CONFIGURACIÓN DESDE LAS INICIALES
+  // =====================================================
+
+  abrirConfiguracion(): void {
+
+    this.router.navigate([
+      '/configuracion'
+    ]);
+  }
+
 
   // =====================================================
   // CERRAR SESIÓN
@@ -304,3 +341,4 @@ abrirConfiguracion(): void {
     );
   }
 }
+

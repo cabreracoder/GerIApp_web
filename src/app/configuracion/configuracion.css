@@ -120,6 +120,13 @@ border-radius: 50%;
 font-family: var(--font-heading-family);
 font-size: 17px;
 font-weight: var(--font-weight-bold);
+
+.foto-administrador {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 }
 
 .informacion-perfil {

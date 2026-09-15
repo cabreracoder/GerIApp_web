@@ -5,62 +5,56 @@
        ===================================================== -->
   <aside class="layout-sidebar">
 
-
-
-  
-<!-- LOGOTIPO -->
-<div class="layout-logo-container">
-  <div class="layout-logo">
-    <img
-      src="/Logo-GerIApp.png"
-      alt="GerIApp"
-      class="layout-logo-image"
-    >
-  </div>
-</div>
-
+    <!-- LOGOTIPO -->
+    <div class="layout-logo-container">
+      <div class="layout-logo">
+        <img
+          src="/Logo-GerIApp.png"
+          alt="GerIApp"
+          class="layout-logo-image"
+        >
+      </div>
+    </div>
 
     <!-- MENÚ PRINCIPAL -->
     <nav class="layout-menu">
 
-  <ng-container *ngFor="let item of menu">
+      <ng-container *ngFor="let item of menu">
 
-    <!-- OPCIONES NORMALES -->
-    <a
-      *ngIf="item.nombre !== 'Pacientes'"
-      [routerLink]="item.ruta"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-      class="layout-menu-button"
-      [attr.title]="item.nombre"
-    >
-      <span class="material-symbols-outlined">
-        {{ item.icono }}
-      </span>
-    </a>
+        <!-- OPCIONES NORMALES -->
+        <a
+          *ngIf="item.nombre !== 'Pacientes'"
+          [routerLink]="item.ruta"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="layout-menu-button"
+          [attr.title]="item.nombre"
+        >
+          <span class="material-symbols-outlined">
+            {{ item.icono }}
+          </span>
+        </a>
 
-   <!-- PACIENTES -->
-<a
-  *ngIf="item.nombre === 'Pacientes'"
-  [routerLink]="item.ruta"
-  routerLinkActive="active"
-  [routerLinkActiveOptions]="{ exact: true }"
-  class="layout-menu-button"
-  [attr.title]="item.nombre"
->
-  <span class="material-symbols-outlined">
-    {{ item.icono }}
-  </span>
-</a>
+        <!-- PACIENTES -->
+        <a
+          *ngIf="item.nombre === 'Pacientes'"
+          [routerLink]="item.ruta"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="layout-menu-button"
+          [attr.title]="item.nombre"
+        >
+          <span class="material-symbols-outlined">
+            {{ item.icono }}
+          </span>
+        </a>
 
-  </ng-container>
+      </ng-container>
 
-</nav>
-
+    </nav>
 
     <!-- MENÚ INFERIOR -->
     <div class="layout-sidebar-footer">
-
 
       <!-- CERRAR SESIÓN -->
       <button
@@ -138,13 +132,25 @@
 
           </div>
 
+          <!-- FOTO / INICIALES -->
           <button
-                type="button"
-                class="layout-avatar"
-                title="Ver perfil"
-                (click)="abrirConfiguracion()"
-              > 
-                {{ inicialesUsuario }}
+            type="button"
+            class="layout-avatar"
+            title="Ver perfil"
+            (click)="abrirConfiguracion()"
+          >
+
+            <img
+              *ngIf="fotoUsuario"
+              [src]="fotoUsuario"
+              alt="Foto de perfil"
+              class="foto-usuario"
+            >
+
+            <span *ngIf="!fotoUsuario">
+              {{ inicialesUsuario }}
+            </span>
+
           </button>
 
         </div>
@@ -166,3 +172,4 @@
   </div>
 
 </div>
+
