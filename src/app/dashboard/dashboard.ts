@@ -1,5 +1,5 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 interface Mes {
@@ -214,6 +214,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
+    private cd: ChangeDetectorRef
 
   ) { }
 
@@ -323,52 +324,25 @@ export class DashboardComponent implements OnInit {
 
         next: (pacientes) => {
 
-          console.log(
-            'Pacientes Dashboard:',
-            pacientes
-          );
-
-
           const activos = pacientes.filter(
             paciente => paciente.estado === true
           );
-
 
           const inactivos = pacientes.filter(
             paciente => paciente.estado === false
           );
 
 
-          // Pacientes activos
-          this.totalPacientes =
-            activos.length;
+          this.totalPacientes = activos.length;
 
+          this.pacientesActuales = activos.length;
 
-          this.pacientesActuales =
-            activos.length;
-
-
-          // Altas = pacientes inactivos
-          this.altasDelMes =
-            inactivos.length;
-
-
-          console.log(
-            'Activos:',
-            activos.length
-          );
-
-
-          console.log(
-            'Inactivos:',
-            inactivos.length
-          );
-
-
+          this.altasDelMes = inactivos.length;
           this.calcularOcupacion();
 
-        },
+          this.cd.detectChanges();
 
+        },
 
         error: (error) => {
 
