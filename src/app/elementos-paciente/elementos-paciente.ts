@@ -10,7 +10,6 @@ const API_URL = 'http://127.0.0.1:8000/api';
 interface Medicamento {
   id_medicamentos: number;
   nombre: string;
-  vencimiento: string;
   descripcion: string;
   principio_activo: string;
   concentracion: string;
@@ -158,15 +157,14 @@ export class ElementosPaciente implements OnInit {
         this.idPaciente
       );
 
-      // Cargar elementos registrados
       this.cargarElementos();
 
-      // Cargar catálogos desde el inicio
       this.cargarMedicamentos();
+
       this.cargarInsumos();
+
       this.cargarTiposInsumo();
 
-      // Cargar pacientes para mostrar el nombre
       this.cargarPacientes();
 
     } else {
@@ -222,6 +220,12 @@ export class ElementosPaciente implements OnInit {
   ): void {
 
     this.tipoElemento = tipo;
+
+    // Si cambia a insumo, no conservar
+    // una fecha de vencimiento anterior.
+    if (tipo === 'insumo') {
+      this.fechaVencimiento = '';
+    }
   }
 
   // =====================================================
@@ -256,9 +260,6 @@ export class ElementosPaciente implements OnInit {
     }
 
     this.vistaRegistro = 'formulario';
-
-    // Los datos ya fueron cargados al iniciar.
-    // Solo volvemos a cargarlos si todavía no existen.
 
     if (this.tipoElemento === 'medicamento') {
 
@@ -655,6 +656,25 @@ export class ElementosPaciente implements OnInit {
     }
 
     // ---------------------------------------------------
+    // VALIDAR FECHA DE VENCIMIENTO
+    // SOLO PARA MEDICAMENTOS
+    // ---------------------------------------------------
+
+    if (
+      this.tipoElemento === 'medicamento' &&
+      !this.fechaVencimiento
+    ) {
+
+      Swal.fire({
+        icon: 'warning',
+        title: 'Fecha de vencimiento requerida',
+        text: 'Debe ingresar la fecha de vencimiento del medicamento.'
+      });
+
+      return;
+    }
+
+    // ---------------------------------------------------
     // CREAR DATOS PARA LA API
     // ---------------------------------------------------
 
@@ -668,7 +688,7 @@ export class ElementosPaciente implements OnInit {
           : this.fechaIngreso,
 
       fecha_vencimiento:
-        this.fechaVencimiento
+        this.tipoElemento === 'medicamento'
           ? this.fechaVencimiento
           : null,
 
@@ -729,7 +749,6 @@ export class ElementosPaciente implements OnInit {
 
         this.cerrarFormulario();
 
-        // Recargar la tabla después del registro
         this.cargarElementos();
       },
 
@@ -902,3 +921,4 @@ export class ElementosPaciente implements OnInit {
       : `Insumo #${id}`;
   }
 }
+

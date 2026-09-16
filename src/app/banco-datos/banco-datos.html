@@ -23,10 +23,6 @@
         [class.activo]="catalogoSeleccionado === catalogo.nombre"
         (click)="seleccionarCatalogo(catalogo.nombre)"
       >
-        <span class="material-symbols-outlined">
-          {{ catalogo.icono }}
-        </span>
-
         {{ catalogo.nombre }}
       </button>
 
@@ -78,7 +74,6 @@
 
       <!-- ===============================================
            FORMULARIO MEDICAMENTO
-           SOLO APARECE AL PRESIONAR NUEVO O EDITAR
       ================================================= -->
       <div
         class="formulario-catalogo"
@@ -218,24 +213,6 @@
 
             </div>
 
-
-            <!-- VENCIMIENTO -->
-            <div class="campo-formulario">
-
-              <label for="vencimiento">
-                Vencimiento
-              </label>
-
-              <input
-                id="vencimiento"
-                type="date"
-                [(ngModel)]="medicamentoActual.vencimiento"
-                name="vencimiento"
-              >
-
-            </div>
-
-
             <!-- ESTADO -->
             <div class="campo-formulario">
 
@@ -341,7 +318,6 @@
               <th>Concentración</th>
               <th>Presentación</th>
               <th>Unidad de medida</th>
-              <th>Vencimiento</th>
               <th>Estado</th>
               <th>Acciones</th>
             </tr>
@@ -373,10 +349,6 @@
 
               <td>
                 {{ medicamento.unidad_medida }}
-              </td>
-
-              <td>
-                {{ medicamento.vencimiento }}
               </td>
 
               <td>
@@ -431,7 +403,7 @@
             <tr *ngIf="medicamentos.length === 0">
 
               <td
-                colspan="8"
+                colspan="7"
                 class="sin-registros"
               >
                 No hay medicamentos registrados.
@@ -1077,256 +1049,6 @@
       </div>
 
     </section>
-
-
-
-    <!-- ===================================================
-         PERMISOS
-    ==================================================== -->
-    <section
-      class="pantalla-catalogo"
-      *ngIf="catalogoSeleccionado === 'Permisos'"
-    >
-
-      <div class="encabezado-catalogo">
-
-        <div>
-
-          <h2>Permisos</h2>
-
-          <p>
-            Administre los permisos disponibles en el sistema.
-          </p>
-
-        </div>
-
-        <button
-          type="button"
-          class="boton-nuevo"
-          *ngIf="!mostrandoFormularioPermiso"
-          (click)="abrirNuevoPermiso()"
-        >
-          <span class="material-symbols-outlined">
-            add
-          </span>
-
-          Nuevo registro
-        </button>
-
-      </div>
-
-
-      <!-- FORMULARIO -->
-      <div
-        class="formulario-catalogo"
-        *ngIf="mostrandoFormularioPermiso"
-      >
-
-        <div class="encabezado-formulario">
-
-          <div>
-
-            <h3>
-              {{
-                modoEdicionPermiso
-                  ? 'Editar permiso'
-                  : 'Nuevo permiso'
-              }}
-            </h3>
-
-            <p>
-              {{
-                modoEdicionPermiso
-                  ? 'Modifique la información del permiso.'
-                  : 'Ingrese la información del nuevo permiso.'
-              }}
-            </p>
-
-          </div>
-
-          <button
-            type="button"
-            class="boton-cerrar"
-            (click)="cerrarFormularioPermiso()"
-          >
-            <span class="material-symbols-outlined">
-              close
-            </span>
-          </button>
-
-        </div>
-
-
-        <form
-          (ngSubmit)="guardarPermiso()"
-          #formPermiso="ngForm"
-        >
-
-          <div class="formulario-grid">
-
-            <div class="campo-formulario">
-
-              <label for="nombrePermiso">
-                Nombre
-              </label>
-
-              <input
-                id="nombrePermiso"
-                type="text"
-                [(ngModel)]="permisoActual.nombre"
-                name="nombrePermiso"
-                placeholder="Ej. Registrar pacientes"
-                required
-              >
-
-            </div>
-
-
-            <div class="campo-formulario campo-completo">
-
-              <label for="descripcionPermiso">
-                Descripción
-              </label>
-
-              <textarea
-                id="descripcionPermiso"
-                [(ngModel)]="permisoActual.descripcion"
-                name="descripcionPermiso"
-                placeholder="Ingrese una descripción del permiso..."
-                rows="3"
-              ></textarea>
-
-            </div>
-
-          </div>
-
-
-          <div class="acciones-formulario">
-
-            <button
-              type="button"
-              class="boton-secundario"
-              (click)="cerrarFormularioPermiso()"
-            >
-              Cancelar
-            </button>
-
-            <button
-              type="submit"
-              class="boton-guardar"
-              [disabled]="formPermiso.invalid"
-            >
-              <span class="material-symbols-outlined">
-                save
-              </span>
-
-              {{
-                modoEdicionPermiso
-                  ? 'Actualizar registro'
-                  : 'Guardar registro'
-              }}
-            </button>
-
-          </div>
-
-        </form>
-
-      </div>
-
-
-      <!-- TABLA -->
-      <div class="tabla-contenedor">
-
-        <div
-          class="estado-cargando"
-          *ngIf="cargandoPermisos"
-        >
-          <span class="material-symbols-outlined">
-            progress_activity
-          </span>
-
-          Cargando permisos...
-        </div>
-
-
-        <table *ngIf="!cargandoPermisos">
-
-          <thead>
-
-            <tr>
-              <th>Nombre</th>
-              <th>Descripción</th>
-              <th>Acciones</th>
-            </tr>
-
-          </thead>
-
-
-          <tbody>
-
-            <tr *ngFor="let permiso of permisos">
-
-              <td>
-                {{ permiso.nombre }}
-              </td>
-
-              <td>
-                {{ permiso.descripcion }}
-              </td>
-
-              <td>
-
-                <div class="acciones-tabla">
-
-                  <button
-                    type="button"
-                    class="boton-accion boton-editar"
-                    title="Editar"
-                    (click)="editarPermiso(permiso)"
-                  >
-                    <span class="material-symbols-outlined">
-                      edit
-                    </span>
-                  </button>
-
-                  <button
-                    type="button"
-                    class="boton-accion boton-eliminar"
-                    title="Eliminar"
-                    (click)="eliminarPermiso(permiso)"
-                  >
-                    <span class="material-symbols-outlined">
-                      delete
-                    </span>
-                  </button>
-
-                </div>
-
-              </td>
-
-            </tr>
-
-
-            <tr *ngIf="permisos.length === 0">
-
-              <td
-                colspan="3"
-                class="sin-registros"
-              >
-                No hay permisos registrados.
-              </td>
-
-            </tr>
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-    </section>
-
-
 
 <!-- ===================================================
   TURNOS
