@@ -677,7 +677,8 @@ export class Pacientes {
           text: detalle,
           icon: 'error',
           confirmButtonText:
-            'Aceptar'
+            'Aceptar',
+          confirmButtonColor: '#3B5BDB'
         });
       }
 
@@ -831,7 +832,8 @@ export class Pacientes {
                       'Paciente actualizado correctamente',
                     icon: 'success',
                     confirmButtonText:
-                      'Aceptar'
+                      'Aceptar',
+                    confirmButtonColor: '#3B5BDB'
                   });
 
                   this.listar();
@@ -858,7 +860,8 @@ export class Pacientes {
                       'El paciente se actualizó, pero hubo un problema con el familiar responsable.',
                     icon: 'warning',
                     confirmButtonText:
-                      'Aceptar'
+                      'Aceptar',
+                    confirmButtonColor: '#3B5BDB'
                   });
 
                   this.listar();
@@ -902,7 +905,8 @@ export class Pacientes {
                       'Paciente actualizado correctamente',
                     icon: 'success',
                     confirmButtonText:
-                      'Aceptar'
+                      'Aceptar',
+                    confirmButtonColor: '#3B5BDB'
                   });
 
                   this.listar();
@@ -923,7 +927,8 @@ export class Pacientes {
                       'El paciente se actualizó, pero no se pudo guardar el familiar responsable.',
                     icon: 'warning',
                     confirmButtonText:
-                      'Aceptar'
+                      'Aceptar',
+                    confirmButtonColor: '#3B5BDB'
                   });
 
                   this.listar();
@@ -948,7 +953,8 @@ export class Pacientes {
                 'El paciente se actualizó, pero no se pudo consultar el familiar responsable.',
               icon: 'warning',
               confirmButtonText:
-                'Aceptar'
+                'Aceptar',
+              confirmButtonColor: '#3B5BDB'
             });
 
             this.listar();
@@ -975,7 +981,8 @@ export class Pacientes {
             'Error al actualizar el paciente',
           icon: 'error',
           confirmButtonText:
-            'Aceptar'
+            'Aceptar',
+          confirmButtonColor: '#3B5BDB'
         });
 
       }
