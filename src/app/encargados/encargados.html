@@ -1070,46 +1070,31 @@
 <div class="modal-overlay detalles-overlay" [class.open]="modalDetallesAbierto"
   (click)="cerrarModalDetallesPorFondo($event)">
 
-  <div class="modal-encargado modal-detalles" role="dialog" aria-modal="true" aria-labelledby="titulo-detalle-encargado"
-    *ngIf="encargadoSeleccionado">
+  <div class="modal-encargado modal-detalles" role="dialog" aria-modal="true"
+    aria-labelledby="titulo-detalle-encargado" *ngIf="encargadoSeleccionado">
 
     <!-- ENCABEZADO -->
 
     <div class="encabezado-modal">
 
       <div class="icono-encabezado-modal">
-
-        <span class="material-symbols-outlined">
-          account_circle
-        </span>
-
+        <span class="material-symbols-outlined">account_circle</span>
       </div>
-
 
       <div class="contenido-encabezado-modal">
 
         <div id="titulo-detalle-encargado" class="titulo-encabezado-modal">
-
-          Perfil del Encargado
-
+          Información del Encargado
         </div>
 
-
         <div class="subtitulo-encabezado-modal">
-
-          Información completa del responsable
-
+          {{ encargadoSeleccionado.nombres }} {{ encargadoSeleccionado.apellidos }}
         </div>
 
       </div>
 
-
       <button class="boton-cerrar-modal" type="button" (click)="cerrarModalDetalles()" aria-label="Cerrar detalles">
-
-        <span class="material-symbols-outlined">
-          close
-        </span>
-
+        <span class="material-symbols-outlined">close</span>
       </button>
 
     </div>
@@ -1117,52 +1102,55 @@
 
     <!-- CUERPO -->
 
-    <div class="cuerpo-modal detalles-cuerpo">
+    <div class="cuerpo-modal">
 
-      <!-- PERFIL -->
+      <!-- DATOS PERSONALES -->
 
-      <section class="perfil-detalle">
+      <section class="seccion-formulario">
 
-        <div class="avatar-detalle">
+        <div class="titulo-seccion-formulario">
+          <span class="material-symbols-outlined">person</span>
+          Información personal
+        </div>
 
-          <ng-container *ngIf="encargadoSeleccionado.foto; else inicialesDetalle">
+        <div class="fila-formulario">
 
-            <img [src]="encargadoSeleccionado.foto"
-              [alt]="'Foto de ' + encargadoSeleccionado.nombres + ' ' + encargadoSeleccionado.apellidos" />
+          <div class="grupo-formulario">
+            <label class="etiqueta-formulario">Nombres</label>
+            <input class="campo-formulario" [value]="encargadoSeleccionado.nombres" readonly>
+          </div>
 
-          </ng-container>
-
-
-          <ng-template #inicialesDetalle>
-
-            <span>
-
-              {{ encargadoSeleccionado.iniciales }}
-
-            </span>
-
-          </ng-template>
+          <div class="grupo-formulario">
+            <label class="etiqueta-formulario">Apellidos</label>
+            <input class="campo-formulario" [value]="encargadoSeleccionado.apellidos" readonly>
+          </div>
 
         </div>
 
+        <div class="fila-formulario">
 
-        <div class="informacion-perfil">
-
-          <div class="nombre-perfil">
-
-            {{ encargadoSeleccionado.nombres }} {{ encargadoSeleccionado.apellidos }}
-
+          <div class="grupo-formulario">
+            <label class="etiqueta-formulario">Tipo de documento</label>
+            <input class="campo-formulario" [value]="encargadoSeleccionado.tipoDocumento" readonly>
           </div>
 
+          <div class="grupo-formulario">
+            <label class="etiqueta-formulario">Número de documento</label>
+            <input class="campo-formulario" [value]="encargadoSeleccionado.documento" readonly>
+          </div>
 
+        </div>
 
-          <div class="insignia-estado estado-detalle" [class.activo]="encargadoSeleccionado.estado === 'Activo'"
-            [class.inactivo]="encargadoSeleccionado.estado === 'Inactivo'">
+        <div class="fila-formulario">
 
-            <span class="punto-estado"></span>
+          <div class="grupo-formulario">
+            <label class="etiqueta-formulario">Teléfono</label>
+            <input class="campo-formulario" [value]="encargadoSeleccionado.telefono" readonly>
+          </div>
 
-            {{ encargadoSeleccionado.estado }}
-
+          <div class="grupo-formulario">
+            <label class="etiqueta-formulario">Correo electrónico</label>
+            <input class="campo-formulario" [value]="encargadoSeleccionado.email" readonly>
           </div>
 
         </div>
@@ -1170,92 +1158,39 @@
       </section>
 
 
-      <!-- DATOS PERSONALES -->
+      <!-- INFORMACIÓN PROFESIONAL -->
 
-      <section class="seccion-detalle">
+      <section class="seccion-formulario">
 
-        <div class="titulo-seccion-detalle">
+        <div class="titulo-seccion-formulario">
+          <span class="material-symbols-outlined">badge</span>
+          Información profesional
+        </div>
 
-          <span class="material-symbols-outlined">
-            person
-          </span>
+        <div class="fila-formulario">
 
-          Datos personales
+          <div class="grupo-formulario">
+            <label class="etiqueta-formulario">Especialidad / Rol</label>
+            <input class="campo-formulario" [value]="encargadoSeleccionado.especialidad || 'Sin especificar'" readonly>
+          </div>
+
+          <div class="grupo-formulario">
+            <label class="etiqueta-formulario">Licencia / tarjeta profesional</label>
+            <input class="campo-formulario" [value]="encargadoSeleccionado.licencia || 'Sin especificar'" readonly>
+          </div>
 
         </div>
 
+        <div class="fila-formulario">
 
-        <div class="grid-detalle">
-
-          <div class="elemento-detalle">
-
-            <span class="etiqueta-detalle">
-              Número de documento
-            </span>
-
-            <span class="valor-detalle">
-
-              {{ encargadoSeleccionado.documento }}
-
-            </span>
-
+          <div class="grupo-formulario">
+            <label class="etiqueta-formulario">Experiencia</label>
+            <input class="campo-formulario" [value]="encargadoSeleccionado.experiencia || 'Sin especificar'" readonly>
           </div>
 
-
-          <div class="elemento-detalle">
-
-            <span class="etiqueta-detalle">
-              Teléfono
-            </span>
-
-            <span class="valor-detalle">
-
-              <span class="material-symbols-outlined">
-                phone
-              </span>
-
-              {{ encargadoSeleccionado.telefono }}
-
-            </span>
-
-          </div>
-
-
-          <div class="elemento-detalle">
-
-            <span class="etiqueta-detalle">
-              Correo electrónico
-            </span>
-
-            <span class="valor-detalle">
-
-              <span class="material-symbols-outlined">
-                mail
-              </span>
-
-              {{ encargadoSeleccionado.email }}
-
-            </span>
-
-          </div>
-
-
-          <div class="elemento-detalle">
-
-            <span class="etiqueta-detalle">
-              Fecha de ingreso
-            </span>
-
-            <span class="valor-detalle">
-
-              <span class="material-symbols-outlined">
-                calendar_month
-              </span>
-
-              {{ encargadoSeleccionado.fechaIngreso || 'No registrada' }}
-
-            </span>
-
+          <div class="grupo-formulario">
+            <label class="etiqueta-formulario">Institución</label>
+            <input class="campo-formulario" [value]="encargadoSeleccionado.institucion || 'Sin especificar'" readonly>
           </div>
 
         </div>
@@ -1265,66 +1200,23 @@
 
       <!-- INFORMACIÓN LABORAL -->
 
-      <section class="seccion-detalle">
+      <section class="seccion-formulario">
 
-        <div class="titulo-seccion-detalle">
-
-          <span class="material-symbols-outlined">
-            work
-          </span>
-
+        <div class="titulo-seccion-formulario">
+          <span class="material-symbols-outlined">work</span>
           Información laboral
-
         </div>
 
+        <div class="fila-formulario">
 
-        <div class="grid-detalle">
-
-          <div class="elemento-detalle">
-
-            <span class="etiqueta-detalle">
-              Área
-            </span>
-
-            <span class="valor-detalle">
-
-              {{ encargadoSeleccionado.especialidad }}
-
-            </span>
-
+          <div class="grupo-formulario">
+            <label class="etiqueta-formulario">Estado</label>
+            <input class="campo-formulario" [value]="encargadoSeleccionado.estado" readonly>
           </div>
 
-
-          <div class="elemento-detalle">
-
-            <span class="etiqueta-detalle">
-              Antigüedad
-            </span>
-
-            <span class="valor-detalle">
-
-              {{ encargadoSeleccionado.experiencia }}
-
-            </span>
-
-          </div>
-
-
-          <div class="elemento-detalle">
-
-            <span class="etiqueta-detalle">
-              Estado
-            </span>
-
-            <span class="insignia-estado" [class.activo]="encargadoSeleccionado.estado === 'Activo'"
-              [class.inactivo]="encargadoSeleccionado.estado === 'Inactivo'">
-
-              <span class="punto-estado"></span>
-
-              {{ encargadoSeleccionado.estado }}
-
-            </span>
-
+          <div class="grupo-formulario">
+            <label class="etiqueta-formulario">Fecha de ingreso</label>
+            <input class="campo-formulario" [value]="formatearFechaIngreso(encargadoSeleccionado.fechaIngreso)" readonly>
           </div>
 
         </div>
@@ -1332,61 +1224,44 @@
       </section>
 
 
-      <!-- DESCRIPCIÓN -->
+      <!-- DOCUMENTOS -->
 
-      <section class="seccion-detalle">
+      <section class="seccion-formulario">
 
-        <div class="titulo-seccion-detalle">
-
-          <span class="material-symbols-outlined">
-            description
-          </span>
-
-          Descripción del cargo
-
+        <div class="titulo-seccion-formulario">
+          <span class="material-symbols-outlined">folder</span>
+          Documentos
         </div>
 
+        <div class="grid-documentos">
 
-        <div class="descripcion-detalle">
+          <div class="tarjeta-documento">
+            <span class="material-symbols-outlined">badge</span>
+            <span class="nombre-documento">Cédula</span>
+            <span class="estado-documento">No registrado</span>
+          </div>
 
-          {{
-          'Sin descripción registrada.'
-          }}
+          <div class="tarjeta-documento">
+            <span class="material-symbols-outlined">card_membership</span>
+            <span class="nombre-documento">Tarjeta profesional</span>
+            <span class="estado-documento">No registrado</span>
+          </div>
+
+          <div class="tarjeta-documento">
+            <span class="material-symbols-outlined">verified_user</span>
+            <span class="nombre-documento">Antecedentes</span>
+            <span class="estado-documento">No registrado</span>
+          </div>
+
+          <div class="tarjeta-documento">
+            <span class="material-symbols-outlined">description</span>
+            <span class="nombre-documento">Hoja de vida</span>
+            <span class="estado-documento">No registrado</span>
+          </div>
 
         </div>
 
       </section>
-
-    </div>
-
-
-    <!-- PIE -->
-
-    <div class="pie-modal">
-
-      <button class="boton-cancelar" type="button" (click)="cerrarModalDetalles()">
-
-        <span class="material-symbols-outlined">
-          close
-        </span>
-
-        Cerrar
-
-      </button>
-
-
-      <button class="boton-guardar" type="button" (click)="
-          cerrarModalDetalles();
-          openModal('edit', encargadoSeleccionado)
-        ">
-
-        <span class="material-symbols-outlined">
-          edit
-        </span>
-
-        Editar encargado
-
-      </button>
 
     </div>
 

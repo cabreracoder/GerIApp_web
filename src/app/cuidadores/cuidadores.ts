@@ -1165,64 +1165,54 @@ export class Cuidadores implements OnInit {
       return;
     }
 
-    this.idEliminando = id;
+    Swal.fire({
+      title: 'Eliminar cuidador',
+      text: '¿Está seguro de que desea eliminar este cuidador?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#3B5BDB'
+    }).then((resultado) => {
 
-    this.confirmacionAbierta = true;
-
-  }
-
-
-  cerrarConfirmacion(): void {
-
-    this.confirmacionAbierta = false;
-
-    this.idEliminando = null;
-
-  }
-
-
-  confirmarEliminacion(): void {
-
-    if (!this.idEliminando) {
-      return;
-    }
-
-    this.http.delete(
-      `${this.apiUrl}${this.idEliminando}/`
-    ).subscribe({
-
-      next: () => {
-
-        this.cerrarConfirmacion();
-
-        Swal.fire({
-          title: 'Eliminado',
-          text: 'El cuidador fue eliminado correctamente.',
-          icon: 'success',
-          confirmButtonColor: '#3B5BDB'
-        });
-
-        this.listar();
-
-      },
-
-      error: error => {
-
-        console.error(
-          'Error eliminando cuidador:',
-          error
-        );
-
-        this.cerrarConfirmacion();
-
-        Swal.fire({
-          title: 'Error',
-          text: 'No se pudo eliminar el cuidador.',
-          icon: 'error',
-          confirmButtonColor: '#3B5BDB'
-        });
-
+      if (!resultado.isConfirmed) {
+        return;
       }
+
+      this.http.delete(
+        `${this.apiUrl}${id}/`
+      ).subscribe({
+
+        next: () => {
+
+          Swal.fire({
+            title: 'Eliminado',
+            text: 'El cuidador fue eliminado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
+
+          this.listar();
+
+        },
+
+        error: error => {
+
+          console.error(
+            'Error eliminando cuidador:',
+            error
+          );
+
+          Swal.fire({
+            title: 'Error',
+            text: 'No se pudo eliminar el cuidador.',
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
+
+        }
+
+      });
 
     });
 
