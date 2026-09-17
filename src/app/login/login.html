@@ -56,6 +56,7 @@
 
           <label for="correo">
             Correo electrónico
+            <span class="text-red-500 text-xs">*</span>
           </label>
 
           <div class="input-container">
@@ -75,18 +76,25 @@
 
           <label for="contrasena">
             Contraseña
+            <span class="text-red-500 text-xs">*</span>
           </label>
 
           <div class="input-container">
 
-            <span class="input-icon"> *</span>
+            
 
-            <input type="password" id="contrasena" name="contrasena" [(ngModel)]="usuario.contrasena"
+            <input [type]="mostrarContrasena ? 'text' : 'password'" id="contrasena" name="contrasena" [(ngModel)]="usuario.contrasena"
               placeholder="Ingresa tu contraseña" autocomplete="new-password" required>
 
-            <span class="password-icon">
-              *
-            </span>
+           <button
+              type="button"
+              class="password-icon"
+              (click)="mostrarContrasena = !mostrarContrasena"
+              [attr.aria-label]="mostrarContrasena ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+
+              {{ mostrarContrasena ? '◉' : '◌' }}
+
+            </button>
 
           </div>
 
