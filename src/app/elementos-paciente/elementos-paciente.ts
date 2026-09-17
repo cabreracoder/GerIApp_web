@@ -257,7 +257,7 @@ export class ElementosPaciente implements OnInit {
     // Cada vez que cambia el paciente,
     // volvemos a cargar toda su información.
     this.cargarInformacionPaciente();
-    this.cargarCatalogos();
+    this.cargarFamiliarResponsable();
     this.cargarElementosPaciente();
     this.cargarCuidados();
     this.cargarRecomendaciones();
@@ -316,6 +316,65 @@ export class ElementosPaciente implements OnInit {
       });
   }
 
+  // ============================================================
+  // CARGAR INFORMACIÓN DEL FAMILIAR
+  // ============================================================
+
+  private cargarFamiliarResponsable(): void {
+  if (!this.idPaciente || this.idPaciente <= 0) {
+    console.error('❌ No se puede cargar el familiar: ID de paciente inválido.');
+    return;
+  }
+
+  const idPaciente = this.idPaciente;
+
+  console.log('======================================');
+  console.log('🔎 BUSCANDO FAMILIAR RESPONSABLE');
+  console.log('ID PACIENTE:', idPaciente);
+  console.log('======================================');
+
+  this.http.get<FamiliarResponsable[]>(
+    `${this.apiUrl}/familiar_responsable/`
+  ).subscribe({
+    next: (respuesta) => {
+      console.log('📋 Familiares recibidos:', respuesta);
+
+      const familiar = respuesta.find(
+        item => Number(item.id_paciente) === idPaciente
+      );
+
+      if (familiar) {
+        this.familiarResponsable = familiar;
+
+        console.log('✅ FAMILIAR RESPONSABLE ENCONTRADO:');
+        console.log('Nombre:', familiar.nombres);
+        console.log('Apellido:', familiar.apellidos);
+        console.log('Parentesco:', familiar.parentesco);
+        console.log('Teléfono:', familiar.telefono_uno);
+      } else {
+        this.familiarResponsable = null;
+
+        console.log(
+          'ℹ️ El paciente',
+          idPaciente,
+          'no tiene familiar responsable registrado.'
+        );
+      }
+
+      this.cdr.detectChanges();
+    },
+
+    error: (error) => {
+      console.error('❌ ERROR AL CARGAR FAMILIAR RESPONSABLE');
+      console.error('Status:', error.status);
+      console.error('Mensaje:', error.message);
+      console.error('Error completo:', error);
+
+      this.familiarResponsable = null;
+      this.cdr.detectChanges();
+    }
+  });
+}
 
   // ============================================================
   // CALCULAR EDAD
@@ -1925,12 +1984,22 @@ interface Paciente {
 // ============================================================
 
 interface FamiliarResponsable {
-
+  id_familiar_responsable: number;
+  id_paciente:
+    | number
+    | {
+        id_paciente?: number;
+      }
+    | null;
   nombres: string;
-
   apellidos: string;
+  parentesco: string;
+  telefono_uno: string;
+  telefono_dos: string | null;
+  direccion: string | null;
+  correo: string | null;
+  municipio: string | null;
 }
-
 
 // ============================================================
 // MEDICAMENTO
