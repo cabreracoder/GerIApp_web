@@ -34,6 +34,8 @@ export class Login {
     contrasena: ''
   };
 
+  mostrarContrasena = false;
+
   mensaje = '';
   error = '';
   cargando = false;
