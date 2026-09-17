@@ -64,6 +64,26 @@ interface Alerta {
   clase: string;
   noLeida: boolean;
 }
+interface NotificacionBackend {
+
+  id_notificacion: number;
+  titulo: string;
+  tipo: string;
+  mensaje: string;
+  fecha_hora: string;
+  estado: boolean;
+
+}
+
+
+interface NotificacionDestinatarioBackend {
+
+  id_notificacion_destinatario: number;
+  leida: boolean;
+  id_notificacion: number;
+  id_usuario: number;
+
+}
 
 interface Turno {
   nombre: string;
@@ -238,6 +258,7 @@ export class DashboardComponent implements OnInit {
     //calcular pacientes
     this.cargarPacientes();
     this.cargarCuidadores();
+    this.cargarAlertas();
 
 
 
@@ -548,6 +569,65 @@ export class DashboardComponent implements OnInit {
 
           console.error(
             'Error cargando cuidadores:',
+            error
+          );
+
+        }
+
+      });
+
+  }
+  private cargarAlertas(): void {
+
+    this.http.get<any[]>(
+      `${this.apiUrl}/notificaciones/`
+    )
+      .subscribe({
+
+        next: (notificaciones) => {
+
+
+          this.totalAlertas = notificaciones.length;
+
+
+          this.alertasCriticas =
+            notificaciones.filter(
+              alerta => alerta.tipo === 'critica'
+            ).length;
+
+
+          this.alertasAvisos =
+            notificaciones.filter(
+              alerta => alerta.tipo === 'advertencia'
+            ).length;
+
+
+          this.alertasInfo =
+            notificaciones.filter(
+              alerta => alerta.tipo === 'informacion'
+            ).length;
+
+
+          console.log(
+            "Alertas dashboard:",
+            {
+              total: this.totalAlertas,
+              criticas: this.alertasCriticas,
+              advertencias: this.alertasAvisos,
+              informacion: this.alertasInfo
+            }
+          );
+
+
+          this.cd.detectChanges();
+
+        },
+
+
+        error: (error) => {
+
+          console.error(
+            "Error cargando alertas:",
             error
           );
 
