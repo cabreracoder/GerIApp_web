@@ -36,7 +36,6 @@ interface FormularioEncargado {
   nombres: string;
   apellidos: string;
   estado: 'Activo' | 'Inactivo';
-  contrasena: string;
   fechaIngreso: string;
   fechaNacimiento?: string;
   edad?: number;
@@ -58,7 +57,6 @@ interface ErroresFormulario {
   documento: boolean;
   nombres: boolean;
   apellidos: boolean;
-  contrasena: boolean;
   telefono: boolean;
   email: boolean;
   emailInvalido?: boolean;
@@ -167,7 +165,6 @@ export class Encargados implements OnInit {
     documento: false,
     nombres: false,
     apellidos: false,
-    contrasena: false,
     telefono: false,
     email: false,
     emailInvalido: false,
@@ -272,7 +269,6 @@ export class Encargados implements OnInit {
       documento: '',
       nombres: '',
       apellidos: '',
-      contrasena: '',
       estado: 'Inactivo',
       fechaIngreso: '',
       fechaNacimiento: '',
@@ -379,7 +375,6 @@ export class Encargados implements OnInit {
         documento: this.encargadoPrincipal.documento,
         nombres: this.encargadoPrincipal.nombres,
         apellidos: this.encargadoPrincipal.apellidos,
-        contrasena: '',
         estado: this.encargadoPrincipal.estado,
         fechaIngreso: this.encargadoPrincipal.fechaIngreso,
         fechaNacimiento: this.encargadoPrincipal.fechaNacimiento || '',
@@ -410,7 +405,6 @@ export class Encargados implements OnInit {
         documento: encargado.documento,
         nombres: encargado.nombres,
         apellidos: encargado.apellidos,
-        contrasena: '',
         estado: encargado.estado,
         fechaIngreso: encargado.fechaIngreso,
         fechaNacimiento: encargado.fechaNacimiento || '',
@@ -670,25 +664,12 @@ export class Encargados implements OnInit {
       valido = false;
     }
 
-    if (!this.formulario.apellidos.trim()) {
+     if (!this.formulario.apellidos.trim()) {
 
       this.errores.apellidos = true;
 
       valido = false;
     }
-
-    if (!this.modoEdicion) {
-
-      const contrasena = this.formulario.contrasena.trim();
-
-      if (contrasena.length < 8 || contrasena.length > 10) {
-
-        this.errores.contrasena = true;
-
-        valido = false;
-      }
-    }
-
 
     const telefono = this.formulario.telefono.trim();
 
@@ -731,7 +712,6 @@ export class Encargados implements OnInit {
       nombres: false,
       apellidos: false,
       telefono: false,
-      contrasena: false,
       email: false,
       emailInvalido: false,
     };
@@ -816,10 +796,6 @@ export class Encargados implements OnInit {
       estado: this.formulario.estado === 'Activo',
       id_rol: 6,
     };
-
-    if (!this.modoEdicion) {
-      cuerpo.contrasena = this.formulario.contrasena;
-    }
 
     if (this.modoEdicion && this.idEditando) {
 
@@ -1203,7 +1179,7 @@ export class Encargados implements OnInit {
     const mes = String(fechaObj.getMonth() + 1).padStart(2, '0');
 
     const anio = fechaObj.getFullYear();
-
+  
 
     return `${dia}/${mes}/${anio}`;
   }
