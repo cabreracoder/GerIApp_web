@@ -64,6 +64,26 @@ interface Alerta {
   clase: string;
   noLeida: boolean;
 }
+interface NotificacionBackend {
+
+  id_notificacion: number;
+  titulo: string;
+  tipo: string;
+  mensaje: string;
+  fecha_hora: string;
+  estado: boolean;
+
+}
+
+
+interface NotificacionDestinatarioBackend {
+
+  id_notificacion_destinatario: number;
+  leida: boolean;
+  id_notificacion: number;
+  id_usuario: number;
+
+}
 
 interface Turno {
   nombre: string;
@@ -99,6 +119,8 @@ export class DashboardComponent implements OnInit {
 
   mesActual = '';
 
+  mesSeleccionadoIndex = new Date().getMonth();
+
 
   /* =====================================================
      PACIENTES
@@ -108,7 +130,7 @@ export class DashboardComponent implements OnInit {
 
   pacientesActuales = 0;
 
-  capacidadMaxima = 0;
+  capacidadMaxima = 30;
 
   pacientesEstables = 0;
 
@@ -124,11 +146,13 @@ export class DashboardComponent implements OnInit {
 
   porcentajeAltas = 0;
 
-  progresoMes = 0;
-
+  pacientesRecientes: PacienteReciente[] = [];
   meses: Mes[] = [];
 
-  pacientesRecientes: PacienteReciente[] = [];
+  mesSeleccionado = '';
+
+  progresoMes = 0;
+
 
 
   /* =====================================================
@@ -229,10 +253,12 @@ export class DashboardComponent implements OnInit {
 
     // Cargar fecha actual
     this.cargarFechaActual();
-
+    // Meses y progreso del año
+    this.cargarMeses();
     //calcular pacientes
     this.cargarPacientes();
     this.cargarCuidadores();
+    this.cargarAlertas();
 
 
 
@@ -312,6 +338,88 @@ export class DashboardComponent implements OnInit {
       this.mesActual.charAt(0).toUpperCase() +
       this.mesActual.slice(1);
   }
+  /* =====================================================
+     CARGAR MESES DEL AÑO
+  ===================================================== */
+
+  private cargarMeses(): void {
+
+    const nombresMeses = [
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre'
+    ];
+
+    const mesActual = new Date().getMonth();
+
+    this.meses = nombresMeses.map(
+      (nombre, index) => ({
+        nombre,
+        activo: index === mesActual
+      })
+    );
+
+    this.mesSeleccionado =
+      nombresMeses[mesActual];
+
+    this.mesSeleccionadoIndex = mesActual;
+
+    this.progresoMes =
+      (mesActual / 11) * 100;
+
+  }
+  seleccionarMes(indice: number) {
+
+    this.meses.forEach(
+      (mes, i) => {
+        mes.activo = i === indice;
+      }
+    );
+
+
+    this.mesSeleccionado =
+      this.meses[indice].nombre;
+
+
+    this.mesSeleccionadoIndex = indice;
+
+
+    this.progresoMes =
+      (indice / 11) * 100;
+
+
+    console.log(
+      "Mes seleccionado:",
+      this.mesSeleccionado,
+      "indice:",
+      this.mesSeleccionadoIndex
+    );
+
+  }
+  cambiarMes(event: MouseEvent): void {
+
+    const barra = event.currentTarget as HTMLElement;
+
+    const porcentaje =
+      event.offsetX / barra.clientWidth;
+
+    const indice =
+      Math.round(porcentaje * 11);
+
+    this.seleccionarMes(indice);
+    this.cargarPacientes();
+
+
+  }
 
 
   /* =====================================================
@@ -327,23 +435,71 @@ export class DashboardComponent implements OnInit {
 
         next: (pacientes) => {
 
-          const activos = pacientes.filter(
-            paciente => paciente.estado === true
+          const anioActual = new Date().getFullYear();
+
+
+          // Último día del mes seleccionado
+          const fechaLimite = new Date(
+            anioActual,
+            this.mesSeleccionadoIndex + 1,
+            0,
+            23,
+            59,
+            59,
+            999
           );
 
-          const inactivos = pacientes.filter(
+
+          // Pacientes que ya habían ingresado
+          // hasta el mes seleccionado
+          const pacientesHastaMes = pacientes.filter(
+            paciente => {
+
+              const fechaIngreso =
+                new Date(paciente.fecha_ingreso);
+
+              return fechaIngreso <= fechaLimite;
+
+            }
+          );
+
+
+          // De esos pacientes, contar los activos
+          const activos = pacientesHastaMes.filter(
+            paciente => paciente.estado === true
+          );
+          const inactivos = pacientesHastaMes.filter(
             paciente => paciente.estado === false
           );
 
 
+          // Total de pacientes activos
           this.totalPacientes = activos.length;
 
+          // Se usa también para calcular ocupación
           this.pacientesActuales = activos.length;
-
+          // Altas / pacientes inactivos
           this.altasDelMes = inactivos.length;
+
+
           this.calcularOcupacion();
 
           this.cd.detectChanges();
+
+
+          // TEMPORAL para comprobar
+          console.log(
+            'Mes:',
+            this.mesSeleccionado,
+            '| Total hasta mes:',
+            pacientesHastaMes.length,
+            '| Activos:',
+            activos.length,
+            '| Inactivos:',
+            inactivos.length,
+            '| Ocupación:',
+            this.porcentajeOcupacion + '%'
+          );
 
         },
 
@@ -413,6 +569,65 @@ export class DashboardComponent implements OnInit {
 
           console.error(
             'Error cargando cuidadores:',
+            error
+          );
+
+        }
+
+      });
+
+  }
+  private cargarAlertas(): void {
+
+    this.http.get<any[]>(
+      `${this.apiUrl}/notificaciones/`
+    )
+      .subscribe({
+
+        next: (notificaciones) => {
+
+
+          this.totalAlertas = notificaciones.length;
+
+
+          this.alertasCriticas =
+            notificaciones.filter(
+              alerta => alerta.tipo === 'critica'
+            ).length;
+
+
+          this.alertasAvisos =
+            notificaciones.filter(
+              alerta => alerta.tipo === 'advertencia'
+            ).length;
+
+
+          this.alertasInfo =
+            notificaciones.filter(
+              alerta => alerta.tipo === 'informacion'
+            ).length;
+
+
+          console.log(
+            "Alertas dashboard:",
+            {
+              total: this.totalAlertas,
+              criticas: this.alertasCriticas,
+              advertencias: this.alertasAvisos,
+              informacion: this.alertasInfo
+            }
+          );
+
+
+          this.cd.detectChanges();
+
+        },
+
+
+        error: (error) => {
+
+          console.error(
+            "Error cargando alertas:",
             error
           );
 

@@ -17,7 +17,7 @@
       </h2>
 
       <span>
-      · Panel de Administración
+        · Panel de Administración
       </span>
 
     </div>
@@ -63,20 +63,17 @@
 
       <div class="flex ic jb mb1">
 
-        <span class="ct">
+        <span class="ct titulo-pacientes">
           Resumen de Pacientes
         </span>
 
-        <span
-          class="mono"
-          style="
+        <span class="mono" style="
             font-size: 12px;
             font-weight: 700;
             color: var(--color-primary);
-          "
-          id="mes-label">
+          " id="mes-label">
 
-          {{ mesActual }}
+          {{ mesSeleccionado }}
 
         </span>
 
@@ -87,29 +84,13 @@
 
       <div class="mb3">
 
-        <div class="ms-l">
 
-          <span
-            *ngFor="let mes of meses"
-            class="ml"
-            [class.a]="mes.activo">
 
-            {{ mes.nombre }}
-
-          </span>
-
-        </div>
-
-        <div class="msl">
-
-          <div
-            class="mf"
-            [style.width.%]="progresoMes">
+        <div class="msl" (click)="cambiarMes($event)">
+          <div class="mf" [style.width.%]="progresoMes">
           </div>
 
-          <div
-            class="mt"
-            [style.left.%]="progresoMes">
+          <div class="mt" [style.left.%]="progresoMes">
           </div>
 
         </div>
@@ -135,9 +116,7 @@
 
         <div class="pt">
 
-          <div
-            class="pf"
-            [style.width.%]="porcentajeOcupacion">
+          <div class="pf" [style.width.%]="porcentajeOcupacion">
           </div>
 
         </div>
@@ -260,13 +239,9 @@
 
       <div class="sy2">
 
-        <div
-          *ngFor="let paciente of pacientesRecientes"
-          class="fila-paciente">
+        <div *ngFor="let paciente of pacientesRecientes" class="fila-paciente">
 
-          <div
-            class="avatar-paciente"
-            [ngClass]="paciente.avatarClass">
+          <div class="avatar-paciente" [ngClass]="paciente.avatarClass">
 
             {{ paciente.iniciales }}
 
@@ -284,13 +259,9 @@
 
           </div>
 
-          <span
-            class="badge"
-            [ngClass]="paciente.badgeClass">
+          <span class="badge" [ngClass]="paciente.badgeClass">
 
-            <span
-              class="bd"
-              [style.background]="paciente.colorEstado">
+            <span class="bd" [style.background]="paciente.colorEstado">
             </span>
 
             {{ paciente.estado }}
@@ -382,9 +353,7 @@
 
       <div class="sy2 f1">
 
-        <div
-          *ngFor="let cuidador of cuidadores"
-          class="fila-cuidador">
+        <div *ngFor="let cuidador of cuidadores" class="fila-cuidador">
 
           <div class="rel fs0">
 
@@ -392,9 +361,7 @@
               {{ cuidador.iniciales }}
             </div>
 
-            <span
-              class="indicador-estado-cuidador"
-              [ngClass]="cuidador.estadoClase">
+            <span class="indicador-estado-cuidador" [ngClass]="cuidador.estadoClase">
             </span>
 
           </div>
@@ -413,9 +380,7 @@
 
           <div class="care-status">
 
-            <span
-              class="badge"
-              [ngClass]="cuidador.badgeClass">
+            <span class="badge" [ngClass]="cuidador.badgeClass">
 
               {{ cuidador.estado }}
 
@@ -480,28 +445,13 @@
 
         <div class="contenedor-grafico-ocupacion">
 
-          <svg
-            viewBox="0 0 100 100"
-            class="occupation-svg">
+          <svg viewBox="0 0 100 100" class="occupation-svg">
 
-            <circle
-              cx="50"
-              cy="50"
-              r="42"
-              fill="none"
-              stroke="var(--bg-neutral-light)"
-              stroke-width="10">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="var(--bg-neutral-light)" stroke-width="10">
             </circle>
 
-            <circle
-              cx="50"
-              cy="50"
-              r="42"
-              fill="none"
-              stroke="var(--color-primary)"
-              stroke-width="10"
-              stroke-linecap="round"
-              [attr.stroke-dasharray]="ocupacionDashArray">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="var(--color-primary)" stroke-width="10"
+              stroke-linecap="round" [attr.stroke-dasharray]="ocupacionDashArray">
             </circle>
 
           </svg>
@@ -603,10 +553,7 @@
 
         <div class="health-grid">
 
-          <div
-            *ngFor="let estado of estadosSalud"
-            class="health-item"
-            [ngClass]="estado.clase">
+          <div *ngFor="let estado of estadosSalud" class="health-item" [ngClass]="estado.clase">
 
             <div class="health-icon">
 
@@ -654,29 +601,16 @@
 
         <div class="trend-chart">
 
-          <svg
-            viewBox="0 0 400 100"
-            preserveAspectRatio="none">
+          <svg viewBox="0 0 400 100" preserveAspectRatio="none">
 
             <defs>
 
-              <linearGradient
-                id="trendGradient"
-                x1="0"
-                x2="0"
-                y1="0"
-                y2="1">
+              <linearGradient id="trendGradient" x1="0" x2="0" y1="0" y2="1">
 
-                <stop
-                  offset="0%"
-                  stop-color="#3B5BDB"
-                  stop-opacity=".18">
+                <stop offset="0%" stop-color="#3B5BDB" stop-opacity=".18">
                 </stop>
 
-                <stop
-                  offset="100%"
-                  stop-color="#3B5BDB"
-                  stop-opacity="0">
+                <stop offset="100%" stop-color="#3B5BDB" stop-opacity="0">
                 </stop>
 
               </linearGradient>
@@ -684,52 +618,26 @@
             </defs>
 
 
-            <line
-              x1="0"
-              y1="20"
-              x2="400"
-              y2="20"
-              class="chart-grid">
+            <line x1="0" y1="20" x2="400" y2="20" class="chart-grid">
             </line>
 
-            <line
-              x1="0"
-              y1="50"
-              x2="400"
-              y2="50"
-              class="chart-grid">
+            <line x1="0" y1="50" x2="400" y2="50" class="chart-grid">
             </line>
 
-            <line
-              x1="0"
-              y1="80"
-              x2="400"
-              y2="80"
-              class="chart-grid">
+            <line x1="0" y1="80" x2="400" y2="80" class="chart-grid">
             </line>
 
 
-            <path
-              [attr.d]="tendenciaAreaPath"
-              fill="url(#trendGradient)">
+            <path [attr.d]="tendenciaAreaPath" fill="url(#trendGradient)">
             </path>
 
 
-            <path
-              [attr.d]="tendenciaLinePath"
-              fill="none"
-              stroke="var(--color-primary)"
-              stroke-width="4"
-              stroke-linecap="round"
-              stroke-linejoin="round">
+            <path [attr.d]="tendenciaLinePath" fill="none" stroke="var(--color-primary)" stroke-width="4"
+              stroke-linecap="round" stroke-linejoin="round">
             </path>
 
 
-            <circle
-              *ngFor="let punto of puntosTendencia"
-              [attr.cx]="punto.x"
-              [attr.cy]="punto.y"
-              r="5"
+            <circle *ngFor="let punto of puntosTendencia" [attr.cx]="punto.x" [attr.cy]="punto.y" r="5"
               class="trend-point">
             </circle>
 
@@ -740,10 +648,7 @@
 
         <div class="sl">
 
-          <span
-            *ngFor="let mes of mesesTendencia"
-            class="slb"
-            [class.tp]="mes.activo">
+          <span *ngFor="let mes of mesesTendencia" class="slb" [class.tp]="mes.activo">
 
             {{ mes.nombre }}
 
@@ -757,17 +662,13 @@
         </div>
 
 
-        <div
-          *ngFor="let indicador of indicadoresBienestar"
-          class="indicator mb3">
+        <div *ngFor="let indicador of indicadoresBienestar" class="indicator mb3">
 
           <div class="flex jb ic mb1">
 
             <div class="flex ic g2p">
 
-              <span
-                class="icono-material"
-                [ngClass]="indicador.iconoClase">
+              <span class="icono-material" [ngClass]="indicador.iconoClase">
 
                 {{ indicador.icono }}
 
@@ -779,9 +680,7 @@
 
             </div>
 
-            <strong
-              class="indicator-value"
-              [ngClass]="indicador.valorClase">
+            <strong class="indicator-value" [ngClass]="indicador.valorClase">
 
               {{ indicador.porcentaje }}%
 
@@ -791,10 +690,7 @@
 
           <div class="pt small-progress">
 
-            <div
-              class="pf"
-              [ngClass]="indicador.progresoClase"
-              [style.width.%]="indicador.porcentaje">
+            <div class="pf" [ngClass]="indicador.progresoClase" [style.width.%]="indicador.porcentaje">
             </div>
 
           </div>
@@ -859,7 +755,7 @@
           </div>
 
           <span>
-            Críticas
+            Crítica
           </span>
 
         </div>
@@ -876,7 +772,7 @@
           </div>
 
           <span>
-            Avisos
+            Advertencia
           </span>
 
         </div>
@@ -893,7 +789,7 @@
           </div>
 
           <span>
-            Info
+            Informativo
           </span>
 
         </div>
@@ -905,10 +801,7 @@
 
       <div class="lista-alertas sy2">
 
-        <div
-          *ngFor="let alerta of alertas"
-          class="item-alerta"
-          [ngClass]="alerta.clase">
+        <div *ngFor="let alerta of alertas" class="item-alerta" [ngClass]="alerta.clase">
 
           <span class="icono-material simbolo-alerta">
             {{ alerta.icono }}
@@ -930,9 +823,7 @@
             {{ alerta.tiempo }}
           </span>
 
-          <span
-            *ngIf="alerta.noLeida"
-            class="punto-alerta-no-leida">
+          <span *ngIf="alerta.noLeida" class="punto-alerta-no-leida">
           </span>
 
         </div>
