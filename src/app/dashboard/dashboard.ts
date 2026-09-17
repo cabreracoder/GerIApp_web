@@ -1,7 +1,7 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 interface Mes {
   nombre: string;
   activo: boolean;
@@ -75,12 +75,16 @@ interface Turno {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, HttpClientModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })
+
+
 export class DashboardComponent implements OnInit {
 
+  private readonly apiUrl =
+    'https://geriapp-backend.onrender.com/api';
   /* =====================================================
      INFORMACIÓN DEL DASHBOARD
   ===================================================== */
@@ -204,7 +208,15 @@ export class DashboardComponent implements OnInit {
   alertasInfo = 0;
 
   alertas: Alerta[] = [];
+  // =========================================================
+  // CONSTRUCTOR
+  // =========================================================
 
+  constructor(
+    private http: HttpClient,
+    private cd: ChangeDetectorRef
+
+  ) { }
 
   /* =====================================================
      INICIO
@@ -218,8 +230,13 @@ export class DashboardComponent implements OnInit {
     // Cargar fecha actual
     this.cargarFechaActual();
 
-    // Calcular ocupación
-    this.calcularOcupacion();
+    //calcular pacientes
+    this.cargarPacientes();
+    this.cargarCuidadores();
+
+
+
+
   }
 
 
@@ -298,9 +315,112 @@ export class DashboardComponent implements OnInit {
 
 
   /* =====================================================
-     CÁLCULO DE OCUPACIÓN
-  ===================================================== */
+      CARGAR PACIENTES DESDE API
+ ===================================================== */
 
+  private cargarPacientes(): void {
+
+    this.http.get<any[]>(
+      `${this.apiUrl}/pacientes/`
+    )
+      .subscribe({
+
+        next: (pacientes) => {
+
+          const activos = pacientes.filter(
+            paciente => paciente.estado === true
+          );
+
+          const inactivos = pacientes.filter(
+            paciente => paciente.estado === false
+          );
+
+
+          this.totalPacientes = activos.length;
+
+          this.pacientesActuales = activos.length;
+
+          this.altasDelMes = inactivos.length;
+          this.calcularOcupacion();
+
+          this.cd.detectChanges();
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Error cargando pacientes:',
+            error
+          );
+
+        }
+
+      });
+
+  }
+  private cargarCuidadores(): void {
+
+    this.http.get<any[]>(
+      `${this.apiUrl}/usuarios/`
+    )
+      .subscribe({
+
+        next: (usuarios) => {
+
+
+          const cuidadores = usuarios.filter(
+            usuario => usuario.id_rol === 5
+          );
+
+
+          // Total registrados
+          this.totalCuidadores =
+            cuidadores.length;
+
+
+
+          // Ingresos del mes actual
+          const fechaActual = new Date();
+
+          this.ingresosCuidadores =
+            cuidadores.filter(cuidador => {
+
+              if (!cuidador.fecha_ingreso) {
+                return false;
+              }
+
+
+              const fechaIngreso =
+                new Date(cuidador.fecha_ingreso);
+
+
+              return (
+                fechaIngreso.getMonth() === fechaActual.getMonth() &&
+                fechaIngreso.getFullYear() === fechaActual.getFullYear()
+              );
+
+            }).length;
+
+
+
+          this.cd.detectChanges();
+
+        },
+
+
+        error: (error) => {
+
+          console.error(
+            'Error cargando cuidadores:',
+            error
+          );
+
+        }
+
+      });
+
+  }
   private calcularOcupacion(): void {
 
     if (this.capacidadMaxima <= 0) {
@@ -312,6 +432,7 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
+
     this.porcentajeOcupacion = Math.round(
       (
         this.pacientesActuales /
@@ -319,10 +440,12 @@ export class DashboardComponent implements OnInit {
       ) * 100
     );
 
+
     const radio = 42;
 
     const circunferencia =
       2 * Math.PI * radio;
+
 
     const porcentaje = Math.min(
       Math.max(
@@ -332,16 +455,20 @@ export class DashboardComponent implements OnInit {
       100
     );
 
+
     const ocupado =
       (porcentaje / 100) *
       circunferencia;
+
 
     const restante =
       circunferencia -
       ocupado;
 
+
     this.ocupacionDashArray =
       `${ocupado} ${restante}`;
+
   }
 
 }
