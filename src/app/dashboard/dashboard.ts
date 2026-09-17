@@ -232,6 +232,9 @@ export class DashboardComponent implements OnInit {
 
     //calcular pacientes
     this.cargarPacientes();
+    this.cargarCuidadores();
+
+
 
 
   }
@@ -348,6 +351,68 @@ export class DashboardComponent implements OnInit {
 
           console.error(
             'Error cargando pacientes:',
+            error
+          );
+
+        }
+
+      });
+
+  }
+  private cargarCuidadores(): void {
+
+    this.http.get<any[]>(
+      `${this.apiUrl}/usuarios/`
+    )
+      .subscribe({
+
+        next: (usuarios) => {
+
+
+          const cuidadores = usuarios.filter(
+            usuario => usuario.id_rol === 5
+          );
+
+
+          // Total registrados
+          this.totalCuidadores =
+            cuidadores.length;
+
+
+
+          // Ingresos del mes actual
+          const fechaActual = new Date();
+
+          this.ingresosCuidadores =
+            cuidadores.filter(cuidador => {
+
+              if (!cuidador.fecha_ingreso) {
+                return false;
+              }
+
+
+              const fechaIngreso =
+                new Date(cuidador.fecha_ingreso);
+
+
+              return (
+                fechaIngreso.getMonth() === fechaActual.getMonth() &&
+                fechaIngreso.getFullYear() === fechaActual.getFullYear()
+              );
+
+            }).length;
+
+
+
+          this.cd.detectChanges();
+
+        },
+
+
+        error: (error) => {
+
+          console.error(
+            'Error cargando cuidadores:',
             error
           );
 
