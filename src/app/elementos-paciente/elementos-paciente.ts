@@ -24,16 +24,14 @@ export class ElementosPaciente implements OnInit {
   private readonly apiUrl =
     'https://geriapp-backend.onrender.com/api';
 
-
   // ============================================================
   // ID DEL PACIENTE
   // ============================================================
 
   idPaciente: number = 0;
 
-
   // ============================================================
-  // PACIENTE
+  // INFORMACIÓN DEL PACIENTE
   // ============================================================
 
   paciente: Paciente = {
@@ -55,13 +53,11 @@ export class ElementosPaciente implements OnInit {
     estado: true
   };
 
-
   // ============================================================
   // FAMILIAR RESPONSABLE
   // ============================================================
 
   familiarResponsable: FamiliarResponsable | null = null;
-
 
   // ============================================================
   // SECCIÓN ACTUAL
@@ -73,7 +69,6 @@ export class ElementosPaciente implements OnInit {
     'recomendaciones' |
     'historia' = 'elementos';
 
-
   // ============================================================
   // ALIAS PARA COMPATIBILIDAD CON EL HTML
   // ============================================================
@@ -81,7 +76,6 @@ export class ElementosPaciente implements OnInit {
   get seccionActiva(): string {
     return this.seccionActual;
   }
-
 
   // ============================================================
   // ESTADOS DE CARGA
@@ -91,18 +85,22 @@ export class ElementosPaciente implements OnInit {
   cargandoElementos = false;
   cargandoMedicamentos = false;
   cargandoInsumos = false;
+  cargandoTiposInsumo = false;
   cargandoCuidados = false;
   cargandoRecomendaciones = false;
   cargandoHistoria = false;
-
 
   // ============================================================
   // CATÁLOGOS
   // ============================================================
 
   medicamentos: Medicamento[] = [];
+
   insumos: Insumo[] = [];
 
+  tiposInsumo: TipoInsumo[] = [];
+
+  insumosFiltrados: Insumo[] = [];
 
   // ============================================================
   // ELEMENTOS DEL PACIENTE
@@ -115,7 +113,6 @@ export class ElementosPaciente implements OnInit {
   get elementos(): ElementoPaciente[] {
     return this.elementosPaciente;
   }
-
 
   // ============================================================
   // FORMULARIO DE ELEMENTO
@@ -132,13 +129,13 @@ export class ElementosPaciente implements OnInit {
   formularioElemento: FormularioElemento = {
     id_medicamentos: null,
     id_insumo: null,
+    id_tipo_insumo: null,
     cantidad: 1,
     fecha_ingreso: '',
     fecha_vencimiento: '',
     observaciones: '',
     estado: true
   };
-
 
   // ============================================================
   // CUIDADOS DE ENFERMERÍA
@@ -169,7 +166,6 @@ export class ElementosPaciente implements OnInit {
   get cantidadCuidados(): number {
     return this.cuidados.id_cuidado > 0 ? 1 : 0;
   }
-
 
   // ============================================================
   // RECOMENDACIONES
@@ -204,7 +200,6 @@ export class ElementosPaciente implements OnInit {
     return this.recomendaciones.id_recomendacion > 0 ? 1 : 0;
   }
 
-
   // ============================================================
   // HISTORIA CLÍNICA
   // ============================================================
@@ -221,7 +216,6 @@ export class ElementosPaciente implements OnInit {
 
   mostrarFormularioHistoria = false;
 
-
   // ============================================================
   // CONSTRUCTOR
   // ============================================================
@@ -232,39 +226,47 @@ export class ElementosPaciente implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
 
-
   // ============================================================
   // INICIO
   // ============================================================
 
   ngOnInit(): void {
-  this.route.paramMap.subscribe(params => {
 
-    const id = params.get('id');
+    this.route.paramMap.subscribe(params => {
 
-    if (!id) {
-      console.error('No se recibió el ID del paciente.');
-      return;
-    }
+      const id = params.get('id');
 
-    this.idPaciente = Number(id);
+      if (!id) {
+        console.error('No se recibió el ID del paciente.');
+        return;
+      }
 
-    console.log('ID del paciente recibido:', this.idPaciente);
+      this.idPaciente = Number(id);
 
-    // Actualizamos el ID dentro del objeto paciente
-    this.paciente.id_paciente = this.idPaciente;
+      console.log(
+        'ID del paciente recibido:',
+        this.idPaciente
+      );
 
-    // Cada vez que cambia el paciente,
-    // volvemos a cargar toda su información.
-    this.cargarInformacionPaciente();
-    this.cargarCatalogos();
-    this.cargarElementosPaciente();
-    this.cargarCuidados();
-    this.cargarRecomendaciones();
-    this.cargarHistoriaClinica();
+      if (!this.idPaciente || this.idPaciente <= 0) {
+        console.error('El ID del paciente no es válido.');
+        return;
+      }
 
-  });
-}
+      this.paciente.id_paciente = this.idPaciente;
+
+      this.cargarInformacionPaciente();
+      this.cargarFamiliarResponsable();
+      this.cargarCatalogos();
+      this.cargarElementosPaciente();
+      this.cargarCuidados();
+      this.cargarRecomendaciones();
+      this.cargarHistoriaClinica();
+
+    });
+
+  }
+
   // ============================================================
   // CARGAR INFORMACIÓN DEL PACIENTE
   // ============================================================
@@ -282,19 +284,16 @@ export class ElementosPaciente implements OnInit {
         next: (respuesta) => {
 
           this.paciente = respuesta;
-          this.cdr.detectChanges();
+
+          this.cargandoPaciente = false;
 
           console.log(
             'Paciente cargado:',
             respuesta
           );
 
-          this.cargandoPaciente = false;
+          this.cdr.detectChanges();
 
-          // Cuando tengamos el endpoint exacto del
-          // familiar responsable se llamará aquí.
-          //
-          // this.cargarFamiliarResponsable();
         },
 
         error: (error) => {
@@ -312,10 +311,86 @@ export class ElementosPaciente implements OnInit {
             text:
               'No fue posible cargar la información del paciente.'
           });
+
         }
+
       });
+
   }
 
+  // ============================================================
+  // CARGAR FAMILIAR RESPONSABLE
+  // ============================================================
+
+  private cargarFamiliarResponsable(): void {
+
+    if (!this.idPaciente || this.idPaciente <= 0) {
+
+      console.error(
+        'No se puede cargar el familiar: ID de paciente inválido.'
+      );
+
+      return;
+    }
+
+    this.http
+      .get<
+        FamiliarResponsable[] |
+        RespuestaPaginada<FamiliarResponsable>
+      >(
+        `${this.apiUrl}/familiar_responsable/`
+      )
+      .subscribe({
+
+        next: (respuesta) => {
+
+          const familiares =
+            this.obtenerResultados(respuesta);
+
+          const familiar = familiares.find(item => {
+
+            const idRelacion =
+              this.obtenerIdPaciente(
+                item.id_paciente
+              );
+
+            return Number(idRelacion) ===
+              Number(this.idPaciente);
+
+          });
+
+          if (familiar) {
+
+            this.familiarResponsable =
+              familiar;
+
+          } else {
+
+            this.familiarResponsable =
+              null;
+
+          }
+
+          this.cdr.detectChanges();
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Error al cargar familiar responsable:',
+            error
+          );
+
+          this.familiarResponsable = null;
+
+          this.cdr.detectChanges();
+
+        }
+
+      });
+
+  }
 
   // ============================================================
   // CALCULAR EDAD
@@ -350,12 +425,13 @@ export class ElementosPaciente implements OnInit {
         hoy.getDate() < nacimiento.getDate()
       )
     ) {
+
       edad--;
+
     }
 
     return edad;
   }
-
 
   // ============================================================
   // CARGAR CATÁLOGOS
@@ -364,10 +440,10 @@ export class ElementosPaciente implements OnInit {
   cargarCatalogos(): void {
 
     this.cargarMedicamentos();
-
+    this.cargarTiposInsumo();
     this.cargarInsumos();
-  }
 
+  }
 
   // ============================================================
   // CARGAR MEDICAMENTOS
@@ -378,21 +454,28 @@ export class ElementosPaciente implements OnInit {
     this.cargandoMedicamentos = true;
 
     this.http
-      .get<Medicamento[]>(
+      .get<
+        Medicamento[] |
+        RespuestaPaginada<Medicamento>
+      >(
         `${this.apiUrl}/medicamentos/`
       )
       .subscribe({
 
         next: (respuesta) => {
 
-          this.medicamentos = respuesta;
+          this.medicamentos =
+            this.obtenerResultados(respuesta);
 
           console.log(
             'Medicamentos cargados:',
-            respuesta
+            this.medicamentos
           );
 
           this.cargandoMedicamentos = false;
+
+          this.cdr.detectChanges();
+
         },
 
         error: (error) => {
@@ -400,6 +483,11 @@ export class ElementosPaciente implements OnInit {
           console.error(
             'Error al cargar medicamentos:',
             error
+          );
+
+          console.error(
+            'Respuesta del servidor:',
+            error?.error
           );
 
           this.cargandoMedicamentos = false;
@@ -410,10 +498,72 @@ export class ElementosPaciente implements OnInit {
             text:
               'No fue posible cargar los medicamentos.'
           });
+
         }
+
       });
+
   }
 
+  // ============================================================
+  // CARGAR TIPOS DE INSUMO
+  // ============================================================
+
+  cargarTiposInsumo(): void {
+
+    this.cargandoTiposInsumo = true;
+
+    this.http
+      .get<
+        TipoInsumo[] |
+        RespuestaPaginada<TipoInsumo>
+      >(
+        `${this.apiUrl}/tipo_insumo/`
+      )
+      .subscribe({
+
+        next: (respuesta) => {
+
+          this.tiposInsumo =
+            this.obtenerResultados(respuesta);
+
+          console.log(
+            'Tipos de insumo cargados:',
+            this.tiposInsumo
+          );
+
+          this.cargandoTiposInsumo = false;
+
+          this.cdr.detectChanges();
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Error al cargar tipos de insumo:',
+            error
+          );
+
+          console.error(
+            'Respuesta del servidor:',
+            error?.error
+          );
+
+          this.cargandoTiposInsumo = false;
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text:
+              'No fue posible cargar los tipos de insumo.'
+          });
+
+        }
+
+      });
+
+  }
 
   // ============================================================
   // CARGAR INSUMOS
@@ -424,21 +574,36 @@ export class ElementosPaciente implements OnInit {
     this.cargandoInsumos = true;
 
     this.http
-      .get<Insumo[]>(
+      .get<
+        Insumo[] |
+        RespuestaPaginada<Insumo>
+      >(
         `${this.apiUrl}/insumos/`
       )
       .subscribe({
 
         next: (respuesta) => {
 
-          this.insumos = respuesta;
+          this.insumos =
+            this.obtenerResultados(respuesta);
 
           console.log(
             'Insumos cargados:',
-            respuesta
+            this.insumos
           );
 
           this.cargandoInsumos = false;
+
+          if (
+            this.formularioElemento.id_tipo_insumo
+          ) {
+
+            this.filtrarInsumosPorTipo();
+
+          }
+
+          this.cdr.detectChanges();
+
         },
 
         error: (error) => {
@@ -446,6 +611,11 @@ export class ElementosPaciente implements OnInit {
           console.error(
             'Error al cargar insumos:',
             error
+          );
+
+          console.error(
+            'Respuesta del servidor:',
+            error?.error
           );
 
           this.cargandoInsumos = false;
@@ -456,77 +626,71 @@ export class ElementosPaciente implements OnInit {
             text:
               'No fue posible cargar los insumos.'
           });
+
         }
+
       });
+
   }
 
-
   // ============================================================
-  // CARGAR ELEMENTOS DEL PACIENTE
+  // FILTRAR INSUMOS POR TIPO
   // ============================================================
 
-  cargarElementosPaciente(): void {
+  filtrarInsumosPorTipo(): void {
 
-    this.cargandoElementos = true;
+    const idTipo =
+      Number(
+        this.formularioElemento.id_tipo_insumo
+      );
 
-    this.http
-      .get<ElementoPaciente[]>(
-        `${this.apiUrl}/elementos_paciente/`
-      )
-      .subscribe({
+    if (!idTipo) {
 
-        next: (respuesta) => {
+      this.insumosFiltrados = [];
 
-          this.elementosPaciente =
-            respuesta.filter(
-              elemento =>
-                Number(
-                  this.obtenerIdRelacion(
-                    elemento.id_paciente
-                  )
-                ) === this.idPaciente
-            );
+      this.formularioElemento.id_insumo = null;
 
-          console.log(
-            'Elementos del paciente:',
-            this.elementosPaciente
+      return;
+    }
+
+    this.insumosFiltrados =
+      this.insumos.filter(insumo => {
+
+        const idTipoInsumo =
+          this.obtenerIdTipoInsumo(
+            insumo.id_tipo_insumo
           );
 
-          this.cargandoElementos = false;
-        },
+        return Number(idTipoInsumo) ===
+          Number(idTipo);
 
-        error: (error) => {
-
-          console.error(
-            'Error al cargar elementos:',
-            error
-          );
-
-          this.cargandoElementos = false;
-
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text:
-              'No fue posible cargar los elementos del paciente.'
-          });
-        }
       });
+
+    this.formularioElemento.id_insumo = null;
+
+    console.log(
+      'Tipo seleccionado:',
+      idTipo
+    );
+
+    console.log(
+      'Insumos filtrados:',
+      this.insumosFiltrados
+    );
+
+    this.cdr.detectChanges();
+
   }
 
-
   // ============================================================
-  // OBTENER ID DE UNA RELACIÓN
+  // OBTENER ID DEL TIPO DE INSUMO
   // ============================================================
 
-  private obtenerIdRelacion(
+  private obtenerIdTipoInsumo(
     relacion:
       number |
       {
-        id_paciente?: number;
-        id_usuario?: number;
-        id_medicamentos?: number;
-        id_insumo?: number;
+        id_tipo_insumo?: number;
       } |
       null
   ): number | null {
@@ -540,21 +704,152 @@ export class ElementosPaciente implements OnInit {
     }
 
     if (
-      typeof relacion === 'object'
+      typeof relacion === 'object' &&
+      relacion.id_tipo_insumo !== undefined
     ) {
 
-      if (
-        relacion.id_paciente !== undefined
-      ) {
-        return Number(
-          relacion.id_paciente
-        );
-      }
+      return Number(
+        relacion.id_tipo_insumo
+      );
+
     }
 
     return null;
   }
 
+  // ============================================================
+  // CARGAR ELEMENTOS DEL PACIENTE
+  // ============================================================
+
+  cargarElementosPaciente(): void {
+
+    this.cargandoElementos = true;
+
+    this.http
+      .get<
+        ElementoPaciente[] |
+        RespuestaPaginada<ElementoPaciente>
+      >(
+        `${this.apiUrl}/elementos_paciente/`
+      )
+      .subscribe({
+
+        next: (respuesta) => {
+
+          const elementos =
+            this.obtenerResultados(respuesta);
+
+          this.elementosPaciente =
+            elementos.filter(elemento => {
+
+              const idRelacion =
+                this.obtenerIdPaciente(
+                  elemento.id_paciente
+                );
+
+              return Number(idRelacion) ===
+                Number(this.idPaciente);
+
+            });
+
+          console.log(
+            'Elementos del paciente:',
+            this.elementosPaciente
+          );
+
+          this.cargandoElementos = false;
+
+          this.cdr.detectChanges();
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Error al cargar elementos:',
+            error
+          );
+
+          console.error(
+            'Respuesta del servidor:',
+            error?.error
+          );
+
+          this.cargandoElementos = false;
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text:
+              'No fue posible cargar los elementos del paciente.'
+          });
+
+        }
+
+      });
+
+  }
+
+  // ============================================================
+  // OBTENER RESULTADOS DEL API
+  // ============================================================
+
+  private obtenerResultados<T>(
+    respuesta:
+      T[] |
+      RespuestaPaginada<T>
+  ): T[] {
+
+    if (Array.isArray(respuesta)) {
+      return respuesta;
+    }
+
+    if (
+      respuesta &&
+      Array.isArray(respuesta.results)
+    ) {
+
+      return respuesta.results;
+
+    }
+
+    return [];
+  }
+
+  // ============================================================
+  // OBTENER ID DE PACIENTE
+  // ============================================================
+
+  private obtenerIdPaciente(
+    relacion:
+      number |
+      {
+        id_paciente?: number;
+      } |
+      null
+  ): number | null {
+
+    if (relacion === null) {
+      return null;
+    }
+
+    if (typeof relacion === 'number') {
+      return relacion;
+    }
+
+    if (
+      typeof relacion === 'object' &&
+      relacion.id_paciente !== undefined
+    ) {
+
+      return Number(
+        relacion.id_paciente
+      );
+
+    }
+
+    return null;
+  }
 
   // ============================================================
   // CAMBIAR SECCIÓN
@@ -570,8 +865,8 @@ export class ElementosPaciente implements OnInit {
 
     this.seccionActual =
       seccion;
-  }
 
+  }
 
   // ============================================================
   // INICIALES DEL PACIENTE
@@ -594,7 +889,6 @@ export class ElementosPaciente implements OnInit {
     return `${inicialNombre}${inicialApellido}`;
   }
 
-
   // ============================================================
   // REGISTRAR MEDICAMENTO
   // ============================================================
@@ -607,9 +901,46 @@ export class ElementosPaciente implements OnInit {
     this.mostrarMenuElementos =
       false;
 
-    this.abrirFormularioElemento();
-  }
+    this.elementoEditando =
+      null;
 
+    this.formularioElemento = {
+
+      id_medicamentos: null,
+
+      id_insumo: null,
+
+      id_tipo_insumo: null,
+
+      cantidad: 1,
+
+      fecha_ingreso:
+        this.obtenerFechaActual(),
+
+      fecha_vencimiento: '',
+
+      observaciones: '',
+
+      estado: true
+
+    };
+
+    this.insumosFiltrados = [];
+
+    if (
+      this.medicamentos.length === 0
+    ) {
+
+      this.cargarMedicamentos();
+
+    }
+
+    this.mostrarFormularioElemento =
+      true;
+
+    this.cdr.detectChanges();
+
+  }
 
   // ============================================================
   // REGISTRAR INSUMO
@@ -623,12 +954,57 @@ export class ElementosPaciente implements OnInit {
     this.mostrarMenuElementos =
       false;
 
-    this.abrirFormularioElemento();
+    this.elementoEditando =
+      null;
+
+    this.formularioElemento = {
+
+      id_medicamentos: null,
+
+      id_insumo: null,
+
+      id_tipo_insumo: null,
+
+      cantidad: 1,
+
+      fecha_ingreso:
+        this.obtenerFechaActual(),
+
+      fecha_vencimiento: '',
+
+      observaciones: '',
+
+      estado: true
+
+    };
+
+    this.insumosFiltrados = [];
+
+    if (
+      this.tiposInsumo.length === 0
+    ) {
+
+      this.cargarTiposInsumo();
+
+    }
+
+    if (
+      this.insumos.length === 0
+    ) {
+
+      this.cargarInsumos();
+
+    }
+
+    this.mostrarFormularioElemento =
+      true;
+
+    this.cdr.detectChanges();
+
   }
 
-
   // ============================================================
-  // ABRIR FORMULARIO DE ELEMENTO
+  // ABRIR FORMULARIO
   // ============================================================
 
   abrirFormularioElemento(): void {
@@ -642,6 +1018,8 @@ export class ElementosPaciente implements OnInit {
 
       id_insumo: null,
 
+      id_tipo_insumo: null,
+
       cantidad: 1,
 
       fecha_ingreso:
@@ -652,12 +1030,15 @@ export class ElementosPaciente implements OnInit {
       observaciones: '',
 
       estado: true
+
     };
+
+    this.insumosFiltrados = [];
 
     this.mostrarFormularioElemento =
       true;
-  }
 
+  }
 
   // ============================================================
   // EDITAR ELEMENTO
@@ -679,6 +1060,28 @@ export class ElementosPaciente implements OnInit {
         ? 'medicamento'
         : 'insumo';
 
+    const idInsumo =
+      !esMedicamento
+        ? this.obtenerIdInsumo(
+            elemento.id_insumo
+          )
+        : null;
+
+    const insumo =
+      idInsumo
+        ? this.insumos.find(item =>
+            Number(item.id_insumo) ===
+            Number(idInsumo)
+          )
+        : null;
+
+    const idTipoInsumo =
+      insumo
+        ? this.obtenerIdTipoInsumo(
+            insumo.id_tipo_insumo
+          )
+        : null;
+
     this.formularioElemento = {
 
       id_medicamentos:
@@ -690,9 +1093,12 @@ export class ElementosPaciente implements OnInit {
 
       id_insumo:
         !esMedicamento
-          ? this.obtenerIdInsumo(
-              elemento.id_insumo
-            )
+          ? idInsumo
+          : null,
+
+      id_tipo_insumo:
+        !esMedicamento
+          ? idTipoInsumo
           : null,
 
       cantidad:
@@ -711,12 +1117,60 @@ export class ElementosPaciente implements OnInit {
 
       estado:
         elemento.estado ?? true
+
     };
+
+    if (
+      this.tipoElemento === 'medicamento'
+    ) {
+
+      if (
+        this.medicamentos.length === 0
+      ) {
+
+        this.cargarMedicamentos();
+
+      }
+
+    } else {
+
+      if (
+        this.tiposInsumo.length === 0
+      ) {
+
+        this.cargarTiposInsumo();
+
+      }
+
+      if (
+        this.insumos.length === 0
+      ) {
+
+        this.cargarInsumos();
+
+      }
+
+      this.insumosFiltrados =
+        this.insumos.filter(insumo => {
+
+          const idTipo =
+            this.obtenerIdTipoInsumo(
+              insumo.id_tipo_insumo
+            );
+
+          return Number(idTipo) ===
+            Number(idTipoInsumo);
+
+        });
+
+    }
 
     this.mostrarFormularioElemento =
       true;
-  }
 
+    this.cdr.detectChanges();
+
+  }
 
   // ============================================================
   // OBTENER ID MEDICAMENTO
@@ -734,21 +1188,24 @@ export class ElementosPaciente implements OnInit {
     if (
       typeof medicamento === 'number'
     ) {
+
       return medicamento;
+
     }
 
     if (
       medicamento &&
       medicamento.id_medicamentos !== undefined
     ) {
+
       return Number(
         medicamento.id_medicamentos
       );
+
     }
 
     return null;
   }
-
 
   // ============================================================
   // OBTENER ID INSUMO
@@ -766,21 +1223,157 @@ export class ElementosPaciente implements OnInit {
     if (
       typeof insumo === 'number'
     ) {
+
       return insumo;
+
     }
 
     if (
       insumo &&
       insumo.id_insumo !== undefined
     ) {
+
       return Number(
         insumo.id_insumo
       );
+
     }
 
     return null;
   }
 
+  // ============================================================
+  // OBTENER NOMBRE DEL ELEMENTO
+  // ============================================================
+
+  obtenerNombreElemento(
+    elemento: ElementoPaciente
+  ): string {
+
+    // ----------------------------------------------------------
+    // SI ES MEDICAMENTO
+    // ----------------------------------------------------------
+
+    if (
+      elemento.id_medicamentos !== null &&
+      elemento.id_medicamentos !== undefined
+    ) {
+
+      if (
+        typeof elemento.id_medicamentos === 'number'
+      ) {
+
+        const medicamento =
+          this.medicamentos.find(
+            item =>
+              Number(item.id_medicamentos) ===
+              Number(elemento.id_medicamentos)
+          );
+
+        return medicamento
+          ? medicamento.nombre
+          : 'Medicamento no encontrado';
+
+      }
+
+      if (
+        typeof elemento.id_medicamentos === 'object' &&
+        elemento.id_medicamentos !== null
+      ) {
+
+        const idMedicamento =
+          elemento.id_medicamentos.id_medicamentos;
+
+        const medicamento =
+          this.medicamentos.find(
+            item =>
+              Number(item.id_medicamentos) ===
+              Number(idMedicamento)
+          );
+
+        return medicamento
+          ? medicamento.nombre
+          : 'Medicamento no encontrado';
+      }
+    }
+
+    // ----------------------------------------------------------
+    // SI ES INSUMO
+    // ----------------------------------------------------------
+
+    if (
+      elemento.id_insumo !== null &&
+      elemento.id_insumo !== undefined
+    ) {
+
+      if (
+        typeof elemento.id_insumo === 'number'
+      ) {
+
+        const insumo =
+          this.insumos.find(
+            item =>
+              Number(item.id_insumo) ===
+              Number(elemento.id_insumo)
+          );
+
+        return insumo
+          ? insumo.nombre
+          : 'Insumo no encontrado';
+      }
+
+      if (
+        typeof elemento.id_insumo === 'object' &&
+        elemento.id_insumo !== null
+      ) {
+
+        const idInsumo =
+          elemento.id_insumo.id_insumo;
+
+        const insumo =
+          this.insumos.find(
+            item =>
+              Number(item.id_insumo) ===
+              Number(idInsumo)
+          );
+
+        return insumo
+          ? insumo.nombre
+          : 'Insumo no encontrado';
+      }
+    }
+
+    return 'Sin elemento';
+  }
+
+  // ============================================================
+  // OBTENER TIPO DEL ELEMENTO
+  // ============================================================
+
+  obtenerTipoElemento(
+    elemento: ElementoPaciente
+  ): string {
+
+    if (
+      elemento.id_medicamentos !== null &&
+      elemento.id_medicamentos !== undefined
+    ) {
+
+      return 'Medicamento';
+
+    }
+
+    if (
+      elemento.id_insumo !== null &&
+      elemento.id_insumo !== undefined
+    ) {
+
+      return 'Insumo';
+
+    }
+
+    return 'Sin tipo';
+  }
 
   // ============================================================
   // GUARDAR ELEMENTO
@@ -789,7 +1382,28 @@ export class ElementosPaciente implements OnInit {
   guardarElemento(): void {
 
     if (
-      this.formularioElemento.cantidad <= 0
+      !this.idPaciente ||
+      this.idPaciente <= 0
+    ) {
+
+      Swal.fire({
+        icon: 'warning',
+        title: 'Paciente no identificado',
+        text:
+          'No fue posible identificar el paciente.'
+      });
+
+      return;
+    }
+
+    const cantidad =
+      Number(
+        this.formularioElemento.cantidad
+      );
+
+    if (
+      !cantidad ||
+      cantidad <= 0
     ) {
 
       Swal.fire({
@@ -819,6 +1433,21 @@ export class ElementosPaciente implements OnInit {
 
     if (
       this.tipoElemento === 'insumo' &&
+      !this.formularioElemento.id_tipo_insumo
+    ) {
+
+      Swal.fire({
+        icon: 'warning',
+        title: 'Tipo de insumo requerido',
+        text:
+          'Selecciona un tipo de insumo.'
+      });
+
+      return;
+    }
+
+    if (
+      this.tipoElemento === 'insumo' &&
       !this.formularioElemento.id_insumo
     ) {
 
@@ -835,20 +1464,24 @@ export class ElementosPaciente implements OnInit {
     const datos = {
 
       cantidad:
-        Number(
-          this.formularioElemento.cantidad
-        ),
+        cantidad,
 
       fecha_ingreso:
-        this.formularioElemento.fecha_ingreso,
+        this.formularioElemento.fecha_ingreso ||
+        this.obtenerFechaActual(),
 
       fecha_vencimiento:
-        this.formularioElemento.fecha_vencimiento ||
-        null,
+        this.tipoElemento === 'medicamento'
+          ? (
+              this.formularioElemento
+                .fecha_vencimiento || null
+            )
+          : null,
 
       observaciones:
-        this.formularioElemento.observaciones ||
-        null,
+        this.formularioElemento
+          .observaciones
+          ?.trim() || null,
 
       estado:
         this.formularioElemento.estado,
@@ -858,20 +1491,47 @@ export class ElementosPaciente implements OnInit {
 
       id_medicamentos:
         this.tipoElemento === 'medicamento'
-          ? this.formularioElemento.id_medicamentos
+          ? Number(
+              this.formularioElemento
+                .id_medicamentos
+            )
           : null,
 
       id_insumo:
         this.tipoElemento === 'insumo'
-          ? this.formularioElemento.id_insumo
+          ? Number(
+              this.formularioElemento
+                .id_insumo
+            )
           : null
     };
 
     console.log(
-      'Datos enviados al API:',
+      '======================================'
+    );
+
+    console.log(
+      'REGISTRO DE ELEMENTO'
+    );
+
+    console.log(
+      'Paciente:',
+      this.idPaciente
+    );
+
+    console.log(
+      'Tipo:',
+      this.tipoElemento
+    );
+
+    console.log(
+      'Datos enviados:',
       datos
     );
 
+    console.log(
+      '======================================'
+    );
 
     // ==========================================================
     // ACTUALIZAR
@@ -886,7 +1546,12 @@ export class ElementosPaciente implements OnInit {
         )
         .subscribe({
 
-          next: () => {
+          next: (respuesta) => {
+
+            console.log(
+              'Elemento actualizado:',
+              respuesta
+            );
 
             Swal.fire({
               icon: 'success',
@@ -900,6 +1565,7 @@ export class ElementosPaciente implements OnInit {
             this.cerrarFormularioElemento();
 
             this.cargarElementosPaciente();
+
           },
 
           error: (error) => {
@@ -909,16 +1575,22 @@ export class ElementosPaciente implements OnInit {
               error
             );
 
+            console.error(
+              'Respuesta del servidor:',
+              error?.error
+            );
+
             this.mostrarErrorApi(
               error,
               'No fue posible actualizar el elemento.'
             );
+
           }
+
         });
 
       return;
     }
-
 
     // ==========================================================
     // CREAR
@@ -938,11 +1610,20 @@ export class ElementosPaciente implements OnInit {
             respuesta
           );
 
+          const titulo =
+            this.tipoElemento === 'medicamento'
+              ? 'Medicamento registrado'
+              : 'Insumo registrado';
+
+          const texto =
+            this.tipoElemento === 'medicamento'
+              ? 'El medicamento se registró correctamente para el paciente.'
+              : 'El insumo se registró correctamente para el paciente.';
+
           Swal.fire({
             icon: 'success',
-            title: 'Elemento registrado',
-            text:
-              'El elemento se registró correctamente.',
+            title: titulo,
+            text: texto,
             timer: 1800,
             showConfirmButton: false
           });
@@ -950,6 +1631,7 @@ export class ElementosPaciente implements OnInit {
           this.cerrarFormularioElemento();
 
           this.cargarElementosPaciente();
+
         },
 
         error: (error) => {
@@ -959,14 +1641,21 @@ export class ElementosPaciente implements OnInit {
             error
           );
 
+          console.error(
+            'Respuesta del servidor:',
+            error?.error
+          );
+
           this.mostrarErrorApi(
             error,
             'No fue posible registrar el elemento.'
           );
-        }
-      });
-  }
 
+        }
+
+      });
+
+  }
 
   // ============================================================
   // CERRAR FORMULARIO
@@ -979,8 +1668,31 @@ export class ElementosPaciente implements OnInit {
 
     this.elementoEditando =
       null;
-  }
 
+    this.formularioElemento = {
+
+      id_medicamentos: null,
+
+      id_insumo: null,
+
+      id_tipo_insumo: null,
+
+      cantidad: 1,
+
+      fecha_ingreso:
+        this.obtenerFechaActual(),
+
+      fecha_vencimiento: '',
+
+      observaciones: '',
+
+      estado: true
+
+    };
+
+    this.insumosFiltrados = [];
+
+  }
 
   // ============================================================
   // ELIMINAR ELEMENTO
@@ -1031,6 +1743,7 @@ export class ElementosPaciente implements OnInit {
             });
 
             this.cargarElementosPaciente();
+
           },
 
           error: (error) => {
@@ -1044,14 +1757,17 @@ export class ElementosPaciente implements OnInit {
               error,
               'No fue posible eliminar el elemento.'
             );
+
           }
+
         });
+
     });
+
   }
 
-
   // ============================================================
-  // CARGAR CUIDADOS
+  // CARGAR CUIDADOS DE ENFERMERÍA
   // ============================================================
 
   cargarCuidados(): void {
@@ -1059,110 +1775,233 @@ export class ElementosPaciente implements OnInit {
     this.cargandoCuidados = true;
 
     this.http
-      .get<CuidadoEnfermeria[]>(
+      .get<
+        CuidadoEnfermeria[] |
+        RespuestaPaginada<CuidadoEnfermeria>
+      >(
         `${this.apiUrl}/cuidados_enfermeria/`
       )
       .subscribe({
 
         next: (respuesta) => {
 
+          const cuidados =
+            this.obtenerResultados(respuesta);
+
           const registro =
-            respuesta.find(
+            cuidados.find(
               cuidado =>
                 Number(
-                  this.obtenerIdRelacion(
+                  this.obtenerIdPaciente(
                     cuidado.id_paciente
                   )
-                ) === this.idPaciente
+                ) === Number(this.idPaciente)
             );
 
           if (registro) {
 
-            this.cuidados =
-              registro;
-
-          } else {
-
             this.cuidados = {
 
-              id_cuidado: 0,
+              id_cuidado:
+                registro.id_cuidado,
 
-              bano_paciente: '',
+              bano_paciente:
+                registro.bano_paciente || '',
 
-              peso_talla: '',
+              peso_talla:
+                registro.peso_talla || '',
 
-              control_glucemia: '',
+              control_glucemia:
+                registro.control_glucemia || '',
 
-              curaciones: '',
+              curaciones:
+                registro.curaciones || '',
 
-              liquidos_administrados_eliminados: '',
+              liquidos_administrados_eliminados:
+                registro.liquidos_administrados_eliminados || '',
 
-              control_deposicion: '',
+              control_deposicion:
+                registro.control_deposicion || '',
 
-              administracion_medicamentos: '',
+              administracion_medicamentos:
+                registro.administracion_medicamentos || '',
 
               id_paciente:
                 this.idPaciente
+
             };
+
+          } else {
+
+            this.cuidados =
+              this.crearCuidadosVacios();
+
           }
 
-          this.cargandoCuidados =
-            false;
+          this.cargandoCuidados = false;
+
+          this.cdr.detectChanges();
+
         },
 
         error: (error) => {
 
           console.error(
-            'Error al cargar cuidados:',
+            'Error al cargar cuidados de enfermería:',
             error
           );
 
-          this.cargandoCuidados =
-            false;
+          console.error(
+            'Respuesta del servidor:',
+            error?.error
+          );
+
+          this.cuidados =
+            this.crearCuidadosVacios();
+
+          this.cargandoCuidados = false;
+
+          this.cdr.detectChanges();
+
         }
+
       });
+
   }
 
+  // ============================================================
+  // CREAR ESTRUCTURA VACÍA DE CUIDADOS
+  // ============================================================
+
+  private crearCuidadosVacios(): CuidadoEnfermeria {
+
+    return {
+
+      id_cuidado: 0,
+
+      bano_paciente: '',
+
+      peso_talla: '',
+
+      control_glucemia: '',
+
+      curaciones: '',
+
+      liquidos_administrados_eliminados: '',
+
+      control_deposicion: '',
+
+      administracion_medicamentos: '',
+
+      id_paciente:
+        this.idPaciente
+
+    };
+
+  }
 
   // ============================================================
-  // GUARDAR CUIDADOS
+  // ABRIR FORMULARIO DE CUIDADOS
+  // ============================================================
+
+  abrirFormularioCuidados(): void {
+
+    this.mostrarFormularioCuidados =
+      true;
+
+    this.cdr.detectChanges();
+
+  }
+
+  // ============================================================
+  // GUARDAR CUIDADOS DE ENFERMERÍA
   // ============================================================
 
   guardarCuidados(): void {
 
+    if (!this.idPaciente || this.idPaciente <= 0) {
+
+      Swal.fire({
+        icon: 'warning',
+        title: 'Paciente no identificado',
+        text:
+          'No fue posible identificar el paciente.'
+      });
+
+      return;
+    }
+
     const datos = {
 
       bano_paciente:
-        this.cuidados.bano_paciente || null,
+        this.limpiarValor(
+          this.cuidados.bano_paciente
+        ),
 
       peso_talla:
-        this.cuidados.peso_talla || null,
+        this.limpiarValor(
+          this.cuidados.peso_talla
+        ),
 
       control_glucemia:
-        this.cuidados.control_glucemia || null,
+        this.limpiarValor(
+          this.cuidados.control_glucemia
+        ),
 
       curaciones:
-        this.cuidados.curaciones || null,
+        this.limpiarValor(
+          this.cuidados.curaciones
+        ),
 
       liquidos_administrados_eliminados:
-        this.cuidados.liquidos_administrados_eliminados ||
-        null,
+        this.limpiarValor(
+          this.cuidados
+            .liquidos_administrados_eliminados
+        ),
 
       control_deposicion:
-        this.cuidados.control_deposicion || null,
+        this.limpiarValor(
+          this.cuidados.control_deposicion
+        ),
 
       administracion_medicamentos:
-        this.cuidados.administracion_medicamentos ||
-        null,
+        this.limpiarValor(
+          this.cuidados
+            .administracion_medicamentos
+        ),
 
       id_paciente:
         this.idPaciente
+
     };
 
+    console.log(
+      '======================================'
+    );
 
-    if (
-      this.cuidados.id_cuidado > 0
-    ) {
+    console.log(
+      'GUARDANDO CUIDADOS DE ENFERMERÍA'
+    );
+
+    console.log(
+      'Paciente:',
+      this.idPaciente
+    );
+
+    console.log(
+      'Datos enviados:',
+      datos
+    );
+
+    console.log(
+      '======================================'
+    );
+
+    // ==========================================================
+    // ACTUALIZAR
+    // ==========================================================
+
+    if (this.cuidados.id_cuidado > 0) {
 
       this.http
         .patch(
@@ -1171,18 +2010,27 @@ export class ElementosPaciente implements OnInit {
         )
         .subscribe({
 
-          next: () => {
+          next: (respuesta) => {
+
+            console.log(
+              'Cuidados actualizados:',
+              respuesta
+            );
 
             Swal.fire({
               icon: 'success',
               title: 'Cuidados actualizados',
               text:
-                'La información se actualizó correctamente.',
+                'Los cuidados de enfermería se actualizaron correctamente.',
               timer: 1800,
               showConfirmButton: false
             });
 
+            this.mostrarFormularioCuidados =
+              false;
+
             this.cargarCuidados();
+
           },
 
           error: (error) => {
@@ -1192,19 +2040,171 @@ export class ElementosPaciente implements OnInit {
               error
             );
 
+            console.error(
+              'Respuesta del servidor:',
+              error?.error
+            );
+
             this.mostrarErrorApi(
               error,
-              'No fue posible actualizar los cuidados.'
+              'No fue posible actualizar los cuidados de enfermería.'
             );
+
           }
+
         });
 
-    } else {
+      return;
+
+    }
+
+    // ==========================================================
+    // CREAR
+    // ==========================================================
+
+    this.http
+      .post(
+        `${this.apiUrl}/cuidados_enfermeria/`,
+        datos
+      )
+      .subscribe({
+
+        next: (respuesta) => {
+
+          console.log(
+            'Cuidados registrados:',
+            respuesta
+          );
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Cuidados registrados',
+            text:
+              'Los cuidados de enfermería se registraron correctamente.',
+            timer: 1800,
+            showConfirmButton: false
+          });
+
+          this.mostrarFormularioCuidados =
+            false;
+
+          this.cargarCuidados();
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Error al registrar cuidados:',
+            error
+          );
+
+          console.error(
+            'Respuesta del servidor:',
+            error?.error
+          );
+
+          this.mostrarErrorApi(
+            error,
+            'No fue posible registrar los cuidados de enfermería.'
+          );
+
+        }
+
+      });
+
+  }
+
+  // ============================================================
+  // LIMPIAR VALORES
+  // ============================================================
+
+  private limpiarValor(
+    valor: string | null
+  ): string | null {
+
+    if (!valor) {
+      return null;
+    }
+
+    const valorLimpio =
+      valor.trim();
+
+    return valorLimpio || null;
+
+  }
+
+  // ============================================================
+  // EDITAR CUIDADOS
+  // ============================================================
+
+  editarCuidados(): void {
+
+    if (!this.cuidados.id_cuidado) {
+
+      Swal.fire({
+        icon: 'info',
+        title: 'Sin cuidados registrados',
+        text:
+          'Primero debe registrar los cuidados de enfermería.'
+      });
+
+      return;
+
+    }
+
+    this.mostrarFormularioCuidados =
+      true;
+
+    this.cdr.detectChanges();
+
+  }
+
+  // ============================================================
+  // ELIMINAR CUIDADOS
+  // ============================================================
+
+  eliminarCuidados(): void {
+
+    if (!this.cuidados.id_cuidado) {
+
+      Swal.fire({
+        icon: 'info',
+        title: 'Sin cuidados',
+        text:
+          'No existen cuidados de enfermería para eliminar.'
+      });
+
+      return;
+    }
+
+    Swal.fire({
+
+      icon: 'warning',
+
+      title:
+        '¿Eliminar cuidados de enfermería?',
+
+      text:
+        'Esta acción eliminará los cuidados registrados para este paciente.',
+
+      showCancelButton: true,
+
+      confirmButtonText:
+        'Sí, eliminar',
+
+      cancelButtonText:
+        'Cancelar'
+
+    }).then((resultado) => {
+
+      if (!resultado.isConfirmed) {
+        return;
+      }
 
       this.http
-        .post(
-          `${this.apiUrl}/cuidados_enfermeria/`,
-          datos
+        .delete(
+          `${this.apiUrl}/cuidados_enfermeria/${this.cuidados.id_cuidado}/`
         )
         .subscribe({
 
@@ -1212,32 +2212,47 @@ export class ElementosPaciente implements OnInit {
 
             Swal.fire({
               icon: 'success',
-              title: 'Cuidados registrados',
+              title: 'Cuidados eliminados',
               text:
-                'Los cuidados se registraron correctamente.',
+                'Los cuidados fueron eliminados correctamente.',
               timer: 1800,
               showConfirmButton: false
             });
 
-            this.cargarCuidados();
+            this.cuidados =
+              this.crearCuidadosVacios();
+
+            this.mostrarFormularioCuidados =
+              false;
+
+            this.cdr.detectChanges();
+
           },
 
           error: (error) => {
 
             console.error(
-              'Error al registrar cuidados:',
+              'Error al eliminar cuidados:',
               error
+            );
+
+            console.error(
+              'Respuesta del servidor:',
+              error?.error
             );
 
             this.mostrarErrorApi(
               error,
-              'No fue posible registrar los cuidados.'
+              'No fue posible eliminar los cuidados de enfermería.'
             );
-          }
-        });
-    }
-  }
 
+          }
+
+        });
+
+    });
+
+  }
 
   // ============================================================
   // CARGAR RECOMENDACIONES
@@ -1248,61 +2263,83 @@ export class ElementosPaciente implements OnInit {
     this.cargandoRecomendaciones = true;
 
     this.http
-      .get<Recomendacion[]>(
+      .get<
+        Recomendacion[] |
+        RespuestaPaginada<Recomendacion>
+      >(
         `${this.apiUrl}/recomendaciones/`
       )
       .subscribe({
 
         next: (respuesta) => {
 
+          const recomendaciones =
+            this.obtenerResultados(respuesta);
+
           const registro =
-            respuesta.find(
+            recomendaciones.find(
               recomendacion =>
                 Number(
-                  this.obtenerIdRelacion(
+                  this.obtenerIdPaciente(
                     recomendacion.id_paciente
                   )
-                ) === this.idPaciente
+                ) ===
+                Number(this.idPaciente)
             );
 
           if (registro) {
 
-            this.recomendaciones =
-              registro;
-
-          } else {
-
             this.recomendaciones = {
 
-              id_recomendacion: 0,
+              id_recomendacion:
+                registro.id_recomendacion,
 
-              hidratar_piel: '',
+              hidratar_piel:
+                registro.hidratar_piel || '',
 
-              asistir_alimentacion: '',
+              asistir_alimentacion:
+                registro.asistir_alimentacion || '',
 
-              via_alimentacion: '',
+              via_alimentacion:
+                registro.via_alimentacion || '',
 
-              prevencion_caidas: '',
+              prevencion_caidas:
+                registro.prevencion_caidas || '',
 
-              terapias_fisicas: '',
+              terapias_fisicas:
+                registro.terapias_fisicas || '',
 
-              terapia_respiratoria: '',
+              terapia_respiratoria:
+                registro.terapia_respiratoria || '',
 
-              actividad_ocupacional: '',
+              actividad_ocupacional:
+                registro.actividad_ocupacional || '',
 
-              corte_unas: '',
+              corte_unas:
+                registro.corte_unas || '',
 
-              corte_cabello: '',
+              corte_cabello:
+                registro.corte_cabello || '',
 
-              higiene_oral: '',
+              higiene_oral:
+                registro.higiene_oral || '',
 
               id_paciente:
                 this.idPaciente
+
             };
+
+          } else {
+
+            this.recomendaciones =
+              this.crearRecomendacionesVacias();
+
           }
 
-          this.cargandoRecomendaciones =
-            false;
+          this.cargandoRecomendaciones = false;
+
+          this.cdr.detectChanges();
+
         },
 
         error: (error) => {
@@ -1312,12 +2349,77 @@ export class ElementosPaciente implements OnInit {
             error
           );
 
-          this.cargandoRecomendaciones =
-            false;
+          this.recomendaciones =
+            this.crearRecomendacionesVacias();
+
+          this.cargandoRecomendaciones = false;
+
+          this.cdr.detectChanges();
+
         }
+
       });
+
   }
 
+  // ============================================================
+  // CREAR ESTRUCTURA VACÍA DE RECOMENDACIONES
+  // ============================================================
+
+  private crearRecomendacionesVacias(): Recomendacion {
+
+    return {
+
+      id_recomendacion: 0,
+
+      hidratar_piel: '',
+
+      asistir_alimentacion: '',
+
+      via_alimentacion: '',
+
+      prevencion_caidas: '',
+
+      terapias_fisicas: '',
+
+      terapia_respiratoria: '',
+
+      actividad_ocupacional: '',
+
+      corte_unas: '',
+
+      corte_cabello: '',
+
+      higiene_oral: '',
+
+      id_paciente:
+        this.idPaciente
+
+    };
+
+  }
+
+  // ============================================================
+  // ABRIR FORMULARIO DE RECOMENDACIONES
+  // ============================================================
+
+  abrirFormularioRecomendaciones(): void {
+
+    if (
+      !this.recomendaciones.id_recomendacion
+    ) {
+
+      this.recomendaciones =
+        this.crearRecomendacionesVacias();
+
+    }
+
+    this.mostrarFormularioRecomendaciones =
+      true;
+
+    this.cdr.detectChanges();
+
+  }
 
   // ============================================================
   // GUARDAR RECOMENDACIONES
@@ -1325,52 +2427,103 @@ export class ElementosPaciente implements OnInit {
 
   guardarRecomendaciones(): void {
 
+    if (
+      !this.idPaciente ||
+      this.idPaciente <= 0
+    ) {
+
+      Swal.fire({
+        icon: 'warning',
+        title: 'Paciente no identificado',
+        text:
+          'No fue posible identificar el paciente.'
+      });
+
+      return;
+    }
+
     const datos = {
 
       hidratar_piel:
-        this.recomendaciones.hidratar_piel ||
-        null,
+        this.limpiarValor(
+          this.recomendaciones.hidratar_piel
+        ),
 
       asistir_alimentacion:
-        this.recomendaciones.asistir_alimentacion ||
-        null,
+        this.limpiarValor(
+          this.recomendaciones.asistir_alimentacion
+        ),
 
       via_alimentacion:
-        this.recomendaciones.via_alimentacion ||
-        null,
+        this.limpiarValor(
+          this.recomendaciones.via_alimentacion
+        ),
 
       prevencion_caidas:
-        this.recomendaciones.prevencion_caidas ||
-        null,
+        this.limpiarValor(
+          this.recomendaciones.prevencion_caidas
+        ),
 
       terapias_fisicas:
-        this.recomendaciones.terapias_fisicas ||
-        null,
+        this.limpiarValor(
+          this.recomendaciones.terapias_fisicas
+        ),
 
       terapia_respiratoria:
-        this.recomendaciones.terapia_respiratoria ||
-        null,
+        this.limpiarValor(
+          this.recomendaciones.terapia_respiratoria
+        ),
 
       actividad_ocupacional:
-        this.recomendaciones.actividad_ocupacional ||
-        null,
+        this.limpiarValor(
+          this.recomendaciones.actividad_ocupacional
+        ),
 
       corte_unas:
-        this.recomendaciones.corte_unas ||
-        null,
+        this.limpiarValor(
+          this.recomendaciones.corte_unas
+        ),
 
       corte_cabello:
-        this.recomendaciones.corte_cabello ||
-        null,
+        this.limpiarValor(
+          this.recomendaciones.corte_cabello
+        ),
 
       higiene_oral:
-        this.recomendaciones.higiene_oral ||
-        null,
+        this.limpiarValor(
+          this.recomendaciones.higiene_oral
+        ),
 
       id_paciente:
         this.idPaciente
+
     };
 
+    console.log(
+      '======================================'
+    );
+
+    console.log(
+      'GUARDANDO RECOMENDACIONES'
+    );
+
+    console.log(
+      'Paciente:',
+      this.idPaciente
+    );
+
+    console.log(
+      'Datos enviados:',
+      datos
+    );
+
+    console.log(
+      '======================================'
+    );
+
+    // ==========================================================
+    // ACTUALIZAR
+    // ==========================================================
 
     if (
       this.recomendaciones.id_recomendacion > 0
@@ -1383,7 +2536,12 @@ export class ElementosPaciente implements OnInit {
         )
         .subscribe({
 
-          next: () => {
+          next: (respuesta) => {
+
+            console.log(
+              'Recomendaciones actualizadas:',
+              respuesta
+            );
 
             Swal.fire({
               icon: 'success',
@@ -1394,7 +2552,11 @@ export class ElementosPaciente implements OnInit {
               showConfirmButton: false
             });
 
+            this.mostrarFormularioRecomendaciones =
+              false;
+
             this.cargarRecomendaciones();
+
           },
 
           error: (error) => {
@@ -1404,19 +2566,157 @@ export class ElementosPaciente implements OnInit {
               error
             );
 
+            console.error(
+              'Respuesta del servidor:',
+              error?.error
+            );
+
             this.mostrarErrorApi(
               error,
               'No fue posible actualizar las recomendaciones.'
             );
+
           }
+
         });
 
-    } else {
+      return;
+
+    }
+
+    // ==========================================================
+    // CREAR
+    // ==========================================================
+
+    this.http
+      .post(
+        `${this.apiUrl}/recomendaciones/`,
+        datos
+      )
+      .subscribe({
+
+        next: (respuesta) => {
+
+          console.log(
+            'Recomendaciones registradas:',
+            respuesta
+          );
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Recomendaciones registradas',
+            text:
+              'Las recomendaciones se registraron correctamente.',
+            timer: 1800,
+            showConfirmButton: false
+          });
+
+          this.mostrarFormularioRecomendaciones =
+            false;
+
+          this.cargarRecomendaciones();
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Error al registrar recomendaciones:',
+            error
+          );
+
+          console.error(
+            'Respuesta del servidor:',
+            error?.error
+          );
+
+          this.mostrarErrorApi(
+            error,
+            'No fue posible registrar las recomendaciones.'
+          );
+
+        }
+
+      });
+
+  }
+
+  // ============================================================
+  // EDITAR RECOMENDACIONES
+  // ============================================================
+
+  editarRecomendaciones(): void {
+
+    if (
+      !this.recomendaciones.id_recomendacion ||
+      this.recomendaciones.id_recomendacion <= 0
+    ) {
+
+      Swal.fire({
+        icon: 'info',
+        title: 'Sin recomendaciones',
+        text:
+          'Primero debe registrar las recomendaciones.'
+      });
+
+      return;
+    }
+
+    this.mostrarFormularioRecomendaciones =
+      true;
+
+    this.cdr.detectChanges();
+
+  }
+
+  // ============================================================
+  // ELIMINAR RECOMENDACIONES
+  // ============================================================
+
+  eliminarRecomendaciones(): void {
+
+    if (
+      !this.recomendaciones.id_recomendacion ||
+      this.recomendaciones.id_recomendacion <= 0
+    ) {
+
+      Swal.fire({
+        icon: 'info',
+        title: 'Sin recomendaciones',
+        text:
+          'No existen recomendaciones para eliminar.'
+      });
+
+      return;
+    }
+
+    Swal.fire({
+
+      icon: 'warning',
+
+      title:
+        '¿Eliminar recomendaciones?',
+
+      text:
+        'Esta acción eliminará las recomendaciones registradas para este paciente.',
+
+      showCancelButton: true,
+
+      confirmButtonText:
+        'Sí, eliminar',
+
+      cancelButtonText:
+        'Cancelar'
+
+    }).then((resultado) => {
+
+      if (!resultado.isConfirmed) {
+        return;
+      }
 
       this.http
-        .post(
-          `${this.apiUrl}/recomendaciones/`,
-          datos
+        .delete(
+          `${this.apiUrl}/recomendaciones/${this.recomendaciones.id_recomendacion}/`
         )
         .subscribe({
 
@@ -1424,32 +2724,47 @@ export class ElementosPaciente implements OnInit {
 
             Swal.fire({
               icon: 'success',
-              title: 'Recomendaciones registradas',
+              title: 'Recomendaciones eliminadas',
               text:
-                'Las recomendaciones se registraron correctamente.',
+                'Las recomendaciones fueron eliminadas correctamente.',
               timer: 1800,
               showConfirmButton: false
             });
 
-            this.cargarRecomendaciones();
+            this.recomendaciones =
+              this.crearRecomendacionesVacias();
+
+            this.mostrarFormularioRecomendaciones =
+              false;
+
+            this.cdr.detectChanges();
+
           },
 
           error: (error) => {
 
             console.error(
-              'Error al registrar recomendaciones:',
+              'Error al eliminar recomendaciones:',
               error
+            );
+
+            console.error(
+              'Respuesta del servidor:',
+              error?.error
             );
 
             this.mostrarErrorApi(
               error,
-              'No fue posible registrar las recomendaciones.'
+              'No fue posible eliminar las recomendaciones.'
             );
-          }
-        });
-    }
-  }
 
+          }
+
+        });
+
+    });
+
+  }
 
   // ============================================================
   // CARGAR HISTORIA CLÍNICA
@@ -1457,55 +2772,96 @@ export class ElementosPaciente implements OnInit {
 
   cargarHistoriaClinica(): void {
 
+    if (
+      !this.idPaciente ||
+      this.idPaciente <= 0
+    ) {
+
+      console.error(
+        'No se puede cargar la historia clínica: ID de paciente inválido.'
+      );
+
+      return;
+    }
+
     this.cargandoHistoria = true;
 
     this.http
-      .get<HistoriaClinica[]>(
+      .get<
+        HistoriaClinica[] |
+        RespuestaPaginada<HistoriaClinica>
+      >(
         `${this.apiUrl}/historia_clinicas/`
       )
       .subscribe({
 
         next: (respuesta) => {
 
+          const historias =
+            this.obtenerResultados(respuesta);
+
           const registro =
-            respuesta.find(
-              historia =>
-                Number(
-                  this.obtenerIdRelacion(
-                    historia.id_paciente
-                  )
-                ) === this.idPaciente
-            );
+            historias.find(historia => {
+
+              const idRelacion =
+                this.obtenerIdPaciente(
+                  historia.id_paciente
+                );
+
+              return Number(idRelacion) ===
+                Number(this.idPaciente);
+
+            });
 
           if (registro) {
 
-            this.historiaClinica =
-              registro;
-
-          } else {
-
             this.historiaClinica = {
 
-              id_historia_clinica: 0,
+              id_historia_clinica:
+                registro.id_historia_clinica,
 
               fecha_apertura:
-                this.obtenerFechaActual(),
+                this.convertirFechaParaInput(
+                  registro.fecha_apertura
+                ),
 
-              antecedentes: '',
+              antecedentes:
+                registro.antecedentes || '',
 
-              alergias: '',
+              alergias:
+                registro.alergias || '',
 
-              observaciones: '',
+              observaciones:
+                registro.observaciones || '',
 
-              estado: true,
+              estado:
+                registro.estado ?? true,
 
               id_paciente:
                 this.idPaciente
+
             };
+
+            console.log(
+              'Historia clínica encontrada:',
+              this.historiaClinica
+            );
+
+          } else {
+
+            this.historiaClinica =
+              this.crearHistoriaClinicaVacia();
+
+            console.log(
+              'El paciente no tiene historia clínica registrada.'
+            );
+
           }
 
-          this.cargandoHistoria =
-            false;
+          this.cargandoHistoria = false;
+
+          this.cdr.detectChanges();
+
         },
 
         error: (error) => {
@@ -1515,18 +2871,125 @@ export class ElementosPaciente implements OnInit {
             error
           );
 
-          this.cargandoHistoria =
-            false;
+          console.error(
+            'Respuesta del servidor:',
+            error?.error
+          );
+
+          this.historiaClinica =
+            this.crearHistoriaClinicaVacia();
+
+          this.cargandoHistoria = false;
+
+          this.cdr.detectChanges();
+
         }
+
       });
+
   }
 
+  // ============================================================
+  // CREAR HISTORIA CLÍNICA VACÍA
+  // ============================================================
+
+  private crearHistoriaClinicaVacia(): HistoriaClinica {
+
+    return {
+
+      id_historia_clinica: 0,
+
+      fecha_apertura:
+        this.obtenerFechaActual(),
+
+      antecedentes: '',
+
+      alergias: '',
+
+      observaciones: '',
+
+      estado: true,
+
+      id_paciente:
+        this.idPaciente
+
+    };
+
+  }
+
+  // ============================================================
+  // ABRIR FORMULARIO DE HISTORIA CLÍNICA
+  // ============================================================
+
+  abrirFormularioHistoria(): void {
+
+    if (
+      !this.historiaClinica
+    ) {
+
+      this.historiaClinica =
+        this.crearHistoriaClinicaVacia();
+
+    }
+
+    this.historiaClinica.id_paciente =
+      this.idPaciente;
+
+    this.mostrarFormularioHistoria =
+      true;
+
+    this.cdr.detectChanges();
+
+  }
+
+  // ============================================================
+  // EDITAR HISTORIA CLÍNICA
+  // ============================================================
+
+  editarHistoriaClinica(): void {
+
+    if (
+      !this.historiaClinica.id_historia_clinica ||
+      this.historiaClinica.id_historia_clinica <= 0
+    ) {
+
+      Swal.fire({
+        icon: 'info',
+        title: 'Sin historia clínica',
+        text:
+          'Primero debe registrar la historia clínica.'
+      });
+
+      return;
+    }
+
+    this.mostrarFormularioHistoria =
+      true;
+
+    this.cdr.detectChanges();
+
+  }
 
   // ============================================================
   // GUARDAR HISTORIA CLÍNICA
   // ============================================================
 
   guardarHistoriaClinica(): void {
+
+    if (
+      !this.idPaciente ||
+      this.idPaciente <= 0
+    ) {
+
+      Swal.fire({
+        icon: 'warning',
+        title: 'Paciente no identificado',
+        text:
+          'No fue posible identificar el paciente.'
+      });
+
+      return;
+    }
 
     const datos = {
 
@@ -1535,24 +2998,53 @@ export class ElementosPaciente implements OnInit {
         this.obtenerFechaActual(),
 
       antecedentes:
-        this.historiaClinica.antecedentes ||
-        '',
+        this.limpiarValor(
+          this.historiaClinica.antecedentes
+        ),
 
       alergias:
-        this.historiaClinica.alergias ||
-        '',
+        this.limpiarValor(
+          this.historiaClinica.alergias
+        ),
 
       observaciones:
-        this.historiaClinica.observaciones ||
-        '',
+        this.limpiarValor(
+          this.historiaClinica.observaciones
+        ),
 
       estado:
-        this.historiaClinica.estado,
+        this.historiaClinica.estado ?? true,
 
       id_paciente:
         this.idPaciente
+
     };
 
+    console.log(
+      '======================================'
+    );
+
+    console.log(
+      'GUARDANDO HISTORIA CLÍNICA'
+    );
+
+    console.log(
+      'Paciente:',
+      this.idPaciente
+    );
+
+    console.log(
+      'Datos enviados:',
+      datos
+    );
+
+    console.log(
+      '======================================'
+    );
+
+    // ==========================================================
+    // ACTUALIZAR HISTORIA EXISTENTE
+    // ==========================================================
 
     if (
       this.historiaClinica.id_historia_clinica > 0
@@ -1565,7 +3057,12 @@ export class ElementosPaciente implements OnInit {
         )
         .subscribe({
 
-          next: () => {
+          next: (respuesta) => {
+
+            console.log(
+              'Historia clínica actualizada:',
+              respuesta
+            );
 
             Swal.fire({
               icon: 'success',
@@ -1576,7 +3073,11 @@ export class ElementosPaciente implements OnInit {
               showConfirmButton: false
             });
 
+            this.mostrarFormularioHistoria =
+              false;
+
             this.cargarHistoriaClinica();
+
           },
 
           error: (error) => {
@@ -1586,19 +3087,128 @@ export class ElementosPaciente implements OnInit {
               error
             );
 
+            console.error(
+              'Respuesta del servidor:',
+              error?.error
+            );
+
             this.mostrarErrorApi(
               error,
               'No fue posible actualizar la historia clínica.'
             );
+
           }
+
         });
 
-    } else {
+      return;
+    }
+
+    // ==========================================================
+    // CREAR HISTORIA NUEVA
+    // ==========================================================
+
+    this.http
+      .post(
+        `${this.apiUrl}/historia_clinicas/`,
+        datos
+      )
+      .subscribe({
+
+        next: (respuesta) => {
+
+          console.log(
+            'Historia clínica registrada:',
+            respuesta
+          );
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Historia clínica registrada',
+            text:
+              'La historia clínica se registró correctamente.',
+            timer: 1800,
+            showConfirmButton: false
+          });
+
+          this.mostrarFormularioHistoria =
+            false;
+
+          this.cargarHistoriaClinica();
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Error al registrar historia clínica:',
+            error
+          );
+
+          console.error(
+            'Respuesta del servidor:',
+            error?.error
+          );
+
+          this.mostrarErrorApi(
+            error,
+            'No fue posible registrar la historia clínica.'
+          );
+
+        }
+
+      });
+
+  }
+
+  // ============================================================
+  // ELIMINAR HISTORIA CLÍNICA
+  // ============================================================
+
+  eliminarHistoriaClinica(): void {
+
+    if (
+      !this.historiaClinica.id_historia_clinica ||
+      this.historiaClinica.id_historia_clinica <= 0
+    ) {
+
+      Swal.fire({
+        icon: 'info',
+        title: 'Sin historia clínica',
+        text:
+          'No existe una historia clínica para eliminar.'
+      });
+
+      return;
+    }
+
+    Swal.fire({
+
+      icon: 'warning',
+
+      title:
+        '¿Eliminar historia clínica?',
+
+      text:
+        'Esta acción eliminará la historia clínica registrada para este paciente.',
+
+      showCancelButton: true,
+
+      confirmButtonText:
+        'Sí, eliminar',
+
+      cancelButtonText:
+        'Cancelar'
+
+    }).then((resultado) => {
+
+      if (!resultado.isConfirmed) {
+        return;
+      }
 
       this.http
-        .post(
-          `${this.apiUrl}/historia_clinicas/`,
-          datos
+        .delete(
+          `${this.apiUrl}/historia_clinicas/${this.historiaClinica.id_historia_clinica}/`
         )
         .subscribe({
 
@@ -1606,48 +3216,59 @@ export class ElementosPaciente implements OnInit {
 
             Swal.fire({
               icon: 'success',
-              title: 'Historia clínica registrada',
+              title: 'Historia clínica eliminada',
               text:
-                'La historia clínica se registró correctamente.',
+                'La historia clínica fue eliminada correctamente.',
               timer: 1800,
               showConfirmButton: false
             });
 
-            this.cargarHistoriaClinica();
+            this.historiaClinica =
+              this.crearHistoriaClinicaVacia();
+
+            this.mostrarFormularioHistoria =
+              false;
+
+            this.cdr.detectChanges();
+
           },
 
           error: (error) => {
 
             console.error(
-              'Error al registrar historia clínica:',
+              'Error al eliminar historia clínica:',
               error
+            );
+
+            console.error(
+              'Respuesta del servidor:',
+              error?.error
             );
 
             this.mostrarErrorApi(
               error,
-              'No fue posible registrar la historia clínica.'
+              'No fue posible eliminar la historia clínica.'
             );
-          }
-        });
-    }
-  }
 
+          }
+
+        });
+
+    });
+
+  }
 
   // ============================================================
   // MÉTODOS COMPATIBLES CON EL HTML
   // ============================================================
 
   cancelarCuidado(): void {
-
     this.cancelarCuidados();
   }
 
-
   cancelarRecomendacion(): void {
-
     this.cancelarRecomendaciones();
   }
-
 
   eliminarCuidado(index: number): void {
 
@@ -1657,8 +3278,8 @@ export class ElementosPaciente implements OnInit {
       text:
         'Los cuidados se administran como un único registro por paciente.'
     });
-  }
 
+  }
 
   eliminarRecomendacion(index: number): void {
 
@@ -1668,8 +3289,8 @@ export class ElementosPaciente implements OnInit {
       text:
         'Las recomendaciones se administran como un único registro por paciente.'
     });
-  }
 
+  }
 
   // ============================================================
   // CANCELAR CUIDADOS
@@ -1681,8 +3302,8 @@ export class ElementosPaciente implements OnInit {
 
     this.mostrarFormularioCuidados =
       false;
-  }
 
+  }
 
   // ============================================================
   // CANCELAR RECOMENDACIONES
@@ -1694,8 +3315,8 @@ export class ElementosPaciente implements OnInit {
 
     this.mostrarFormularioRecomendaciones =
       false;
-  }
 
+  }
 
   // ============================================================
   // CANCELAR HISTORIA
@@ -1707,8 +3328,8 @@ export class ElementosPaciente implements OnInit {
 
     this.mostrarFormularioHistoria =
       false;
-  }
 
+  }
 
   // ============================================================
   // GUARDAR BORRADOR
@@ -1724,8 +3345,8 @@ export class ElementosPaciente implements OnInit {
       timer: 1800,
       showConfirmButton: false
     });
-  }
 
+  }
 
   // ============================================================
   // FINALIZAR REGISTRO
@@ -1734,15 +3355,22 @@ export class ElementosPaciente implements OnInit {
   finalizarRegistro(): void {
 
     Swal.fire({
+
       icon: 'question',
+
       title: '¿Finalizar registro?',
+
       text:
         'Verifique que la información del paciente esté completa.',
+
       showCancelButton: true,
+
       confirmButtonText:
         'Sí, finalizar',
+
       cancelButtonText:
         'Cancelar'
+
     }).then((resultado) => {
 
       if (!resultado.isConfirmed) {
@@ -1757,9 +3385,10 @@ export class ElementosPaciente implements OnInit {
         timer: 2000,
         showConfirmButton: false
       });
-    });
-  }
 
+    });
+
+  }
 
   // ============================================================
   // FECHA ACTUAL
@@ -1793,14 +3422,9 @@ export class ElementosPaciente implements OnInit {
         ahora.getMinutes()
       ).padStart(2, '0');
 
-    const segundos =
-      String(
-        ahora.getSeconds()
-      ).padStart(2, '0');
+    return `${año}-${mes}-${dia}T${horas}:${minutos}`;
 
-    return `${año}-${mes}-${dia}T${horas}:${minutos}:${segundos}`;
   }
-
 
   // ============================================================
   // CONVERTIR FECHA PARA INPUT
@@ -1818,8 +3442,8 @@ export class ElementosPaciente implements OnInit {
       0,
       16
     );
-  }
 
+  }
 
   // ============================================================
   // ERROR DEL API
@@ -1851,19 +3475,27 @@ export class ElementosPaciente implements OnInit {
             error.error
           )
           .map(
-            ([campo, valor]: [string, any]) =>
-              `${campo}: ${
+            ([campo, valor]: [string, any]) => {
+
+              const textoValor =
                 Array.isArray(valor)
                   ? valor.join(', ')
-                  : valor
-              }`
+                  : typeof valor === 'object'
+                    ? JSON.stringify(valor)
+                    : String(valor);
+
+              return `${campo}: ${textoValor}`;
+
+            }
           )
           .join('\n');
 
         if (errores) {
           mensaje = errores;
         }
+
       }
+
     }
 
     Swal.fire({
@@ -1871,9 +3503,26 @@ export class ElementosPaciente implements OnInit {
       title: 'Error',
       text: mensaje
     });
+
   }
+
 }
 
+// ============================================================
+// INTERFAZ RESPUESTA PAGINADA
+// ============================================================
+
+interface RespuestaPaginada<T> {
+
+  count: number;
+
+  next: string | null;
+
+  previous: string | null;
+
+  results: T[];
+
+}
 
 // ============================================================
 // INTERFAZ PACIENTE
@@ -1917,8 +3566,8 @@ interface Paciente {
   cama: number;
 
   estado: boolean;
-}
 
+}
 
 // ============================================================
 // FAMILIAR RESPONSABLE
@@ -1926,11 +3575,32 @@ interface Paciente {
 
 interface FamiliarResponsable {
 
+  id_familiar_responsable: number;
+
+  id_paciente:
+    number |
+    {
+      id_paciente?: number;
+    } |
+    null;
+
   nombres: string;
 
   apellidos: string;
-}
 
+  parentesco: string;
+
+  telefono_uno: string;
+
+  telefono_dos: string | null;
+
+  direccion: string | null;
+
+  correo: string | null;
+
+  municipio: string | null;
+
+}
 
 // ============================================================
 // MEDICAMENTO
@@ -1953,8 +3623,24 @@ interface Medicamento {
   estado: boolean;
 
   unidad_medida: string;
+
 }
 
+// ============================================================
+// TIPO DE INSUMO
+// ============================================================
+
+interface TipoInsumo {
+
+  id_tipo_insumo: number;
+
+  nombre: string;
+
+  descripcion?: string;
+
+  estado?: boolean;
+
+}
 
 // ============================================================
 // INSUMO
@@ -1978,8 +3664,8 @@ interface Insumo {
   unidad_medida: string;
 
   estado: boolean;
-}
 
+}
 
 // ============================================================
 // ELEMENTO DEL PACIENTE
@@ -2010,6 +3696,7 @@ interface ElementoPaciente {
     number |
     {
       id_medicamentos?: number;
+      nombre?: string;
     } |
     null;
 
@@ -2017,10 +3704,11 @@ interface ElementoPaciente {
     number |
     {
       id_insumo?: number;
+      nombre?: string;
     } |
     null;
-}
 
+}
 
 // ============================================================
 // FORMULARIO ELEMENTO
@@ -2032,6 +3720,10 @@ interface FormularioElemento {
 
   id_insumo: number | null;
 
+  // Se utiliza para seleccionar el tipo
+  // antes de seleccionar el insumo.
+  id_tipo_insumo: number | null;
+
   cantidad: number;
 
   fecha_ingreso: string;
@@ -2041,8 +3733,8 @@ interface FormularioElemento {
   observaciones: string;
 
   estado: boolean;
-}
 
+}
 
 // ============================================================
 // CUIDADOS DE ENFERMERÍA
@@ -2072,8 +3764,8 @@ interface CuidadoEnfermeria {
       id_paciente?: number;
     } |
     null;
-}
 
+}
 
 // ============================================================
 // RECOMENDACIONES
@@ -2109,8 +3801,8 @@ interface Recomendacion {
       id_paciente?: number;
     } |
     null;
-}
 
+}
 
 // ============================================================
 // HISTORIA CLÍNICA
@@ -2136,4 +3828,5 @@ interface HistoriaClinica {
       id_paciente?: number;
     } |
     null;
+
 }
