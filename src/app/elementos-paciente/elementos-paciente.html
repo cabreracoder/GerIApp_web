@@ -1695,97 +1695,496 @@
        HISTORIA CLÍNICA
        ========================================================= -->
 
-  <section
-    class="contenido-seccion"
-    *ngIf="seccionActiva === 'historia'">
+  <!-- =========================================================
+     HISTORIA CLÍNICA
+     ========================================================= -->
 
-    <div class="card">
+<section
+  class="contenido-seccion"
+  *ngIf="seccionActiva === 'historia'"
+>
 
-      <div class="card-header">
+  <div class="card">
+
+    <!-- ======================================================
+         ENCABEZADO
+         ====================================================== -->
+
+    <div class="card-header">
+
+      <div>
+
+        <h3>
+          Historia clínica
+        </h3>
+
+        <p>
+          Registre la información clínica y antecedentes relevantes del paciente.
+        </p>
+
+      </div>
+
+
+      <!-- BOTÓN REGISTRAR -->
+
+      <button
+        *ngIf="
+          !historiaClinica.id_historia_clinica &&
+          !mostrarFormularioHistoria
+        "
+        type="button"
+        class="btn-primary"
+        (click)="abrirFormularioHistoria()"
+      >
+
+        <span class="material-symbols-outlined">
+          add
+        </span>
+
+        Registrar historia clínica
+
+      </button>
+
+    </div>
+
+
+    <!-- ======================================================
+         CARGANDO HISTORIA CLÍNICA
+         ====================================================== -->
+
+    <div
+      class="estado-carga"
+      *ngIf="cargandoHistoria"
+    >
+
+      <span class="material-symbols-outlined">
+        progress_activity
+      </span>
+
+      <p>
+        Cargando historia clínica...
+      </p>
+
+    </div>
+
+
+    <!-- ======================================================
+         HISTORIA CLÍNICA REGISTRADA
+         ====================================================== -->
+
+    <div
+      class="historia-contenido"
+      *ngIf="
+        !cargandoHistoria &&
+        historiaClinica.id_historia_clinica > 0 &&
+        !mostrarFormularioHistoria
+      "
+    >
+
+      <!-- ==================================================
+           FECHA DE APERTURA
+           ================================================== -->
+
+      <div class="historia-dato">
+
+        <span class="historia-icono material-symbols-outlined">
+          calendar_month
+        </span>
 
         <div>
 
-          <h3>Historia clínica</h3>
+          <span class="historia-label">
+            Fecha de apertura
+          </span>
 
-          <p>
-            Registre la información clínica y antecedentes relevantes del paciente.
-          </p>
+          <strong>
+            {{
+              historiaClinica.fecha_apertura
+                ? (historiaClinica.fecha_apertura | date:'dd/MM/yyyy')
+                : 'No registrada'
+            }}
+          </strong>
 
         </div>
 
       </div>
 
 
-      <div class="historia-formulario">
+      <!-- ==================================================
+           ANTECEDENTES
+           ================================================== -->
 
-        <div class="campo">
+      <div class="campo">
 
-          <label for="motivo">
-            Motivo de ingreso
-          </label>
+        <label>
+          Antecedentes
+        </label>
 
-          <textarea
-            id="motivo"
-            [(ngModel)]="historiaClinica.motivo_ingreso"
-            rows="4"
-            placeholder="Ingrese el motivo de ingreso del paciente...">
-          </textarea>
+        <div class="texto-historia">
 
-        </div>
+          <p
+            *ngIf="
+              historiaClinica.antecedentes;
+              else sinAntecedentes
+            "
+          >
+            {{ historiaClinica.antecedentes }}
+          </p>
 
+          <ng-template #sinAntecedentes>
 
-        <div class="campo">
+            <span class="texto-vacio">
+              No se han registrado antecedentes.
+            </span>
 
-          <label for="antecedentes">
-            Antecedentes
-          </label>
-
-          <textarea
-            id="antecedentes"
-            [(ngModel)]="historiaClinica.antecedentes"
-            rows="5"
-            placeholder="Registre los antecedentes relevantes del paciente...">
-          </textarea>
+          </ng-template>
 
         </div>
 
+      </div>
 
-        <div class="campo">
 
-          <label for="observaciones">
-            Observaciones clínicas
-          </label>
+      <!-- ==================================================
+           ALERGIAS
+           ================================================== -->
 
-          <textarea
-            id="observaciones"
-            [(ngModel)]="historiaClinica.observaciones"
-            rows="5"
-            placeholder="Registre las observaciones clínicas del paciente...">
-          </textarea>
+      <div class="campo">
+
+        <label>
+          Alergias
+        </label>
+
+        <div class="texto-historia">
+
+          <p
+            *ngIf="
+              historiaClinica.alergias;
+              else sinAlergias
+            "
+          >
+            {{ historiaClinica.alergias }}
+          </p>
+
+          <ng-template #sinAlergias>
+
+            <span class="texto-vacio">
+              No se han registrado alergias.
+            </span>
+
+          </ng-template>
 
         </div>
 
+      </div>
 
-        <div class="formulario-acciones">
 
-          <button
-            type="button"
-            class="btn-primary"
-            (click)="guardarHistoriaClinica()">
+      <!-- ==================================================
+           OBSERVACIONES
+           ================================================== -->
 
-            Guardar historia clínica
+      <div class="campo">
 
-          </button>
+        <label>
+          Observaciones clínicas
+        </label>
+
+        <div class="texto-historia">
+
+          <p
+            *ngIf="
+              historiaClinica.observaciones;
+              else sinObservaciones
+            "
+          >
+            {{ historiaClinica.observaciones }}
+          </p>
+
+          <ng-template #sinObservaciones>
+
+            <span class="texto-vacio">
+              No se han registrado observaciones clínicas.
+            </span>
+
+          </ng-template>
 
         </div>
+
+      </div>
+
+
+      <!-- ==================================================
+           ESTADO
+           ================================================== -->
+
+      <div class="historia-estado">
+
+        <span
+          class="estado-elemento"
+          [class.inactivo]="!historiaClinica.estado"
+        >
+
+          {{
+            historiaClinica.estado
+              ? 'Historia clínica activa'
+              : 'Historia clínica inactiva'
+          }}
+
+        </span>
+
+      </div>
+
+
+      <!-- ==================================================
+           ACCIONES
+           ================================================== -->
+
+      <div class="formulario-acciones">
+
+        <!-- EDITAR -->
+
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="editarHistoriaClinica()"
+        >
+
+          <span class="material-symbols-outlined">
+            edit
+          </span>
+
+          Editar historia clínica
+
+        </button>
+
+
+        <!-- ELIMINAR -->
+
+        <button
+          type="button"
+          class="btn-danger"
+          (click)="eliminarHistoriaClinica()"
+        >
+
+          <span class="material-symbols-outlined">
+            delete
+          </span>
+
+          Eliminar
+
+        </button>
 
       </div>
 
     </div>
 
-  </section>
+
+    <!-- ======================================================
+         FORMULARIO DE HISTORIA CLÍNICA
+         ====================================================== -->
+
+    <div
+      class="historia-formulario"
+      *ngIf="
+        !cargandoHistoria &&
+        mostrarFormularioHistoria
+      "
+    >
+
+      <!-- ==================================================
+           FECHA DE APERTURA
+           ================================================== -->
+
+      <div class="campo">
+
+        <label for="fecha_apertura">
+          Fecha de apertura
+        </label>
+
+        <input
+          type="date"
+          id="fecha_apertura"
+          [(ngModel)]="historiaClinica.fecha_apertura"
+        >
+
+      </div>
 
 
+      <!-- ==================================================
+           ANTECEDENTES
+           ================================================== -->
+
+      <div class="campo">
+
+        <label for="antecedentes">
+          Antecedentes
+        </label>
+
+        <textarea
+          id="antecedentes"
+          [(ngModel)]="historiaClinica.antecedentes"
+          rows="5"
+          placeholder="Registre los antecedentes relevantes del paciente..."
+        ></textarea>
+
+      </div>
+
+
+      <!-- ==================================================
+           ALERGIAS
+           ================================================== -->
+
+      <div class="campo">
+
+        <label for="alergias">
+          Alergias
+        </label>
+
+        <textarea
+          id="alergias"
+          [(ngModel)]="historiaClinica.alergias"
+          rows="4"
+          placeholder="Registre las alergias conocidas del paciente..."
+        ></textarea>
+
+      </div>
+
+
+      <!-- ==================================================
+           OBSERVACIONES
+           ================================================== -->
+
+      <div class="campo">
+
+        <label for="observacionesHistoria">
+          Observaciones clínicas
+        </label>
+
+        <textarea
+          id="observacionesHistoria"
+          [(ngModel)]="historiaClinica.observaciones"
+          rows="5"
+          placeholder="Registre las observaciones clínicas del paciente..."
+        ></textarea>
+
+      </div>
+
+
+      <!-- ==================================================
+           ESTADO
+           ================================================== -->
+
+      <div class="campo campo-estado">
+
+        <label>
+
+          <input
+            type="checkbox"
+            [(ngModel)]="historiaClinica.estado"
+          >
+
+          Historia clínica activa
+
+        </label>
+
+      </div>
+
+
+      <!-- ==================================================
+           ACCIONES DEL FORMULARIO
+           ================================================== -->
+
+      <div class="formulario-acciones">
+
+        <!-- GUARDAR / ACTUALIZAR -->
+
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="guardarHistoriaClinica()"
+        >
+
+          <span class="material-symbols-outlined">
+            save
+          </span>
+
+          {{
+            historiaClinica.id_historia_clinica > 0
+              ? 'Actualizar historia clínica'
+              : 'Guardar historia clínica'
+          }}
+
+        </button>
+
+
+        <!-- CANCELAR -->
+
+        <button
+          type="button"
+          class="btn-secundario"
+          (click)="cancelarHistoria()"
+        >
+
+          <span class="material-symbols-outlined">
+            close
+          </span>
+
+          Cancelar
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- ======================================================
+         SIN HISTORIA CLÍNICA
+         ====================================================== -->
+
+    <div
+      class="estado-vacio"
+      *ngIf="
+        !cargandoHistoria &&
+        historiaClinica.id_historia_clinica === 0 &&
+        !mostrarFormularioHistoria
+      "
+    >
+
+      <div class="vacio-icono">
+
+        <span class="material-symbols-outlined">
+          clinical_notes
+        </span>
+
+      </div>
+
+      <h4>
+        No hay historia clínica registrada
+      </h4>
+
+      <p>
+        Este paciente todavía no tiene una historia clínica registrada.
+      </p>
+
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="abrirFormularioHistoria()"
+      >
+
+        <span class="material-symbols-outlined">
+          add
+        </span>
+
+        Registrar historia clínica
+
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
   <!-- =========================================================
        BARRA FINAL
        ========================================================= -->

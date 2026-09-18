@@ -262,7 +262,6 @@ export class ElementosPaciente implements OnInit {
       this.cargarCuidados();
       this.cargarRecomendaciones();
       this.cargarHistoriaClinica();
-      
 
     });
 
@@ -294,6 +293,7 @@ export class ElementosPaciente implements OnInit {
           );
 
           this.cdr.detectChanges();
+
         },
 
         error: (error) => {
@@ -385,6 +385,7 @@ export class ElementosPaciente implements OnInit {
           this.familiarResponsable = null;
 
           this.cdr.detectChanges();
+
         }
 
       });
@@ -424,7 +425,9 @@ export class ElementosPaciente implements OnInit {
         hoy.getDate() < nacimiento.getDate()
       )
     ) {
+
       edad--;
+
     }
 
     return edad;
@@ -437,9 +440,7 @@ export class ElementosPaciente implements OnInit {
   cargarCatalogos(): void {
 
     this.cargarMedicamentos();
-
     this.cargarTiposInsumo();
-
     this.cargarInsumos();
 
   }
@@ -474,6 +475,7 @@ export class ElementosPaciente implements OnInit {
           this.cargandoMedicamentos = false;
 
           this.cdr.detectChanges();
+
         },
 
         error: (error) => {
@@ -533,6 +535,7 @@ export class ElementosPaciente implements OnInit {
           this.cargandoTiposInsumo = false;
 
           this.cdr.detectChanges();
+
         },
 
         error: (error) => {
@@ -591,15 +594,16 @@ export class ElementosPaciente implements OnInit {
 
           this.cargandoInsumos = false;
 
-          // Si ya se seleccionó un tipo,
-          // aplicamos nuevamente el filtro.
           if (
             this.formularioElemento.id_tipo_insumo
           ) {
+
             this.filtrarInsumosPorTipo();
+
           }
 
           this.cdr.detectChanges();
+
         },
 
         error: (error) => {
@@ -662,8 +666,6 @@ export class ElementosPaciente implements OnInit {
 
       });
 
-    // Cada vez que cambia el tipo,
-    // se debe volver a seleccionar el insumo.
     this.formularioElemento.id_insumo = null;
 
     console.log(
@@ -677,6 +679,7 @@ export class ElementosPaciente implements OnInit {
     );
 
     this.cdr.detectChanges();
+
   }
 
   // ============================================================
@@ -704,9 +707,11 @@ export class ElementosPaciente implements OnInit {
       typeof relacion === 'object' &&
       relacion.id_tipo_insumo !== undefined
     ) {
+
       return Number(
         relacion.id_tipo_insumo
       );
+
     }
 
     return null;
@@ -755,6 +760,7 @@ export class ElementosPaciente implements OnInit {
           this.cargandoElementos = false;
 
           this.cdr.detectChanges();
+
         },
 
         error: (error) => {
@@ -802,7 +808,9 @@ export class ElementosPaciente implements OnInit {
       respuesta &&
       Array.isArray(respuesta.results)
     ) {
+
       return respuesta.results;
+
     }
 
     return [];
@@ -833,9 +841,11 @@ export class ElementosPaciente implements OnInit {
       typeof relacion === 'object' &&
       relacion.id_paciente !== undefined
     ) {
+
       return Number(
         relacion.id_paciente
       );
+
     }
 
     return null;
@@ -855,6 +865,7 @@ export class ElementosPaciente implements OnInit {
 
     this.seccionActual =
       seccion;
+
   }
 
   // ============================================================
@@ -911,6 +922,7 @@ export class ElementosPaciente implements OnInit {
       observaciones: '',
 
       estado: true
+
     };
 
     this.insumosFiltrados = [];
@@ -918,13 +930,16 @@ export class ElementosPaciente implements OnInit {
     if (
       this.medicamentos.length === 0
     ) {
+
       this.cargarMedicamentos();
+
     }
 
     this.mostrarFormularioElemento =
       true;
 
     this.cdr.detectChanges();
+
   }
 
   // ============================================================
@@ -960,6 +975,7 @@ export class ElementosPaciente implements OnInit {
       observaciones: '',
 
       estado: true
+
     };
 
     this.insumosFiltrados = [];
@@ -967,19 +983,24 @@ export class ElementosPaciente implements OnInit {
     if (
       this.tiposInsumo.length === 0
     ) {
+
       this.cargarTiposInsumo();
+
     }
 
     if (
       this.insumos.length === 0
     ) {
+
       this.cargarInsumos();
+
     }
 
     this.mostrarFormularioElemento =
       true;
 
     this.cdr.detectChanges();
+
   }
 
   // ============================================================
@@ -1009,12 +1030,14 @@ export class ElementosPaciente implements OnInit {
       observaciones: '',
 
       estado: true
+
     };
 
     this.insumosFiltrados = [];
 
     this.mostrarFormularioElemento =
       true;
+
   }
 
   // ============================================================
@@ -1094,6 +1117,7 @@ export class ElementosPaciente implements OnInit {
 
       estado:
         elemento.estado ?? true
+
     };
 
     if (
@@ -1103,7 +1127,9 @@ export class ElementosPaciente implements OnInit {
       if (
         this.medicamentos.length === 0
       ) {
+
         this.cargarMedicamentos();
+
       }
 
     } else {
@@ -1111,13 +1137,17 @@ export class ElementosPaciente implements OnInit {
       if (
         this.tiposInsumo.length === 0
       ) {
+
         this.cargarTiposInsumo();
+
       }
 
       if (
         this.insumos.length === 0
       ) {
+
         this.cargarInsumos();
+
       }
 
       this.insumosFiltrados =
@@ -1139,6 +1169,7 @@ export class ElementosPaciente implements OnInit {
       true;
 
     this.cdr.detectChanges();
+
   }
 
   // ============================================================
@@ -1157,16 +1188,20 @@ export class ElementosPaciente implements OnInit {
     if (
       typeof medicamento === 'number'
     ) {
+
       return medicamento;
+
     }
 
     if (
       medicamento &&
       medicamento.id_medicamentos !== undefined
     ) {
+
       return Number(
         medicamento.id_medicamentos
       );
+
     }
 
     return null;
@@ -1188,16 +1223,20 @@ export class ElementosPaciente implements OnInit {
     if (
       typeof insumo === 'number'
     ) {
+
       return insumo;
+
     }
 
     if (
       insumo &&
       insumo.id_insumo !== undefined
     ) {
+
       return Number(
         insumo.id_insumo
       );
+
     }
 
     return null;
@@ -1207,94 +1246,106 @@ export class ElementosPaciente implements OnInit {
   // OBTENER NOMBRE DEL ELEMENTO
   // ============================================================
 
-  obtenerNombreElemento(elemento: ElementoPaciente): string {
+  obtenerNombreElemento(
+    elemento: ElementoPaciente
+  ): string {
 
-  // ----------------------------------------------------------
-  // SI ES MEDICAMENTO
-  // ----------------------------------------------------------
-  if (
-    elemento.id_medicamentos !== null &&
-    elemento.id_medicamentos !== undefined
-  ) {
-
-    // El backend puede devolver solamente el ID
-    if (typeof elemento.id_medicamentos === 'number') {
-
-      const medicamento = this.medicamentos.find(
-        item =>
-          Number(item.id_medicamentos) ===
-          Number(elemento.id_medicamentos)
-      );
-
-      return medicamento
-        ? medicamento.nombre
-        : 'Medicamento no encontrado';
-    }
-
-    // El backend puede devolver el objeto completo
-    if (
-      typeof elemento.id_medicamentos === 'object' &&
-      elemento.id_medicamentos !== null
-    ) {
-
-      const idMedicamento =
-        elemento.id_medicamentos.id_medicamentos;
-
-      const medicamento = this.medicamentos.find(
-        item =>
-          Number(item.id_medicamentos) ===
-          Number(idMedicamento)
-      );
-
-      return medicamento
-        ? medicamento.nombre
-        : 'Medicamento no encontrado';
-    }
-  }
-
-  // ----------------------------------------------------------
-  // SI ES INSUMO
-  // ----------------------------------------------------------
-  if (
-    elemento.id_insumo !== null &&
-    elemento.id_insumo !== undefined
-  ) {
-
-    if (typeof elemento.id_insumo === 'number') {
-
-      const insumo = this.insumos.find(
-        item =>
-          Number(item.id_insumo) ===
-          Number(elemento.id_insumo)
-      );
-
-      return insumo
-        ? insumo.nombre
-        : 'Insumo no encontrado';
-    }
+    // ----------------------------------------------------------
+    // SI ES MEDICAMENTO
+    // ----------------------------------------------------------
 
     if (
-      typeof elemento.id_insumo === 'object' &&
-      elemento.id_insumo !== null
+      elemento.id_medicamentos !== null &&
+      elemento.id_medicamentos !== undefined
     ) {
 
-      const idInsumo =
-        elemento.id_insumo.id_insumo;
+      if (
+        typeof elemento.id_medicamentos === 'number'
+      ) {
 
-      const insumo = this.insumos.find(
-        item =>
-          Number(item.id_insumo) ===
-          Number(idInsumo)
-      );
+        const medicamento =
+          this.medicamentos.find(
+            item =>
+              Number(item.id_medicamentos) ===
+              Number(elemento.id_medicamentos)
+          );
 
-      return insumo
-        ? insumo.nombre
-        : 'Insumo no encontrado';
+        return medicamento
+          ? medicamento.nombre
+          : 'Medicamento no encontrado';
+
+      }
+
+      if (
+        typeof elemento.id_medicamentos === 'object' &&
+        elemento.id_medicamentos !== null
+      ) {
+
+        const idMedicamento =
+          elemento.id_medicamentos.id_medicamentos;
+
+        const medicamento =
+          this.medicamentos.find(
+            item =>
+              Number(item.id_medicamentos) ===
+              Number(idMedicamento)
+          );
+
+        return medicamento
+          ? medicamento.nombre
+          : 'Medicamento no encontrado';
+      }
     }
+
+    // ----------------------------------------------------------
+    // SI ES INSUMO
+    // ----------------------------------------------------------
+
+    if (
+      elemento.id_insumo !== null &&
+      elemento.id_insumo !== undefined
+    ) {
+
+      if (
+        typeof elemento.id_insumo === 'number'
+      ) {
+
+        const insumo =
+          this.insumos.find(
+            item =>
+              Number(item.id_insumo) ===
+              Number(elemento.id_insumo)
+          );
+
+        return insumo
+          ? insumo.nombre
+          : 'Insumo no encontrado';
+      }
+
+      if (
+        typeof elemento.id_insumo === 'object' &&
+        elemento.id_insumo !== null
+      ) {
+
+        const idInsumo =
+          elemento.id_insumo.id_insumo;
+
+        const insumo =
+          this.insumos.find(
+            item =>
+              Number(item.id_insumo) ===
+              Number(idInsumo)
+          );
+
+        return insumo
+          ? insumo.nombre
+          : 'Insumo no encontrado';
+      }
+    }
+
+    return 'Sin elemento';
   }
 
-  return 'Sin elemento';
-}
   // ============================================================
   // OBTENER TIPO DEL ELEMENTO
   // ============================================================
@@ -1307,14 +1358,18 @@ export class ElementosPaciente implements OnInit {
       elemento.id_medicamentos !== null &&
       elemento.id_medicamentos !== undefined
     ) {
+
       return 'Medicamento';
+
     }
 
     if (
       elemento.id_insumo !== null &&
       elemento.id_insumo !== undefined
     ) {
+
       return 'Insumo';
+
     }
 
     return 'Sin tipo';
@@ -1415,7 +1470,6 @@ export class ElementosPaciente implements OnInit {
         this.formularioElemento.fecha_ingreso ||
         this.obtenerFechaActual(),
 
-      // Este campo pertenece a elementos_paciente.
       fecha_vencimiento:
         this.tipoElemento === 'medicamento'
           ? (
@@ -1511,6 +1565,7 @@ export class ElementosPaciente implements OnInit {
             this.cerrarFormularioElemento();
 
             this.cargarElementosPaciente();
+
           },
 
           error: (error) => {
@@ -1529,6 +1584,7 @@ export class ElementosPaciente implements OnInit {
               error,
               'No fue posible actualizar el elemento.'
             );
+
           }
 
         });
@@ -1575,6 +1631,7 @@ export class ElementosPaciente implements OnInit {
           this.cerrarFormularioElemento();
 
           this.cargarElementosPaciente();
+
         },
 
         error: (error) => {
@@ -1593,6 +1650,7 @@ export class ElementosPaciente implements OnInit {
             error,
             'No fue posible registrar el elemento.'
           );
+
         }
 
       });
@@ -1629,9 +1687,11 @@ export class ElementosPaciente implements OnInit {
       observaciones: '',
 
       estado: true
+
     };
 
     this.insumosFiltrados = [];
+
   }
 
   // ============================================================
@@ -1683,6 +1743,7 @@ export class ElementosPaciente implements OnInit {
             });
 
             this.cargarElementosPaciente();
+
           },
 
           error: (error) => {
@@ -1696,6 +1757,7 @@ export class ElementosPaciente implements OnInit {
               error,
               'No fue posible eliminar el elemento.'
             );
+
           }
 
         });
@@ -1705,241 +1767,304 @@ export class ElementosPaciente implements OnInit {
   }
 
   // ============================================================
-// CARGAR CUIDADOS DE ENFERMERÍA
-// ============================================================
+  // CARGAR CUIDADOS DE ENFERMERÍA
+  // ============================================================
 
-cargarCuidados(): void {
+  cargarCuidados(): void {
 
-  this.cargandoCuidados = true;
+    this.cargandoCuidados = true;
 
-  this.http
-    .get<
-      CuidadoEnfermeria[] |
-      RespuestaPaginada<CuidadoEnfermeria>
-    >(
-      `${this.apiUrl}/cuidados_enfermeria/`
-    )
-    .subscribe({
+    this.http
+      .get<
+        CuidadoEnfermeria[] |
+        RespuestaPaginada<CuidadoEnfermeria>
+      >(
+        `${this.apiUrl}/cuidados_enfermeria/`
+      )
+      .subscribe({
 
-      next: (respuesta) => {
+        next: (respuesta) => {
 
-        const cuidados =
-          this.obtenerResultados(respuesta);
+          const cuidados =
+            this.obtenerResultados(respuesta);
 
-        const registro =
-          cuidados.find(
-            cuidado =>
-              Number(
-                this.obtenerIdPaciente(
-                  cuidado.id_paciente
-                )
-              ) === Number(this.idPaciente)
+          const registro =
+            cuidados.find(
+              cuidado =>
+                Number(
+                  this.obtenerIdPaciente(
+                    cuidado.id_paciente
+                  )
+                ) === Number(this.idPaciente)
+            );
+
+          if (registro) {
+
+            this.cuidados = {
+
+              id_cuidado:
+                registro.id_cuidado,
+
+              bano_paciente:
+                registro.bano_paciente || '',
+
+              peso_talla:
+                registro.peso_talla || '',
+
+              control_glucemia:
+                registro.control_glucemia || '',
+
+              curaciones:
+                registro.curaciones || '',
+
+              liquidos_administrados_eliminados:
+                registro.liquidos_administrados_eliminados || '',
+
+              control_deposicion:
+                registro.control_deposicion || '',
+
+              administracion_medicamentos:
+                registro.administracion_medicamentos || '',
+
+              id_paciente:
+                this.idPaciente
+
+            };
+
+          } else {
+
+            this.cuidados =
+              this.crearCuidadosVacios();
+
+          }
+
+          this.cargandoCuidados = false;
+
+          this.cdr.detectChanges();
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Error al cargar cuidados de enfermería:',
+            error
           );
 
-        if (registro) {
+          console.error(
+            'Respuesta del servidor:',
+            error?.error
+          );
 
-          this.cuidados = {
-            id_cuidado:
-              registro.id_cuidado,
+          this.cuidados =
+            this.crearCuidadosVacios();
 
-            bano_paciente:
-              registro.bano_paciente || '',
+          this.cargandoCuidados = false;
 
-            peso_talla:
-              registro.peso_talla || '',
-
-            control_glucemia:
-              registro.control_glucemia || '',
-
-            curaciones:
-              registro.curaciones || '',
-
-            liquidos_administrados_eliminados:
-              registro.liquidos_administrados_eliminados || '',
-
-            control_deposicion:
-              registro.control_deposicion || '',
-
-            administracion_medicamentos:
-              registro.administracion_medicamentos || '',
-
-            id_paciente:
-              this.idPaciente
-          };
-
-        } else {
-
-          this.cuidados = this.crearCuidadosVacios();
+          this.cdr.detectChanges();
 
         }
 
-        this.cargandoCuidados = false;
-
-        this.cdr.detectChanges();
-
-      },
-
-      error: (error) => {
-
-        console.error(
-          'Error al cargar cuidados de enfermería:',
-          error
-        );
-
-        console.error(
-          'Respuesta del servidor:',
-          error?.error
-        );
-
-        this.cuidados =
-          this.crearCuidadosVacios();
-
-        this.cargandoCuidados = false;
-
-        this.cdr.detectChanges();
-
-      }
-
-    });
-
-}
-
-// ============================================================
-// CREAR ESTRUCTURA VACÍA DE CUIDADOS
-// ============================================================
-
-private crearCuidadosVacios(): CuidadoEnfermeria {
-
-  return {
-
-    id_cuidado: 0,
-
-    bano_paciente: '',
-
-    peso_talla: '',
-
-    control_glucemia: '',
-
-    curaciones: '',
-
-    liquidos_administrados_eliminados: '',
-
-    control_deposicion: '',
-
-    administracion_medicamentos: '',
-
-    id_paciente: this.idPaciente
-
-  };
-
-}
-
-// ============================================================
-// ABRIR FORMULARIO DE CUIDADOS
-// ============================================================
-
-abrirFormularioCuidados(): void {
-
-  this.mostrarFormularioCuidados = true;
-
-  this.cdr.detectChanges();
-
-}
-
-// ============================================================
-// GUARDAR CUIDADOS DE ENFERMERÍA
-// ============================================================
-
-guardarCuidados(): void {
-
-  if (!this.idPaciente || this.idPaciente <= 0) {
-
-    Swal.fire({
-      icon: 'warning',
-      title: 'Paciente no identificado',
-      text:
-        'No fue posible identificar el paciente.'
-    });
-
-    return;
+      });
 
   }
 
-  const datos = {
+  // ============================================================
+  // CREAR ESTRUCTURA VACÍA DE CUIDADOS
+  // ============================================================
 
-    bano_paciente:
-      this.limpiarValor(
-        this.cuidados.bano_paciente
-      ),
+  private crearCuidadosVacios(): CuidadoEnfermeria {
 
-    peso_talla:
-      this.limpiarValor(
-        this.cuidados.peso_talla
-      ),
+    return {
 
-    control_glucemia:
-      this.limpiarValor(
-        this.cuidados.control_glucemia
-      ),
+      id_cuidado: 0,
 
-    curaciones:
-      this.limpiarValor(
-        this.cuidados.curaciones
-      ),
+      bano_paciente: '',
 
-    liquidos_administrados_eliminados:
-      this.limpiarValor(
-        this.cuidados
-          .liquidos_administrados_eliminados
-      ),
+      peso_talla: '',
 
-    control_deposicion:
-      this.limpiarValor(
-        this.cuidados.control_deposicion
-      ),
+      control_glucemia: '',
 
-    administracion_medicamentos:
-      this.limpiarValor(
-        this.cuidados
-          .administracion_medicamentos
-      ),
+      curaciones: '',
 
-    id_paciente:
+      liquidos_administrados_eliminados: '',
+
+      control_deposicion: '',
+
+      administracion_medicamentos: '',
+
+      id_paciente:
+        this.idPaciente
+
+    };
+
+  }
+
+  // ============================================================
+  // ABRIR FORMULARIO DE CUIDADOS
+  // ============================================================
+
+  abrirFormularioCuidados(): void {
+
+    this.mostrarFormularioCuidados =
+      true;
+
+    this.cdr.detectChanges();
+
+  }
+
+  // ============================================================
+  // GUARDAR CUIDADOS DE ENFERMERÍA
+  // ============================================================
+
+  guardarCuidados(): void {
+
+    if (!this.idPaciente || this.idPaciente <= 0) {
+
+      Swal.fire({
+        icon: 'warning',
+        title: 'Paciente no identificado',
+        text:
+          'No fue posible identificar el paciente.'
+      });
+
+      return;
+    }
+
+    const datos = {
+
+      bano_paciente:
+        this.limpiarValor(
+          this.cuidados.bano_paciente
+        ),
+
+      peso_talla:
+        this.limpiarValor(
+          this.cuidados.peso_talla
+        ),
+
+      control_glucemia:
+        this.limpiarValor(
+          this.cuidados.control_glucemia
+        ),
+
+      curaciones:
+        this.limpiarValor(
+          this.cuidados.curaciones
+        ),
+
+      liquidos_administrados_eliminados:
+        this.limpiarValor(
+          this.cuidados
+            .liquidos_administrados_eliminados
+        ),
+
+      control_deposicion:
+        this.limpiarValor(
+          this.cuidados.control_deposicion
+        ),
+
+      administracion_medicamentos:
+        this.limpiarValor(
+          this.cuidados
+            .administracion_medicamentos
+        ),
+
+      id_paciente:
+        this.idPaciente
+
+    };
+
+    console.log(
+      '======================================'
+    );
+
+    console.log(
+      'GUARDANDO CUIDADOS DE ENFERMERÍA'
+    );
+
+    console.log(
+      'Paciente:',
       this.idPaciente
+    );
 
-  };
+    console.log(
+      'Datos enviados:',
+      datos
+    );
 
-  console.log(
-    '======================================'
-  );
+    console.log(
+      '======================================'
+    );
 
-  console.log(
-    'GUARDANDO CUIDADOS DE ENFERMERÍA'
-  );
+    // ==========================================================
+    // ACTUALIZAR
+    // ==========================================================
 
-  console.log(
-    'Paciente:',
-    this.idPaciente
-  );
+    if (this.cuidados.id_cuidado > 0) {
 
-  console.log(
-    'Datos enviados:',
-    datos
-  );
+      this.http
+        .patch(
+          `${this.apiUrl}/cuidados_enfermeria/${this.cuidados.id_cuidado}/`,
+          datos
+        )
+        .subscribe({
 
-  console.log(
-    '======================================'
-  );
+          next: (respuesta) => {
 
-  // ==========================================================
-  // ACTUALIZAR REGISTRO EXISTENTE
-  // ==========================================================
+            console.log(
+              'Cuidados actualizados:',
+              respuesta
+            );
 
-  if (this.cuidados.id_cuidado > 0) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Cuidados actualizados',
+              text:
+                'Los cuidados de enfermería se actualizaron correctamente.',
+              timer: 1800,
+              showConfirmButton: false
+            });
+
+            this.mostrarFormularioCuidados =
+              false;
+
+            this.cargarCuidados();
+
+          },
+
+          error: (error) => {
+
+            console.error(
+              'Error al actualizar cuidados:',
+              error
+            );
+
+            console.error(
+              'Respuesta del servidor:',
+              error?.error
+            );
+
+            this.mostrarErrorApi(
+              error,
+              'No fue posible actualizar los cuidados de enfermería.'
+            );
+
+          }
+
+        });
+
+      return;
+
+    }
+
+    // ==========================================================
+    // CREAR
+    // ==========================================================
 
     this.http
-      .patch(
-        `${this.apiUrl}/cuidados_enfermeria/${this.cuidados.id_cuidado}/`,
+      .post(
+        `${this.apiUrl}/cuidados_enfermeria/`,
         datos
       )
       .subscribe({
@@ -1947,20 +2072,21 @@ guardarCuidados(): void {
         next: (respuesta) => {
 
           console.log(
-            'Cuidados actualizados:',
+            'Cuidados registrados:',
             respuesta
           );
 
           Swal.fire({
             icon: 'success',
-            title: 'Cuidados actualizados',
+            title: 'Cuidados registrados',
             text:
-              'Los cuidados de enfermería se actualizaron correctamente.',
+              'Los cuidados de enfermería se registraron correctamente.',
             timer: 1800,
             showConfirmButton: false
           });
 
-          this.mostrarFormularioCuidados = false;
+          this.mostrarFormularioCuidados =
+            false;
 
           this.cargarCuidados();
 
@@ -1969,7 +2095,7 @@ guardarCuidados(): void {
         error: (error) => {
 
           console.error(
-            'Error al actualizar cuidados:',
+            'Error al registrar cuidados:',
             error
           );
 
@@ -1980,398 +2106,491 @@ guardarCuidados(): void {
 
           this.mostrarErrorApi(
             error,
-            'No fue posible actualizar los cuidados de enfermería.'
+            'No fue posible registrar los cuidados de enfermería.'
           );
 
         }
 
       });
 
-    return;
+  }
+
+  // ============================================================
+  // LIMPIAR VALORES
+  // ============================================================
+
+  private limpiarValor(
+    valor: string | null
+  ): string | null {
+
+    if (!valor) {
+      return null;
+    }
+
+    const valorLimpio =
+      valor.trim();
+
+    return valorLimpio || null;
 
   }
 
-  // ==========================================================
-  // CREAR NUEVO REGISTRO
-  // ==========================================================
+  // ============================================================
+  // EDITAR CUIDADOS
+  // ============================================================
 
-  this.http
-    .post(
-      `${this.apiUrl}/cuidados_enfermeria/`,
-      datos
-    )
-    .subscribe({
+  editarCuidados(): void {
 
-      next: (respuesta) => {
+    if (!this.cuidados.id_cuidado) {
 
-        console.log(
-          'Cuidados registrados:',
-          respuesta
-        );
+      Swal.fire({
+        icon: 'info',
+        title: 'Sin cuidados registrados',
+        text:
+          'Primero debe registrar los cuidados de enfermería.'
+      });
 
-        Swal.fire({
-          icon: 'success',
-          title: 'Cuidados registrados',
-          text:
-            'Los cuidados de enfermería se registraron correctamente.',
-          timer: 1800,
-          showConfirmButton: false
-        });
+      return;
 
-        this.mostrarFormularioCuidados = false;
+    }
 
-        this.cargarCuidados();
+    this.mostrarFormularioCuidados =
+      true;
 
-      },
+    this.cdr.detectChanges();
 
-      error: (error) => {
-
-        console.error(
-          'Error al registrar cuidados:',
-          error
-        );
-
-        console.error(
-          'Respuesta del servidor:',
-          error?.error
-        );
-
-        this.mostrarErrorApi(
-          error,
-          'No fue posible registrar los cuidados de enfermería.'
-        );
-
-      }
-
-    });
-
-}
-
-// ============================================================
-// LIMPIAR VALORES
-// ============================================================
-
-private limpiarValor(
-  valor: string | null
-): string | null {
-
-  if (!valor) {
-    return null;
   }
 
-  const valorLimpio =
-    valor.trim();
+  // ============================================================
+  // ELIMINAR CUIDADOS
+  // ============================================================
 
-  return valorLimpio || null;
+  eliminarCuidados(): void {
 
-}
+    if (!this.cuidados.id_cuidado) {
 
-// ============================================================
-// EDITAR CUIDADOS
-// ============================================================
+      Swal.fire({
+        icon: 'info',
+        title: 'Sin cuidados',
+        text:
+          'No existen cuidados de enfermería para eliminar.'
+      });
 
-editarCuidados(): void {
-
-  if (!this.cuidados.id_cuidado) {
+      return;
+    }
 
     Swal.fire({
-      icon: 'info',
-      title: 'Sin cuidados registrados',
-      text:
-        'Primero debe registrar los cuidados de enfermería.'
-    });
 
-    return;
+      icon: 'warning',
+
+      title:
+        '¿Eliminar cuidados de enfermería?',
+
+      text:
+        'Esta acción eliminará los cuidados registrados para este paciente.',
+
+      showCancelButton: true,
+
+      confirmButtonText:
+        'Sí, eliminar',
+
+      cancelButtonText:
+        'Cancelar'
+
+    }).then((resultado) => {
+
+      if (!resultado.isConfirmed) {
+        return;
+      }
+
+      this.http
+        .delete(
+          `${this.apiUrl}/cuidados_enfermeria/${this.cuidados.id_cuidado}/`
+        )
+        .subscribe({
+
+          next: () => {
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Cuidados eliminados',
+              text:
+                'Los cuidados fueron eliminados correctamente.',
+              timer: 1800,
+              showConfirmButton: false
+            });
+
+            this.cuidados =
+              this.crearCuidadosVacios();
+
+            this.mostrarFormularioCuidados =
+              false;
+
+            this.cdr.detectChanges();
+
+          },
+
+          error: (error) => {
+
+            console.error(
+              'Error al eliminar cuidados:',
+              error
+            );
+
+            console.error(
+              'Respuesta del servidor:',
+              error?.error
+            );
+
+            this.mostrarErrorApi(
+              error,
+              'No fue posible eliminar los cuidados de enfermería.'
+            );
+
+          }
+
+        });
+
+    });
 
   }
 
-  this.mostrarFormularioCuidados = true;
+  // ============================================================
+  // CARGAR RECOMENDACIONES
+  // ============================================================
 
-  this.cdr.detectChanges();
+  cargarRecomendaciones(): void {
 
-}
+    this.cargandoRecomendaciones = true;
 
-// ============================================================
-// ELIMINAR CUIDADOS
-// ============================================================
+    this.http
+      .get<
+        Recomendacion[] |
+        RespuestaPaginada<Recomendacion>
+      >(
+        `${this.apiUrl}/recomendaciones/`
+      )
+      .subscribe({
 
-eliminarCuidados(): void {
+        next: (respuesta) => {
 
-  this.eliminarCuidados();
+          const recomendaciones =
+            this.obtenerResultados(respuesta);
 
-}
+          const registro =
+            recomendaciones.find(
+              recomendacion =>
+                Number(
+                  this.obtenerIdPaciente(
+                    recomendacion.id_paciente
+                  )
+                ) ===
+                Number(this.idPaciente)
+            );
 
-// ============================================================
-// CARGAR RECOMENDACIONES
-// ============================================================
+          if (registro) {
 
-cargarRecomendaciones(): void {
+            this.recomendaciones = {
 
-  this.cargandoRecomendaciones = true;
+              id_recomendacion:
+                registro.id_recomendacion,
 
-  this.http
-    .get<
-      Recomendacion[] |
-      RespuestaPaginada<Recomendacion>
-    >(
-      `${this.apiUrl}/recomendaciones/`
-    )
-    .subscribe({
+              hidratar_piel:
+                registro.hidratar_piel || '',
 
-      next: (respuesta) => {
+              asistir_alimentacion:
+                registro.asistir_alimentacion || '',
 
-        const recomendaciones =
-          this.obtenerResultados(respuesta);
+              via_alimentacion:
+                registro.via_alimentacion || '',
 
-        const registro =
-          recomendaciones.find(
-            recomendacion =>
-              Number(
-                this.obtenerIdPaciente(
-                  recomendacion.id_paciente
-                )
-              ) ===
-              Number(this.idPaciente)
+              prevencion_caidas:
+                registro.prevencion_caidas || '',
+
+              terapias_fisicas:
+                registro.terapias_fisicas || '',
+
+              terapia_respiratoria:
+                registro.terapia_respiratoria || '',
+
+              actividad_ocupacional:
+                registro.actividad_ocupacional || '',
+
+              corte_unas:
+                registro.corte_unas || '',
+
+              corte_cabello:
+                registro.corte_cabello || '',
+
+              higiene_oral:
+                registro.higiene_oral || '',
+
+              id_paciente:
+                this.idPaciente
+
+            };
+
+          } else {
+
+            this.recomendaciones =
+              this.crearRecomendacionesVacias();
+
+          }
+
+          this.cargandoRecomendaciones = false;
+
+          this.cdr.detectChanges();
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Error al cargar recomendaciones:',
+            error
           );
-
-        if (registro) {
-
-          this.recomendaciones = {
-            id_recomendacion:
-              registro.id_recomendacion,
-            hidratar_piel:
-              registro.hidratar_piel || '',
-            asistir_alimentacion:
-              registro.asistir_alimentacion || '',
-            via_alimentacion:
-              registro.via_alimentacion || '',
-            prevencion_caidas:
-              registro.prevencion_caidas || '',
-            terapias_fisicas:
-              registro.terapias_fisicas || '',
-            terapia_respiratoria:
-              registro.terapia_respiratoria || '',
-            actividad_ocupacional:
-              registro.actividad_ocupacional || '',
-            corte_unas:
-              registro.corte_unas || '',
-            corte_cabello:
-              registro.corte_cabello || '',
-            higiene_oral:
-              registro.higiene_oral || '',
-            id_paciente:
-              this.idPaciente
-          };
-
-        } else {
 
           this.recomendaciones =
             this.crearRecomendacionesVacias();
 
+          this.cargandoRecomendaciones = false;
+
+          this.cdr.detectChanges();
+
         }
 
-        this.cargandoRecomendaciones = false;
-        this.cdr.detectChanges();
-
-      },
-
-      error: (error) => {
-
-        console.error(
-          'Error al cargar recomendaciones:',
-          error
-        );
-
-        this.recomendaciones =
-          this.crearRecomendacionesVacias();
-
-        this.cargandoRecomendaciones = false;
-        this.cdr.detectChanges();
-
-      }
-
-    });
-
-}
-
-
-// ============================================================
-// CREAR ESTRUCTURA VACÍA DE RECOMENDACIONES
-// ============================================================
-
-private crearRecomendacionesVacias(): Recomendacion {
-
-  return {
-
-    id_recomendacion: 0,
-
-    hidratar_piel: '',
-
-    asistir_alimentacion: '',
-
-    via_alimentacion: '',
-
-    prevencion_caidas: '',
-
-    terapias_fisicas: '',
-
-    terapia_respiratoria: '',
-
-    actividad_ocupacional: '',
-
-    corte_unas: '',
-
-    corte_cabello: '',
-
-    higiene_oral: '',
-
-    id_paciente: this.idPaciente
-
-  };
-
-}
-
-
-// ============================================================
-// ABRIR FORMULARIO DE RECOMENDACIONES
-// ============================================================
-
-abrirFormularioRecomendaciones(): void {
-
-  // Si no existe un registro, aseguramos que el formulario
-  // tenga la estructura correspondiente al paciente.
-  if (
-    !this.recomendaciones.id_recomendacion
-  ) {
-
-    this.recomendaciones =
-      this.crearRecomendacionesVacias();
+      });
 
   }
 
-  this.mostrarFormularioRecomendaciones =
-    true;
+  // ============================================================
+  // CREAR ESTRUCTURA VACÍA DE RECOMENDACIONES
+  // ============================================================
 
-  this.cdr.detectChanges();
+  private crearRecomendacionesVacias(): Recomendacion {
 
-}
+    return {
 
+      id_recomendacion: 0,
 
-// ============================================================
-// GUARDAR RECOMENDACIONES
-// ============================================================
+      hidratar_piel: '',
 
-guardarRecomendaciones(): void {
+      asistir_alimentacion: '',
 
-  // Validar que exista un paciente.
-  if (
-    !this.idPaciente ||
-    this.idPaciente <= 0
-  ) {
+      via_alimentacion: '',
 
-    Swal.fire({
-      icon: 'warning',
-      title: 'Paciente no identificado',
-      text:
-        'No fue posible identificar el paciente.'
-    });
+      prevencion_caidas: '',
 
-    return;
+      terapias_fisicas: '',
+
+      terapia_respiratoria: '',
+
+      actividad_ocupacional: '',
+
+      corte_unas: '',
+
+      corte_cabello: '',
+
+      higiene_oral: '',
+
+      id_paciente:
+        this.idPaciente
+
+    };
 
   }
 
-  // Preparar los datos que se enviarán al backend.
-  const datos = {
+  // ============================================================
+  // ABRIR FORMULARIO DE RECOMENDACIONES
+  // ============================================================
 
-    hidratar_piel:
-      this.limpiarValor(
-        this.recomendaciones.hidratar_piel
-      ),
+  abrirFormularioRecomendaciones(): void {
 
-    asistir_alimentacion:
-      this.limpiarValor(
-        this.recomendaciones.asistir_alimentacion
-      ),
+    if (
+      !this.recomendaciones.id_recomendacion
+    ) {
 
-    via_alimentacion:
-      this.limpiarValor(
-        this.recomendaciones.via_alimentacion
-      ),
+      this.recomendaciones =
+        this.crearRecomendacionesVacias();
 
-    prevencion_caidas:
-      this.limpiarValor(
-        this.recomendaciones.prevencion_caidas
-      ),
+    }
 
-    terapias_fisicas:
-      this.limpiarValor(
-        this.recomendaciones.terapias_fisicas
-      ),
+    this.mostrarFormularioRecomendaciones =
+      true;
 
-    terapia_respiratoria:
-      this.limpiarValor(
-        this.recomendaciones.terapia_respiratoria
-      ),
+    this.cdr.detectChanges();
 
-    actividad_ocupacional:
-      this.limpiarValor(
-        this.recomendaciones.actividad_ocupacional
-      ),
+  }
 
-    corte_unas:
-      this.limpiarValor(
-        this.recomendaciones.corte_unas
-      ),
+  // ============================================================
+  // GUARDAR RECOMENDACIONES
+  // ============================================================
 
-    corte_cabello:
-      this.limpiarValor(
-        this.recomendaciones.corte_cabello
-      ),
+  guardarRecomendaciones(): void {
 
-    higiene_oral:
-      this.limpiarValor(
-        this.recomendaciones.higiene_oral
-      ),
+    if (
+      !this.idPaciente ||
+      this.idPaciente <= 0
+    ) {
 
-    id_paciente:
+      Swal.fire({
+        icon: 'warning',
+        title: 'Paciente no identificado',
+        text:
+          'No fue posible identificar el paciente.'
+      });
+
+      return;
+    }
+
+    const datos = {
+
+      hidratar_piel:
+        this.limpiarValor(
+          this.recomendaciones.hidratar_piel
+        ),
+
+      asistir_alimentacion:
+        this.limpiarValor(
+          this.recomendaciones.asistir_alimentacion
+        ),
+
+      via_alimentacion:
+        this.limpiarValor(
+          this.recomendaciones.via_alimentacion
+        ),
+
+      prevencion_caidas:
+        this.limpiarValor(
+          this.recomendaciones.prevencion_caidas
+        ),
+
+      terapias_fisicas:
+        this.limpiarValor(
+          this.recomendaciones.terapias_fisicas
+        ),
+
+      terapia_respiratoria:
+        this.limpiarValor(
+          this.recomendaciones.terapia_respiratoria
+        ),
+
+      actividad_ocupacional:
+        this.limpiarValor(
+          this.recomendaciones.actividad_ocupacional
+        ),
+
+      corte_unas:
+        this.limpiarValor(
+          this.recomendaciones.corte_unas
+        ),
+
+      corte_cabello:
+        this.limpiarValor(
+          this.recomendaciones.corte_cabello
+        ),
+
+      higiene_oral:
+        this.limpiarValor(
+          this.recomendaciones.higiene_oral
+        ),
+
+      id_paciente:
+        this.idPaciente
+
+    };
+
+    console.log(
+      '======================================'
+    );
+
+    console.log(
+      'GUARDANDO RECOMENDACIONES'
+    );
+
+    console.log(
+      'Paciente:',
       this.idPaciente
+    );
 
-  };
+    console.log(
+      'Datos enviados:',
+      datos
+    );
 
-  console.log(
-    '======================================'
-  );
+    console.log(
+      '======================================'
+    );
 
-  console.log(
-    'GUARDANDO RECOMENDACIONES'
-  );
+    // ==========================================================
+    // ACTUALIZAR
+    // ==========================================================
 
-  console.log(
-    'Paciente:',
-    this.idPaciente
-  );
+    if (
+      this.recomendaciones.id_recomendacion > 0
+    ) {
 
-  console.log(
-    'Datos enviados:',
-    datos
-  );
+      this.http
+        .patch(
+          `${this.apiUrl}/recomendaciones/${this.recomendaciones.id_recomendacion}/`,
+          datos
+        )
+        .subscribe({
 
-  console.log(
-    '======================================'
-  );
+          next: (respuesta) => {
 
+            console.log(
+              'Recomendaciones actualizadas:',
+              respuesta
+            );
 
-  // ==========================================================
-  // ACTUALIZAR REGISTRO EXISTENTE
-  // ==========================================================
+            Swal.fire({
+              icon: 'success',
+              title: 'Recomendaciones actualizadas',
+              text:
+                'La información se actualizó correctamente.',
+              timer: 1800,
+              showConfirmButton: false
+            });
 
-  if (
-    this.recomendaciones.id_recomendacion > 0
-  ) {
+            this.mostrarFormularioRecomendaciones =
+              false;
+
+            this.cargarRecomendaciones();
+
+          },
+
+          error: (error) => {
+
+            console.error(
+              'Error al actualizar recomendaciones:',
+              error
+            );
+
+            console.error(
+              'Respuesta del servidor:',
+              error?.error
+            );
+
+            this.mostrarErrorApi(
+              error,
+              'No fue posible actualizar las recomendaciones.'
+            );
+
+          }
+
+        });
+
+      return;
+
+    }
+
+    // ==========================================================
+    // CREAR
+    // ==========================================================
 
     this.http
-      .patch(
-        `${this.apiUrl}/recomendaciones/${this.recomendaciones.id_recomendacion}/`,
+      .post(
+        `${this.apiUrl}/recomendaciones/`,
         datos
       )
       .subscribe({
@@ -2379,15 +2598,15 @@ guardarRecomendaciones(): void {
         next: (respuesta) => {
 
           console.log(
-            'Recomendaciones actualizadas:',
+            'Recomendaciones registradas:',
             respuesta
           );
 
           Swal.fire({
             icon: 'success',
-            title: 'Recomendaciones actualizadas',
+            title: 'Recomendaciones registradas',
             text:
-              'La información se actualizó correctamente.',
+              'Las recomendaciones se registraron correctamente.',
             timer: 1800,
             showConfirmButton: false
           });
@@ -2402,7 +2621,7 @@ guardarRecomendaciones(): void {
         error: (error) => {
 
           console.error(
-            'Error al actualizar recomendaciones:',
+            'Error al registrar recomendaciones:',
             error
           );
 
@@ -2413,212 +2632,157 @@ guardarRecomendaciones(): void {
 
           this.mostrarErrorApi(
             error,
-            'No fue posible actualizar las recomendaciones.'
+            'No fue posible registrar las recomendaciones.'
           );
 
         }
 
       });
 
-    return;
-
   }
 
+  // ============================================================
+  // EDITAR RECOMENDACIONES
+  // ============================================================
 
-  // ==========================================================
-  // CREAR NUEVO REGISTRO
-  // ==========================================================
+  editarRecomendaciones(): void {
 
-  this.http
-    .post(
-      `${this.apiUrl}/recomendaciones/`,
-      datos
-    )
-    .subscribe({
+    if (
+      !this.recomendaciones.id_recomendacion ||
+      this.recomendaciones.id_recomendacion <= 0
+    ) {
 
-      next: (respuesta) => {
+      Swal.fire({
+        icon: 'info',
+        title: 'Sin recomendaciones',
+        text:
+          'Primero debe registrar las recomendaciones.'
+      });
 
-        console.log(
-          'Recomendaciones registradas:',
-          respuesta
-        );
-
-        Swal.fire({
-          icon: 'success',
-          title: 'Recomendaciones registradas',
-          text:
-            'Las recomendaciones se registraron correctamente.',
-          timer: 1800,
-          showConfirmButton: false
-        });
-
-        this.mostrarFormularioRecomendaciones =
-          false;
-
-        this.cargarRecomendaciones();
-
-      },
-
-      error: (error) => {
-
-        console.error(
-          'Error al registrar recomendaciones:',
-          error
-        );
-
-        console.error(
-          'Respuesta del servidor:',
-          error?.error
-        );
-
-        this.mostrarErrorApi(
-          error,
-          'No fue posible registrar las recomendaciones.'
-        );
-
-      }
-
-    });
-
-}
-
-
-// ============================================================
-// EDITAR RECOMENDACIONES
-// ============================================================
-
-editarRecomendaciones(): void {
-
-  if (
-    !this.recomendaciones.id_recomendacion ||
-    this.recomendaciones.id_recomendacion <= 0
-  ) {
-
-    Swal.fire({
-      icon: 'info',
-      title: 'Sin recomendaciones',
-      text:
-        'Primero debe registrar las recomendaciones.'
-    });
-
-    return;
-
-  }
-
-  // El registro ya está cargado en this.recomendaciones,
-  // por lo tanto solamente abrimos el formulario.
-  this.mostrarFormularioRecomendaciones =
-    true;
-
-  this.cdr.detectChanges();
-
-}
-
-
-// ============================================================
-// ELIMINAR RECOMENDACIONES
-// ============================================================
-
-eliminarRecomendaciones(): void {
-
-  if (
-    !this.recomendaciones.id_recomendacion ||
-    this.recomendaciones.id_recomendacion <= 0
-  ) {
-
-    Swal.fire({
-      icon: 'info',
-      title: 'Sin recomendaciones',
-      text:
-        'No existen recomendaciones para eliminar.'
-    });
-
-    return;
-
-  }
-
-  Swal.fire({
-
-    icon: 'warning',
-
-    title:
-      '¿Eliminar recomendaciones?',
-
-    text:
-      'Esta acción eliminará las recomendaciones registradas para este paciente.',
-
-    showCancelButton: true,
-
-    confirmButtonText:
-      'Sí, eliminar',
-
-    cancelButtonText:
-      'Cancelar'
-
-  }).then((resultado) => {
-
-    if (!resultado.isConfirmed) {
       return;
     }
 
-    this.http
-      .delete(
-        `${this.apiUrl}/recomendaciones/${this.recomendaciones.id_recomendacion}/`
-      )
-      .subscribe({
+    this.mostrarFormularioRecomendaciones =
+      true;
 
-        next: () => {
+    this.cdr.detectChanges();
 
-          Swal.fire({
-            icon: 'success',
-            title: 'Recomendaciones eliminadas',
-            text:
-              'Las recomendaciones fueron eliminadas correctamente.',
-            timer: 1800,
-            showConfirmButton: false
-          });
+  }
 
-          // Dejar nuevamente el formulario vacío.
-          this.recomendaciones =
-            this.crearRecomendacionesVacias();
+  // ============================================================
+  // ELIMINAR RECOMENDACIONES
+  // ============================================================
 
-          this.mostrarFormularioRecomendaciones =
-            false;
+  eliminarRecomendaciones(): void {
 
-          this.cdr.detectChanges();
+    if (
+      !this.recomendaciones.id_recomendacion ||
+      this.recomendaciones.id_recomendacion <= 0
+    ) {
 
-        },
-
-        error: (error) => {
-
-          console.error(
-            'Error al eliminar recomendaciones:',
-            error
-          );
-
-          console.error(
-            'Respuesta del servidor:',
-            error?.error
-          );
-
-          this.mostrarErrorApi(
-            error,
-            'No fue posible eliminar las recomendaciones.'
-          );
-
-        }
-
+      Swal.fire({
+        icon: 'info',
+        title: 'Sin recomendaciones',
+        text:
+          'No existen recomendaciones para eliminar.'
       });
 
-  });
+      return;
+    }
 
-}
+    Swal.fire({
+
+      icon: 'warning',
+
+      title:
+        '¿Eliminar recomendaciones?',
+
+      text:
+        'Esta acción eliminará las recomendaciones registradas para este paciente.',
+
+      showCancelButton: true,
+
+      confirmButtonText:
+        'Sí, eliminar',
+
+      cancelButtonText:
+        'Cancelar'
+
+    }).then((resultado) => {
+
+      if (!resultado.isConfirmed) {
+        return;
+      }
+
+      this.http
+        .delete(
+          `${this.apiUrl}/recomendaciones/${this.recomendaciones.id_recomendacion}/`
+        )
+        .subscribe({
+
+          next: () => {
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Recomendaciones eliminadas',
+              text:
+                'Las recomendaciones fueron eliminadas correctamente.',
+              timer: 1800,
+              showConfirmButton: false
+            });
+
+            this.recomendaciones =
+              this.crearRecomendacionesVacias();
+
+            this.mostrarFormularioRecomendaciones =
+              false;
+
+            this.cdr.detectChanges();
+
+          },
+
+          error: (error) => {
+
+            console.error(
+              'Error al eliminar recomendaciones:',
+              error
+            );
+
+            console.error(
+              'Respuesta del servidor:',
+              error?.error
+            );
+
+            this.mostrarErrorApi(
+              error,
+              'No fue posible eliminar las recomendaciones.'
+            );
+
+          }
+
+        });
+
+    });
+
+  }
 
   // ============================================================
   // CARGAR HISTORIA CLÍNICA
   // ============================================================
 
   cargarHistoriaClinica(): void {
+
+    if (
+      !this.idPaciente ||
+      this.idPaciente <= 0
+    ) {
+
+      console.error(
+        'No se puede cargar la historia clínica: ID de paciente inválido.'
+      );
+
+      return;
+    }
 
     this.cargandoHistoria = true;
 
@@ -2637,47 +2801,67 @@ eliminarRecomendaciones(): void {
             this.obtenerResultados(respuesta);
 
           const registro =
-            historias.find(
-              historia =>
-                Number(
-                  this.obtenerIdPaciente(
-                    historia.id_paciente
-                  )
-                ) ===
-                Number(this.idPaciente)
-            );
+            historias.find(historia => {
+
+              const idRelacion =
+                this.obtenerIdPaciente(
+                  historia.id_paciente
+                );
+
+              return Number(idRelacion) ===
+                Number(this.idPaciente);
+
+            });
 
           if (registro) {
 
-            this.historiaClinica =
-              registro;
-
-          } else {
-
             this.historiaClinica = {
 
-              id_historia_clinica: 0,
+              id_historia_clinica:
+                registro.id_historia_clinica,
 
               fecha_apertura:
-                this.obtenerFechaActual(),
+                this.convertirFechaParaInput(
+                  registro.fecha_apertura
+                ),
 
-              antecedentes: '',
+              antecedentes:
+                registro.antecedentes || '',
 
-              alergias: '',
+              alergias:
+                registro.alergias || '',
 
-              observaciones: '',
+              observaciones:
+                registro.observaciones || '',
 
-              estado: true,
+              estado:
+                registro.estado ?? true,
 
               id_paciente:
                 this.idPaciente
+
             };
+
+            console.log(
+              'Historia clínica encontrada:',
+              this.historiaClinica
+            );
+
+          } else {
+
+            this.historiaClinica =
+              this.crearHistoriaClinicaVacia();
+
+            console.log(
+              'El paciente no tiene historia clínica registrada.'
+            );
+
           }
 
-          this.cargandoHistoria =
-            false;
+          this.cargandoHistoria = false;
 
           this.cdr.detectChanges();
+
         },
 
         error: (error) => {
@@ -2687,11 +2871,102 @@ eliminarRecomendaciones(): void {
             error
           );
 
-          this.cargandoHistoria =
-            false;
+          console.error(
+            'Respuesta del servidor:',
+            error?.error
+          );
+
+          this.historiaClinica =
+            this.crearHistoriaClinicaVacia();
+
+          this.cargandoHistoria = false;
+
+          this.cdr.detectChanges();
+
         }
 
       });
+
+  }
+
+  // ============================================================
+  // CREAR HISTORIA CLÍNICA VACÍA
+  // ============================================================
+
+  private crearHistoriaClinicaVacia(): HistoriaClinica {
+
+    return {
+
+      id_historia_clinica: 0,
+
+      fecha_apertura:
+        this.obtenerFechaActual(),
+
+      antecedentes: '',
+
+      alergias: '',
+
+      observaciones: '',
+
+      estado: true,
+
+      id_paciente:
+        this.idPaciente
+
+    };
+
+  }
+
+  // ============================================================
+  // ABRIR FORMULARIO DE HISTORIA CLÍNICA
+  // ============================================================
+
+  abrirFormularioHistoria(): void {
+
+    if (
+      !this.historiaClinica
+    ) {
+
+      this.historiaClinica =
+        this.crearHistoriaClinicaVacia();
+
+    }
+
+    this.historiaClinica.id_paciente =
+      this.idPaciente;
+
+    this.mostrarFormularioHistoria =
+      true;
+
+    this.cdr.detectChanges();
+
+  }
+
+  // ============================================================
+  // EDITAR HISTORIA CLÍNICA
+  // ============================================================
+
+  editarHistoriaClinica(): void {
+
+    if (
+      !this.historiaClinica.id_historia_clinica ||
+      this.historiaClinica.id_historia_clinica <= 0
+    ) {
+
+      Swal.fire({
+        icon: 'info',
+        title: 'Sin historia clínica',
+        text:
+          'Primero debe registrar la historia clínica.'
+      });
+
+      return;
+    }
+
+    this.mostrarFormularioHistoria =
+      true;
+
+    this.cdr.detectChanges();
 
   }
 
@@ -2701,6 +2976,21 @@ eliminarRecomendaciones(): void {
 
   guardarHistoriaClinica(): void {
 
+    if (
+      !this.idPaciente ||
+      this.idPaciente <= 0
+    ) {
+
+      Swal.fire({
+        icon: 'warning',
+        title: 'Paciente no identificado',
+        text:
+          'No fue posible identificar el paciente.'
+      });
+
+      return;
+    }
+
     const datos = {
 
       fecha_apertura:
@@ -2708,23 +2998,53 @@ eliminarRecomendaciones(): void {
         this.obtenerFechaActual(),
 
       antecedentes:
-        this.historiaClinica.antecedentes ||
-        '',
+        this.limpiarValor(
+          this.historiaClinica.antecedentes
+        ),
 
       alergias:
-        this.historiaClinica.alergias ||
-        '',
+        this.limpiarValor(
+          this.historiaClinica.alergias
+        ),
 
       observaciones:
-        this.historiaClinica.observaciones ||
-        '',
+        this.limpiarValor(
+          this.historiaClinica.observaciones
+        ),
 
       estado:
-        this.historiaClinica.estado,
+        this.historiaClinica.estado ?? true,
 
       id_paciente:
         this.idPaciente
+
     };
+
+    console.log(
+      '======================================'
+    );
+
+    console.log(
+      'GUARDANDO HISTORIA CLÍNICA'
+    );
+
+    console.log(
+      'Paciente:',
+      this.idPaciente
+    );
+
+    console.log(
+      'Datos enviados:',
+      datos
+    );
+
+    console.log(
+      '======================================'
+    );
+
+    // ==========================================================
+    // ACTUALIZAR HISTORIA EXISTENTE
+    // ==========================================================
 
     if (
       this.historiaClinica.id_historia_clinica > 0
@@ -2737,7 +3057,12 @@ eliminarRecomendaciones(): void {
         )
         .subscribe({
 
-          next: () => {
+          next: (respuesta) => {
+
+            console.log(
+              'Historia clínica actualizada:',
+              respuesta
+            );
 
             Swal.fire({
               icon: 'success',
@@ -2748,7 +3073,11 @@ eliminarRecomendaciones(): void {
               showConfirmButton: false
             });
 
+            this.mostrarFormularioHistoria =
+              false;
+
             this.cargarHistoriaClinica();
+
           },
 
           error: (error) => {
@@ -2758,20 +3087,128 @@ eliminarRecomendaciones(): void {
               error
             );
 
+            console.error(
+              'Respuesta del servidor:',
+              error?.error
+            );
+
             this.mostrarErrorApi(
               error,
               'No fue posible actualizar la historia clínica.'
             );
+
           }
 
         });
 
-    } else {
+      return;
+    }
+
+    // ==========================================================
+    // CREAR HISTORIA NUEVA
+    // ==========================================================
+
+    this.http
+      .post(
+        `${this.apiUrl}/historia_clinicas/`,
+        datos
+      )
+      .subscribe({
+
+        next: (respuesta) => {
+
+          console.log(
+            'Historia clínica registrada:',
+            respuesta
+          );
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Historia clínica registrada',
+            text:
+              'La historia clínica se registró correctamente.',
+            timer: 1800,
+            showConfirmButton: false
+          });
+
+          this.mostrarFormularioHistoria =
+            false;
+
+          this.cargarHistoriaClinica();
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Error al registrar historia clínica:',
+            error
+          );
+
+          console.error(
+            'Respuesta del servidor:',
+            error?.error
+          );
+
+          this.mostrarErrorApi(
+            error,
+            'No fue posible registrar la historia clínica.'
+          );
+
+        }
+
+      });
+
+  }
+
+  // ============================================================
+  // ELIMINAR HISTORIA CLÍNICA
+  // ============================================================
+
+  eliminarHistoriaClinica(): void {
+
+    if (
+      !this.historiaClinica.id_historia_clinica ||
+      this.historiaClinica.id_historia_clinica <= 0
+    ) {
+
+      Swal.fire({
+        icon: 'info',
+        title: 'Sin historia clínica',
+        text:
+          'No existe una historia clínica para eliminar.'
+      });
+
+      return;
+    }
+
+    Swal.fire({
+
+      icon: 'warning',
+
+      title:
+        '¿Eliminar historia clínica?',
+
+      text:
+        'Esta acción eliminará la historia clínica registrada para este paciente.',
+
+      showCancelButton: true,
+
+      confirmButtonText:
+        'Sí, eliminar',
+
+      cancelButtonText:
+        'Cancelar'
+
+    }).then((resultado) => {
+
+      if (!resultado.isConfirmed) {
+        return;
+      }
 
       this.http
-        .post(
-          `${this.apiUrl}/historia_clinicas/`,
-          datos
+        .delete(
+          `${this.apiUrl}/historia_clinicas/${this.historiaClinica.id_historia_clinica}/`
         )
         .subscribe({
 
@@ -2779,31 +3216,45 @@ eliminarRecomendaciones(): void {
 
             Swal.fire({
               icon: 'success',
-              title: 'Historia clínica registrada',
+              title: 'Historia clínica eliminada',
               text:
-                'La historia clínica se registró correctamente.',
+                'La historia clínica fue eliminada correctamente.',
               timer: 1800,
               showConfirmButton: false
             });
 
-            this.cargarHistoriaClinica();
+            this.historiaClinica =
+              this.crearHistoriaClinicaVacia();
+
+            this.mostrarFormularioHistoria =
+              false;
+
+            this.cdr.detectChanges();
+
           },
 
           error: (error) => {
 
             console.error(
-              'Error al registrar historia clínica:',
+              'Error al eliminar historia clínica:',
               error
+            );
+
+            console.error(
+              'Respuesta del servidor:',
+              error?.error
             );
 
             this.mostrarErrorApi(
               error,
-              'No fue posible registrar la historia clínica.'
+              'No fue posible eliminar la historia clínica.'
             );
+
           }
 
         });
-    }
+
+    });
 
   }
 
@@ -2851,6 +3302,7 @@ eliminarRecomendaciones(): void {
 
     this.mostrarFormularioCuidados =
       false;
+
   }
 
   // ============================================================
@@ -2863,6 +3315,7 @@ eliminarRecomendaciones(): void {
 
     this.mostrarFormularioRecomendaciones =
       false;
+
   }
 
   // ============================================================
@@ -2875,6 +3328,7 @@ eliminarRecomendaciones(): void {
 
     this.mostrarFormularioHistoria =
       false;
+
   }
 
   // ============================================================
@@ -2969,6 +3423,7 @@ eliminarRecomendaciones(): void {
       ).padStart(2, '0');
 
     return `${año}-${mes}-${dia}T${horas}:${minutos}`;
+
   }
 
   // ============================================================
@@ -2987,6 +3442,7 @@ eliminarRecomendaciones(): void {
       0,
       16
     );
+
   }
 
   // ============================================================
@@ -3029,6 +3485,7 @@ eliminarRecomendaciones(): void {
                     : String(valor);
 
               return `${campo}: ${textoValor}`;
+
             }
           )
           .join('\n');
@@ -3036,7 +3493,9 @@ eliminarRecomendaciones(): void {
         if (errores) {
           mensaje = errores;
         }
+
       }
+
     }
 
     Swal.fire({
@@ -3044,6 +3503,7 @@ eliminarRecomendaciones(): void {
       title: 'Error',
       text: mensaje
     });
+
   }
 
 }
@@ -3061,6 +3521,7 @@ interface RespuestaPaginada<T> {
   previous: string | null;
 
   results: T[];
+
 }
 
 // ============================================================
@@ -3105,6 +3566,7 @@ interface Paciente {
   cama: number;
 
   estado: boolean;
+
 }
 
 // ============================================================
@@ -3137,6 +3599,7 @@ interface FamiliarResponsable {
   correo: string | null;
 
   municipio: string | null;
+
 }
 
 // ============================================================
@@ -3160,6 +3623,7 @@ interface Medicamento {
   estado: boolean;
 
   unidad_medida: string;
+
 }
 
 // ============================================================
@@ -3175,6 +3639,7 @@ interface TipoInsumo {
   descripcion?: string;
 
   estado?: boolean;
+
 }
 
 // ============================================================
@@ -3199,6 +3664,7 @@ interface Insumo {
   unidad_medida: string;
 
   estado: boolean;
+
 }
 
 // ============================================================
@@ -3241,6 +3707,7 @@ interface ElementoPaciente {
       nombre?: string;
     } |
     null;
+
 }
 
 // ============================================================
@@ -3266,6 +3733,7 @@ interface FormularioElemento {
   observaciones: string;
 
   estado: boolean;
+
 }
 
 // ============================================================
@@ -3290,7 +3758,13 @@ interface CuidadoEnfermeria {
 
   administracion_medicamentos: string | null;
 
-  id_paciente:number | { id_paciente?: number;} |null;
+  id_paciente:
+    number |
+    {
+      id_paciente?: number;
+    } |
+    null;
+
 }
 
 // ============================================================
@@ -3300,17 +3774,33 @@ interface CuidadoEnfermeria {
 interface Recomendacion {
 
   id_recomendacion: number;
+
   hidratar_piel: string | null;
+
   asistir_alimentacion: string | null;
+
   via_alimentacion: string | null;
+
   prevencion_caidas: string | null;
+
   terapias_fisicas: string | null;
+
   terapia_respiratoria: string | null;
+
   actividad_ocupacional: string | null;
+
   corte_unas: string | null;
+
   corte_cabello: string | null;
+
   higiene_oral: string | null;
-  id_paciente: number | { id_paciente?: number } | null;
+
+  id_paciente:
+    number |
+    {
+      id_paciente?: number;
+    } |
+    null;
 
 }
 
@@ -3338,4 +3828,5 @@ interface HistoriaClinica {
       id_paciente?: number;
     } |
     null;
+
 }
