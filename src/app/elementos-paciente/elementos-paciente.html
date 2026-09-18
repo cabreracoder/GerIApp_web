@@ -712,147 +712,519 @@
        CUIDADOS DE ENFERMERÍA
        ========================================================= -->
 
-  <section
-    class="contenido-seccion"
-    *ngIf="seccionActiva === 'cuidados'">
+  <!-- ============================================================
+     CUIDADOS DE ENFERMERÍA
+     ============================================================ -->
 
-    <div class="card">
+<section
+  class="contenido-seccion"
+  *ngIf="seccionActiva === 'cuidados'"
+>
 
-      <div class="card-header">
+  <div class="card">
 
-        <div>
+    <!-- ========================================================
+         ENCABEZADO
+         ======================================================== -->
 
-          <h3>Cuidados de enfermería</h3>
+    <div class="card-header">
 
-          <p>
-            Registre los cuidados y procedimientos que requiere el paciente.
-          </p>
+      <div>
+
+        <h3>Cuidados de enfermería</h3>
+
+        <p>
+          Registre los cuidados y procedimientos que requiere el paciente.
+        </p>
+
+      </div>
+
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="abrirFormularioCuidados()"
+        *ngIf="!mostrarFormularioCuidados"
+      >
+        <span class="material-symbols-outlined">
+          add
+        </span>
+
+        Agregar cuidados
+      </button>
+
+    </div>
+
+
+    <!-- ========================================================
+         FORMULARIO
+         ======================================================== -->
+
+    <div
+      class="formulario-registro"
+      *ngIf="mostrarFormularioCuidados"
+    >
+
+      <div class="formulario-grid">
+
+
+        <!-- ====================================================
+             BAÑO DEL PACIENTE
+             ==================================================== -->
+
+        <div class="campo">
+
+          <label for="banoPaciente">
+            Baño del paciente
+          </label>
+
+          <textarea
+            id="banoPaciente"
+            [(ngModel)]="cuidados.bano_paciente"
+            rows="3"
+            placeholder="Describa las indicaciones o cuidados relacionados con el baño del paciente..."
+          ></textarea>
 
         </div>
 
+
+        <!-- ====================================================
+             PESO Y TALLA
+             ==================================================== -->
+
+        <div class="campo">
+
+          <label for="pesoTalla">
+            Peso y talla
+          </label>
+
+          <textarea
+            id="pesoTalla"
+            [(ngModel)]="cuidados.peso_talla"
+            rows="3"
+            placeholder="Registre el control de peso, talla u observaciones relacionadas..."
+          ></textarea>
+
+        </div>
+
+
+        <!-- ====================================================
+             CONTROL DE GLUCEMIA
+             ==================================================== -->
+
+        <div class="campo">
+
+          <label for="controlGlucemia">
+            Control de glucemia
+          </label>
+
+          <textarea
+            id="controlGlucemia"
+            [(ngModel)]="cuidados.control_glucemia"
+            rows="3"
+            placeholder="Registre valores, horarios o indicaciones para el control de glucemia..."
+          ></textarea>
+
+        </div>
+
+
+        <!-- ====================================================
+             CURACIONES
+             ==================================================== -->
+
+        <div class="campo">
+
+          <label for="curaciones">
+            Curaciones
+          </label>
+
+          <textarea
+            id="curaciones"
+            [(ngModel)]="cuidados.curaciones"
+            rows="3"
+            placeholder="Describa las curaciones, procedimientos o indicaciones..."
+          ></textarea>
+
+        </div>
+
+
+        <!-- ====================================================
+             LÍQUIDOS ADMINISTRADOS Y ELIMINADOS
+             ==================================================== -->
+
+        <div class="campo campo-completo">
+
+          <label for="liquidosAdministradosEliminados">
+            Líquidos administrados y eliminados
+          </label>
+
+          <textarea
+            id="liquidosAdministradosEliminados"
+            [(ngModel)]="cuidados.liquidos_administrados_eliminados"
+            rows="3"
+            placeholder="Registre los líquidos administrados, eliminados y las observaciones correspondientes..."
+          ></textarea>
+
+        </div>
+
+
+        <!-- ====================================================
+             CONTROL DE DEPOSICIÓN
+             ==================================================== -->
+
+        <div class="campo">
+
+          <label for="controlDeposicion">
+            Control de deposición
+          </label>
+
+          <textarea
+            id="controlDeposicion"
+            [(ngModel)]="cuidados.control_deposicion"
+            rows="3"
+            placeholder="Registre frecuencia, características u observaciones de la deposición..."
+          ></textarea>
+
+        </div>
+
+
+        <!-- ====================================================
+             ADMINISTRACIÓN DE MEDICAMENTOS
+             ==================================================== -->
+
+        <div class="campo">
+
+          <label for="administracionMedicamentos">
+            Administración de medicamentos
+          </label>
+
+          <textarea
+            id="administracionMedicamentos"
+            [(ngModel)]="cuidados.administracion_medicamentos"
+            rows="3"
+            placeholder="Registre las indicaciones relacionadas con la administración de medicamentos..."
+          ></textarea>
+
+        </div>
+
+      </div>
+
+
+      <!-- ======================================================
+           ACCIONES DEL FORMULARIO
+           ====================================================== -->
+
+      <div class="formulario-acciones">
+
+        <button
+          type="button"
+          class="btn-secundario"
+          (click)="cancelarCuidados()"
+        >
+          Cancelar
+        </button>
 
         <button
           type="button"
           class="btn-primary"
-          (click)="mostrarFormularioCuidado = !mostrarFormularioCuidado">
+          (click)="guardarCuidados()"
+        >
+          <span class="material-symbols-outlined">
+            save
+          </span>
 
-          + Agregar cuidado
-
+          {{ cuidados.id_cuidado > 0
+              ? 'Actualizar cuidados'
+              : 'Guardar cuidados' }}
         </button>
-
-      </div>
-
-
-      <!-- FORMULARIO -->
-
-      <div
-        class="formulario-registro"
-        *ngIf="mostrarFormularioCuidado">
-
-        <div class="campo">
-
-          <label for="cuidado">
-            Descripción del cuidado
-          </label>
-
-          <textarea
-            id="cuidado"
-            [(ngModel)]="nuevoCuidado"
-            rows="5"
-            placeholder="Describa el cuidado de enfermería que requiere el paciente...">
-          </textarea>
-
-        </div>
-
-
-        <div class="formulario-acciones">
-
-          <button
-            type="button"
-            class="btn-secundario"
-            (click)="cancelarCuidado()">
-
-            Cancelar
-
-          </button>
-
-
-          <button
-            type="button"
-            class="btn-primary"
-            (click)="guardarCuidado()">
-
-            Guardar cuidado
-
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <!-- LISTA -->
-
-      <div class="lista-registros">
-
-        <div
-          class="registro-item"
-          *ngFor="let cuidado of cuidados; let i = index">
-
-          <div class="registro-icono cuidado-icono">
-            ✓
-          </div>
-
-
-          <div class="registro-contenido">
-
-            <span class="registro-titulo">
-              Cuidado de enfermería
-            </span>
-
-            <p>
-              {{ cuidado.descripcion }}
-            </p>
-
-          </div>
-
-
-          <div class="registro-acciones">
-
-            <button
-              type="button"
-              (click)="eliminarCuidado(i)">
-
-              Eliminar
-
-            </button>
-
-          </div>
-
-        </div>
-
-
-        <div
-          class="estado-vacio"
-          *ngIf="cuidados.length === 0">
-
-          <div class="vacio-icono">
-            ✓
-          </div>
-
-          <h4>No hay cuidados registrados</h4>
-
-          <p>
-            Agregue los cuidados de enfermería necesarios para este paciente.
-          </p>
-
-        </div>
 
       </div>
 
     </div>
 
-  </section>
+
+    <!-- ========================================================
+         INFORMACIÓN REGISTRADA
+         ======================================================== -->
+
+    <div
+      class="lista-registros"
+      *ngIf="!mostrarFormularioCuidados"
+    >
+
+      <!-- ======================================================
+           CARGANDO
+           ====================================================== -->
+
+      <div
+        class="estado-vacio"
+        *ngIf="cargandoCuidados"
+      >
+
+        <div class="vacio-icono">
+
+          <span class="material-symbols-outlined">
+            sync
+          </span>
+
+        </div>
+
+        <h4>
+          Cargando cuidados...
+        </h4>
+
+        <p>
+          Consultando la información del paciente.
+        </p>
+
+      </div>
+
+
+      <!-- ======================================================
+           REGISTRO EXISTENTE
+           ====================================================== -->
+
+      <div
+        class="registro-item"
+        *ngIf="!cargandoCuidados && cuidados.id_cuidado > 0"
+      >
+
+        <div class="registro-icono cuidado-icono">
+
+          <span class="material-symbols-outlined">
+            medical_services
+          </span>
+
+        </div>
+
+
+        <div class="registro-contenido">
+
+          <span class="registro-titulo">
+            Cuidados de enfermería registrados
+          </span>
+
+
+          <div class="detalle-cuidados">
+
+
+            <!-- BAÑO -->
+
+            <div
+              class="detalle-cuidado"
+              *ngIf="cuidados.bano_paciente"
+            >
+
+              <strong>
+                Baño del paciente
+              </strong>
+
+              <p>
+                {{ cuidados.bano_paciente }}
+              </p>
+
+            </div>
+
+
+            <!-- PESO Y TALLA -->
+
+            <div
+              class="detalle-cuidado"
+              *ngIf="cuidados.peso_talla"
+            >
+
+              <strong>
+                Peso y talla
+              </strong>
+
+              <p>
+                {{ cuidados.peso_talla }}
+              </p>
+
+            </div>
+
+
+            <!-- GLUCEMIA -->
+
+            <div
+              class="detalle-cuidado"
+              *ngIf="cuidados.control_glucemia"
+            >
+
+              <strong>
+                Control de glucemia
+              </strong>
+
+              <p>
+                {{ cuidados.control_glucemia }}
+              </p>
+
+            </div>
+
+
+            <!-- CURACIONES -->
+
+            <div
+              class="detalle-cuidado"
+              *ngIf="cuidados.curaciones"
+            >
+
+              <strong>
+                Curaciones
+              </strong>
+
+              <p>
+                {{ cuidados.curaciones }}
+              </p>
+
+            </div>
+
+
+            <!-- LÍQUIDOS -->
+
+            <div
+              class="detalle-cuidado"
+              *ngIf="cuidados.liquidos_administrados_eliminados"
+            >
+
+              <strong>
+                Líquidos administrados y eliminados
+              </strong>
+
+              <p>
+                {{ cuidados.liquidos_administrados_eliminados }}
+              </p>
+
+            </div>
+
+
+            <!-- DEPOSICIÓN -->
+
+            <div
+              class="detalle-cuidado"
+              *ngIf="cuidados.control_deposicion"
+            >
+
+              <strong>
+                Control de deposición
+              </strong>
+
+              <p>
+                {{ cuidados.control_deposicion }}
+              </p>
+
+            </div>
+
+
+            <!-- MEDICAMENTOS -->
+
+            <div
+              class="detalle-cuidado"
+              *ngIf="cuidados.administracion_medicamentos"
+            >
+
+              <strong>
+                Administración de medicamentos
+              </strong>
+
+              <p>
+                {{ cuidados.administracion_medicamentos }}
+              </p>
+
+            </div>
+
+
+          </div>
+
+        </div>
+
+
+        <!-- ====================================================
+             ACCIONES
+             ==================================================== -->
+
+        <div class="registro-acciones">
+
+          <button
+            type="button"
+            class="btn-accion btn-editar"
+            title="Editar cuidados"
+            (click)="editarCuidados()"
+          >
+
+            <span class="material-symbols-outlined">
+              edit
+            </span>
+
+          </button>
+
+
+          <button
+            type="button"
+            class="btn-accion btn-eliminar"
+            title="Eliminar cuidados"
+            (click)="eliminarCuidados()"
+          >
+
+            <span class="material-symbols-outlined">
+              delete
+            </span>
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- ======================================================
+           SIN REGISTROS
+           ====================================================== -->
+
+      <div
+        class="estado-vacio"
+        *ngIf="
+          !cargandoCuidados &&
+          cuidados.id_cuidado === 0
+        "
+      >
+
+        <div class="vacio-icono">
+
+          <span class="material-symbols-outlined">
+            medical_services
+          </span>
+
+        </div>
+
+        <h4>
+          No hay cuidados registrados
+        </h4>
+
+        <p>
+          Agregue los cuidados de enfermería necesarios para este paciente.
+        </p>
+
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="abrirFormularioCuidados()"
+        >
+
+          <span class="material-symbols-outlined">
+            add
+          </span>
+
+          Agregar cuidados
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
 
 
   <!-- =========================================================

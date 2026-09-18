@@ -1704,208 +1704,401 @@ export class ElementosPaciente implements OnInit {
   }
 
   // ============================================================
-  // CARGAR CUIDADOS
-  // ============================================================
+// CARGAR CUIDADOS DE ENFERMERÍA
+// ============================================================
 
-  cargarCuidados(): void {
+cargarCuidados(): void {
 
-    this.cargandoCuidados = true;
+  this.cargandoCuidados = true;
+
+  this.http
+    .get<
+      CuidadoEnfermeria[] |
+      RespuestaPaginada<CuidadoEnfermeria>
+    >(
+      `${this.apiUrl}/cuidados_enfermeria/`
+    )
+    .subscribe({
+
+      next: (respuesta) => {
+
+        const cuidados =
+          this.obtenerResultados(respuesta);
+
+        const registro =
+          cuidados.find(
+            cuidado =>
+              Number(
+                this.obtenerIdPaciente(
+                  cuidado.id_paciente
+                )
+              ) === Number(this.idPaciente)
+          );
+
+        if (registro) {
+
+          this.cuidados = {
+            id_cuidado:
+              registro.id_cuidado,
+
+            bano_paciente:
+              registro.bano_paciente || '',
+
+            peso_talla:
+              registro.peso_talla || '',
+
+            control_glucemia:
+              registro.control_glucemia || '',
+
+            curaciones:
+              registro.curaciones || '',
+
+            liquidos_administrados_eliminados:
+              registro.liquidos_administrados_eliminados || '',
+
+            control_deposicion:
+              registro.control_deposicion || '',
+
+            administracion_medicamentos:
+              registro.administracion_medicamentos || '',
+
+            id_paciente:
+              this.idPaciente
+          };
+
+        } else {
+
+          this.cuidados = this.crearCuidadosVacios();
+
+        }
+
+        this.cargandoCuidados = false;
+
+        this.cdr.detectChanges();
+
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Error al cargar cuidados de enfermería:',
+          error
+        );
+
+        console.error(
+          'Respuesta del servidor:',
+          error?.error
+        );
+
+        this.cuidados =
+          this.crearCuidadosVacios();
+
+        this.cargandoCuidados = false;
+
+        this.cdr.detectChanges();
+
+      }
+
+    });
+
+}
+
+// ============================================================
+// CREAR ESTRUCTURA VACÍA DE CUIDADOS
+// ============================================================
+
+private crearCuidadosVacios(): CuidadoEnfermeria {
+
+  return {
+
+    id_cuidado: 0,
+
+    bano_paciente: '',
+
+    peso_talla: '',
+
+    control_glucemia: '',
+
+    curaciones: '',
+
+    liquidos_administrados_eliminados: '',
+
+    control_deposicion: '',
+
+    administracion_medicamentos: '',
+
+    id_paciente: this.idPaciente
+
+  };
+
+}
+
+// ============================================================
+// ABRIR FORMULARIO DE CUIDADOS
+// ============================================================
+
+abrirFormularioCuidados(): void {
+
+  this.mostrarFormularioCuidados = true;
+
+  this.cdr.detectChanges();
+
+}
+
+// ============================================================
+// GUARDAR CUIDADOS DE ENFERMERÍA
+// ============================================================
+
+guardarCuidados(): void {
+
+  if (!this.idPaciente || this.idPaciente <= 0) {
+
+    Swal.fire({
+      icon: 'warning',
+      title: 'Paciente no identificado',
+      text:
+        'No fue posible identificar el paciente.'
+    });
+
+    return;
+
+  }
+
+  const datos = {
+
+    bano_paciente:
+      this.limpiarValor(
+        this.cuidados.bano_paciente
+      ),
+
+    peso_talla:
+      this.limpiarValor(
+        this.cuidados.peso_talla
+      ),
+
+    control_glucemia:
+      this.limpiarValor(
+        this.cuidados.control_glucemia
+      ),
+
+    curaciones:
+      this.limpiarValor(
+        this.cuidados.curaciones
+      ),
+
+    liquidos_administrados_eliminados:
+      this.limpiarValor(
+        this.cuidados
+          .liquidos_administrados_eliminados
+      ),
+
+    control_deposicion:
+      this.limpiarValor(
+        this.cuidados.control_deposicion
+      ),
+
+    administracion_medicamentos:
+      this.limpiarValor(
+        this.cuidados
+          .administracion_medicamentos
+      ),
+
+    id_paciente:
+      this.idPaciente
+
+  };
+
+  console.log(
+    '======================================'
+  );
+
+  console.log(
+    'GUARDANDO CUIDADOS DE ENFERMERÍA'
+  );
+
+  console.log(
+    'Paciente:',
+    this.idPaciente
+  );
+
+  console.log(
+    'Datos enviados:',
+    datos
+  );
+
+  console.log(
+    '======================================'
+  );
+
+  // ==========================================================
+  // ACTUALIZAR REGISTRO EXISTENTE
+  // ==========================================================
+
+  if (this.cuidados.id_cuidado > 0) {
 
     this.http
-      .get<
-        CuidadoEnfermeria[] |
-        RespuestaPaginada<CuidadoEnfermeria>
-      >(
-        `${this.apiUrl}/cuidados_enfermeria/`
+      .patch(
+        `${this.apiUrl}/cuidados_enfermeria/${this.cuidados.id_cuidado}/`,
+        datos
       )
       .subscribe({
 
         next: (respuesta) => {
 
-          const cuidados =
-            this.obtenerResultados(respuesta);
+          console.log(
+            'Cuidados actualizados:',
+            respuesta
+          );
 
-          const registro =
-            cuidados.find(
-              cuidado =>
-                Number(
-                  this.obtenerIdPaciente(
-                    cuidado.id_paciente
-                  )
-                ) ===
-                Number(this.idPaciente)
-            );
+          Swal.fire({
+            icon: 'success',
+            title: 'Cuidados actualizados',
+            text:
+              'Los cuidados de enfermería se actualizaron correctamente.',
+            timer: 1800,
+            showConfirmButton: false
+          });
 
-          if (registro) {
+          this.mostrarFormularioCuidados = false;
 
-            this.cuidados =
-              registro;
+          this.cargarCuidados();
 
-          } else {
-
-            this.cuidados = {
-
-              id_cuidado: 0,
-
-              bano_paciente: '',
-
-              peso_talla: '',
-
-              control_glucemia: '',
-
-              curaciones: '',
-
-              liquidos_administrados_eliminados: '',
-
-              control_deposicion: '',
-
-              administracion_medicamentos: '',
-
-              id_paciente:
-                this.idPaciente
-            };
-          }
-
-          this.cargandoCuidados =
-            false;
-
-          this.cdr.detectChanges();
         },
 
         error: (error) => {
 
           console.error(
-            'Error al cargar cuidados:',
+            'Error al actualizar cuidados:',
             error
           );
 
-          this.cargandoCuidados =
-            false;
+          console.error(
+            'Respuesta del servidor:',
+            error?.error
+          );
+
+          this.mostrarErrorApi(
+            error,
+            'No fue posible actualizar los cuidados de enfermería.'
+          );
+
         }
 
       });
 
-  }
-
-  // ============================================================
-  // GUARDAR CUIDADOS
-  // ============================================================
-
-  guardarCuidados(): void {
-
-    const datos = {
-
-      bano_paciente:
-        this.cuidados.bano_paciente || null,
-
-      peso_talla:
-        this.cuidados.peso_talla || null,
-
-      control_glucemia:
-        this.cuidados.control_glucemia || null,
-
-      curaciones:
-        this.cuidados.curaciones || null,
-
-      liquidos_administrados_eliminados:
-        this.cuidados
-          .liquidos_administrados_eliminados ||
-        null,
-
-      control_deposicion:
-        this.cuidados.control_deposicion ||
-        null,
-
-      administracion_medicamentos:
-        this.cuidados
-          .administracion_medicamentos ||
-        null,
-
-      id_paciente:
-        this.idPaciente
-    };
-
-    if (
-      this.cuidados.id_cuidado > 0
-    ) {
-
-      this.http
-        .patch(
-          `${this.apiUrl}/cuidados_enfermeria/${this.cuidados.id_cuidado}/`,
-          datos
-        )
-        .subscribe({
-
-          next: () => {
-
-            Swal.fire({
-              icon: 'success',
-              title: 'Cuidados actualizados',
-              text:
-                'La información se actualizó correctamente.',
-              timer: 1800,
-              showConfirmButton: false
-            });
-
-            this.cargarCuidados();
-          },
-
-          error: (error) => {
-
-            console.error(
-              'Error al actualizar cuidados:',
-              error
-            );
-
-            this.mostrarErrorApi(
-              error,
-              'No fue posible actualizar los cuidados.'
-            );
-          }
-
-        });
-
-    } else {
-
-      this.http
-        .post(
-          `${this.apiUrl}/cuidados_enfermeria/`,
-          datos
-        )
-        .subscribe({
-
-          next: () => {
-
-            Swal.fire({
-              icon: 'success',
-              title: 'Cuidados registrados',
-              text:
-                'Los cuidados se registraron correctamente.',
-              timer: 1800,
-              showConfirmButton: false
-            });
-
-            this.cargarCuidados();
-          },
-
-          error: (error) => {
-
-            console.error(
-              'Error al registrar cuidados:',
-              error
-            );
-
-            this.mostrarErrorApi(
-              error,
-              'No fue posible registrar los cuidados.'
-            );
-          }
-
-        });
-    }
+    return;
 
   }
 
+  // ==========================================================
+  // CREAR NUEVO REGISTRO
+  // ==========================================================
+
+  this.http
+    .post(
+      `${this.apiUrl}/cuidados_enfermeria/`,
+      datos
+    )
+    .subscribe({
+
+      next: (respuesta) => {
+
+        console.log(
+          'Cuidados registrados:',
+          respuesta
+        );
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Cuidados registrados',
+          text:
+            'Los cuidados de enfermería se registraron correctamente.',
+          timer: 1800,
+          showConfirmButton: false
+        });
+
+        this.mostrarFormularioCuidados = false;
+
+        this.cargarCuidados();
+
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Error al registrar cuidados:',
+          error
+        );
+
+        console.error(
+          'Respuesta del servidor:',
+          error?.error
+        );
+
+        this.mostrarErrorApi(
+          error,
+          'No fue posible registrar los cuidados de enfermería.'
+        );
+
+      }
+
+    });
+
+}
+
+// ============================================================
+// LIMPIAR VALORES
+// ============================================================
+
+private limpiarValor(
+  valor: string | null
+): string | null {
+
+  if (!valor) {
+    return null;
+  }
+
+  const valorLimpio =
+    valor.trim();
+
+  return valorLimpio || null;
+
+}
+
+// ============================================================
+// EDITAR CUIDADOS
+// ============================================================
+
+editarCuidados(): void {
+
+  if (!this.cuidados.id_cuidado) {
+
+    Swal.fire({
+      icon: 'info',
+      title: 'Sin cuidados registrados',
+      text:
+        'Primero debe registrar los cuidados de enfermería.'
+    });
+
+    return;
+
+  }
+
+  this.mostrarFormularioCuidados = true;
+
+  this.cdr.detectChanges();
+
+}
+
+// ============================================================
+// ELIMINAR CUIDADOS
+// ============================================================
+
+eliminarCuidados(): void {
+
+  this.eliminarCuidados();
+
+}
   // ============================================================
   // CARGAR RECOMENDACIONES
   // ============================================================
