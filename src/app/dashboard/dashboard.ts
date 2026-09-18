@@ -259,6 +259,7 @@ export class DashboardComponent implements OnInit {
     this.cargarPacientes();
     this.cargarCuidadores();
     this.cargarAlertas();
+    this.cargarTurnos();
 
 
 
@@ -569,6 +570,73 @@ export class DashboardComponent implements OnInit {
 
           console.error(
             'Error cargando cuidadores:',
+            error
+          );
+
+        }
+
+      });
+
+  }
+  private cargarTurnos(): void {
+
+    this.http.get<any[]>(
+      `${this.apiUrl}/asignacion_turno_usuario/`
+    )
+      .subscribe({
+
+        next: (turnos) => {
+
+
+          const fechaHoy = new Date()
+            .toISOString()
+            .split('T')[0];
+
+
+          const turnosActivos = turnos.filter(
+            turno =>
+              turno.estado === 'Asignado' &&
+              turno.fecha === fechaHoy
+          );
+
+
+          // usuarios únicos con turno hoy
+          const usuariosEnTurno =
+            new Set(
+              turnosActivos.map(
+                turno => turno.id_usuario
+              )
+            );
+
+
+          this.cuidadoresEnTurno =
+            usuariosEnTurno.size;
+
+
+          this.cuidadoresLibres =
+            this.totalCuidadores -
+            this.cuidadoresEnTurno;
+
+
+          this.cd.detectChanges();
+
+
+          console.log(
+            "Turnos:",
+            {
+              hoy: fechaHoy,
+              enTurno: this.cuidadoresEnTurno,
+              libres: this.cuidadoresLibres
+            }
+          );
+
+        },
+
+
+        error: (error) => {
+
+          console.error(
+            "Error cargando turnos:",
             error
           );
 
