@@ -49,11 +49,11 @@
           <span>
             <strong>Responsable:</strong>
 
-          {{
-            familiarResponsable
-             ? (familiarResponsable.nombres || '') + ' ' + (familiarResponsable.apellidos || '')
-             : 'No registrado'
-          }}
+            {{
+              familiarResponsable
+                ? (familiarResponsable.nombres || '') + ' ' + (familiarResponsable.apellidos || '')
+                : 'No registrado'
+            }}
 
           </span>
 
@@ -100,7 +100,7 @@
       <span>Elementos del paciente</span>
 
       <span class="contador">
-        {{ elementos.length }}
+        {{ elementosPaciente.length }}
       </span>
 
     </button>
@@ -163,6 +163,10 @@
 
     <div class="card">
 
+      <!-- =====================================================
+           ENCABEZADO DE ELEMENTOS
+           ===================================================== -->
+
       <div class="card-header">
 
         <div>
@@ -180,9 +184,13 @@
 
           <span class="cantidad">
 
-            {{ elementos.length }}
+            {{ elementosPaciente.length }}
 
-            {{ elementos.length === 1 ? 'elemento' : 'elementos' }}
+            {{
+              elementosPaciente.length === 1
+                ? 'elemento'
+                : 'elementos'
+            }}
 
           </span>
 
@@ -205,6 +213,8 @@
             </button>
 
 
+            <!-- MENÚ -->
+
             <div
               class="dropdown-menu"
               *ngIf="mostrarMenuElementos">
@@ -212,10 +222,6 @@
               <button
                 type="button"
                 (click)="registrarMedicamento()">
-
-                <span class="opcion-icono medicamento">
-                  💊
-                </span>
 
                 <span>
                   Registrar medicamento
@@ -228,12 +234,8 @@
                 type="button"
                 (click)="registrarInsumo()">
 
-                <span class="opcion-icono insumo">
-                  📦
-                </span>
-
                 <span>
-                  Registrar insumo médico
+                  Registrar insumo
                 </span>
 
               </button>
@@ -247,7 +249,275 @@
       </div>
 
 
-      <!-- TABLA -->
+      <!-- =====================================================
+           FORMULARIO DE REGISTRO DE ELEMENTO
+           ===================================================== -->
+
+      <div
+        class="formulario-registro"
+        *ngIf="mostrarFormularioElemento">
+
+        <div class="formulario-titulo">
+
+          <div>
+
+            <h3>
+              {{
+                elementoEditando
+                  ? 'Editar elemento'
+                  : 'Registrar ' + tipoElemento
+              }}
+            </h3>
+
+            <p>
+              Complete la información del
+              {{
+                tipoElemento === 'medicamento'
+                  ? 'medicamento'
+                  : 'insumo'
+              }}
+              asociado al paciente.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- ===================================================
+             MEDICAMENTO
+             =================================================== -->
+
+        <div
+          class="campo"
+          *ngIf="tipoElemento === 'medicamento'">
+
+          <label for="medicamento">
+            Medicamento
+          </label>
+
+          <select
+            id="medicamento"
+            [(ngModel)]="formularioElemento.id_medicamentos">
+
+            <option [ngValue]="null">
+              Seleccione un medicamento
+            </option>
+
+            <option
+              *ngFor="let medicamento of medicamentos"
+              [ngValue]="medicamento.id_medicamentos">
+
+              {{ medicamento.nombre }}
+
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- ===================================================
+             TIPO DE INSUMO
+             =================================================== -->
+
+        <div
+          class="campo"
+          *ngIf="tipoElemento === 'insumo'">
+
+          <label for="tipoInsumo">
+            Tipo de insumo
+          </label>
+
+          <select
+            id="tipoInsumo"
+            [(ngModel)]="formularioElemento.id_tipo_insumo"
+            (change)="filtrarInsumosPorTipo()">
+
+            <option [ngValue]="null">
+              Seleccione un tipo de insumo
+            </option>
+
+            <option
+              *ngFor="let tipo of tiposInsumo"
+              [ngValue]="tipo.id_tipo_insumo">
+
+              {{ tipo.nombre }}
+
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- ===================================================
+             INSUMO
+             =================================================== -->
+
+        <div
+          class="campo"
+          *ngIf="tipoElemento === 'insumo'">
+
+          <label for="insumo">
+            Insumo
+          </label>
+
+          <select
+            id="insumo"
+            [(ngModel)]="formularioElemento.id_insumo">
+
+            <option [ngValue]="null">
+              Seleccione un insumo
+            </option>
+
+            <option
+              *ngFor="let insumo of insumosFiltrados"
+              [ngValue]="insumo.id_insumo">
+
+              {{ insumo.nombre }}
+
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- ===================================================
+             CANTIDAD
+             =================================================== -->
+
+        <div class="campo">
+
+          <label for="cantidad">
+            Cantidad
+          </label>
+
+          <input
+            id="cantidad"
+            type="number"
+            min="1"
+            [(ngModel)]="formularioElemento.cantidad"
+            placeholder="Ingrese la cantidad">
+
+        </div>
+
+
+        <!-- ===================================================
+             FECHA DE INGRESO
+             =================================================== -->
+
+        <div class="campo">
+
+          <label for="fechaIngreso">
+            Fecha de ingreso
+          </label>
+
+          <input
+            id="fechaIngreso"
+            type="datetime-local"
+            [(ngModel)]="formularioElemento.fecha_ingreso">
+
+        </div>
+
+
+        <!-- ===================================================
+             FECHA DE VENCIMIENTO
+             =================================================== -->
+
+        <div
+          class="campo"
+          *ngIf="tipoElemento === 'medicamento'">
+
+          <label for="fechaVencimiento">
+            Fecha de vencimiento
+          </label>
+
+          <input
+            id="fechaVencimiento"
+            type="date"
+            [(ngModel)]="formularioElemento.fecha_vencimiento">
+
+        </div>
+
+
+        <!-- ===================================================
+             OBSERVACIONES
+             =================================================== -->
+
+        <div class="campo">
+
+          <label for="observaciones">
+            Observaciones
+          </label>
+
+          <textarea
+            id="observaciones"
+            rows="4"
+            [(ngModel)]="formularioElemento.observaciones"
+            placeholder="Ingrese observaciones sobre el elemento...">
+          </textarea>
+
+        </div>
+
+
+        <!-- ===================================================
+             ESTADO
+             =================================================== -->
+
+        <div class="campo campo-estado">
+
+          <label>
+
+            <input
+              type="checkbox"
+              [(ngModel)]="formularioElemento.estado">
+
+            Elemento activo
+
+          </label>
+
+        </div>
+
+
+        <!-- ===================================================
+             ACCIONES DEL FORMULARIO
+             =================================================== -->
+
+        <div class="formulario-acciones">
+
+          <button
+            type="button"
+            class="btn-secundario"
+            (click)="cancelarElemento()">
+
+            Cancelar
+
+          </button>
+
+
+          <button
+            type="button"
+            class="btn-primary"
+            (click)="guardarElemento()">
+
+            {{
+              elementoEditando
+                ? 'Actualizar elemento'
+                : 'Guardar ' + tipoElemento
+            }}
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           TABLA DE ELEMENTOS REGISTRADOS
+           ===================================================== -->
 
       <div class="tabla-container">
 
@@ -258,11 +528,17 @@
             <tr>
 
               <th>Tipo</th>
+
               <th>Elemento</th>
+
               <th>Cantidad</th>
+
               <th>Fecha ingreso</th>
+
               <th>Vencimiento</th>
+
               <th>Estado</th>
+
               <th>Acciones</th>
 
             </tr>
@@ -272,90 +548,118 @@
 
           <tbody>
 
-            <tr *ngFor="let elemento of elementos">
+            <tr
+              *ngFor="let elemento of elementosPaciente">
+
+              <!-- TIPO -->
 
               <td>
 
-                <span
-                  class="tipo-badge"
-                  [class.medicamento]="elemento.tipo === 'Medicamento'"
-                  [class.insumo]="elemento.tipo === 'Insumo'">
+                <span class="tipo-elemento">
 
-                  {{ elemento.tipo }}
+                  {{ obtenerTipoElemento(elemento) }}
 
                 </span>
 
               </td>
 
 
-              <td class="elemento-nombre">
-                {{ elemento.nombre }}
+              <!-- NOMBRE DEL ELEMENTO -->
+
+              <td>
+
+                <strong>
+                  {{ obtenerNombreElemento(elemento) }}
+                </strong>
+
               </td>
 
 
+              <!-- CANTIDAD -->
+
               <td>
+
                 {{ elemento.cantidad }}
+
               </td>
 
+
+              <!-- FECHA INGRESO -->
 
               <td>
-                {{ elemento.fecha_ingreso }}
+
+                {{
+                  elemento.fecha_ingreso
+                    | date:'dd/MM/yyyy HH:mm'
+                }}
+
               </td>
 
+
+              <!-- VENCIMIENTO -->
+
+              <td>
+
+                {{
+                  elemento.fecha_vencimiento
+                    ? (elemento.fecha_vencimiento | date:'dd/MM/yyyy')
+                    : 'No aplica'
+                }}
+
+              </td>
+
+
+              <!-- ESTADO -->
 
               <td>
 
                 <span
-                  *ngIf="elemento.fecha_vencimiento; else noVencimiento">
-
-                  {{ elemento.fecha_vencimiento }}
-
-                </span>
-
-                <ng-template #noVencimiento>
-
-                  <span class="sin-dato">
-                    No aplica
-                  </span>
-
-                </ng-template>
-
-              </td>
-
-
-              <td>
-
-                <span
-                  class="estado-badge"
+                  class="estado-elemento"
                   [class.inactivo]="!elemento.estado">
 
-                  {{ elemento.estado ? 'Activo' : 'Inactivo' }}
+                  {{
+                    elemento.estado
+                      ? 'Activo'
+                      : 'Inactivo'
+                  }}
 
                 </span>
 
               </td>
 
+
+              <!-- ACCIONES -->
 
               <td>
 
                 <div class="acciones-tabla">
 
+                  <!-- EDITAR -->
+
                   <button
                     type="button"
-                    class="btn-accion editar"
+                    class="btn-accion btn-editar"
+                    title="Editar elemento"
                     (click)="editarElemento(elemento)">
 
-                    Editar
+                    <span class="material-symbols-outlined">
+                      edit
+                    </span>
 
                   </button>
 
 
+                  <!-- ELIMINAR -->
+
                   <button
                     type="button"
-                    class="btn-accion eliminar"
+                    class="btn-accion btn-eliminar"
+                    title="Eliminar elemento"
                     (click)="eliminarElemento(elemento)">
 
-                    Eliminar
+                    <span class="material-symbols-outlined">
+                      delete
+                    </span>
 
                   </button>
 
@@ -366,13 +670,28 @@
             </tr>
 
 
-            <tr *ngIf="elementos.length === 0">
+            <!-- =================================================
+                 ESTADO VACÍO
+                 ================================================= -->
+
+            <tr
+              *ngIf="elementosPaciente.length === 0">
 
               <td
                 colspan="7"
-                class="tabla-vacia">
+                class="estado-vacio">
 
-                No hay elementos registrados para este paciente.
+                <div class="vacio-icono">
+                  📦
+                </div>
+
+                <h4>
+                  No hay elementos registrados
+                </h4>
+
+                <p>
+                  Registre un medicamento o insumo asociado a este paciente.
+                </p>
 
               </td>
 
