@@ -1231,147 +1231,464 @@
        RECOMENDACIONES
        ========================================================= -->
 
-  <section
-    class="contenido-seccion"
-    *ngIf="seccionActiva === 'recomendaciones'">
+  <!-- ============================================================
+     RECOMENDACIONES
+     ============================================================ -->
 
-    <div class="card">
+<section
+  class="contenido-seccion"
+  *ngIf="seccionActiva === 'recomendaciones'"
+>
 
-      <div class="card-header">
+  <div class="card">
 
-        <div>
+    <!-- ========================================================
+         ENCABEZADO
+         ======================================================== -->
 
-          <h3>Recomendaciones</h3>
+    <div class="card-header">
 
-          <p>
-            Registre recomendaciones importantes para el cuidado del paciente.
-          </p>
+      <div>
+        <h3>Recomendaciones</h3>
 
+        <p>
+          Registre las recomendaciones y cuidados especiales
+          que requiere el paciente.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="abrirFormularioRecomendaciones()"
+        *ngIf="!mostrarFormularioRecomendaciones"
+      >
+        <span class="material-symbols-outlined">
+          add
+        </span>
+
+        Agregar recomendaciones
+      </button>
+
+    </div>
+
+
+    <!-- ========================================================
+         FORMULARIO
+         ======================================================== -->
+
+    <div
+      class="formulario-registro"
+      *ngIf="mostrarFormularioRecomendaciones"
+    >
+
+      <div class="formulario-grid">
+
+        <!-- HIDRATAR PIEL -->
+        <div class="campo">
+          <label for="hidratarPiel">
+            Hidratación de la piel
+          </label>
+
+          <textarea
+            id="hidratarPiel"
+            [(ngModel)]="recomendaciones.hidratar_piel"
+            rows="3"
+            placeholder="Registre las recomendaciones para la hidratación de la piel..."
+          ></textarea>
         </div>
 
+
+        <!-- ASISTIR ALIMENTACIÓN -->
+        <div class="campo">
+          <label for="asistirAlimentacion">
+            Asistencia en la alimentación
+          </label>
+
+          <textarea
+            id="asistirAlimentacion"
+            [(ngModel)]="recomendaciones.asistir_alimentacion"
+            rows="3"
+            placeholder="Describa las recomendaciones o indicaciones para asistir al paciente durante la alimentación..."
+          ></textarea>
+        </div>
+
+
+        <!-- VÍA ALIMENTACIÓN -->
+        <div class="campo">
+          <label for="viaAlimentacion">
+            Vía de alimentación
+          </label>
+
+          <textarea
+            id="viaAlimentacion"
+            [(ngModel)]="recomendaciones.via_alimentacion"
+            rows="3"
+            placeholder="Indique la vía de alimentación y las recomendaciones correspondientes..."
+          ></textarea>
+        </div>
+
+
+        <!-- PREVENCIÓN DE CAÍDAS -->
+        <div class="campo">
+          <label for="prevencionCaidas">
+            Prevención de caídas
+          </label>
+
+          <textarea
+            id="prevencionCaidas"
+            [(ngModel)]="recomendaciones.prevencion_caidas"
+            rows="3"
+            placeholder="Registre las recomendaciones para prevenir caídas..."
+          ></textarea>
+        </div>
+
+
+        <!-- TERAPIAS FÍSICAS -->
+        <div class="campo">
+          <label for="terapiasFisicas">
+            Terapias físicas
+          </label>
+
+          <textarea
+            id="terapiasFisicas"
+            [(ngModel)]="recomendaciones.terapias_fisicas"
+            rows="3"
+            placeholder="Registre las recomendaciones relacionadas con terapias físicas..."
+          ></textarea>
+        </div>
+
+
+        <!-- TERAPIA RESPIRATORIA -->
+        <div class="campo">
+          <label for="terapiaRespiratoria">
+            Terapia respiratoria
+          </label>
+
+          <textarea
+            id="terapiaRespiratoria"
+            [(ngModel)]="recomendaciones.terapia_respiratoria"
+            rows="3"
+            placeholder="Registre las recomendaciones relacionadas con terapia respiratoria..."
+          ></textarea>
+        </div>
+
+
+        <!-- ACTIVIDAD OCUPACIONAL -->
+        <div class="campo">
+          <label for="actividadOcupacional">
+            Actividad ocupacional
+          </label>
+
+          <textarea
+            id="actividadOcupacional"
+            [(ngModel)]="recomendaciones.actividad_ocupacional"
+            rows="3"
+            placeholder="Registre las recomendaciones para actividades ocupacionales..."
+          ></textarea>
+        </div>
+
+
+        <!-- CORTE DE UÑAS -->
+        <div class="campo">
+          <label for="corteUnas">
+            Corte de uñas
+          </label>
+
+          <textarea
+            id="corteUnas"
+            [(ngModel)]="recomendaciones.corte_unas"
+            rows="3"
+            placeholder="Registre las recomendaciones para el cuidado y corte de uñas..."
+          ></textarea>
+        </div>
+
+
+        <!-- CORTE DE CABELLO -->
+        <div class="campo">
+          <label for="corteCabello">
+            Corte de cabello
+          </label>
+
+          <textarea
+            id="corteCabello"
+            [(ngModel)]="recomendaciones.corte_cabello"
+            rows="3"
+            placeholder="Registre las recomendaciones para el cuidado y corte de cabello..."
+          ></textarea>
+        </div>
+
+
+        <!-- HIGIENE ORAL -->
+        <div class="campo">
+          <label for="higieneOral">
+            Higiene oral
+          </label>
+
+          <textarea
+            id="higieneOral"
+            [(ngModel)]="recomendaciones.higiene_oral"
+            rows="3"
+            placeholder="Registre las recomendaciones para la higiene oral del paciente..."
+          ></textarea>
+        </div>
+
+      </div>
+
+
+      <!-- ======================================================
+           ACCIONES DEL FORMULARIO
+           ====================================================== -->
+
+      <div class="formulario-acciones">
+
+        <button
+          type="button"
+          class="btn-secundario"
+          (click)="cancelarRecomendaciones()"
+        >
+          Cancelar
+        </button>
 
         <button
           type="button"
           class="btn-primary"
-          (click)="mostrarFormularioRecomendacion = !mostrarFormularioRecomendacion">
+          (click)="guardarRecomendaciones()"
+        >
+          <span class="material-symbols-outlined">
+            save
+          </span>
 
-          + Agregar recomendación
-
+          {{ recomendaciones.id_recomendacion > 0
+              ? 'Actualizar recomendaciones'
+              : 'Guardar recomendaciones' }}
         </button>
-
-      </div>
-
-
-      <!-- FORMULARIO -->
-
-      <div
-        class="formulario-registro"
-        *ngIf="mostrarFormularioRecomendacion">
-
-        <div class="campo">
-
-          <label for="recomendacion">
-            Recomendación
-          </label>
-
-          <textarea
-            id="recomendacion"
-            [(ngModel)]="nuevaRecomendacion"
-            rows="5"
-            placeholder="Escriba la recomendación para el cuidado del paciente...">
-          </textarea>
-
-        </div>
-
-
-        <div class="formulario-acciones">
-
-          <button
-            type="button"
-            class="btn-secundario"
-            (click)="cancelarRecomendacion()">
-
-            Cancelar
-
-          </button>
-
-
-          <button
-            type="button"
-            class="btn-primary"
-            (click)="guardarRecomendacion()">
-
-            Guardar recomendación
-
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <!-- LISTA -->
-
-      <div class="lista-registros">
-
-        <div
-          class="registro-item"
-          *ngFor="let recomendacion of recomendaciones; let i = index">
-
-          <div class="registro-icono recomendacion-icono">
-            !
-          </div>
-
-
-          <div class="registro-contenido">
-
-            <span class="registro-titulo">
-              Recomendación
-            </span>
-
-            <p>
-              {{ recomendacion.descripcion }}
-            </p>
-
-          </div>
-
-
-          <div class="registro-acciones">
-
-            <button
-              type="button"
-              (click)="eliminarRecomendacion(i)">
-
-              Eliminar
-
-            </button>
-
-          </div>
-
-        </div>
-
-
-        <div
-          class="estado-vacio"
-          *ngIf="recomendaciones.length === 0">
-
-          <div class="vacio-icono recomendacion-vacio">
-            !
-          </div>
-
-          <h4>No hay recomendaciones registradas</h4>
-
-          <p>
-            Agregue las recomendaciones necesarias para este paciente.
-          </p>
-
-        </div>
 
       </div>
 
     </div>
 
-  </section>
+
+    <!-- ========================================================
+         LISTADO / INFORMACIÓN REGISTRADA
+         ======================================================== -->
+
+    <div
+      class="lista-registros"
+      *ngIf="!mostrarFormularioRecomendaciones"
+    >
+
+      <!-- CARGANDO -->
+      <div
+        class="estado-vacio"
+        *ngIf="cargandoRecomendaciones"
+      >
+
+        <div class="vacio-icono">
+          <span class="material-symbols-outlined">
+            sync
+          </span>
+        </div>
+
+        <h4>Cargando recomendaciones...</h4>
+
+        <p>
+          Consultando la información del paciente.
+        </p>
+
+      </div>
+
+
+      <!-- RECOMENDACIONES REGISTRADAS -->
+      <div
+        class="registro-item"
+        *ngIf="
+          !cargandoRecomendaciones &&
+          recomendaciones.id_recomendacion > 0
+        "
+      >
+
+        <div class="registro-icono">
+          <span class="material-symbols-outlined">
+            checklist
+          </span>
+        </div>
+
+
+        <div class="registro-contenido">
+
+          <span class="registro-titulo">
+            Recomendaciones registradas
+          </span>
+
+
+          <div class="detalle-cuidados">
+
+            <div
+              class="detalle-cuidado"
+              *ngIf="recomendaciones.hidratar_piel"
+            >
+              <strong>Hidratación de la piel</strong>
+              <p>{{ recomendaciones.hidratar_piel }}</p>
+            </div>
+
+
+            <div
+              class="detalle-cuidado"
+              *ngIf="recomendaciones.asistir_alimentacion"
+            >
+              <strong>Asistencia en la alimentación</strong>
+              <p>{{ recomendaciones.asistir_alimentacion }}</p>
+            </div>
+
+
+            <div
+              class="detalle-cuidado"
+              *ngIf="recomendaciones.via_alimentacion"
+            >
+              <strong>Vía de alimentación</strong>
+              <p>{{ recomendaciones.via_alimentacion }}</p>
+            </div>
+
+
+            <div
+              class="detalle-cuidado"
+              *ngIf="recomendaciones.prevencion_caidas"
+            >
+              <strong>Prevención de caídas</strong>
+              <p>{{ recomendaciones.prevencion_caidas }}</p>
+            </div>
+
+
+            <div
+              class="detalle-cuidado"
+              *ngIf="recomendaciones.terapias_fisicas"
+            >
+              <strong>Terapias físicas</strong>
+              <p>{{ recomendaciones.terapias_fisicas }}</p>
+            </div>
+
+
+            <div
+              class="detalle-cuidado"
+              *ngIf="recomendaciones.terapia_respiratoria"
+            >
+              <strong>Terapia respiratoria</strong>
+              <p>{{ recomendaciones.terapia_respiratoria }}</p>
+            </div>
+
+
+            <div
+              class="detalle-cuidado"
+              *ngIf="recomendaciones.actividad_ocupacional"
+            >
+              <strong>Actividad ocupacional</strong>
+              <p>{{ recomendaciones.actividad_ocupacional }}</p>
+            </div>
+
+
+            <div
+              class="detalle-cuidado"
+              *ngIf="recomendaciones.corte_unas"
+            >
+              <strong>Corte de uñas</strong>
+              <p>{{ recomendaciones.corte_unas }}</p>
+            </div>
+
+
+            <div
+              class="detalle-cuidado"
+              *ngIf="recomendaciones.corte_cabello"
+            >
+              <strong>Corte de cabello</strong>
+              <p>{{ recomendaciones.corte_cabello }}</p>
+            </div>
+
+
+            <div
+              class="detalle-cuidado"
+              *ngIf="recomendaciones.higiene_oral"
+            >
+              <strong>Higiene oral</strong>
+              <p>{{ recomendaciones.higiene_oral }}</p>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ACCIONES -->
+        <div class="registro-acciones">
+
+          <button
+            type="button"
+            class="btn-accion btn-editar"
+            title="Editar recomendaciones"
+            (click)="editarRecomendaciones()"
+          >
+            <span class="material-symbols-outlined">
+              edit
+            </span>
+          </button>
+
+
+          <button
+            type="button"
+            class="btn-accion btn-eliminar"
+            title="Eliminar recomendaciones"
+            (click)="eliminarRecomendaciones()"
+          >
+            <span class="material-symbols-outlined">
+              delete
+            </span>
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- SIN RECOMENDACIONES -->
+      <div
+        class="estado-vacio"
+        *ngIf="
+          !cargandoRecomendaciones &&
+          recomendaciones.id_recomendacion === 0
+        "
+      >
+
+        <div class="vacio-icono">
+          <span class="material-symbols-outlined">
+            checklist
+          </span>
+        </div>
+
+        <h4>No hay recomendaciones registradas</h4>
+
+        <p>
+          Agregue las recomendaciones necesarias para este paciente.
+        </p>
+
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="abrirFormularioRecomendaciones()"
+        >
+          <span class="material-symbols-outlined">
+            add
+          </span>
+
+          Agregar recomendaciones
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
 
 
   <!-- =========================================================

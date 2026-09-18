@@ -262,6 +262,7 @@ export class ElementosPaciente implements OnInit {
       this.cargarCuidados();
       this.cargarRecomendaciones();
       this.cargarHistoriaClinica();
+      
 
     });
 
@@ -2099,228 +2100,519 @@ eliminarCuidados(): void {
   this.eliminarCuidados();
 
 }
-  // ============================================================
-  // CARGAR RECOMENDACIONES
-  // ============================================================
 
-  cargarRecomendaciones(): void {
+// ============================================================
+// CARGAR RECOMENDACIONES
+// ============================================================
 
-    this.cargandoRecomendaciones = true;
+cargarRecomendaciones(): void {
+
+  this.cargandoRecomendaciones = true;
+
+  this.http
+    .get<
+      Recomendacion[] |
+      RespuestaPaginada<Recomendacion>
+    >(
+      `${this.apiUrl}/recomendaciones/`
+    )
+    .subscribe({
+
+      next: (respuesta) => {
+
+        const recomendaciones =
+          this.obtenerResultados(respuesta);
+
+        const registro =
+          recomendaciones.find(
+            recomendacion =>
+              Number(
+                this.obtenerIdPaciente(
+                  recomendacion.id_paciente
+                )
+              ) ===
+              Number(this.idPaciente)
+          );
+
+        if (registro) {
+
+          this.recomendaciones = {
+            id_recomendacion:
+              registro.id_recomendacion,
+            hidratar_piel:
+              registro.hidratar_piel || '',
+            asistir_alimentacion:
+              registro.asistir_alimentacion || '',
+            via_alimentacion:
+              registro.via_alimentacion || '',
+            prevencion_caidas:
+              registro.prevencion_caidas || '',
+            terapias_fisicas:
+              registro.terapias_fisicas || '',
+            terapia_respiratoria:
+              registro.terapia_respiratoria || '',
+            actividad_ocupacional:
+              registro.actividad_ocupacional || '',
+            corte_unas:
+              registro.corte_unas || '',
+            corte_cabello:
+              registro.corte_cabello || '',
+            higiene_oral:
+              registro.higiene_oral || '',
+            id_paciente:
+              this.idPaciente
+          };
+
+        } else {
+
+          this.recomendaciones =
+            this.crearRecomendacionesVacias();
+
+        }
+
+        this.cargandoRecomendaciones = false;
+        this.cdr.detectChanges();
+
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Error al cargar recomendaciones:',
+          error
+        );
+
+        this.recomendaciones =
+          this.crearRecomendacionesVacias();
+
+        this.cargandoRecomendaciones = false;
+        this.cdr.detectChanges();
+
+      }
+
+    });
+
+}
+
+
+// ============================================================
+// CREAR ESTRUCTURA VACÍA DE RECOMENDACIONES
+// ============================================================
+
+private crearRecomendacionesVacias(): Recomendacion {
+
+  return {
+
+    id_recomendacion: 0,
+
+    hidratar_piel: '',
+
+    asistir_alimentacion: '',
+
+    via_alimentacion: '',
+
+    prevencion_caidas: '',
+
+    terapias_fisicas: '',
+
+    terapia_respiratoria: '',
+
+    actividad_ocupacional: '',
+
+    corte_unas: '',
+
+    corte_cabello: '',
+
+    higiene_oral: '',
+
+    id_paciente: this.idPaciente
+
+  };
+
+}
+
+
+// ============================================================
+// ABRIR FORMULARIO DE RECOMENDACIONES
+// ============================================================
+
+abrirFormularioRecomendaciones(): void {
+
+  // Si no existe un registro, aseguramos que el formulario
+  // tenga la estructura correspondiente al paciente.
+  if (
+    !this.recomendaciones.id_recomendacion
+  ) {
+
+    this.recomendaciones =
+      this.crearRecomendacionesVacias();
+
+  }
+
+  this.mostrarFormularioRecomendaciones =
+    true;
+
+  this.cdr.detectChanges();
+
+}
+
+
+// ============================================================
+// GUARDAR RECOMENDACIONES
+// ============================================================
+
+guardarRecomendaciones(): void {
+
+  // Validar que exista un paciente.
+  if (
+    !this.idPaciente ||
+    this.idPaciente <= 0
+  ) {
+
+    Swal.fire({
+      icon: 'warning',
+      title: 'Paciente no identificado',
+      text:
+        'No fue posible identificar el paciente.'
+    });
+
+    return;
+
+  }
+
+  // Preparar los datos que se enviarán al backend.
+  const datos = {
+
+    hidratar_piel:
+      this.limpiarValor(
+        this.recomendaciones.hidratar_piel
+      ),
+
+    asistir_alimentacion:
+      this.limpiarValor(
+        this.recomendaciones.asistir_alimentacion
+      ),
+
+    via_alimentacion:
+      this.limpiarValor(
+        this.recomendaciones.via_alimentacion
+      ),
+
+    prevencion_caidas:
+      this.limpiarValor(
+        this.recomendaciones.prevencion_caidas
+      ),
+
+    terapias_fisicas:
+      this.limpiarValor(
+        this.recomendaciones.terapias_fisicas
+      ),
+
+    terapia_respiratoria:
+      this.limpiarValor(
+        this.recomendaciones.terapia_respiratoria
+      ),
+
+    actividad_ocupacional:
+      this.limpiarValor(
+        this.recomendaciones.actividad_ocupacional
+      ),
+
+    corte_unas:
+      this.limpiarValor(
+        this.recomendaciones.corte_unas
+      ),
+
+    corte_cabello:
+      this.limpiarValor(
+        this.recomendaciones.corte_cabello
+      ),
+
+    higiene_oral:
+      this.limpiarValor(
+        this.recomendaciones.higiene_oral
+      ),
+
+    id_paciente:
+      this.idPaciente
+
+  };
+
+  console.log(
+    '======================================'
+  );
+
+  console.log(
+    'GUARDANDO RECOMENDACIONES'
+  );
+
+  console.log(
+    'Paciente:',
+    this.idPaciente
+  );
+
+  console.log(
+    'Datos enviados:',
+    datos
+  );
+
+  console.log(
+    '======================================'
+  );
+
+
+  // ==========================================================
+  // ACTUALIZAR REGISTRO EXISTENTE
+  // ==========================================================
+
+  if (
+    this.recomendaciones.id_recomendacion > 0
+  ) {
 
     this.http
-      .get<
-        Recomendacion[] |
-        RespuestaPaginada<Recomendacion>
-      >(
-        `${this.apiUrl}/recomendaciones/`
+      .patch(
+        `${this.apiUrl}/recomendaciones/${this.recomendaciones.id_recomendacion}/`,
+        datos
       )
       .subscribe({
 
         next: (respuesta) => {
 
-          const recomendaciones =
-            this.obtenerResultados(respuesta);
+          console.log(
+            'Recomendaciones actualizadas:',
+            respuesta
+          );
 
-          const registro =
-            recomendaciones.find(
-              recomendacion =>
-                Number(
-                  this.obtenerIdPaciente(
-                    recomendacion.id_paciente
-                  )
-                ) ===
-                Number(this.idPaciente)
-            );
+          Swal.fire({
+            icon: 'success',
+            title: 'Recomendaciones actualizadas',
+            text:
+              'La información se actualizó correctamente.',
+            timer: 1800,
+            showConfirmButton: false
+          });
 
-          if (registro) {
-
-            this.recomendaciones =
-              registro;
-
-          } else {
-
-            this.recomendaciones = {
-
-              id_recomendacion: 0,
-
-              hidratar_piel: '',
-
-              asistir_alimentacion: '',
-
-              via_alimentacion: '',
-
-              prevencion_caidas: '',
-
-              terapias_fisicas: '',
-
-              terapia_respiratoria: '',
-
-              actividad_ocupacional: '',
-
-              corte_unas: '',
-
-              corte_cabello: '',
-
-              higiene_oral: '',
-
-              id_paciente:
-                this.idPaciente
-            };
-          }
-
-          this.cargandoRecomendaciones =
+          this.mostrarFormularioRecomendaciones =
             false;
 
-          this.cdr.detectChanges();
+          this.cargarRecomendaciones();
+
         },
 
         error: (error) => {
 
           console.error(
-            'Error al cargar recomendaciones:',
+            'Error al actualizar recomendaciones:',
             error
           );
 
-          this.cargandoRecomendaciones =
-            false;
+          console.error(
+            'Respuesta del servidor:',
+            error?.error
+          );
+
+          this.mostrarErrorApi(
+            error,
+            'No fue posible actualizar las recomendaciones.'
+          );
+
         }
 
       });
 
+    return;
+
   }
 
-  // ============================================================
-  // GUARDAR RECOMENDACIONES
-  // ============================================================
 
-  guardarRecomendaciones(): void {
+  // ==========================================================
+  // CREAR NUEVO REGISTRO
+  // ==========================================================
 
-    const datos = {
+  this.http
+    .post(
+      `${this.apiUrl}/recomendaciones/`,
+      datos
+    )
+    .subscribe({
 
-      hidratar_piel:
-        this.recomendaciones.hidratar_piel ||
-        null,
+      next: (respuesta) => {
 
-      asistir_alimentacion:
-        this.recomendaciones.asistir_alimentacion ||
-        null,
+        console.log(
+          'Recomendaciones registradas:',
+          respuesta
+        );
 
-      via_alimentacion:
-        this.recomendaciones.via_alimentacion ||
-        null,
-
-      prevencion_caidas:
-        this.recomendaciones.prevencion_caidas ||
-        null,
-
-      terapias_fisicas:
-        this.recomendaciones.terapias_fisicas ||
-        null,
-
-      terapia_respiratoria:
-        this.recomendaciones.terapia_respiratoria ||
-        null,
-
-      actividad_ocupacional:
-        this.recomendaciones.actividad_ocupacional ||
-        null,
-
-      corte_unas:
-        this.recomendaciones.corte_unas ||
-        null,
-
-      corte_cabello:
-        this.recomendaciones.corte_cabello ||
-        null,
-
-      higiene_oral:
-        this.recomendaciones.higiene_oral ||
-        null,
-
-      id_paciente:
-        this.idPaciente
-    };
-
-    if (
-      this.recomendaciones.id_recomendacion > 0
-    ) {
-
-      this.http
-        .patch(
-          `${this.apiUrl}/recomendaciones/${this.recomendaciones.id_recomendacion}/`,
-          datos
-        )
-        .subscribe({
-
-          next: () => {
-
-            Swal.fire({
-              icon: 'success',
-              title: 'Recomendaciones actualizadas',
-              text:
-                'La información se actualizó correctamente.',
-              timer: 1800,
-              showConfirmButton: false
-            });
-
-            this.cargarRecomendaciones();
-          },
-
-          error: (error) => {
-
-            console.error(
-              'Error al actualizar recomendaciones:',
-              error
-            );
-
-            this.mostrarErrorApi(
-              error,
-              'No fue posible actualizar las recomendaciones.'
-            );
-          }
-
+        Swal.fire({
+          icon: 'success',
+          title: 'Recomendaciones registradas',
+          text:
+            'Las recomendaciones se registraron correctamente.',
+          timer: 1800,
+          showConfirmButton: false
         });
 
-    } else {
+        this.mostrarFormularioRecomendaciones =
+          false;
 
-      this.http
-        .post(
-          `${this.apiUrl}/recomendaciones/`,
-          datos
-        )
-        .subscribe({
+        this.cargarRecomendaciones();
 
-          next: () => {
+      },
 
-            Swal.fire({
-              icon: 'success',
-              title: 'Recomendaciones registradas',
-              text:
-                'Las recomendaciones se registraron correctamente.',
-              timer: 1800,
-              showConfirmButton: false
-            });
+      error: (error) => {
 
-            this.cargarRecomendaciones();
-          },
+        console.error(
+          'Error al registrar recomendaciones:',
+          error
+        );
 
-          error: (error) => {
+        console.error(
+          'Respuesta del servidor:',
+          error?.error
+        );
 
-            console.error(
-              'Error al registrar recomendaciones:',
-              error
-            );
+        this.mostrarErrorApi(
+          error,
+          'No fue posible registrar las recomendaciones.'
+        );
 
-            this.mostrarErrorApi(
-              error,
-              'No fue posible registrar las recomendaciones.'
-            );
-          }
+      }
 
-        });
+    });
+
+}
+
+
+// ============================================================
+// EDITAR RECOMENDACIONES
+// ============================================================
+
+editarRecomendaciones(): void {
+
+  if (
+    !this.recomendaciones.id_recomendacion ||
+    this.recomendaciones.id_recomendacion <= 0
+  ) {
+
+    Swal.fire({
+      icon: 'info',
+      title: 'Sin recomendaciones',
+      text:
+        'Primero debe registrar las recomendaciones.'
+    });
+
+    return;
+
+  }
+
+  // El registro ya está cargado en this.recomendaciones,
+  // por lo tanto solamente abrimos el formulario.
+  this.mostrarFormularioRecomendaciones =
+    true;
+
+  this.cdr.detectChanges();
+
+}
+
+
+// ============================================================
+// ELIMINAR RECOMENDACIONES
+// ============================================================
+
+eliminarRecomendaciones(): void {
+
+  if (
+    !this.recomendaciones.id_recomendacion ||
+    this.recomendaciones.id_recomendacion <= 0
+  ) {
+
+    Swal.fire({
+      icon: 'info',
+      title: 'Sin recomendaciones',
+      text:
+        'No existen recomendaciones para eliminar.'
+    });
+
+    return;
+
+  }
+
+  Swal.fire({
+
+    icon: 'warning',
+
+    title:
+      '¿Eliminar recomendaciones?',
+
+    text:
+      'Esta acción eliminará las recomendaciones registradas para este paciente.',
+
+    showCancelButton: true,
+
+    confirmButtonText:
+      'Sí, eliminar',
+
+    cancelButtonText:
+      'Cancelar'
+
+  }).then((resultado) => {
+
+    if (!resultado.isConfirmed) {
+      return;
     }
 
-  }
+    this.http
+      .delete(
+        `${this.apiUrl}/recomendaciones/${this.recomendaciones.id_recomendacion}/`
+      )
+      .subscribe({
+
+        next: () => {
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Recomendaciones eliminadas',
+            text:
+              'Las recomendaciones fueron eliminadas correctamente.',
+            timer: 1800,
+            showConfirmButton: false
+          });
+
+          // Dejar nuevamente el formulario vacío.
+          this.recomendaciones =
+            this.crearRecomendacionesVacias();
+
+          this.mostrarFormularioRecomendaciones =
+            false;
+
+          this.cdr.detectChanges();
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Error al eliminar recomendaciones:',
+            error
+          );
+
+          console.error(
+            'Respuesta del servidor:',
+            error?.error
+          );
+
+          this.mostrarErrorApi(
+            error,
+            'No fue posible eliminar las recomendaciones.'
+          );
+
+        }
+
+      });
+
+  });
+
+}
 
   // ============================================================
   // CARGAR HISTORIA CLÍNICA
@@ -2998,12 +3290,7 @@ interface CuidadoEnfermeria {
 
   administracion_medicamentos: string | null;
 
-  id_paciente:
-    number |
-    {
-      id_paciente?: number;
-    } |
-    null;
+  id_paciente:number | { id_paciente?: number;} |null;
 }
 
 // ============================================================
@@ -3013,33 +3300,18 @@ interface CuidadoEnfermeria {
 interface Recomendacion {
 
   id_recomendacion: number;
-
   hidratar_piel: string | null;
-
   asistir_alimentacion: string | null;
-
   via_alimentacion: string | null;
-
   prevencion_caidas: string | null;
-
   terapias_fisicas: string | null;
-
   terapia_respiratoria: string | null;
-
   actividad_ocupacional: string | null;
-
   corte_unas: string | null;
-
   corte_cabello: string | null;
-
   higiene_oral: string | null;
+  id_paciente: number | { id_paciente?: number } | null;
 
-  id_paciente:
-    number |
-    {
-      id_paciente?: number;
-    } |
-    null;
 }
 
 // ============================================================
