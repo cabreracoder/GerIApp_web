@@ -23,6 +23,26 @@
 
 
 
+  <!-- BUSCADOR -->
+  <div class="flex items-center gap-3 w-full min-h-[52px] mb-5 px-4 bg-white border border-gray-200 rounded-full shadow-sm">
+
+    <span class="material-symbols-outlined flex-shrink-0" style="font-size: 22px; line-height: 1; color: #6C757D;">
+      search
+    </span>
+
+    <input
+      type="search"
+      placeholder="Buscar por documento o nombre..."
+      aria-label="Buscar cuidador"
+      autocomplete="off"
+      [(ngModel)]="textoBusqueda"
+      (input)="filtrarCuidadores()"
+      class="flex-1 h-12 bg-transparent outline-none text-sm text-[#212529] placeholder-gray-400"
+    >
+
+  </div>
+
+
   <!-- CONTADOR -->
   <div class="mb-5">
 
@@ -35,8 +55,6 @@
     </p>
 
   </div>
-
-
   <!-- TABLA -->
   <div class="overflow-x-auto">
 
