@@ -605,6 +605,7 @@ export class DashboardComponent implements OnInit {
           console.log(
             "Gestión cuidadores:",
             {
+              //turnos
               fecha: fechaHoy,
               enTurno: this.cuidadoresEnTurno,
               libres: this.cuidadoresLibres,
