@@ -140,6 +140,7 @@ export class DashboardComponent implements OnInit {
 
   porcentajeOcupacion = 0;
 
+  porcentajeOcupacionActual = 0;
   porcentajeEstables = 0;
 
   porcentajeCriticos = 0;
@@ -176,7 +177,7 @@ export class DashboardComponent implements OnInit {
      OCUPACIÓN
   ===================================================== */
 
-  metaOcupacion = 0;
+  metaOcupacion = 100;
 
   turnoActual: Turno = {
     nombre: '',
@@ -253,9 +254,10 @@ export class DashboardComponent implements OnInit {
 
     // Cargar fecha actual
     this.cargarFechaActual();
+
     // Meses y progreso del año
     this.cargarMeses();
-    //calcular pacientes
+
     this.cargarPacientes();
     this.cargarCuidadores();
     this.cargarAlertas();
@@ -338,6 +340,7 @@ export class DashboardComponent implements OnInit {
       this.mesActual.charAt(0).toUpperCase() +
       this.mesActual.slice(1);
   }
+
   /* =====================================================
      CARGAR MESES DEL AÑO
   ===================================================== */
@@ -529,37 +532,17 @@ export class DashboardComponent implements OnInit {
             usuario => usuario.id_rol === 5
           );
 
-
           // Total registrados
           this.totalCuidadores =
             cuidadores.length;
 
 
-
-          // Ingresos del mes actual
-          const fechaActual = new Date();
-
+          // Ingresos = cuidadores activos
           this.ingresosCuidadores =
-            cuidadores.filter(cuidador => {
-
-              if (!cuidador.fecha_ingreso) {
-                return false;
-              }
-
-
-              const fechaIngreso =
-                new Date(cuidador.fecha_ingreso);
-
-
-              return (
-                fechaIngreso.getMonth() === fechaActual.getMonth() &&
-                fechaIngreso.getFullYear() === fechaActual.getFullYear()
-              );
-
-            }).length;
-
-
-
+            cuidadores.filter(
+              cuidador => cuidador.estado === true
+            ).length;
+          this.cargarTurnos();
           this.cd.detectChanges();
 
         },
@@ -572,6 +555,71 @@ export class DashboardComponent implements OnInit {
             error
           );
 
+        }
+
+      });
+
+  }
+  private cargarTurnos(): void {
+
+    this.http.get<any[]>(
+      `${this.apiUrl}/asignacion_turno_usuario/`
+    )
+      .subscribe({
+
+        next: (turnos) => {
+
+          const fechaHoy = new Date()
+            .toISOString()
+            .split('T')[0];
+
+
+          const turnosHoy = turnos.filter(
+            turno =>
+              turno.fecha === fechaHoy &&
+              turno.estado === "Asignado"
+          );
+
+
+          const usuariosEnTurno =
+            new Set(
+              turnosHoy.map(
+                turno => turno.id_usuario
+              )
+            );
+
+
+          this.cuidadoresEnTurno =
+            usuariosEnTurno.size;
+
+
+          this.cuidadoresLibres =
+            Math.max(
+              this.ingresosCuidadores - this.cuidadoresEnTurno,
+              0
+            );
+
+          this.cd.detectChanges();
+
+
+          console.log(
+            "Gestión cuidadores:",
+            {
+              //turnos
+              fecha: fechaHoy,
+              enTurno: this.cuidadoresEnTurno,
+              libres: this.cuidadoresLibres,
+              activos: this.ingresosCuidadores
+            }
+          );
+
+        },
+
+        error: (error) => {
+          console.error(
+            "Error cargando turnos:",
+            error
+          );
         }
 
       });
