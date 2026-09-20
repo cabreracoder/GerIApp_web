@@ -99,10 +99,6 @@
 
       <span>Elementos del paciente</span>
 
-      <span class="contador">
-        {{ elementosPaciente.length }}
-      </span>
-
     </button>
 
 
@@ -114,10 +110,6 @@
 
       <span>Cuidados de enfermería</span>
 
-      <span class="contador">
-        {{ cantidadCuidados }}
-      </span>
-
     </button>
 
 
@@ -128,14 +120,6 @@
       (click)="cambiarSeccion('recomendaciones')">
 
       <span>Recomendaciones</span>
-
-      <span
-        class="contador importante"
-        *ngIf="cantidadRecomendaciones > 0">
-
-        {{ cantidadRecomendaciones }}
-
-      </span>
 
     </button>
 
@@ -681,10 +665,6 @@
                 colspan="7"
                 class="estado-vacio">
 
-                <div class="vacio-icono">
-                  📦
-                </div>
-
                 <h4>
                   No hay elementos registrados
                 </h4>
@@ -706,11 +686,6 @@
     </div>
 
   </section>
-
-
-  <!-- =========================================================
-       CUIDADOS DE ENFERMERÍA
-       ========================================================= -->
 
   <!-- ============================================================
      CUIDADOS DE ENFERMERÍA
@@ -928,10 +903,6 @@
           class="btn-primary"
           (click)="guardarCuidados()"
         >
-          <span class="material-symbols-outlined">
-            save
-          </span>
-
           {{ cuidados.id_cuidado > 0
               ? 'Actualizar cuidados'
               : 'Guardar cuidados' }}
@@ -960,14 +931,6 @@
         *ngIf="cargandoCuidados"
       >
 
-        <div class="vacio-icono">
-
-          <span class="material-symbols-outlined">
-            sync
-          </span>
-
-        </div>
-
         <h4>
           Cargando cuidados...
         </h4>
@@ -987,15 +950,6 @@
         class="registro-item"
         *ngIf="!cargandoCuidados && cuidados.id_cuidado > 0"
       >
-
-        <div class="registro-icono cuidado-icono">
-
-          <span class="material-symbols-outlined">
-            medical_services
-          </span>
-
-        </div>
-
 
         <div class="registro-contenido">
 
@@ -1188,14 +1142,6 @@
         "
       >
 
-        <div class="vacio-icono">
-
-          <span class="material-symbols-outlined">
-            medical_services
-          </span>
-
-        </div>
-
         <h4>
           No hay cuidados registrados
         </h4>
@@ -1204,20 +1150,6 @@
           Agregue los cuidados de enfermería necesarios para este paciente.
         </p>
 
-        <button
-          type="button"
-          class="btn-primary"
-          (click)="abrirFormularioCuidados()"
-        >
-
-          <span class="material-symbols-outlined">
-            add
-          </span>
-
-          Agregar cuidados
-
-        </button>
-
       </div>
 
     </div>
@@ -1225,11 +1157,6 @@
   </div>
 
 </section>
-
-
-  <!-- =========================================================
-       RECOMENDACIONES
-       ========================================================= -->
 
   <!-- ============================================================
      RECOMENDACIONES
@@ -1476,19 +1403,13 @@
     <div
       class="lista-registros"
       *ngIf="!mostrarFormularioRecomendaciones"
-    >
+     >
 
       <!-- CARGANDO -->
       <div
         class="estado-vacio"
         *ngIf="cargandoRecomendaciones"
       >
-
-        <div class="vacio-icono">
-          <span class="material-symbols-outlined">
-            sync
-          </span>
-        </div>
 
         <h4>Cargando recomendaciones...</h4>
 
@@ -1507,13 +1428,6 @@
           recomendaciones.id_recomendacion > 0
         "
       >
-
-        <div class="registro-icono">
-          <span class="material-symbols-outlined">
-            checklist
-          </span>
-        </div>
-
 
         <div class="registro-contenido">
 
@@ -1656,31 +1570,13 @@
           !cargandoRecomendaciones &&
           recomendaciones.id_recomendacion === 0
         "
-      >
-
-        <div class="vacio-icono">
-          <span class="material-symbols-outlined">
-            checklist
-          </span>
-        </div>
+         >
 
         <h4>No hay recomendaciones registradas</h4>
 
         <p>
           Agregue las recomendaciones necesarias para este paciente.
         </p>
-
-        <button
-          type="button"
-          class="btn-primary"
-          (click)="abrirFormularioRecomendaciones()"
-        >
-          <span class="material-symbols-outlined">
-            add
-          </span>
-
-          Agregar recomendaciones
-        </button>
 
       </div>
 
@@ -1689,11 +1585,6 @@
   </div>
 
 </section>
-
-
-  <!-- =========================================================
-       HISTORIA CLÍNICA
-       ========================================================= -->
 
   <!-- =========================================================
      HISTORIA CLÍNICA
@@ -1756,10 +1647,6 @@
       class="estado-carga"
       *ngIf="cargandoHistoria"
     >
-
-      <span class="material-symbols-outlined">
-        progress_activity
-      </span>
 
       <p>
         Cargando historia clínica...
@@ -2148,16 +2035,7 @@
         historiaClinica.id_historia_clinica === 0 &&
         !mostrarFormularioHistoria
       "
-    >
-
-      <div class="vacio-icono">
-
-        <span class="material-symbols-outlined">
-          clinical_notes
-        </span>
-
-      </div>
-
+     >
       <h4>
         No hay historia clínica registrada
       </h4>
@@ -2166,25 +2044,12 @@
         Este paciente todavía no tiene una historia clínica registrada.
       </p>
 
-      <button
-        type="button"
-        class="btn-primary"
-        (click)="abrirFormularioHistoria()"
-      >
-
-        <span class="material-symbols-outlined">
-          add
-        </span>
-
-        Registrar historia clínica
-
-      </button>
-
     </div>
 
   </div>
 
 </section>
+
   <!-- =========================================================
        BARRA FINAL
        ========================================================= -->
@@ -2203,16 +2068,6 @@
 
 
     <div class="acciones-finales">
-
-      <button
-        type="button"
-        class="btn-secundario"
-        (click)="guardarBorrador()">
-
-        Guardar borrador
-
-      </button>
-
 
       <button
         type="button"
