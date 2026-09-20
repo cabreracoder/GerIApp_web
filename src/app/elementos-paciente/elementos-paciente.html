@@ -285,9 +285,9 @@
     </label>
 
     <select
-      id="tipoInsumo"
-      [(ngModel)]="formularioElemento.id_tipo_insumo"
-      (change)="filtrarInsumosPorTipo()">
+       id="tipoInsumo" 
+       [(ngModel)]="formularioElemento.id_tipo_insumo" 
+       (ngModelChange)="filtrarInsumosPorTipo()">
 
       <option [ngValue]="null">
         Seleccione un tipo de insumo
@@ -623,6 +623,208 @@
 
 </div>
 
+
+<!-- =====================================================
+     BOTÓN AGREGAR INSUMO
+     ===================================================== -->
+
+<div
+  class="medicamento-agregar"
+  *ngIf="
+    tipoElemento === 'insumo' &&
+    !elementoEditando
+  ">
+
+  <button
+    type="button"
+    class="btn-secundario"
+    (click)="agregarInsumoPendiente()">
+
+    <span class="material-symbols-outlined">
+      add
+    </span>
+
+    Agregar insumo
+
+  </button>
+
+</div>
+
+
+<!-- =====================================================
+     INSUMOS PENDIENTES
+     ===================================================== -->
+
+<div
+  class="medicamentos-pendientes"
+  *ngIf="
+    tipoElemento === 'insumo' &&
+    !elementoEditando &&
+    insumosPendientes.length > 0
+  ">
+
+  <!-- ENCABEZADO -->
+
+  <div class="pendientes-header">
+
+    <div class="pendientes-titulo">
+
+      <div class="pendientes-icono">
+
+        <span class="material-symbols-outlined">
+          inventory_2
+        </span>
+
+      </div>
+
+      <div>
+
+        <h4>
+          Insumos pendientes
+        </h4>
+
+        <p>
+          Insumos agregados y pendientes de guardar.
+        </p>
+
+      </div>
+
+    </div>
+
+    <span class="pendientes-contador">
+
+      {{ insumosPendientes.length }}
+
+      {{
+        insumosPendientes.length === 1
+          ? 'insumo'
+          : 'insumos'
+      }}
+
+    </span>
+
+  </div>
+
+
+  <!-- LISTA -->
+
+  <div class="pendientes-lista">
+
+    <div
+      class="pendiente-item"
+      *ngFor="
+        let insumo of insumosPendientes;
+        let i = index
+      ">
+
+      <!-- ICONO -->
+
+      <div class="pendiente-icono">
+
+        <span class="material-symbols-outlined">
+          inventory_2
+        </span>
+
+      </div>
+
+
+      <!-- INFORMACIÓN -->
+
+      <div class="pendiente-info">
+
+        <!-- NOMBRE -->
+
+        <div class="pendiente-nombre">
+
+          <strong>
+
+            {{
+              obtenerNombreInsumoPendiente(
+                insumo.id_insumo
+              )
+            }}
+
+          </strong>
+
+          <span class="pendiente-numero">
+
+            #{{ i + 1 }}
+
+          </span>
+
+        </div>
+
+
+        <!-- DATOS -->
+
+        <div class="pendiente-detalles">
+
+          <span>
+
+            <strong>Cantidad:</strong>
+
+            {{ insumo.cantidad }}
+
+          </span>
+
+          <span class="detalle-separador">
+
+            •
+
+          </span>
+
+          <span>
+
+            <strong>Ingreso:</strong>
+
+            {{
+              insumo.fecha_ingreso
+                | date:'dd/MM/yyyy HH:mm'
+            }}
+
+          </span>
+
+        </div>
+
+
+        <!-- OBSERVACIONES -->
+
+        <div
+          class="pendiente-observaciones"
+          *ngIf="insumo.observaciones">
+
+          <span class="material-symbols-outlined">
+            notes
+          </span>
+
+          <span>
+            {{ insumo.observaciones }}
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- ELIMINAR -->
+
+      <button
+        type="button"
+        class="boton-eliminar-pendiente"
+        title="Quitar insumo"
+        (click)="eliminarInsumoPendiente(i)">
+
+        <span class="material-symbols-outlined">
+          delete
+        </span>
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
 
   <!-- =====================================================
        ACCIONES
