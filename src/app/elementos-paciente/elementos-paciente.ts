@@ -3,6 +3,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { forkJoin } from 'rxjs';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -136,6 +137,12 @@ export class ElementosPaciente implements OnInit {
     observaciones: '',
     estado: true
   };
+
+  // ============================================================
+  // MEDICAMENTOS PENDIENTES DE REGISTRO
+  // ============================================================
+
+    medicamentosPendientes: FormularioElemento[] = [];
 
   // ============================================================
   // CUIDADOS DE ENFERMERÍA
@@ -889,59 +896,63 @@ export class ElementosPaciente implements OnInit {
     return `${inicialNombre}${inicialApellido}`;
   }
 
-  // ============================================================
-  // REGISTRAR MEDICAMENTO
-  // ============================================================
+ // ============================================================
+ // REGISTRAR MEDICAMENTO
+ // ============================================================
 
   registrarMedicamento(): void {
 
-    this.tipoElemento =
-      'medicamento';
+  this.tipoElemento =
+    'medicamento';
 
-    this.mostrarMenuElementos =
-      false;
+  this.mostrarMenuElementos =
+    false;
 
-    this.elementoEditando =
-      null;
+  this.elementoEditando =
+    null;
 
-    this.formularioElemento = {
+  // Iniciamos una nueva lista de medicamentos
+  // solamente cuando no estamos agregando más
+  // medicamentos a una lista existente.
+  this.medicamentosPendientes = [];
 
-      id_medicamentos: null,
+  this.formularioElemento = {
 
-      id_insumo: null,
+    id_medicamentos: null,
 
-      id_tipo_insumo: null,
+    id_insumo: null,
 
-      cantidad: 1,
+    id_tipo_insumo: null,
 
-      fecha_ingreso:
-        this.obtenerFechaActual(),
+    cantidad: 1,
 
-      fecha_vencimiento: '',
+    fecha_ingreso:
+      this.obtenerFechaActual(),
 
-      observaciones: '',
+    fecha_vencimiento: '',
 
-      estado: true
+    observaciones: '',
 
-    };
+    estado: true
 
-    this.insumosFiltrados = [];
+  };
 
-    if (
-      this.medicamentos.length === 0
-    ) {
+  this.insumosFiltrados = [];
 
-      this.cargarMedicamentos();
+  if (
+    this.medicamentos.length === 0
+  ) {
 
-    }
-
-    this.mostrarFormularioElemento =
-      true;
-
-    this.cdr.detectChanges();
+    this.cargarMedicamentos();
 
   }
 
+  this.mostrarFormularioElemento =
+    true;
+
+  this.cdr.detectChanges();
+
+}
   // ============================================================
   // REGISTRAR INSUMO
   // ============================================================
@@ -1375,230 +1386,351 @@ export class ElementosPaciente implements OnInit {
     return 'Sin tipo';
   }
 
-  // ============================================================
-  // GUARDAR ELEMENTO
-  // ============================================================
+// ============================================================
+// AGREGAR MEDICAMENTO A LA LISTA TEMPORAL
+// ============================================================
 
-  guardarElemento(): void {
+agregarMedicamentoPendiente(): void {
+
+  if (
+    !this.formularioElemento.id_medicamentos
+  ) {
+
+    Swal.fire({
+      icon: 'warning',
+      title: 'Medicamento requerido',
+      text:
+        'Selecciona un medicamento antes de agregarlo.'
+    });
+
+    return;
+  }
+
+  const cantidad =
+    Number(
+      this.formularioElemento.cantidad
+    );
+
+  if (
+    !cantidad ||
+    cantidad <= 0
+  ) {
+
+    Swal.fire({
+      icon: 'warning',
+      title: 'Cantidad inválida',
+      text:
+        'La cantidad debe ser mayor que cero.'
+    });
+
+    return;
+  }
+
+  const medicamentoExistente =
+    this.medicamentosPendientes.some(
+      medicamento =>
+        Number(medicamento.id_medicamentos) ===
+        Number(this.formularioElemento.id_medicamentos)
+    );
+
+  if (medicamentoExistente) {
+
+    Swal.fire({
+      icon: 'warning',
+      title: 'Medicamento repetido',
+      text:
+        'Este medicamento ya fue agregado a la lista.'
+    });
+
+    return;
+  }
+
+  // Guardamos una copia del formulario actual.
+  // Así podemos limpiar el formulario y seleccionar
+  // otro medicamento sin perder el anterior.
+  this.medicamentosPendientes.push({
+    ...this.formularioElemento,
+    cantidad: cantidad
+  });
+
+  console.log(
+    'Medicamentos pendientes:',
+    this.medicamentosPendientes
+  );
+
+  // Limpiar solamente los datos del medicamento
+  // para permitir registrar otro.
+  this.formularioElemento = {
+
+    id_medicamentos: null,
+
+    id_insumo: null,
+
+    id_tipo_insumo: null,
+
+    cantidad: 1,
+
+    fecha_ingreso:
+      this.obtenerFechaActual(),
+
+    fecha_vencimiento: '',
+
+    observaciones: '',
+
+    estado: true
+
+  };
+
+  this.cdr.detectChanges();
+
+}
+
+// ============================================================
+// OBTENER NOMBRE DEL MEDICAMENTO PENDIENTE
+// ============================================================
+
+obtenerNombreMedicamentoPendiente(
+  id: number | null
+): string {
+
+  if (!id) {
+    return 'Medicamento no seleccionado';
+  }
+
+  const medicamento =
+    this.medicamentos.find(
+      item =>
+        Number(item.id_medicamentos) ===
+        Number(id)
+    );
+
+  return medicamento
+    ? medicamento.nombre
+    : 'Medicamento no encontrado';
+}
+
+// ============================================================
+// ELIMINAR MEDICAMENTO PENDIENTE
+// ============================================================
+
+eliminarMedicamentoPendiente(
+  index: number
+): void {
+
+  this.medicamentosPendientes.splice(
+    index,
+    1
+  );
+
+  this.cdr.detectChanges();
+
+}
+
+// ============================================================
+// GUARDAR ELEMENTO
+// ============================================================
+
+guardarElemento(): void {
+
+  if (
+    !this.idPaciente ||
+    this.idPaciente <= 0
+  ) {
+
+    Swal.fire({
+      icon: 'warning',
+      title: 'Paciente no identificado',
+      text:
+        'No fue posible identificar el paciente.'
+    });
+
+    return;
+  }
+
+  // ==========================================================
+  // ACTUALIZAR ELEMENTO EXISTENTE
+  // ==========================================================
+
+  if (this.elementoEditando) {
+
+    this.guardarElementoIndividual();
+
+    return;
+
+  }
+
+  // ==========================================================
+  // MEDICAMENTOS
+  // ==========================================================
+
+  if (
+    this.tipoElemento === 'medicamento'
+  ) {
+
+    // Si el usuario llenó el formulario pero todavía
+    // no agregó ese medicamento a la lista, lo agregamos
+    // automáticamente antes de guardar.
+    if (
+      this.formularioElemento.id_medicamentos
+    ) {
+
+      this.agregarMedicamentoPendiente();
+
+    }
 
     if (
-      !this.idPaciente ||
-      this.idPaciente <= 0
+      this.medicamentosPendientes.length === 0
     ) {
 
       Swal.fire({
         icon: 'warning',
-        title: 'Paciente no identificado',
+        title: 'Medicamentos requeridos',
         text:
-          'No fue posible identificar el paciente.'
+          'Agrega al menos un medicamento antes de guardar.'
       });
 
       return;
     }
 
-    const cantidad =
-      Number(
-        this.formularioElemento.cantidad
-      );
+    this.guardarMedicamentosPendientes();
 
-    if (
-      !cantidad ||
-      cantidad <= 0
-    ) {
+    return;
 
-      Swal.fire({
-        icon: 'warning',
-        title: 'Cantidad inválida',
-        text:
-          'La cantidad debe ser mayor que cero.'
-      });
+  }
 
-      return;
-    }
+  // ==========================================================
+  // INSUMO
+  // ==========================================================
 
-    if (
-      this.tipoElemento === 'medicamento' &&
-      !this.formularioElemento.id_medicamentos
-    ) {
+  this.guardarElementoIndividual();
 
-      Swal.fire({
-        icon: 'warning',
-        title: 'Medicamento requerido',
-        text:
-          'Selecciona un medicamento.'
-      });
+}
 
-      return;
-    }
+// ============================================================
+// GUARDAR UN ELEMENTO INDIVIDUAL
+// ============================================================
 
-    if (
-      this.tipoElemento === 'insumo' &&
-      !this.formularioElemento.id_tipo_insumo
-    ) {
+private guardarElementoIndividual(): void {
 
-      Swal.fire({
-        icon: 'warning',
-        title: 'Tipo de insumo requerido',
-        text:
-          'Selecciona un tipo de insumo.'
-      });
-
-      return;
-    }
-
-    if (
-      this.tipoElemento === 'insumo' &&
-      !this.formularioElemento.id_insumo
-    ) {
-
-      Swal.fire({
-        icon: 'warning',
-        title: 'Insumo requerido',
-        text:
-          'Selecciona un insumo.'
-      });
-
-      return;
-    }
-
-    const datos = {
-
-      cantidad:
-        cantidad,
-
-      fecha_ingreso:
-        this.formularioElemento.fecha_ingreso ||
-        this.obtenerFechaActual(),
-
-      fecha_vencimiento:
-        this.tipoElemento === 'medicamento'
-          ? (
-              this.formularioElemento
-                .fecha_vencimiento || null
-            )
-          : null,
-
-      observaciones:
-        this.formularioElemento
-          .observaciones
-          ?.trim() || null,
-
-      estado:
-        this.formularioElemento.estado,
-
-      id_paciente:
-        this.idPaciente,
-
-      id_medicamentos:
-        this.tipoElemento === 'medicamento'
-          ? Number(
-              this.formularioElemento
-                .id_medicamentos
-            )
-          : null,
-
-      id_insumo:
-        this.tipoElemento === 'insumo'
-          ? Number(
-              this.formularioElemento
-                .id_insumo
-            )
-          : null
-    };
-
-    console.log(
-      '======================================'
+  const cantidad =
+    Number(
+      this.formularioElemento.cantidad
     );
 
-    console.log(
-      'REGISTRO DE ELEMENTO'
-    );
+  if (
+    !cantidad ||
+    cantidad <= 0
+  ) {
 
-    console.log(
-      'Paciente:',
-      this.idPaciente
-    );
+    Swal.fire({
+      icon: 'warning',
+      title: 'Cantidad inválida',
+      text:
+        'La cantidad debe ser mayor que cero.'
+    });
 
-    console.log(
-      'Tipo:',
-      this.tipoElemento
-    );
+    return;
+  }
 
-    console.log(
-      'Datos enviados:',
-      datos
-    );
+  if (
+    this.tipoElemento === 'medicamento' &&
+    !this.formularioElemento.id_medicamentos
+  ) {
 
-    console.log(
-      '======================================'
-    );
+    Swal.fire({
+      icon: 'warning',
+      title: 'Medicamento requerido',
+      text:
+        'Selecciona un medicamento.'
+    });
 
-    // ==========================================================
-    // ACTUALIZAR
-    // ==========================================================
+    return;
+  }
 
-    if (this.elementoEditando) {
+  if (
+    this.tipoElemento === 'insumo' &&
+    !this.formularioElemento.id_tipo_insumo
+  ) {
 
-      this.http
-        .patch(
-          `${this.apiUrl}/elementos_paciente/${this.elementoEditando.id_elemento}/`,
-          datos
-        )
-        .subscribe({
+    Swal.fire({
+      icon: 'warning',
+      title: 'Tipo de insumo requerido',
+      text:
+        'Selecciona un tipo de insumo.'
+    });
 
-          next: (respuesta) => {
+    return;
+  }
 
-            console.log(
-              'Elemento actualizado:',
-              respuesta
-            );
+  if (
+    this.tipoElemento === 'insumo' &&
+    !this.formularioElemento.id_insumo
+  ) {
 
-            Swal.fire({
-              icon: 'success',
-              title: 'Elemento actualizado',
-              text:
-                'El elemento se actualizó correctamente.',
-              timer: 1800,
-              showConfirmButton: false
-            });
+    Swal.fire({
+      icon: 'warning',
+      title: 'Insumo requerido',
+      text:
+        'Selecciona un insumo.'
+    });
 
-            this.cerrarFormularioElemento();
+    return;
+  }
 
-            this.cargarElementosPaciente();
+  const datos = {
 
-          },
+    cantidad:
+      cantidad,
 
-          error: (error) => {
+    fecha_ingreso:
+      this.formularioElemento.fecha_ingreso ||
+      this.obtenerFechaActual(),
 
-            console.error(
-              'Error al actualizar elemento:',
-              error
-            );
+    fecha_vencimiento:
+      this.tipoElemento === 'medicamento'
+        ? (
+            this.formularioElemento
+              .fecha_vencimiento || null
+          )
+        : null,
 
-            console.error(
-              'Respuesta del servidor:',
-              error?.error
-            );
+    observaciones:
+      this.formularioElemento
+        .observaciones
+        ?.trim() || null,
 
-            this.mostrarErrorApi(
-              error,
-              'No fue posible actualizar el elemento.'
-            );
+    estado:
+      this.formularioElemento.estado,
 
-          }
+    id_paciente:
+      this.idPaciente,
 
-        });
+    id_medicamentos:
+      this.tipoElemento === 'medicamento'
+        ? Number(
+            this.formularioElemento
+              .id_medicamentos
+          )
+        : null,
 
-      return;
-    }
+    id_insumo:
+      this.tipoElemento === 'insumo'
+        ? Number(
+            this.formularioElemento
+              .id_insumo
+          )
+        : null
+  };
 
-    // ==========================================================
-    // CREAR
-    // ==========================================================
+  // ==========================================================
+  // ACTUALIZAR
+  // ==========================================================
+
+  if (this.elementoEditando) {
 
     this.http
-      .post(
-        `${this.apiUrl}/elementos_paciente/`,
+      .patch(
+        `${this.apiUrl}/elementos_paciente/${this.elementoEditando.id_elemento}/`,
         datos
       )
       .subscribe({
@@ -1606,24 +1738,15 @@ export class ElementosPaciente implements OnInit {
         next: (respuesta) => {
 
           console.log(
-            'Elemento creado:',
+            'Elemento actualizado:',
             respuesta
           );
 
-          const titulo =
-            this.tipoElemento === 'medicamento'
-              ? 'Medicamento registrado'
-              : 'Insumo registrado';
-
-          const texto =
-            this.tipoElemento === 'medicamento'
-              ? 'El medicamento se registró correctamente para el paciente.'
-              : 'El insumo se registró correctamente para el paciente.';
-
           Swal.fire({
             icon: 'success',
-            title: titulo,
-            text: texto,
+            title: 'Elemento actualizado',
+            text:
+              'El elemento se actualizó correctamente.',
             timer: 1800,
             showConfirmButton: false
           });
@@ -1637,7 +1760,7 @@ export class ElementosPaciente implements OnInit {
         error: (error) => {
 
           console.error(
-            'Error al registrar elemento:',
+            'Error al actualizar elemento:',
             error
           );
 
@@ -1648,14 +1771,169 @@ export class ElementosPaciente implements OnInit {
 
           this.mostrarErrorApi(
             error,
-            'No fue posible registrar el elemento.'
+            'No fue posible actualizar el elemento.'
           );
 
         }
 
       });
 
+    return;
+
   }
+
+  // ==========================================================
+  // CREAR INSUMO
+  // ==========================================================
+
+  this.http
+    .post(
+      `${this.apiUrl}/elementos_paciente/`,
+      datos
+    )
+    .subscribe({
+
+      next: (respuesta) => {
+
+        console.log(
+          'Elemento creado:',
+          respuesta
+        );
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Insumo registrado',
+          text:
+            'El insumo se registró correctamente para el paciente.',
+          timer: 1800,
+          showConfirmButton: false
+        });
+
+        this.cerrarFormularioElemento();
+
+        this.cargarElementosPaciente();
+
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Error al registrar elemento:',
+          error
+        );
+
+        console.error(
+          'Respuesta del servidor:',
+          error?.error
+        );
+
+        this.mostrarErrorApi(
+          error,
+          'No fue posible registrar el elemento.'
+        );
+
+      }
+
+    });
+
+}
+
+// ============================================================
+// GUARDAR TODOS LOS MEDICAMENTOS PENDIENTES
+// ============================================================
+
+private guardarMedicamentosPendientes(): void {
+
+  const solicitudes =
+    this.medicamentosPendientes.map(
+      medicamento => {
+
+        const datos = {
+
+          cantidad:
+            Number(
+              medicamento.cantidad
+            ),
+
+          fecha_ingreso:
+            medicamento.fecha_ingreso ||
+            this.obtenerFechaActual(),
+
+          fecha_vencimiento:
+            medicamento.fecha_vencimiento ||
+            null,
+
+          observaciones:
+            medicamento.observaciones
+              ?.trim() || null,
+
+          estado:
+            medicamento.estado,
+
+          id_paciente:
+            this.idPaciente,
+
+          id_medicamentos:
+            Number(
+              medicamento.id_medicamentos
+            ),
+
+          id_insumo:
+            null
+
+        };
+
+        return this.http.post(
+          `${this.apiUrl}/elementos_paciente/`,
+          datos
+        );
+
+      }
+    );
+
+  // Ejecutamos todos los POST.
+  // forkJoin espera a que todos terminen.
+forkJoin(solicitudes).subscribe({
+  next: (respuestas) => {
+    console.log(
+      'Medicamentos registrados:',
+      respuestas
+    );
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Medicamentos registrados',
+      text:
+        `Se registraron ${respuestas.length} medicamento(s) correctamente para el paciente.`,
+      timer: 2200,
+      showConfirmButton: false
+    });
+
+    this.medicamentosPendientes = [];
+
+    this.cerrarFormularioElemento();
+
+    this.cargarElementosPaciente();
+  },
+
+  error: (error) => {
+    console.error(
+      'Error al registrar medicamentos:',
+      error
+    );
+
+    console.error(
+      'Respuesta del servidor:',
+      error?.error
+    );
+
+    this.mostrarErrorApi(
+      error,
+      'No fue posible registrar todos los medicamentos.'
+    );
+  }
+});
+}
 
   // ============================================================
   // CERRAR FORMULARIO
@@ -1693,6 +1971,51 @@ export class ElementosPaciente implements OnInit {
     this.insumosFiltrados = [];
 
   }
+
+// ============================================================
+// CANCELAR REGISTRO DE ELEMENTO
+// ============================================================
+
+cancelarElemento(): void {
+
+  this.mostrarFormularioElemento =
+    false;
+
+  this.mostrarMenuElementos =
+    false;
+
+  this.elementoEditando =
+    null;
+
+  this.medicamentosPendientes =
+    [];
+
+  this.formularioElemento = {
+
+    id_medicamentos: null,
+
+    id_insumo: null,
+
+    id_tipo_insumo: null,
+
+    cantidad: 1,
+
+    fecha_ingreso:
+      this.obtenerFechaActual(),
+
+    fecha_vencimiento: '',
+
+    observaciones: '',
+
+    estado: true
+
+  };
+
+  this.insumosFiltrados = [];
+
+  this.cdr.detectChanges();
+}
+
 
   // ============================================================
   // ELIMINAR ELEMENTO

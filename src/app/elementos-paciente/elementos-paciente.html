@@ -206,242 +206,478 @@
 
   <!-- =====================================================
        FORMULARIO DE ELEMENTO
+    ===================================================== -->
+
+<div
+  class="formulario-registro"
+  *ngIf="mostrarFormularioElemento">
+
+  <div class="formulario-titulo">
+
+    <div>
+      <h3>
+        {{
+          elementoEditando
+            ? 'Editar elemento'
+            : tipoElemento === 'medicamento'
+              ? 'Registrar medicamentos'
+              : 'Registrar insumo'
+        }}
+      </h3>
+
+      <p>
+        {{
+          elementoEditando
+            ? 'Actualice la información del elemento asociado al paciente.'
+            : tipoElemento === 'medicamento'
+              ? 'Agregue uno o varios medicamentos antes de guardar el registro.'
+              : 'Complete la información del insumo asociado al paciente.'
+        }}
+      </p>
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       MEDICAMENTO
        ===================================================== -->
 
   <div
-    class="formulario-registro"
-    *ngIf="mostrarFormularioElemento">
+    class="campo"
+    *ngIf="tipoElemento === 'medicamento'">
 
-    <div class="formulario-titulo">
+    <label for="medicamento">
+      Medicamento
+    </label>
+
+    <select
+      id="medicamento"
+      [(ngModel)]="formularioElemento.id_medicamentos">
+
+      <option [ngValue]="null">
+        Seleccione un medicamento
+      </option>
+
+      <option
+        *ngFor="let medicamento of medicamentos"
+        [ngValue]="medicamento.id_medicamentos">
+
+        {{ medicamento.nombre }}
+
+      </option>
+
+    </select>
+
+  </div>
+
+
+  <!-- =====================================================
+       TIPO DE INSUMO
+       ===================================================== -->
+
+  <div
+    class="campo"
+    *ngIf="tipoElemento === 'insumo'">
+
+    <label for="tipoInsumo">
+      Tipo de insumo
+    </label>
+
+    <select
+      id="tipoInsumo"
+      [(ngModel)]="formularioElemento.id_tipo_insumo"
+      (change)="filtrarInsumosPorTipo()">
+
+      <option [ngValue]="null">
+        Seleccione un tipo de insumo
+      </option>
+
+      <option
+        *ngFor="let tipo of tiposInsumo"
+        [ngValue]="tipo.id_tipo_insumo">
+
+        {{ tipo.nombre }}
+
+      </option>
+
+    </select>
+
+  </div>
+
+
+  <!-- =====================================================
+       INSUMO
+       ===================================================== -->
+
+  <div
+    class="campo"
+    *ngIf="tipoElemento === 'insumo'">
+
+    <label for="insumo">
+      Insumo
+    </label>
+
+    <select
+      id="insumo"
+      [(ngModel)]="formularioElemento.id_insumo">
+
+      <option [ngValue]="null">
+        Seleccione un insumo
+      </option>
+
+      <option
+        *ngFor="let insumo of insumosFiltrados"
+        [ngValue]="insumo.id_insumo">
+
+        {{ insumo.nombre }}
+
+      </option>
+
+    </select>
+
+  </div>
+
+
+  <!-- =====================================================
+       CANTIDAD
+       ===================================================== -->
+
+  <div class="campo">
+
+    <label for="cantidad">
+      Cantidad
+    </label>
+
+    <input
+      id="cantidad"
+      type="number"
+      min="1"
+      [(ngModel)]="formularioElemento.cantidad"
+      placeholder="Ingrese la cantidad">
+
+  </div>
+
+
+  <!-- =====================================================
+       FECHA INGRESO
+       ===================================================== -->
+
+  <div class="campo">
+
+    <label for="fechaIngreso">
+      Fecha de ingreso
+    </label>
+
+    <input
+      id="fechaIngreso"
+      type="datetime-local"
+      [(ngModel)]="formularioElemento.fecha_ingreso">
+
+  </div>
+
+
+  <!-- =====================================================
+       FECHA VENCIMIENTO
+       ===================================================== -->
+
+  <div
+    class="campo"
+    *ngIf="tipoElemento === 'medicamento'">
+
+    <label for="fechaVencimiento">
+      Fecha de vencimiento
+    </label>
+
+    <input
+      id="fechaVencimiento"
+      type="date"
+      [(ngModel)]="formularioElemento.fecha_vencimiento">
+
+  </div>
+
+
+  <!-- =====================================================
+       OBSERVACIONES
+       ===================================================== -->
+
+  <div class="campo">
+
+    <label for="observaciones">
+      Observaciones
+    </label>
+
+    <textarea
+      id="observaciones"
+      rows="4"
+      [(ngModel)]="formularioElemento.observaciones"
+      placeholder="Ingrese observaciones sobre el elemento..."></textarea>
+
+  </div>
+
+
+  <!-- =====================================================
+       ESTADO
+       ===================================================== -->
+
+  <div class="campo campo-estado">
+
+    <label>
+
+      <input
+        type="checkbox"
+        [(ngModel)]="formularioElemento.estado">
+
+      Elemento activo
+
+    </label>
+
+  </div>
+
+
+  <!-- =====================================================
+       BOTÓN AGREGAR MEDICAMENTO
+       ===================================================== -->
+
+  <div
+    class="medicamento-agregar"
+    *ngIf="
+      tipoElemento === 'medicamento' &&
+      !elementoEditando
+    ">
+
+    <button
+      type="button"
+      class="btn-secundario"
+      (click)="agregarMedicamentoPendiente()">
+
+      <span class="material-symbols-outlined">
+        add
+      </span>
+
+      Agregar medicamento
+
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       MEDICAMENTOS PENDIENTES
+       ===================================================== -->
+
+<div
+  class="medicamentos-pendientes"
+  *ngIf="
+    tipoElemento === 'medicamento' &&
+    !elementoEditando &&
+    medicamentosPendientes.length > 0
+  "
+>
+
+  <!-- ENCABEZADO -->
+  <div class="pendientes-header">
+
+    <div class="pendientes-titulo">
+
+      <div class="pendientes-icono">
+        <span class="material-symbols-outlined">
+          medication
+        </span>
+      </div>
 
       <div>
-        <h3>
-          {{
-            elementoEditando
-              ? 'Editar elemento'
-              : 'Registrar ' + tipoElemento
-          }}
-        </h3>
+        <h4>Medicamentos pendientes</h4>
 
         <p>
-          Complete la información del
-          {{
-            tipoElemento === 'medicamento'
-              ? 'medicamento'
-              : 'insumo'
-          }}
-          asociado al paciente.
+          Medicamentos agregados y pendientes de guardar.
         </p>
       </div>
 
     </div>
 
+    <span class="pendientes-contador">
+      {{ medicamentosPendientes.length }}
+      {{
+        medicamentosPendientes.length === 1
+          ? 'medicamento'
+          : 'medicamentos'
+      }}
+    </span>
 
-    <!-- MEDICAMENTO -->
+  </div>
 
-    <div
-      class="campo"
-      *ngIf="tipoElemento === 'medicamento'">
-
-      <label for="medicamento">
-        Medicamento
-      </label>
-
-      <select
-        id="medicamento"
-        [(ngModel)]="formularioElemento.id_medicamentos">
-
-        <option [ngValue]="null">
-          Seleccione un medicamento
-        </option>
-
-        <option
-          *ngFor="let medicamento of medicamentos"
-          [ngValue]="medicamento.id_medicamentos">
-
-          {{ medicamento.nombre }}
-
-        </option>
-
-      </select>
-
-    </div>
-
-
-    <!-- TIPO DE INSUMO -->
+  <!-- LISTA -->
+  <div class="pendientes-lista">
 
     <div
-      class="campo"
-      *ngIf="tipoElemento === 'insumo'">
+      class="pendiente-item"
+      *ngFor="
+        let medicamento of medicamentosPendientes;
+        let i = index
+      "
+    >
 
-      <label for="tipoInsumo">
-        Tipo de insumo
-      </label>
+      <!-- ICONO -->
+      <div class="pendiente-icono">
+        <span class="material-symbols-outlined">
+          medication
+        </span>
+      </div>
 
-      <select
-        id="tipoInsumo"
-        [(ngModel)]="formularioElemento.id_tipo_insumo"
-        (change)="filtrarInsumosPorTipo()">
+      <!-- INFORMACIÓN -->
+      <div class="pendiente-info">
 
-        <option [ngValue]="null">
-          Seleccione un tipo de insumo
-        </option>
+        <!-- NOMBRE -->
+        <div class="pendiente-nombre">
 
-        <option
-          *ngFor="let tipo of tiposInsumo"
-          [ngValue]="tipo.id_tipo_insumo">
+          <strong>
+            {{
+              obtenerNombreMedicamentoPendiente(
+                medicamento.id_medicamentos
+              )
+            }}
+          </strong>
 
-          {{ tipo.nombre }}
+          <span class="pendiente-numero">
+            #{{ i + 1 }}
+          </span>
 
-        </option>
+        </div>
 
-      </select>
+        <!-- DATOS -->
+        <div class="pendiente-detalles">
 
-    </div>
+          <span>
+            <strong>Cantidad:</strong>
+            {{ medicamento.cantidad }}
+          </span>
 
+          <span class="detalle-separador">
+            •
+          </span>
 
-    <!-- INSUMO -->
+          <span>
+            <strong>Ingreso:</strong>
+            {{
+              medicamento.fecha_ingreso
+                | date:'dd/MM/yyyy HH:mm'
+            }}
+          </span>
 
-    <div
-      class="campo"
-      *ngIf="tipoElemento === 'insumo'">
+          <ng-container
+            *ngIf="medicamento.fecha_vencimiento"
+          >
 
-      <label for="insumo">
-        Insumo
-      </label>
+            <span class="detalle-separador">
+              •
+            </span>
 
-      <select
-        id="insumo"
-        [(ngModel)]="formularioElemento.id_insumo">
+            <span>
+              <strong>Vencimiento:</strong>
+              {{
+                medicamento.fecha_vencimiento
+                  | date:'dd/MM/yyyy'
+              }}
+            </span>
 
-        <option [ngValue]="null">
-          Seleccione un insumo
-        </option>
+          </ng-container>
 
-        <option
-          *ngFor="let insumo of insumosFiltrados"
-          [ngValue]="insumo.id_insumo">
+        </div>
 
-          {{ insumo.nombre }}
+        <!-- OBSERVACIONES -->
+        <div
+          class="pendiente-observaciones"
+          *ngIf="medicamento.observaciones"
+        >
 
-        </option>
+          <span class="material-symbols-outlined">
+            notes
+          </span>
 
-      </select>
+          <span>
+            {{ medicamento.observaciones }}
+          </span>
 
-    </div>
+        </div>
 
+      </div>
 
-    <!-- CANTIDAD -->
-
-    <div class="campo">
-
-      <label for="cantidad">
-        Cantidad
-      </label>
-
-      <input
-        id="cantidad"
-        type="number"
-        min="1"
-        [(ngModel)]="formularioElemento.cantidad"
-        placeholder="Ingrese la cantidad">
-
-    </div>
-
-
-    <!-- FECHA INGRESO -->
-
-    <div class="campo">
-
-      <label for="fechaIngreso">
-        Fecha de ingreso
-      </label>
-
-      <input
-        id="fechaIngreso"
-        type="datetime-local"
-        [(ngModel)]="formularioElemento.fecha_ingreso">
-
-    </div>
-
-
-    <!-- FECHA VENCIMIENTO -->
-
-    <div
-      class="campo"
-      *ngIf="tipoElemento === 'medicamento'">
-
-      <label for="fechaVencimiento">
-        Fecha de vencimiento
-      </label>
-
-      <input
-        id="fechaVencimiento"
-        type="date"
-        [(ngModel)]="formularioElemento.fecha_vencimiento">
-
-    </div>
-
-
-    <!-- OBSERVACIONES -->
-
-    <div class="campo">
-
-      <label for="observaciones">
-        Observaciones
-      </label>
-
-      <textarea
-        id="observaciones"
-        rows="4"
-        [(ngModel)]="formularioElemento.observaciones"
-        placeholder="Ingrese observaciones sobre el elemento..."></textarea>
-
-    </div>
-
-
-    <!-- ESTADO -->
-
-    <div class="campo campo-estado">
-
-      <label>
-        <input
-          type="checkbox"
-          [(ngModel)]="formularioElemento.estado">
-
-        Elemento activo
-      </label>
-
-    </div>
-
-
-    <!-- ACCIONES -->
-
-    <div class="formulario-acciones">
-
+      <!-- ELIMINAR -->
       <button
         type="button"
-        class="btn-secundario"
-        (click)="cancelarElemento()">
-        Cancelar
-      </button>
+        class="boton-eliminar-pendiente"
+        title="Quitar medicamento"
+        (click)="eliminarMedicamentoPendiente(i)"
+      >
 
-      <button
-        type="button"
-        class="btn-primary"
-        (click)="guardarElemento()">
-
-        {{
-          elementoEditando
-            ? 'Actualizar elemento'
-            : 'Guardar ' + tipoElemento
-        }}
+        <span class="material-symbols-outlined">
+          delete
+        </span>
 
       </button>
 
     </div>
 
   </div>
+
+</div>
+
+
+  <!-- =====================================================
+       ACCIONES
+       ===================================================== -->
+
+  <div class="formulario-acciones">
+
+    <button
+      type="button"
+      class="btn-secundario"
+      (click)="cancelarElemento()">
+
+      Cancelar
+
+    </button>
+
+
+    <!-- GUARDAR INSUMO / ACTUALIZAR -->
+
+    <button
+      type="button"
+      class="btn-primary"
+      (click)="guardarElemento()"
+      *ngIf="
+        tipoElemento === 'insumo' ||
+        elementoEditando
+      ">
+
+      {{
+        elementoEditando
+          ? 'Actualizar elemento'
+          : 'Guardar insumo'
+      }}
+
+    </button>
+
+
+    <!-- GUARDAR MEDICAMENTOS -->
+
+    <button
+      type="button"
+      class="btn-primary"
+      (click)="guardarElemento()"
+      *ngIf="
+        tipoElemento === 'medicamento' &&
+        !elementoEditando
+      ">
+
+      Guardar medicamentos
+
+    </button>
+
+  </div>
+
+</div>
 
 
   <!-- =====================================================

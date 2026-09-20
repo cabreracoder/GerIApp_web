@@ -1046,3 +1046,291 @@ width: 100%;
 flex-shrink: 0;
 }
 }
+
+/* =========================================================
+   MEDICAMENTOS PENDIENTES DE REGISTRO
+   ========================================================= */
+
+.medicamento-agregar {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 2px;
+  margin-bottom: 20px;
+}
+
+.medicamento-agregar button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.medicamento-agregar .material-symbols-outlined {
+  font-size: 18px;
+}
+
+
+/* =========================================================
+   CONTENEDOR DE MEDICAMENTOS PENDIENTES
+   ========================================================= */
+
+.medicamentos-pendientes {
+  width: 100%;
+  margin-top: 4px;
+  margin-bottom: 20px;
+  padding: 18px;
+  background: #ffffff;
+  border: 1px solid #ced4da;
+  border-radius: 12px;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+   ========================================================= */
+
+.pendientes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 15px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.pendientes-titulo {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.pendientes-icono {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background: #edf2ff;
+  color: #3b5bdb;
+}
+
+.pendientes-icono .material-symbols-outlined {
+  font-size: 20px;
+}
+
+.pendientes-titulo h4 {
+  margin: 0;
+  color: #212529;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.pendientes-titulo p {
+  margin: 4px 0 0;
+  color: #6c757d;
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   CONTADOR
+   ========================================================= */
+
+.pendientes-contador {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 85px;
+  padding: 7px 11px;
+  border: 1px solid #dbe4ff;
+  border-radius: 8px;
+  background: #edf2ff;
+  color: #3b5bdb;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   LISTA
+   ========================================================= */
+
+.pendientes-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+
+/* =========================================================
+   MEDICAMENTO PENDIENTE
+   ========================================================= */
+
+.pendiente-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  padding: 13px;
+  background: #f8fafc;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.pendiente-item:hover {
+  background: #ffffff;
+  border-color: #ced4da;
+  box-shadow: 0 3px 10px rgba(33, 37, 41, 0.05);
+}
+
+
+/* =========================================================
+   ICONO
+   ========================================================= */
+
+.pendiente-icono {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  border-radius: 8px;
+  background: #edf2ff;
+  color: #3b5bdb;
+}
+
+.pendiente-icono .material-symbols-outlined {
+  font-size: 19px;
+}
+
+
+/* =========================================================
+   INFORMACIÓN
+   ========================================================= */
+
+.pendiente-info {
+  flex: 1;
+  min-width: 0;
+}
+
+
+/* =========================================================
+   NOMBRE DEL MEDICAMENTO
+   ========================================================= */
+
+.pendiente-nombre {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.pendiente-nombre strong {
+  color: #212529;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.pendiente-numero {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 7px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #6c757d;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   DETALLES
+   ========================================================= */
+
+.pendiente-detalles {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  color: #6c757d;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.pendiente-detalles strong {
+  color: #495057;
+  font-weight: 700;
+}
+
+.detalle-separador {
+  color: #adb5bd;
+}
+
+
+/* =========================================================
+   OBSERVACIONES
+   ========================================================= */
+
+.pendiente-observaciones {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 9px;
+  padding-top: 8px;
+  border-top: 1px solid #e9ecef;
+  color: #6c757d;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.pendiente-observaciones .material-symbols-outlined {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: #6c757d;
+  font-size: 16px;
+}
+
+
+/* =========================================================
+   BOTÓN ELIMINAR
+   ========================================================= */
+
+.boton-eliminar-pendiente {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  flex: 0 0 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid #f3c2c2;
+  border-radius: 8px;
+  background: #fff0f0;
+  color: #dc3545;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.boton-eliminar-pendiente:hover {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: #ffffff;
+}
+
+.boton-eliminar-pendiente .material-symbols-outlined {
+  font-size: 17px;
+}
