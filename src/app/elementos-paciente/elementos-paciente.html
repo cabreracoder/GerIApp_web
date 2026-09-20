@@ -5,85 +5,73 @@
        ========================================================= -->
 
   <section class="paciente-header">
-
     <div class="paciente-info">
 
-      <div class="paciente-avatar">
-        {{ obtenerIniciales() }}
-      </div>
+  <div class="paciente-avatar">
+    {{ obtenerIniciales() }}
+  </div>
 
-      <div class="paciente-datos">
+  <div class="paciente-datos">
 
-        <div class="paciente-nombre-container">
+    <div class="paciente-nombre-container">
+      <h2>
+        {{ paciente.nombre }} {{ paciente.apellido }}
+      </h2>
 
-          <h2>
-            {{ paciente.nombre }} {{ paciente.apellido }}
-          </h2>
+      <span
+        class="estado-paciente"
+        [class.inactivo]="!paciente.estado">
+        {{ paciente.estado ? 'Activo' : 'Inactivo' }}
+      </span>
+    </div>
 
-          <span
-            class="estado-paciente"
-            [class.inactivo]="!paciente.estado">
+    <div class="paciente-detalles">
 
-            {{ paciente.estado ? 'Activo' : 'Inactivo' }}
+      <span>
+        <strong>Documento:</strong>
+        {{ paciente.numero_documento || 'No registrado' }}
+      </span>
 
-          </span>
+      <span class="separador">•</span>
 
-        </div>
+      <span>
+        <strong>Edad:</strong>
+        {{ obtenerEdad() ?? 'No registrada' }}
+      </span>
 
-        <div class="paciente-detalles">
+      <span class="separador">•</span>
 
-          <span>
-            <strong>Documento:</strong>
-            {{ paciente.numero_documento || 'No registrado' }}
-          </span>
-
-          <span class="separador">•</span>
-
-          <span>
-            <strong>Edad:</strong>
-            {{ obtenerEdad() ?? 'No registrada' }}
-          </span>
-
-          <span class="separador">•</span>
-
-          <span>
-            <strong>Responsable:</strong>
-
-            {{
-              familiarResponsable
-                ? (familiarResponsable.nombres || '') + ' ' + (familiarResponsable.apellidos || '')
-                : 'No registrado'
-            }}
-
-          </span>
-
-        </div>
-
-      </div>
+      <span>
+        <strong>Responsable:</strong>
+        {{
+          familiarResponsable
+            ? (familiarResponsable.nombres || '') + ' ' + (familiarResponsable.apellidos || '')
+            : 'No registrado'
+        }}
+      </span>
 
     </div>
 
-  </section>
+  </div>
 
+</div>
+
+  </section>
 
   <!-- =========================================================
        TITULO
        ========================================================= -->
 
   <section class="titulo-seccion">
-
     <div>
-
       <h1>Terminar registro</h1>
 
-      <p>
-        Complete la información asistencial y los elementos asociados al paciente.
-      </p>
-
-    </div>
+  <p>
+    Complete la información asistencial y los elementos asociados al paciente.
+  </p>
+</div>
 
   </section>
-
 
   <!-- =========================================================
        PESTAÑAS
@@ -91,51 +79,39 @@
 
   <nav class="tabs">
 
-    <button
-      type="button"
-      class="tab"
-      [class.active]="seccionActiva === 'elementos'"
-      (click)="cambiarSeccion('elementos')">
+<button
+  type="button"
+  class="tab"
+  [class.active]="seccionActiva === 'elementos'"
+  (click)="cambiarSeccion('elementos')">
+  <span>Elementos del paciente</span>
+</button>
 
-      <span>Elementos del paciente</span>
+<button
+  type="button"
+  class="tab"
+  [class.active]="seccionActiva === 'cuidados'"
+  (click)="cambiarSeccion('cuidados')">
+  <span>Cuidados de enfermería</span>
+</button>
 
-    </button>
+<button
+  type="button"
+  class="tab"
+  [class.active]="seccionActiva === 'recomendaciones'"
+  (click)="cambiarSeccion('recomendaciones')">
+  <span>Recomendaciones</span>
+</button>
 
-
-    <button
-      type="button"
-      class="tab"
-      [class.active]="seccionActiva === 'cuidados'"
-      (click)="cambiarSeccion('cuidados')">
-
-      <span>Cuidados de enfermería</span>
-
-    </button>
-
-
-    <button
-      type="button"
-      class="tab"
-      [class.active]="seccionActiva === 'recomendaciones'"
-      (click)="cambiarSeccion('recomendaciones')">
-
-      <span>Recomendaciones</span>
-
-    </button>
-
-
-    <button
-      type="button"
-      class="tab"
-      [class.active]="seccionActiva === 'historia'"
-      (click)="cambiarSeccion('historia')">
-
-      <span>Historia clínica</span>
-
-    </button>
+<button
+  type="button"
+  class="tab"
+  [class.active]="seccionActiva === 'historia'"
+  (click)="cambiarSeccion('historia')">
+  <span>Historia clínica</span>
+</button>
 
   </nav>
-
 
   <!-- =========================================================
        ELEMENTOS DEL PACIENTE
@@ -145,1719 +121,776 @@
     class="contenido-seccion"
     *ngIf="seccionActiva === 'elementos'">
 
-    <div class="card">
+<div class="card">
 
-      <!-- =====================================================
-           ENCABEZADO DE ELEMENTOS
-           ===================================================== -->
+  <div class="card-header">
 
-      <div class="card-header">
+    <div>
+      <h3>Elementos registrados</h3>
 
-        <div>
+      <p>
+        Medicamentos e insumos asociados al paciente.
+      </p>
+    </div>
 
-          <h3>Elementos registrados</h3>
+    <div class="acciones-header">
 
-          <p>
-            Medicamentos e insumos asociados al paciente.
-          </p>
+      <span class="cantidad">
+        {{ elementosPaciente.length }}
+        {{
+          elementosPaciente.length === 1
+            ? 'elemento'
+            : 'elementos'
+        }}
+      </span>
+
+      <div class="dropdown-container">
+
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="mostrarMenuElementos = !mostrarMenuElementos">
+
+          <span class="icono">+</span>
+
+          Registrar elemento
+
+          <span class="flecha">
+            {{ mostrarMenuElementos ? '▲' : '▼' }}
+          </span>
+
+        </button>
+
+        <div
+          class="dropdown-menu"
+          *ngIf="mostrarMenuElementos">
+
+          <button
+            type="button"
+            (click)="registrarMedicamento()">
+
+            <span
+              class="opcion-icono medicamento material-symbols-outlined">
+              medication
+            </span>
+
+            <span>
+              Registrar medicamento
+            </span>
+
+          </button>
+
+          <button
+            type="button"
+            (click)="registrarInsumo()">
+
+            <span
+              class="opcion-icono insumo material-symbols-outlined">
+              inventory_2
+            </span>
+
+            <span>
+              Registrar insumo
+            </span>
+
+          </button>
 
         </div>
 
+      </div>
 
-        <div class="acciones-header">
+    </div>
 
-          <span class="cantidad">
+  </div>
 
-            {{ elementosPaciente.length }}
 
+  <!-- =====================================================
+       FORMULARIO DE ELEMENTO
+       ===================================================== -->
+
+  <div
+    class="formulario-registro"
+    *ngIf="mostrarFormularioElemento">
+
+    <div class="formulario-titulo">
+
+      <div>
+        <h3>
+          {{
+            elementoEditando
+              ? 'Editar elemento'
+              : 'Registrar ' + tipoElemento
+          }}
+        </h3>
+
+        <p>
+          Complete la información del
+          {{
+            tipoElemento === 'medicamento'
+              ? 'medicamento'
+              : 'insumo'
+          }}
+          asociado al paciente.
+        </p>
+      </div>
+
+    </div>
+
+
+    <!-- MEDICAMENTO -->
+
+    <div
+      class="campo"
+      *ngIf="tipoElemento === 'medicamento'">
+
+      <label for="medicamento">
+        Medicamento
+      </label>
+
+      <select
+        id="medicamento"
+        [(ngModel)]="formularioElemento.id_medicamentos">
+
+        <option [ngValue]="null">
+          Seleccione un medicamento
+        </option>
+
+        <option
+          *ngFor="let medicamento of medicamentos"
+          [ngValue]="medicamento.id_medicamentos">
+
+          {{ medicamento.nombre }}
+
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- TIPO DE INSUMO -->
+
+    <div
+      class="campo"
+      *ngIf="tipoElemento === 'insumo'">
+
+      <label for="tipoInsumo">
+        Tipo de insumo
+      </label>
+
+      <select
+        id="tipoInsumo"
+        [(ngModel)]="formularioElemento.id_tipo_insumo"
+        (change)="filtrarInsumosPorTipo()">
+
+        <option [ngValue]="null">
+          Seleccione un tipo de insumo
+        </option>
+
+        <option
+          *ngFor="let tipo of tiposInsumo"
+          [ngValue]="tipo.id_tipo_insumo">
+
+          {{ tipo.nombre }}
+
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- INSUMO -->
+
+    <div
+      class="campo"
+      *ngIf="tipoElemento === 'insumo'">
+
+      <label for="insumo">
+        Insumo
+      </label>
+
+      <select
+        id="insumo"
+        [(ngModel)]="formularioElemento.id_insumo">
+
+        <option [ngValue]="null">
+          Seleccione un insumo
+        </option>
+
+        <option
+          *ngFor="let insumo of insumosFiltrados"
+          [ngValue]="insumo.id_insumo">
+
+          {{ insumo.nombre }}
+
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- CANTIDAD -->
+
+    <div class="campo">
+
+      <label for="cantidad">
+        Cantidad
+      </label>
+
+      <input
+        id="cantidad"
+        type="number"
+        min="1"
+        [(ngModel)]="formularioElemento.cantidad"
+        placeholder="Ingrese la cantidad">
+
+    </div>
+
+
+    <!-- FECHA INGRESO -->
+
+    <div class="campo">
+
+      <label for="fechaIngreso">
+        Fecha de ingreso
+      </label>
+
+      <input
+        id="fechaIngreso"
+        type="datetime-local"
+        [(ngModel)]="formularioElemento.fecha_ingreso">
+
+    </div>
+
+
+    <!-- FECHA VENCIMIENTO -->
+
+    <div
+      class="campo"
+      *ngIf="tipoElemento === 'medicamento'">
+
+      <label for="fechaVencimiento">
+        Fecha de vencimiento
+      </label>
+
+      <input
+        id="fechaVencimiento"
+        type="date"
+        [(ngModel)]="formularioElemento.fecha_vencimiento">
+
+    </div>
+
+
+    <!-- OBSERVACIONES -->
+
+    <div class="campo">
+
+      <label for="observaciones">
+        Observaciones
+      </label>
+
+      <textarea
+        id="observaciones"
+        rows="4"
+        [(ngModel)]="formularioElemento.observaciones"
+        placeholder="Ingrese observaciones sobre el elemento..."></textarea>
+
+    </div>
+
+
+    <!-- ESTADO -->
+
+    <div class="campo campo-estado">
+
+      <label>
+        <input
+          type="checkbox"
+          [(ngModel)]="formularioElemento.estado">
+
+        Elemento activo
+      </label>
+
+    </div>
+
+
+    <!-- ACCIONES -->
+
+    <div class="formulario-acciones">
+
+      <button
+        type="button"
+        class="btn-secundario"
+        (click)="cancelarElemento()">
+        Cancelar
+      </button>
+
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="guardarElemento()">
+
+        {{
+          elementoEditando
+            ? 'Actualizar elemento'
+            : 'Guardar ' + tipoElemento
+        }}
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       TABLA DE ELEMENTOS
+       ===================================================== -->
+
+  <div class="tabla-container">
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>Tipo</th>
+          <th>Elemento</th>
+          <th>Cantidad</th>
+          <th>Fecha ingreso</th>
+          <th>Vencimiento</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr
+          *ngFor="let elemento of elementosPaciente">
+
+          <td>
+            <span
+              class="tipo-elemento"
+              [class.medicamento]="obtenerTipoElemento(elemento) === 'Medicamento'"
+              [class.insumo]="obtenerTipoElemento(elemento) === 'Insumo'">
+
+              {{ obtenerTipoElemento(elemento) }}
+
+            </span>
+          </td>
+
+          <td>
+            <strong class="elemento-nombre">
+              {{ obtenerNombreElemento(elemento) }}
+            </strong>
+          </td>
+
+          <td>
+            {{ elemento.cantidad }}
+          </td>
+
+          <td>
             {{
-              elementosPaciente.length === 1
-                ? 'elemento'
-                : 'elementos'
+              elemento.fecha_ingreso
+                | date:'dd/MM/yyyy HH:mm'
             }}
+          </td>
 
-          </span>
+          <td>
+            {{
+              elemento.fecha_vencimiento
+                ? (elemento.fecha_vencimiento | date:'dd/MM/yyyy')
+                : 'No aplica'
+            }}
+          </td>
 
+          <td>
+            <span
+              class="estado-elemento"
+              [class.inactivo]="!elemento.estado">
 
-          <div class="dropdown-container">
+              {{
+                elemento.estado
+                  ? 'Activo'
+                  : 'Inactivo'
+              }}
 
-            <button
-              type="button"
-              class="btn-primary"
-              (click)="mostrarMenuElementos = !mostrarMenuElementos">
+            </span>
+          </td>
 
-              <span class="icono">+</span>
+          <!-- ACCIONES HORIZONTALES -->
 
-              Registrar elemento
+          <td class="celda-acciones">
 
-              <span class="flecha">
-                {{ mostrarMenuElementos ? '▲' : '▼' }}
-              </span>
-
-            </button>
-
-
-            <!-- MENÚ -->
-
-            <div
-              class="dropdown-menu"
-              *ngIf="mostrarMenuElementos">
+            <div class="contenedor-acciones">
 
               <button
                 type="button"
-                (click)="registrarMedicamento()">
+                class="boton-accion"
+                title="Editar elemento"
+                (click)="editarElemento(elemento)">
 
-                <span>
-                  Registrar medicamento
+                <span class="material-symbols-outlined">
+                  edit
                 </span>
 
               </button>
 
-
               <button
                 type="button"
-                (click)="registrarInsumo()">
+                class="boton-accion boton-peligro"
+                title="Eliminar elemento"
+                (click)="eliminarElemento(elemento)">
 
-                <span>
-                  Registrar insumo
+                <span class="material-symbols-outlined">
+                  delete
                 </span>
 
               </button>
 
             </div>
 
-          </div>
+          </td>
 
-        </div>
+        </tr>
 
+
+        <!-- ESTADO VACÍO -->
+
+        <tr *ngIf="elementosPaciente.length === 0">
+
+          <td
+            colspan="7"
+            class="estado-vacio">
+
+            <h4>
+              No hay elementos registrados
+            </h4>
+
+            <p>
+              Registre un medicamento o insumo asociado a este paciente.
+            </p>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+  </section>
+
+  <!-- =========================================================
+       CUIDADOS DE ENFERMERÍA
+       ========================================================= -->
+
+  <section
+    class="contenido-seccion"
+    *ngIf="seccionActiva === 'cuidados'">
+
+<div class="card">
+
+  <div class="card-header">
+
+    <div>
+      <h3>Cuidados de enfermería</h3>
+
+      <p>
+        Registre los cuidados y procedimientos que requiere el paciente.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="btn-primary"
+      (click)="abrirFormularioCuidados()"
+      *ngIf="!mostrarFormularioCuidados">
+
+      <span class="material-symbols-outlined">
+        add
+      </span>
+
+      Agregar cuidados
+
+    </button>
+
+  </div>
+
+
+  <!-- FORMULARIO -->
+
+  <div
+    class="formulario-registro"
+    *ngIf="mostrarFormularioCuidados">
+
+    <div class="formulario-grid">
+
+      <div class="campo">
+        <label for="banoPaciente">
+          Baño del paciente
+        </label>
+
+        <textarea
+          id="banoPaciente"
+          [(ngModel)]="cuidados.bano_paciente"
+          rows="3"
+          placeholder="Describa las indicaciones o cuidados relacionados con el baño del paciente..."></textarea>
       </div>
 
 
-      <!-- =====================================================
-           FORMULARIO DE REGISTRO DE ELEMENTO
-           ===================================================== -->
+      <div class="campo">
+        <label for="pesoTalla">
+          Peso y talla
+        </label>
 
-      <div
-        class="formulario-registro"
-        *ngIf="mostrarFormularioElemento">
+        <textarea
+          id="pesoTalla"
+          [(ngModel)]="cuidados.peso_talla"
+          rows="3"
+          placeholder="Registre el control de peso, talla u observaciones relacionadas..."></textarea>
+      </div>
 
-        <div class="formulario-titulo">
 
-          <div>
+      <div class="campo">
+        <label for="controlGlucemia">
+          Control de glucemia
+        </label>
 
-            <h3>
-              {{
-                elementoEditando
-                  ? 'Editar elemento'
-                  : 'Registrar ' + tipoElemento
-              }}
-            </h3>
+        <textarea
+          id="controlGlucemia"
+          [(ngModel)]="cuidados.control_glucemia"
+          rows="3"
+          placeholder="Registre valores, horarios o indicaciones para el control de glucemia..."></textarea>
+      </div>
+
+
+      <div class="campo">
+        <label for="curaciones">
+          Curaciones
+        </label>
+
+        <textarea
+          id="curaciones"
+          [(ngModel)]="cuidados.curaciones"
+          rows="3"
+          placeholder="Describa las curaciones, procedimientos o indicaciones..."></textarea>
+      </div>
+
+
+      <div class="campo campo-completo">
+        <label for="liquidosAdministradosEliminados">
+          Líquidos administrados y eliminados
+        </label>
+
+        <textarea
+          id="liquidosAdministradosEliminados"
+          [(ngModel)]="cuidados.liquidos_administrados_eliminados"
+          rows="3"
+          placeholder="Registre los líquidos administrados, eliminados y las observaciones correspondientes..."></textarea>
+      </div>
+
+
+      <div class="campo">
+        <label for="controlDeposicion">
+          Control de deposición
+        </label>
+
+        <textarea
+          id="controlDeposicion"
+          [(ngModel)]="cuidados.control_deposicion"
+          rows="3"
+          placeholder="Registre frecuencia, características u observaciones de la deposición..."></textarea>
+      </div>
+
+
+      <div class="campo">
+        <label for="administracionMedicamentos">
+          Administración de medicamentos
+        </label>
+
+        <textarea
+          id="administracionMedicamentos"
+          [(ngModel)]="cuidados.administracion_medicamentos"
+          rows="3"
+          placeholder="Registre las indicaciones relacionadas con la administración de medicamentos..."></textarea>
+      </div>
+
+    </div>
+
+
+    <div class="formulario-acciones">
+
+      <button
+        type="button"
+        class="btn-secundario"
+        (click)="cancelarCuidados()">
+        Cancelar
+      </button>
+
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="guardarCuidados()">
+
+        {{ cuidados.id_cuidado > 0
+            ? 'Actualizar cuidados'
+            : 'Guardar cuidados' }}
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- REGISTROS -->
+
+  <div
+    class="lista-registros"
+    *ngIf="!mostrarFormularioCuidados">
+
+    <div
+      class="estado-vacio"
+      *ngIf="cargandoCuidados">
+
+      <h4>
+        Cargando cuidados...
+      </h4>
+
+      <p>
+        Consultando la información del paciente.
+      </p>
+
+    </div>
+
+
+    <div
+      class="registro-item"
+      *ngIf="!cargandoCuidados && cuidados.id_cuidado > 0">
+
+      <div class="registro-contenido">
+
+        <span class="registro-titulo">
+          Cuidados de enfermería registrados
+        </span>
+
+        <div class="detalle-cuidados">
+
+          <div
+            class="detalle-cuidado"
+            *ngIf="cuidados.bano_paciente">
+
+            <strong>Baño del paciente</strong>
+            <p>{{ cuidados.bano_paciente }}</p>
+
+          </div>
+
+          <div
+            class="detalle-cuidado"
+            *ngIf="cuidados.peso_talla">
+
+            <strong>Peso y talla</strong>
+            <p>{{ cuidados.peso_talla }}</p>
+
+          </div>
+
+          <div
+            class="detalle-cuidado"
+            *ngIf="cuidados.control_glucemia">
+
+            <strong>Control de glucemia</strong>
+            <p>{{ cuidados.control_glucemia }}</p>
+
+          </div>
+
+          <div
+            class="detalle-cuidado"
+            *ngIf="cuidados.curaciones">
+
+            <strong>Curaciones</strong>
+            <p>{{ cuidados.curaciones }}</p>
+
+          </div>
+
+          <div
+            class="detalle-cuidado"
+            *ngIf="cuidados.liquidos_administrados_eliminados">
+
+            <strong>
+              Líquidos administrados y eliminados
+            </strong>
 
             <p>
-              Complete la información del
-              {{
-                tipoElemento === 'medicamento'
-                  ? 'medicamento'
-                  : 'insumo'
-              }}
-              asociado al paciente.
+              {{ cuidados.liquidos_administrados_eliminados }}
+            </p>
+
+          </div>
+
+          <div
+            class="detalle-cuidado"
+            *ngIf="cuidados.control_deposicion">
+
+            <strong>
+              Control de deposición
+            </strong>
+
+            <p>
+              {{ cuidados.control_deposicion }}
+            </p>
+
+          </div>
+
+          <div
+            class="detalle-cuidado"
+            *ngIf="cuidados.administracion_medicamentos">
+
+            <strong>
+              Administración de medicamentos
+            </strong>
+
+            <p>
+              {{ cuidados.administracion_medicamentos }}
             </p>
 
           </div>
 
         </div>
 
-
-        <!-- ===================================================
-             MEDICAMENTO
-             =================================================== -->
-
-        <div
-          class="campo"
-          *ngIf="tipoElemento === 'medicamento'">
-
-          <label for="medicamento">
-            Medicamento
-          </label>
-
-          <select
-            id="medicamento"
-            [(ngModel)]="formularioElemento.id_medicamentos">
-
-            <option [ngValue]="null">
-              Seleccione un medicamento
-            </option>
-
-            <option
-              *ngFor="let medicamento of medicamentos"
-              [ngValue]="medicamento.id_medicamentos">
-
-              {{ medicamento.nombre }}
-
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <!-- ===================================================
-             TIPO DE INSUMO
-             =================================================== -->
-
-        <div
-          class="campo"
-          *ngIf="tipoElemento === 'insumo'">
-
-          <label for="tipoInsumo">
-            Tipo de insumo
-          </label>
-
-          <select
-            id="tipoInsumo"
-            [(ngModel)]="formularioElemento.id_tipo_insumo"
-            (change)="filtrarInsumosPorTipo()">
-
-            <option [ngValue]="null">
-              Seleccione un tipo de insumo
-            </option>
-
-            <option
-              *ngFor="let tipo of tiposInsumo"
-              [ngValue]="tipo.id_tipo_insumo">
-
-              {{ tipo.nombre }}
-
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <!-- ===================================================
-             INSUMO
-             =================================================== -->
-
-        <div
-          class="campo"
-          *ngIf="tipoElemento === 'insumo'">
-
-          <label for="insumo">
-            Insumo
-          </label>
-
-          <select
-            id="insumo"
-            [(ngModel)]="formularioElemento.id_insumo">
-
-            <option [ngValue]="null">
-              Seleccione un insumo
-            </option>
-
-            <option
-              *ngFor="let insumo of insumosFiltrados"
-              [ngValue]="insumo.id_insumo">
-
-              {{ insumo.nombre }}
-
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <!-- ===================================================
-             CANTIDAD
-             =================================================== -->
-
-        <div class="campo">
-
-          <label for="cantidad">
-            Cantidad
-          </label>
-
-          <input
-            id="cantidad"
-            type="number"
-            min="1"
-            [(ngModel)]="formularioElemento.cantidad"
-            placeholder="Ingrese la cantidad">
-
-        </div>
-
-
-        <!-- ===================================================
-             FECHA DE INGRESO
-             =================================================== -->
-
-        <div class="campo">
-
-          <label for="fechaIngreso">
-            Fecha de ingreso
-          </label>
-
-          <input
-            id="fechaIngreso"
-            type="datetime-local"
-            [(ngModel)]="formularioElemento.fecha_ingreso">
-
-        </div>
-
-
-        <!-- ===================================================
-             FECHA DE VENCIMIENTO
-             =================================================== -->
-
-        <div
-          class="campo"
-          *ngIf="tipoElemento === 'medicamento'">
-
-          <label for="fechaVencimiento">
-            Fecha de vencimiento
-          </label>
-
-          <input
-            id="fechaVencimiento"
-            type="date"
-            [(ngModel)]="formularioElemento.fecha_vencimiento">
-
-        </div>
-
-
-        <!-- ===================================================
-             OBSERVACIONES
-             =================================================== -->
-
-        <div class="campo">
-
-          <label for="observaciones">
-            Observaciones
-          </label>
-
-          <textarea
-            id="observaciones"
-            rows="4"
-            [(ngModel)]="formularioElemento.observaciones"
-            placeholder="Ingrese observaciones sobre el elemento...">
-          </textarea>
-
-        </div>
-
-
-        <!-- ===================================================
-             ESTADO
-             =================================================== -->
-
-        <div class="campo campo-estado">
-
-          <label>
-
-            <input
-              type="checkbox"
-              [(ngModel)]="formularioElemento.estado">
-
-            Elemento activo
-
-          </label>
-
-        </div>
-
-
-        <!-- ===================================================
-             ACCIONES DEL FORMULARIO
-             =================================================== -->
-
-        <div class="formulario-acciones">
-
-          <button
-            type="button"
-            class="btn-secundario"
-            (click)="cancelarElemento()">
-
-            Cancelar
-
-          </button>
-
-
-          <button
-            type="button"
-            class="btn-primary"
-            (click)="guardarElemento()">
-
-            {{
-              elementoEditando
-                ? 'Actualizar elemento'
-                : 'Guardar ' + tipoElemento
-            }}
-
-          </button>
-
-        </div>
-
       </div>
 
 
-      <!-- =====================================================
-           TABLA DE ELEMENTOS REGISTRADOS
-           ===================================================== -->
+      <!-- ACCIONES HORIZONTALES -->
 
-      <div class="tabla-container">
-
-        <table>
-
-          <thead>
-
-            <tr>
-
-              <th>Tipo</th>
-
-              <th>Elemento</th>
-
-              <th>Cantidad</th>
-
-              <th>Fecha ingreso</th>
-
-              <th>Vencimiento</th>
-
-              <th>Estado</th>
-
-              <th>Acciones</th>
-
-            </tr>
-
-          </thead>
-
-
-          <tbody>
-
-            <tr
-              *ngFor="let elemento of elementosPaciente">
-
-              <!-- TIPO -->
-
-              <td>
-
-                <span class="tipo-elemento">
-
-                  {{ obtenerTipoElemento(elemento) }}
-
-                </span>
-
-              </td>
-
-
-              <!-- NOMBRE DEL ELEMENTO -->
-
-              <td>
-
-                <strong>
-                  {{ obtenerNombreElemento(elemento) }}
-                </strong>
-
-              </td>
-
-
-              <!-- CANTIDAD -->
-
-              <td>
-
-                {{ elemento.cantidad }}
-
-              </td>
-
-
-              <!-- FECHA INGRESO -->
-
-              <td>
-
-                {{
-                  elemento.fecha_ingreso
-                    | date:'dd/MM/yyyy HH:mm'
-                }}
-
-              </td>
-
-
-              <!-- VENCIMIENTO -->
-
-              <td>
-
-                {{
-                  elemento.fecha_vencimiento
-                    ? (elemento.fecha_vencimiento | date:'dd/MM/yyyy')
-                    : 'No aplica'
-                }}
-
-              </td>
-
-
-              <!-- ESTADO -->
-
-              <td>
-
-                <span
-                  class="estado-elemento"
-                  [class.inactivo]="!elemento.estado">
-
-                  {{
-                    elemento.estado
-                      ? 'Activo'
-                      : 'Inactivo'
-                  }}
-
-                </span>
-
-              </td>
-
-
-              <!-- ACCIONES -->
-
-              <td>
-
-                <div class="acciones-tabla">
-
-                  <!-- EDITAR -->
-
-                  <button
-                    type="button"
-                    class="btn-accion btn-editar"
-                    title="Editar elemento"
-                    (click)="editarElemento(elemento)">
-
-                    <span class="material-symbols-outlined">
-                      edit
-                    </span>
-
-                  </button>
-
-
-                  <!-- ELIMINAR -->
-
-                  <button
-                    type="button"
-                    class="btn-accion btn-eliminar"
-                    title="Eliminar elemento"
-                    (click)="eliminarElemento(elemento)">
-
-                    <span class="material-symbols-outlined">
-                      delete
-                    </span>
-
-                  </button>
-
-                </div>
-
-              </td>
-
-            </tr>
-
-
-            <!-- =================================================
-                 ESTADO VACÍO
-                 ================================================= -->
-
-            <tr
-              *ngIf="elementosPaciente.length === 0">
-
-              <td
-                colspan="7"
-                class="estado-vacio">
-
-                <h4>
-                  No hay elementos registrados
-                </h4>
-
-                <p>
-                  Registre un medicamento o insumo asociado a este paciente.
-                </p>
-
-              </td>
-
-            </tr>
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-    </div>
-
-  </section>
-
-  <!-- ============================================================
-     CUIDADOS DE ENFERMERÍA
-     ============================================================ -->
-
-<section
-  class="contenido-seccion"
-  *ngIf="seccionActiva === 'cuidados'"
->
-
-  <div class="card">
-
-    <!-- ========================================================
-         ENCABEZADO
-         ======================================================== -->
-
-    <div class="card-header">
-
-      <div>
-
-        <h3>Cuidados de enfermería</h3>
-
-        <p>
-          Registre los cuidados y procedimientos que requiere el paciente.
-        </p>
-
-      </div>
-
-      <button
-        type="button"
-        class="btn-primary"
-        (click)="abrirFormularioCuidados()"
-        *ngIf="!mostrarFormularioCuidados"
-      >
-        <span class="material-symbols-outlined">
-          add
-        </span>
-
-        Agregar cuidados
-      </button>
-
-    </div>
-
-
-    <!-- ========================================================
-         FORMULARIO
-         ======================================================== -->
-
-    <div
-      class="formulario-registro"
-      *ngIf="mostrarFormularioCuidados"
-    >
-
-      <div class="formulario-grid">
-
-
-        <!-- ====================================================
-             BAÑO DEL PACIENTE
-             ==================================================== -->
-
-        <div class="campo">
-
-          <label for="banoPaciente">
-            Baño del paciente
-          </label>
-
-          <textarea
-            id="banoPaciente"
-            [(ngModel)]="cuidados.bano_paciente"
-            rows="3"
-            placeholder="Describa las indicaciones o cuidados relacionados con el baño del paciente..."
-          ></textarea>
-
-        </div>
-
-
-        <!-- ====================================================
-             PESO Y TALLA
-             ==================================================== -->
-
-        <div class="campo">
-
-          <label for="pesoTalla">
-            Peso y talla
-          </label>
-
-          <textarea
-            id="pesoTalla"
-            [(ngModel)]="cuidados.peso_talla"
-            rows="3"
-            placeholder="Registre el control de peso, talla u observaciones relacionadas..."
-          ></textarea>
-
-        </div>
-
-
-        <!-- ====================================================
-             CONTROL DE GLUCEMIA
-             ==================================================== -->
-
-        <div class="campo">
-
-          <label for="controlGlucemia">
-            Control de glucemia
-          </label>
-
-          <textarea
-            id="controlGlucemia"
-            [(ngModel)]="cuidados.control_glucemia"
-            rows="3"
-            placeholder="Registre valores, horarios o indicaciones para el control de glucemia..."
-          ></textarea>
-
-        </div>
-
-
-        <!-- ====================================================
-             CURACIONES
-             ==================================================== -->
-
-        <div class="campo">
-
-          <label for="curaciones">
-            Curaciones
-          </label>
-
-          <textarea
-            id="curaciones"
-            [(ngModel)]="cuidados.curaciones"
-            rows="3"
-            placeholder="Describa las curaciones, procedimientos o indicaciones..."
-          ></textarea>
-
-        </div>
-
-
-        <!-- ====================================================
-             LÍQUIDOS ADMINISTRADOS Y ELIMINADOS
-             ==================================================== -->
-
-        <div class="campo campo-completo">
-
-          <label for="liquidosAdministradosEliminados">
-            Líquidos administrados y eliminados
-          </label>
-
-          <textarea
-            id="liquidosAdministradosEliminados"
-            [(ngModel)]="cuidados.liquidos_administrados_eliminados"
-            rows="3"
-            placeholder="Registre los líquidos administrados, eliminados y las observaciones correspondientes..."
-          ></textarea>
-
-        </div>
-
-
-        <!-- ====================================================
-             CONTROL DE DEPOSICIÓN
-             ==================================================== -->
-
-        <div class="campo">
-
-          <label for="controlDeposicion">
-            Control de deposición
-          </label>
-
-          <textarea
-            id="controlDeposicion"
-            [(ngModel)]="cuidados.control_deposicion"
-            rows="3"
-            placeholder="Registre frecuencia, características u observaciones de la deposición..."
-          ></textarea>
-
-        </div>
-
-
-        <!-- ====================================================
-             ADMINISTRACIÓN DE MEDICAMENTOS
-             ==================================================== -->
-
-        <div class="campo">
-
-          <label for="administracionMedicamentos">
-            Administración de medicamentos
-          </label>
-
-          <textarea
-            id="administracionMedicamentos"
-            [(ngModel)]="cuidados.administracion_medicamentos"
-            rows="3"
-            placeholder="Registre las indicaciones relacionadas con la administración de medicamentos..."
-          ></textarea>
-
-        </div>
-
-      </div>
-
-
-      <!-- ======================================================
-           ACCIONES DEL FORMULARIO
-           ====================================================== -->
-
-      <div class="formulario-acciones">
+      <div class="registro-acciones">
 
         <button
           type="button"
-          class="btn-secundario"
-          (click)="cancelarCuidados()"
-        >
-          Cancelar
-        </button>
-
-        <button
-          type="button"
-          class="btn-primary"
-          (click)="guardarCuidados()"
-        >
-          {{ cuidados.id_cuidado > 0
-              ? 'Actualizar cuidados'
-              : 'Guardar cuidados' }}
-        </button>
-
-      </div>
-
-    </div>
-
-
-    <!-- ========================================================
-         INFORMACIÓN REGISTRADA
-         ======================================================== -->
-
-    <div
-      class="lista-registros"
-      *ngIf="!mostrarFormularioCuidados"
-    >
-
-      <!-- ======================================================
-           CARGANDO
-           ====================================================== -->
-
-      <div
-        class="estado-vacio"
-        *ngIf="cargandoCuidados"
-      >
-
-        <h4>
-          Cargando cuidados...
-        </h4>
-
-        <p>
-          Consultando la información del paciente.
-        </p>
-
-      </div>
-
-
-      <!-- ======================================================
-           REGISTRO EXISTENTE
-           ====================================================== -->
-
-      <div
-        class="registro-item"
-        *ngIf="!cargandoCuidados && cuidados.id_cuidado > 0"
-      >
-
-        <div class="registro-contenido">
-
-          <span class="registro-titulo">
-            Cuidados de enfermería registrados
-          </span>
-
-
-          <div class="detalle-cuidados">
-
-
-            <!-- BAÑO -->
-
-            <div
-              class="detalle-cuidado"
-              *ngIf="cuidados.bano_paciente"
-            >
-
-              <strong>
-                Baño del paciente
-              </strong>
-
-              <p>
-                {{ cuidados.bano_paciente }}
-              </p>
-
-            </div>
-
-
-            <!-- PESO Y TALLA -->
-
-            <div
-              class="detalle-cuidado"
-              *ngIf="cuidados.peso_talla"
-            >
-
-              <strong>
-                Peso y talla
-              </strong>
-
-              <p>
-                {{ cuidados.peso_talla }}
-              </p>
-
-            </div>
-
-
-            <!-- GLUCEMIA -->
-
-            <div
-              class="detalle-cuidado"
-              *ngIf="cuidados.control_glucemia"
-            >
-
-              <strong>
-                Control de glucemia
-              </strong>
-
-              <p>
-                {{ cuidados.control_glucemia }}
-              </p>
-
-            </div>
-
-
-            <!-- CURACIONES -->
-
-            <div
-              class="detalle-cuidado"
-              *ngIf="cuidados.curaciones"
-            >
-
-              <strong>
-                Curaciones
-              </strong>
-
-              <p>
-                {{ cuidados.curaciones }}
-              </p>
-
-            </div>
-
-
-            <!-- LÍQUIDOS -->
-
-            <div
-              class="detalle-cuidado"
-              *ngIf="cuidados.liquidos_administrados_eliminados"
-            >
-
-              <strong>
-                Líquidos administrados y eliminados
-              </strong>
-
-              <p>
-                {{ cuidados.liquidos_administrados_eliminados }}
-              </p>
-
-            </div>
-
-
-            <!-- DEPOSICIÓN -->
-
-            <div
-              class="detalle-cuidado"
-              *ngIf="cuidados.control_deposicion"
-            >
-
-              <strong>
-                Control de deposición
-              </strong>
-
-              <p>
-                {{ cuidados.control_deposicion }}
-              </p>
-
-            </div>
-
-
-            <!-- MEDICAMENTOS -->
-
-            <div
-              class="detalle-cuidado"
-              *ngIf="cuidados.administracion_medicamentos"
-            >
-
-              <strong>
-                Administración de medicamentos
-              </strong>
-
-              <p>
-                {{ cuidados.administracion_medicamentos }}
-              </p>
-
-            </div>
-
-
-          </div>
-
-        </div>
-
-
-        <!-- ====================================================
-             ACCIONES
-             ==================================================== -->
-
-        <div class="registro-acciones">
-
-          <button
-            type="button"
-            class="btn-accion btn-editar"
-            title="Editar cuidados"
-            (click)="editarCuidados()"
-          >
-
-            <span class="material-symbols-outlined">
-              edit
-            </span>
-
-          </button>
-
-
-          <button
-            type="button"
-            class="btn-accion btn-eliminar"
-            title="Eliminar cuidados"
-            (click)="eliminarCuidados()"
-          >
-
-            <span class="material-symbols-outlined">
-              delete
-            </span>
-
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <!-- ======================================================
-           SIN REGISTROS
-           ====================================================== -->
-
-      <div
-        class="estado-vacio"
-        *ngIf="
-          !cargandoCuidados &&
-          cuidados.id_cuidado === 0
-        "
-      >
-
-        <h4>
-          No hay cuidados registrados
-        </h4>
-
-        <p>
-          Agregue los cuidados de enfermería necesarios para este paciente.
-        </p>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-  <!-- ============================================================
-     RECOMENDACIONES
-     ============================================================ -->
-
-<section
-  class="contenido-seccion"
-  *ngIf="seccionActiva === 'recomendaciones'"
->
-
-  <div class="card">
-
-    <!-- ========================================================
-         ENCABEZADO
-         ======================================================== -->
-
-    <div class="card-header">
-
-      <div>
-        <h3>Recomendaciones</h3>
-
-        <p>
-          Registre las recomendaciones y cuidados especiales
-          que requiere el paciente.
-        </p>
-      </div>
-
-      <button
-        type="button"
-        class="btn-primary"
-        (click)="abrirFormularioRecomendaciones()"
-        *ngIf="!mostrarFormularioRecomendaciones"
-      >
-        <span class="material-symbols-outlined">
-          add
-        </span>
-
-        Agregar recomendaciones
-      </button>
-
-    </div>
-
-
-    <!-- ========================================================
-         FORMULARIO
-         ======================================================== -->
-
-    <div
-      class="formulario-registro"
-      *ngIf="mostrarFormularioRecomendaciones"
-    >
-
-      <div class="formulario-grid">
-
-        <!-- HIDRATAR PIEL -->
-        <div class="campo">
-          <label for="hidratarPiel">
-            Hidratación de la piel
-          </label>
-
-          <textarea
-            id="hidratarPiel"
-            [(ngModel)]="recomendaciones.hidratar_piel"
-            rows="3"
-            placeholder="Registre las recomendaciones para la hidratación de la piel..."
-          ></textarea>
-        </div>
-
-
-        <!-- ASISTIR ALIMENTACIÓN -->
-        <div class="campo">
-          <label for="asistirAlimentacion">
-            Asistencia en la alimentación
-          </label>
-
-          <textarea
-            id="asistirAlimentacion"
-            [(ngModel)]="recomendaciones.asistir_alimentacion"
-            rows="3"
-            placeholder="Describa las recomendaciones o indicaciones para asistir al paciente durante la alimentación..."
-          ></textarea>
-        </div>
-
-
-        <!-- VÍA ALIMENTACIÓN -->
-        <div class="campo">
-          <label for="viaAlimentacion">
-            Vía de alimentación
-          </label>
-
-          <textarea
-            id="viaAlimentacion"
-            [(ngModel)]="recomendaciones.via_alimentacion"
-            rows="3"
-            placeholder="Indique la vía de alimentación y las recomendaciones correspondientes..."
-          ></textarea>
-        </div>
-
-
-        <!-- PREVENCIÓN DE CAÍDAS -->
-        <div class="campo">
-          <label for="prevencionCaidas">
-            Prevención de caídas
-          </label>
-
-          <textarea
-            id="prevencionCaidas"
-            [(ngModel)]="recomendaciones.prevencion_caidas"
-            rows="3"
-            placeholder="Registre las recomendaciones para prevenir caídas..."
-          ></textarea>
-        </div>
-
-
-        <!-- TERAPIAS FÍSICAS -->
-        <div class="campo">
-          <label for="terapiasFisicas">
-            Terapias físicas
-          </label>
-
-          <textarea
-            id="terapiasFisicas"
-            [(ngModel)]="recomendaciones.terapias_fisicas"
-            rows="3"
-            placeholder="Registre las recomendaciones relacionadas con terapias físicas..."
-          ></textarea>
-        </div>
-
-
-        <!-- TERAPIA RESPIRATORIA -->
-        <div class="campo">
-          <label for="terapiaRespiratoria">
-            Terapia respiratoria
-          </label>
-
-          <textarea
-            id="terapiaRespiratoria"
-            [(ngModel)]="recomendaciones.terapia_respiratoria"
-            rows="3"
-            placeholder="Registre las recomendaciones relacionadas con terapia respiratoria..."
-          ></textarea>
-        </div>
-
-
-        <!-- ACTIVIDAD OCUPACIONAL -->
-        <div class="campo">
-          <label for="actividadOcupacional">
-            Actividad ocupacional
-          </label>
-
-          <textarea
-            id="actividadOcupacional"
-            [(ngModel)]="recomendaciones.actividad_ocupacional"
-            rows="3"
-            placeholder="Registre las recomendaciones para actividades ocupacionales..."
-          ></textarea>
-        </div>
-
-
-        <!-- CORTE DE UÑAS -->
-        <div class="campo">
-          <label for="corteUnas">
-            Corte de uñas
-          </label>
-
-          <textarea
-            id="corteUnas"
-            [(ngModel)]="recomendaciones.corte_unas"
-            rows="3"
-            placeholder="Registre las recomendaciones para el cuidado y corte de uñas..."
-          ></textarea>
-        </div>
-
-
-        <!-- CORTE DE CABELLO -->
-        <div class="campo">
-          <label for="corteCabello">
-            Corte de cabello
-          </label>
-
-          <textarea
-            id="corteCabello"
-            [(ngModel)]="recomendaciones.corte_cabello"
-            rows="3"
-            placeholder="Registre las recomendaciones para el cuidado y corte de cabello..."
-          ></textarea>
-        </div>
-
-
-        <!-- HIGIENE ORAL -->
-        <div class="campo">
-          <label for="higieneOral">
-            Higiene oral
-          </label>
-
-          <textarea
-            id="higieneOral"
-            [(ngModel)]="recomendaciones.higiene_oral"
-            rows="3"
-            placeholder="Registre las recomendaciones para la higiene oral del paciente..."
-          ></textarea>
-        </div>
-
-      </div>
-
-
-      <!-- ======================================================
-           ACCIONES DEL FORMULARIO
-           ====================================================== -->
-
-      <div class="formulario-acciones">
-
-        <button
-          type="button"
-          class="btn-secundario"
-          (click)="cancelarRecomendaciones()"
-        >
-          Cancelar
-        </button>
-
-        <button
-          type="button"
-          class="btn-primary"
-          (click)="guardarRecomendaciones()"
-        >
-          <span class="material-symbols-outlined">
-            save
-          </span>
-
-          {{ recomendaciones.id_recomendacion > 0
-              ? 'Actualizar recomendaciones'
-              : 'Guardar recomendaciones' }}
-        </button>
-
-      </div>
-
-    </div>
-
-
-    <!-- ========================================================
-         LISTADO / INFORMACIÓN REGISTRADA
-         ======================================================== -->
-
-    <div
-      class="lista-registros"
-      *ngIf="!mostrarFormularioRecomendaciones"
-     >
-
-      <!-- CARGANDO -->
-      <div
-        class="estado-vacio"
-        *ngIf="cargandoRecomendaciones"
-      >
-
-        <h4>Cargando recomendaciones...</h4>
-
-        <p>
-          Consultando la información del paciente.
-        </p>
-
-      </div>
-
-
-      <!-- RECOMENDACIONES REGISTRADAS -->
-      <div
-        class="registro-item"
-        *ngIf="
-          !cargandoRecomendaciones &&
-          recomendaciones.id_recomendacion > 0
-        "
-      >
-
-        <div class="registro-contenido">
-
-          <span class="registro-titulo">
-            Recomendaciones registradas
-          </span>
-
-
-          <div class="detalle-cuidados">
-
-            <div
-              class="detalle-cuidado"
-              *ngIf="recomendaciones.hidratar_piel"
-            >
-              <strong>Hidratación de la piel</strong>
-              <p>{{ recomendaciones.hidratar_piel }}</p>
-            </div>
-
-
-            <div
-              class="detalle-cuidado"
-              *ngIf="recomendaciones.asistir_alimentacion"
-            >
-              <strong>Asistencia en la alimentación</strong>
-              <p>{{ recomendaciones.asistir_alimentacion }}</p>
-            </div>
-
-
-            <div
-              class="detalle-cuidado"
-              *ngIf="recomendaciones.via_alimentacion"
-            >
-              <strong>Vía de alimentación</strong>
-              <p>{{ recomendaciones.via_alimentacion }}</p>
-            </div>
-
-
-            <div
-              class="detalle-cuidado"
-              *ngIf="recomendaciones.prevencion_caidas"
-            >
-              <strong>Prevención de caídas</strong>
-              <p>{{ recomendaciones.prevencion_caidas }}</p>
-            </div>
-
-
-            <div
-              class="detalle-cuidado"
-              *ngIf="recomendaciones.terapias_fisicas"
-            >
-              <strong>Terapias físicas</strong>
-              <p>{{ recomendaciones.terapias_fisicas }}</p>
-            </div>
-
-
-            <div
-              class="detalle-cuidado"
-              *ngIf="recomendaciones.terapia_respiratoria"
-            >
-              <strong>Terapia respiratoria</strong>
-              <p>{{ recomendaciones.terapia_respiratoria }}</p>
-            </div>
-
-
-            <div
-              class="detalle-cuidado"
-              *ngIf="recomendaciones.actividad_ocupacional"
-            >
-              <strong>Actividad ocupacional</strong>
-              <p>{{ recomendaciones.actividad_ocupacional }}</p>
-            </div>
-
-
-            <div
-              class="detalle-cuidado"
-              *ngIf="recomendaciones.corte_unas"
-            >
-              <strong>Corte de uñas</strong>
-              <p>{{ recomendaciones.corte_unas }}</p>
-            </div>
-
-
-            <div
-              class="detalle-cuidado"
-              *ngIf="recomendaciones.corte_cabello"
-            >
-              <strong>Corte de cabello</strong>
-              <p>{{ recomendaciones.corte_cabello }}</p>
-            </div>
-
-
-            <div
-              class="detalle-cuidado"
-              *ngIf="recomendaciones.higiene_oral"
-            >
-              <strong>Higiene oral</strong>
-              <p>{{ recomendaciones.higiene_oral }}</p>
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <!-- ACCIONES -->
-        <div class="registro-acciones">
-
-          <button
-            type="button"
-            class="btn-accion btn-editar"
-            title="Editar recomendaciones"
-            (click)="editarRecomendaciones()"
-          >
-            <span class="material-symbols-outlined">
-              edit
-            </span>
-          </button>
-
-
-          <button
-            type="button"
-            class="btn-accion btn-eliminar"
-            title="Eliminar recomendaciones"
-            (click)="eliminarRecomendaciones()"
-          >
-            <span class="material-symbols-outlined">
-              delete
-            </span>
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <!-- SIN RECOMENDACIONES -->
-      <div
-        class="estado-vacio"
-        *ngIf="
-          !cargandoRecomendaciones &&
-          recomendaciones.id_recomendacion === 0
-        "
-         >
-
-        <h4>No hay recomendaciones registradas</h4>
-
-        <p>
-          Agregue las recomendaciones necesarias para este paciente.
-        </p>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-  <!-- =========================================================
-     HISTORIA CLÍNICA
-     ========================================================= -->
-
-<section
-  class="contenido-seccion"
-  *ngIf="seccionActiva === 'historia'"
->
-
-  <div class="card">
-
-    <!-- ======================================================
-         ENCABEZADO
-         ====================================================== -->
-
-    <div class="card-header">
-
-      <div>
-
-        <h3>
-          Historia clínica
-        </h3>
-
-        <p>
-          Registre la información clínica y antecedentes relevantes del paciente.
-        </p>
-
-      </div>
-
-
-      <!-- BOTÓN REGISTRAR -->
-
-      <button
-        *ngIf="
-          !historiaClinica.id_historia_clinica &&
-          !mostrarFormularioHistoria
-        "
-        type="button"
-        class="btn-primary"
-        (click)="abrirFormularioHistoria()"
-      >
-
-        <span class="material-symbols-outlined">
-          add
-        </span>
-
-        Registrar historia clínica
-
-      </button>
-
-    </div>
-
-
-    <!-- ======================================================
-         CARGANDO HISTORIA CLÍNICA
-         ====================================================== -->
-
-    <div
-      class="estado-carga"
-      *ngIf="cargandoHistoria"
-    >
-
-      <p>
-        Cargando historia clínica...
-      </p>
-
-    </div>
-
-
-    <!-- ======================================================
-         HISTORIA CLÍNICA REGISTRADA
-         ====================================================== -->
-
-    <div
-      class="historia-contenido"
-      *ngIf="
-        !cargandoHistoria &&
-        historiaClinica.id_historia_clinica > 0 &&
-        !mostrarFormularioHistoria
-      "
-    >
-
-      <!-- ==================================================
-           FECHA DE APERTURA
-           ================================================== -->
-
-      <div class="historia-dato">
-
-        <span class="historia-icono material-symbols-outlined">
-          calendar_month
-        </span>
-
-        <div>
-
-          <span class="historia-label">
-            Fecha de apertura
-          </span>
-
-          <strong>
-            {{
-              historiaClinica.fecha_apertura
-                ? (historiaClinica.fecha_apertura | date:'dd/MM/yyyy')
-                : 'No registrada'
-            }}
-          </strong>
-
-        </div>
-
-      </div>
-
-
-      <!-- ==================================================
-           ANTECEDENTES
-           ================================================== -->
-
-      <div class="campo">
-
-        <label>
-          Antecedentes
-        </label>
-
-        <div class="texto-historia">
-
-          <p
-            *ngIf="
-              historiaClinica.antecedentes;
-              else sinAntecedentes
-            "
-          >
-            {{ historiaClinica.antecedentes }}
-          </p>
-
-          <ng-template #sinAntecedentes>
-
-            <span class="texto-vacio">
-              No se han registrado antecedentes.
-            </span>
-
-          </ng-template>
-
-        </div>
-
-      </div>
-
-
-      <!-- ==================================================
-           ALERGIAS
-           ================================================== -->
-
-      <div class="campo">
-
-        <label>
-          Alergias
-        </label>
-
-        <div class="texto-historia">
-
-          <p
-            *ngIf="
-              historiaClinica.alergias;
-              else sinAlergias
-            "
-          >
-            {{ historiaClinica.alergias }}
-          </p>
-
-          <ng-template #sinAlergias>
-
-            <span class="texto-vacio">
-              No se han registrado alergias.
-            </span>
-
-          </ng-template>
-
-        </div>
-
-      </div>
-
-
-      <!-- ==================================================
-           OBSERVACIONES
-           ================================================== -->
-
-      <div class="campo">
-
-        <label>
-          Observaciones clínicas
-        </label>
-
-        <div class="texto-historia">
-
-          <p
-            *ngIf="
-              historiaClinica.observaciones;
-              else sinObservaciones
-            "
-          >
-            {{ historiaClinica.observaciones }}
-          </p>
-
-          <ng-template #sinObservaciones>
-
-            <span class="texto-vacio">
-              No se han registrado observaciones clínicas.
-            </span>
-
-          </ng-template>
-
-        </div>
-
-      </div>
-
-
-      <!-- ==================================================
-           ESTADO
-           ================================================== -->
-
-      <div class="historia-estado">
-
-        <span
-          class="estado-elemento"
-          [class.inactivo]="!historiaClinica.estado"
-        >
-
-          {{
-            historiaClinica.estado
-              ? 'Historia clínica activa'
-              : 'Historia clínica inactiva'
-          }}
-
-        </span>
-
-      </div>
-
-
-      <!-- ==================================================
-           ACCIONES
-           ================================================== -->
-
-      <div class="formulario-acciones">
-
-        <!-- EDITAR -->
-
-        <button
-          type="button"
-          class="btn-primary"
-          (click)="editarHistoriaClinica()"
-        >
+          class="boton-accion"
+          title="Editar cuidados"
+          (click)="editarCuidados()">
 
           <span class="material-symbols-outlined">
             edit
           </span>
 
-          Editar historia clínica
-
         </button>
-
-
-        <!-- ELIMINAR -->
 
         <button
           type="button"
-          class="btn-danger"
-          (click)="eliminarHistoriaClinica()"
-        >
+          class="boton-accion boton-peligro"
+          title="Eliminar cuidados"
+          (click)="eliminarCuidados()">
 
           <span class="material-symbols-outlined">
             delete
           </span>
 
-          Eliminar
-
         </button>
 
       </div>
@@ -1865,190 +898,824 @@
     </div>
 
 
-    <!-- ======================================================
-         FORMULARIO DE HISTORIA CLÍNICA
-         ====================================================== -->
-
-    <div
-      class="historia-formulario"
-      *ngIf="
-        !cargandoHistoria &&
-        mostrarFormularioHistoria
-      "
-    >
-
-      <!-- ==================================================
-           FECHA DE APERTURA
-           ================================================== -->
-
-      <div class="campo">
-
-        <label for="fecha_apertura">
-          Fecha de apertura
-        </label>
-
-        <input
-          type="date"
-          id="fecha_apertura"
-          [(ngModel)]="historiaClinica.fecha_apertura"
-        >
-
-      </div>
-
-
-      <!-- ==================================================
-           ANTECEDENTES
-           ================================================== -->
-
-      <div class="campo">
-
-        <label for="antecedentes">
-          Antecedentes
-        </label>
-
-        <textarea
-          id="antecedentes"
-          [(ngModel)]="historiaClinica.antecedentes"
-          rows="5"
-          placeholder="Registre los antecedentes relevantes del paciente..."
-        ></textarea>
-
-      </div>
-
-
-      <!-- ==================================================
-           ALERGIAS
-           ================================================== -->
-
-      <div class="campo">
-
-        <label for="alergias">
-          Alergias
-        </label>
-
-        <textarea
-          id="alergias"
-          [(ngModel)]="historiaClinica.alergias"
-          rows="4"
-          placeholder="Registre las alergias conocidas del paciente..."
-        ></textarea>
-
-      </div>
-
-
-      <!-- ==================================================
-           OBSERVACIONES
-           ================================================== -->
-
-      <div class="campo">
-
-        <label for="observacionesHistoria">
-          Observaciones clínicas
-        </label>
-
-        <textarea
-          id="observacionesHistoria"
-          [(ngModel)]="historiaClinica.observaciones"
-          rows="5"
-          placeholder="Registre las observaciones clínicas del paciente..."
-        ></textarea>
-
-      </div>
-
-
-      <!-- ==================================================
-           ESTADO
-           ================================================== -->
-
-      <div class="campo campo-estado">
-
-        <label>
-
-          <input
-            type="checkbox"
-            [(ngModel)]="historiaClinica.estado"
-          >
-
-          Historia clínica activa
-
-        </label>
-
-      </div>
-
-
-      <!-- ==================================================
-           ACCIONES DEL FORMULARIO
-           ================================================== -->
-
-      <div class="formulario-acciones">
-
-        <!-- GUARDAR / ACTUALIZAR -->
-
-        <button
-          type="button"
-          class="btn-primary"
-          (click)="guardarHistoriaClinica()"
-        >
-
-          <span class="material-symbols-outlined">
-            save
-          </span>
-
-          {{
-            historiaClinica.id_historia_clinica > 0
-              ? 'Actualizar historia clínica'
-              : 'Guardar historia clínica'
-          }}
-
-        </button>
-
-
-        <!-- CANCELAR -->
-
-        <button
-          type="button"
-          class="btn-secundario"
-          (click)="cancelarHistoria()"
-        >
-
-          <span class="material-symbols-outlined">
-            close
-          </span>
-
-          Cancelar
-
-        </button>
-
-      </div>
-
-    </div>
-
-
-    <!-- ======================================================
-         SIN HISTORIA CLÍNICA
-         ====================================================== -->
+    <!-- SIN REGISTROS -->
 
     <div
       class="estado-vacio"
       *ngIf="
-        !cargandoHistoria &&
-        historiaClinica.id_historia_clinica === 0 &&
-        !mostrarFormularioHistoria
-      "
-     >
+        !cargandoCuidados &&
+        cuidados.id_cuidado === 0
+      ">
+
       <h4>
-        No hay historia clínica registrada
+        No hay cuidados registrados
       </h4>
 
       <p>
-        Este paciente todavía no tiene una historia clínica registrada.
+        Agregue los cuidados de enfermería necesarios para este paciente.
       </p>
 
     </div>
 
   </div>
 
-</section>
+</div>
+
+  </section>
+
+  <!-- =========================================================
+       RECOMENDACIONES
+       ========================================================= -->
+
+  <section
+    class="contenido-seccion"
+    *ngIf="seccionActiva === 'recomendaciones'">
+
+<div class="card">
+
+  <div class="card-header">
+
+    <div>
+
+      <h3>Recomendaciones</h3>
+
+      <p>
+        Registre las recomendaciones y cuidados especiales
+        que requiere el paciente.
+      </p>
+
+    </div>
+
+    <button
+      type="button"
+      class="btn-primary"
+      (click)="abrirFormularioRecomendaciones()"
+      *ngIf="!mostrarFormularioRecomendaciones">
+
+      <span class="material-symbols-outlined">
+        add
+      </span>
+
+      Agregar recomendaciones
+
+    </button>
+
+  </div>
+
+
+  <!-- FORMULARIO -->
+
+  <div
+    class="formulario-registro"
+    *ngIf="mostrarFormularioRecomendaciones">
+
+    <div class="formulario-grid">
+
+      <div class="campo">
+        <label for="hidratarPiel">
+          Hidratación de la piel
+        </label>
+
+        <textarea
+          id="hidratarPiel"
+          [(ngModel)]="recomendaciones.hidratar_piel"
+          rows="3"
+          placeholder="Registre las recomendaciones para la hidratación de la piel..."></textarea>
+      </div>
+
+
+      <div class="campo">
+        <label for="asistirAlimentacion">
+          Asistencia en la alimentación
+        </label>
+
+        <textarea
+          id="asistirAlimentacion"
+          [(ngModel)]="recomendaciones.asistir_alimentacion"
+          rows="3"
+          placeholder="Describa las recomendaciones o indicaciones para asistir al paciente durante la alimentación..."></textarea>
+      </div>
+
+
+      <div class="campo">
+        <label for="viaAlimentacion">
+          Vía de alimentación
+        </label>
+
+        <textarea
+          id="viaAlimentacion"
+          [(ngModel)]="recomendaciones.via_alimentacion"
+          rows="3"
+          placeholder="Indique la vía de alimentación y las recomendaciones correspondientes..."></textarea>
+      </div>
+
+
+      <div class="campo">
+        <label for="prevencionCaidas">
+          Prevención de caídas
+        </label>
+
+        <textarea
+          id="prevencionCaidas"
+          [(ngModel)]="recomendaciones.prevencion_caidas"
+          rows="3"
+          placeholder="Registre las recomendaciones para prevenir caídas..."></textarea>
+      </div>
+
+
+      <div class="campo">
+        <label for="terapiasFisicas">
+          Terapias físicas
+        </label>
+
+        <textarea
+          id="terapiasFisicas"
+          [(ngModel)]="recomendaciones.terapias_fisicas"
+          rows="3"
+          placeholder="Registre las recomendaciones relacionadas con terapias físicas..."></textarea>
+      </div>
+
+
+      <div class="campo">
+        <label for="terapiaRespiratoria">
+          Terapia respiratoria
+        </label>
+
+        <textarea
+          id="terapiaRespiratoria"
+          [(ngModel)]="recomendaciones.terapia_respiratoria"
+          rows="3"
+          placeholder="Registre las recomendaciones relacionadas con terapia respiratoria..."></textarea>
+      </div>
+
+
+      <div class="campo">
+        <label for="actividadOcupacional">
+          Actividad ocupacional
+        </label>
+
+        <textarea
+          id="actividadOcupacional"
+          [(ngModel)]="recomendaciones.actividad_ocupacional"
+          rows="3"
+          placeholder="Registre las recomendaciones para actividades ocupacionales..."></textarea>
+      </div>
+
+
+      <div class="campo">
+        <label for="corteUnas">
+          Corte de uñas
+        </label>
+
+        <textarea
+          id="corteUnas"
+          [(ngModel)]="recomendaciones.corte_unas"
+          rows="3"
+          placeholder="Registre las recomendaciones para el cuidado y corte de uñas..."></textarea>
+      </div>
+
+
+      <div class="campo">
+        <label for="corteCabello">
+          Corte de cabello
+        </label>
+
+        <textarea
+          id="corteCabello"
+          [(ngModel)]="recomendaciones.corte_cabello"
+          rows="3"
+          placeholder="Registre las recomendaciones para el cuidado y corte de cabello..."></textarea>
+      </div>
+
+
+      <div class="campo">
+        <label for="higieneOral">
+          Higiene oral
+        </label>
+
+        <textarea
+          id="higieneOral"
+          [(ngModel)]="recomendaciones.higiene_oral"
+          rows="3"
+          placeholder="Registre las recomendaciones para la higiene oral del paciente..."></textarea>
+      </div>
+
+    </div>
+
+
+    <div class="formulario-acciones">
+
+      <button
+        type="button"
+        class="btn-secundario"
+        (click)="cancelarRecomendaciones()">
+        Cancelar
+      </button>
+
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="guardarRecomendaciones()">
+
+        <span class="material-symbols-outlined">
+          save
+        </span>
+
+        {{ recomendaciones.id_recomendacion > 0
+            ? 'Actualizar recomendaciones'
+            : 'Guardar recomendaciones' }}
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- LISTADO -->
+
+  <div
+    class="lista-registros"
+    *ngIf="!mostrarFormularioRecomendaciones">
+
+    <div
+      class="estado-vacio"
+      *ngIf="cargandoRecomendaciones">
+
+      <h4>
+        Cargando recomendaciones...
+      </h4>
+
+      <p>
+        Consultando la información del paciente.
+      </p>
+
+    </div>
+
+
+    <div
+      class="registro-item"
+      *ngIf="
+        !cargandoRecomendaciones &&
+        recomendaciones.id_recomendacion > 0
+      ">
+
+      <div class="registro-contenido">
+
+        <span class="registro-titulo">
+          Recomendaciones registradas
+        </span>
+
+        <div class="detalle-cuidados">
+
+          <div
+            class="detalle-cuidado"
+            *ngIf="recomendaciones.hidratar_piel">
+
+            <strong>Hidratación de la piel</strong>
+            <p>{{ recomendaciones.hidratar_piel }}</p>
+
+          </div>
+
+          <div
+            class="detalle-cuidado"
+            *ngIf="recomendaciones.asistir_alimentacion">
+
+            <strong>Asistencia en la alimentación</strong>
+            <p>{{ recomendaciones.asistir_alimentacion }}</p>
+
+          </div>
+
+          <div
+            class="detalle-cuidado"
+            *ngIf="recomendaciones.via_alimentacion">
+
+            <strong>Vía de alimentación</strong>
+            <p>{{ recomendaciones.via_alimentacion }}</p>
+
+          </div>
+
+          <div
+            class="detalle-cuidado"
+            *ngIf="recomendaciones.prevencion_caidas">
+
+            <strong>Prevención de caídas</strong>
+            <p>{{ recomendaciones.prevencion_caidas }}</p>
+
+          </div>
+
+          <div
+            class="detalle-cuidado"
+            *ngIf="recomendaciones.terapias_fisicas">
+
+            <strong>Terapias físicas</strong>
+            <p>{{ recomendaciones.terapias_fisicas }}</p>
+
+          </div>
+
+          <div
+            class="detalle-cuidado"
+            *ngIf="recomendaciones.terapia_respiratoria">
+
+            <strong>Terapia respiratoria</strong>
+            <p>{{ recomendaciones.terapia_respiratoria }}</p>
+
+          </div>
+
+          <div
+            class="detalle-cuidado"
+            *ngIf="recomendaciones.actividad_ocupacional">
+
+            <strong>Actividad ocupacional</strong>
+            <p>{{ recomendaciones.actividad_ocupacional }}</p>
+
+          </div>
+
+          <div
+            class="detalle-cuidado"
+            *ngIf="recomendaciones.corte_unas">
+
+            <strong>Corte de uñas</strong>
+            <p>{{ recomendaciones.corte_unas }}</p>
+
+          </div>
+
+          <div
+            class="detalle-cuidado"
+            *ngIf="recomendaciones.corte_cabello">
+
+            <strong>Corte de cabello</strong>
+            <p>{{ recomendaciones.corte_cabello }}</p>
+
+          </div>
+
+          <div
+            class="detalle-cuidado"
+            *ngIf="recomendaciones.higiene_oral">
+
+            <strong>Higiene oral</strong>
+            <p>{{ recomendaciones.higiene_oral }}</p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ACCIONES HORIZONTALES -->
+
+      <div class="registro-acciones">
+
+        <button
+          type="button"
+          class="boton-accion"
+          title="Editar recomendaciones"
+          (click)="editarRecomendaciones()">
+
+          <span class="material-symbols-outlined">
+            edit
+          </span>
+
+        </button>
+
+        <button
+          type="button"
+          class="boton-accion boton-peligro"
+          title="Eliminar recomendaciones"
+          (click)="eliminarRecomendaciones()">
+
+          <span class="material-symbols-outlined">
+            delete
+          </span>
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="estado-vacio"
+      *ngIf="
+        !cargandoRecomendaciones &&
+        recomendaciones.id_recomendacion === 0
+      ">
+
+      <h4>
+        No hay recomendaciones registradas
+      </h4>
+
+      <p>
+        Agregue las recomendaciones necesarias para este paciente.
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
+
+  </section>
+
+  <!-- =========================================================
+       HISTORIA CLÍNICA
+       ========================================================= -->
+
+  <section
+    class="contenido-seccion"
+    *ngIf="seccionActiva === 'historia'">
+
+<div class="card">
+
+  <div class="card-header">
+
+    <div>
+
+      <h3>
+        Historia clínica
+      </h3>
+
+      <p>
+        Registre la información clínica y antecedentes relevantes del paciente.
+      </p>
+
+    </div>
+
+    <button
+      type="button"
+      class="btn-primary"
+      (click)="abrirFormularioHistoria()"
+      *ngIf="
+        !cargandoHistoria &&
+        historiaClinica.id_historia_clinica === 0 &&
+        !mostrarFormularioHistoria
+      ">
+
+      <span class="material-symbols-outlined">
+        add
+      </span>
+
+      Registrar historia clínica
+
+    </button>
+
+  </div>
+
+
+  <!-- CARGANDO -->
+
+  <div
+    class="estado-carga"
+    *ngIf="cargandoHistoria">
+
+    <p>
+      Cargando historia clínica...
+    </p>
+
+  </div>
+
+
+  <!-- HISTORIA REGISTRADA -->
+
+  <div
+    class="historia-contenido"
+    *ngIf="
+      !cargandoHistoria &&
+      historiaClinica.id_historia_clinica > 0 &&
+      !mostrarFormularioHistoria
+    ">
+
+    <div class="historia-encabezado">
+
+      <div>
+
+        <span class="registro-titulo">
+          Historia clínica registrada
+        </span>
+
+        <p class="historia-descripcion">
+          Información clínica y antecedentes relevantes del paciente.
+        </p>
+
+      </div>
+
+
+      <!-- ACCIONES HORIZONTALES -->
+
+      <div class="contenedor-acciones">
+
+        <button
+          type="button"
+          class="boton-accion"
+          title="Editar historia clínica"
+          (click)="editarHistoriaClinica()">
+
+          <span class="material-symbols-outlined">
+            edit
+          </span>
+
+        </button>
+
+        <button
+          type="button"
+          class="boton-accion boton-peligro"
+          title="Eliminar historia clínica"
+          (click)="eliminarHistoriaClinica()">
+
+          <span class="material-symbols-outlined">
+            delete
+          </span>
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- FECHA DE APERTURA -->
+
+    <div class="historia-dato">
+
+      <div>
+
+        <span class="historia-label">
+          Fecha de apertura
+        </span>
+
+        <strong>
+          {{
+            historiaClinica.fecha_apertura
+              ? (historiaClinica.fecha_apertura | date:'dd/MM/yyyy')
+              : 'No registrada'
+          }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- ANTECEDENTES -->
+
+    <div class="campo">
+
+      <label>
+        Antecedentes
+      </label>
+
+      <div class="texto-historia">
+
+        <p
+          *ngIf="historiaClinica.antecedentes; else sinAntecedentes">
+
+          {{ historiaClinica.antecedentes }}
+
+        </p>
+
+        <ng-template #sinAntecedentes>
+
+          <span class="texto-vacio">
+            No se han registrado antecedentes.
+          </span>
+
+        </ng-template>
+
+      </div>
+
+    </div>
+
+
+    <!-- ALERGIAS -->
+
+    <div class="campo">
+
+      <label>
+        Alergias
+      </label>
+
+      <div class="texto-historia">
+
+        <p
+          *ngIf="historiaClinica.alergias; else sinAlergias">
+
+          {{ historiaClinica.alergias }}
+
+        </p>
+
+        <ng-template #sinAlergias>
+
+          <span class="texto-vacio">
+            No se han registrado alergias.
+          </span>
+
+        </ng-template>
+
+      </div>
+
+    </div>
+
+
+    <!-- OBSERVACIONES -->
+
+    <div class="campo">
+
+      <label>
+        Observaciones clínicas
+      </label>
+
+      <div class="texto-historia">
+
+        <p
+          *ngIf="
+            historiaClinica.observaciones;
+            else sinObservaciones
+          ">
+
+          {{ historiaClinica.observaciones }}
+
+        </p>
+
+        <ng-template #sinObservaciones>
+
+          <span class="texto-vacio">
+            No se han registrado observaciones clínicas.
+          </span>
+
+        </ng-template>
+
+      </div>
+
+    </div>
+
+
+    <!-- ESTADO -->
+
+    <div class="historia-estado">
+
+      <span
+        class="estado-elemento"
+        [class.inactivo]="!historiaClinica.estado">
+
+        {{
+          historiaClinica.estado
+            ? 'Historia clínica activa'
+            : 'Historia clínica inactiva'
+        }}
+
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <!-- FORMULARIO HISTORIA -->
+
+  <div
+    class="historia-formulario"
+    *ngIf="
+      !cargandoHistoria &&
+      mostrarFormularioHistoria
+    ">
+
+    <div class="campo">
+
+      <label for="fecha_apertura">
+        Fecha de apertura
+      </label>
+
+      <input
+        type="date"
+        id="fecha_apertura"
+        [(ngModel)]="historiaClinica.fecha_apertura">
+
+    </div>
+
+
+    <div class="campo">
+
+      <label for="antecedentes">
+        Antecedentes
+      </label>
+
+      <textarea
+        id="antecedentes"
+        [(ngModel)]="historiaClinica.antecedentes"
+        rows="5"
+        placeholder="Registre los antecedentes relevantes del paciente..."></textarea>
+
+    </div>
+
+
+    <div class="campo">
+
+      <label for="alergias">
+        Alergias
+      </label>
+
+      <textarea
+        id="alergias"
+        [(ngModel)]="historiaClinica.alergias"
+        rows="4"
+        placeholder="Registre las alergias conocidas del paciente..."></textarea>
+
+    </div>
+
+
+    <div class="campo">
+
+      <label for="observacionesHistoria">
+        Observaciones clínicas
+      </label>
+
+      <textarea
+        id="observacionesHistoria"
+        [(ngModel)]="historiaClinica.observaciones"
+        rows="5"
+        placeholder="Registre las observaciones clínicas del paciente..."></textarea>
+
+    </div>
+
+
+    <div class="campo campo-estado">
+
+      <label>
+
+        <input
+          type="checkbox"
+          [(ngModel)]="historiaClinica.estado">
+
+        Historia clínica activa
+
+      </label>
+
+    </div>
+
+
+    <div class="formulario-acciones">
+
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="guardarHistoriaClinica()">
+
+        <span class="material-symbols-outlined">
+          save
+        </span>
+
+        {{
+          historiaClinica.id_historia_clinica > 0
+            ? 'Actualizar historia clínica'
+            : 'Guardar historia clínica'
+        }}
+
+      </button>
+
+
+      <button
+        type="button"
+        class="btn-secundario"
+        (click)="cancelarHistoria()">
+
+        <span class="material-symbols-outlined">
+          close
+        </span>
+
+        Cancelar
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- SIN HISTORIA -->
+
+  <div
+    class="estado-vacio"
+    *ngIf="
+      !cargandoHistoria &&
+      historiaClinica.id_historia_clinica === 0 &&
+      !mostrarFormularioHistoria
+    ">
+
+    <h4>
+      No hay historia clínica registrada
+    </h4>
+
+    <p>
+      Este paciente todavía no tiene una historia clínica registrada.
+    </p>
+
+  </div>
+
+</div>
+
+  </section>
 
   <!-- =========================================================
        BARRA FINAL
@@ -2056,29 +1723,28 @@
 
   <section class="barra-final">
 
-    <div class="estado-final">
+<div class="estado-final">
 
-      <span class="indicador"></span>
+  <span class="indicador"></span>
 
-      <span>
-        Información del paciente lista para finalizar.
-      </span>
+  <span>
+    Información del paciente lista para finalizar.
+  </span>
 
-    </div>
+</div>
 
+<div class="acciones-finales">
 
-    <div class="acciones-finales">
+  <button
+    type="button"
+    class="btn-primary btn-finalizar"
+    (click)="finalizarRegistro()">
 
-      <button
-        type="button"
-        class="btn-primary btn-finalizar"
-        (click)="finalizarRegistro()">
+    ✓ Finalizar registro
 
-        ✓ Finalizar registro
+  </button>
 
-      </button>
-
-    </div>
+</div>
 
   </section>
 
