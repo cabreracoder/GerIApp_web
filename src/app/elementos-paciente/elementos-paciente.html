@@ -1,62 +1,84 @@
 <div class="elementos-paciente">
 
   <!-- =========================================================
-       ENCABEZADO DEL PACIENTE
+     ENCABEZADO DEL PACIENTE
+     ========================================================= -->
+
+<section class="paciente-header">
+
+  <div class="paciente-info">
+
+    <div class="paciente-avatar">
+      {{ obtenerIniciales() }}
+    </div>
+
+    <div class="paciente-datos">
+
+      <div class="paciente-nombre-container">
+        <h2>
+          {{ paciente.nombre }} {{ paciente.apellido }}
+        </h2>
+
+        <span
+          class="estado-paciente"
+          [class.inactivo]="!paciente.estado">
+          {{ paciente.estado ? 'Activo' : 'Inactivo' }}
+        </span>
+      </div>
+
+      <div class="paciente-detalles">
+
+        <span>
+          <strong>Documento:</strong>
+          {{ paciente.numero_documento || 'No registrado' }}
+        </span>
+
+        <span class="separador">•</span>
+
+        <span>
+          <strong>Edad:</strong>
+          {{ obtenerEdad() ?? 'No registrada' }}
+        </span>
+
+        <span class="separador">•</span>
+
+        <span>
+          <strong>Responsable:</strong>
+          {{
+            familiarResponsable
+              ? (familiarResponsable.nombres || '') + ' ' + (familiarResponsable.apellidos || '')
+              : 'No registrado'
+          }}
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- =========================================================
+       BOTÓN DE INVENTARIO
        ========================================================= -->
 
-  <section class="paciente-header">
-    <div class="paciente-info">
+  <div class="acciones-paciente-header">
 
-  <div class="paciente-avatar">
-    {{ obtenerIniciales() }}
-  </div>
+    <button
+      type="button"
+      class="btn-primary btn-inventario"
+      (click)="mostrarInventario()">
 
-  <div class="paciente-datos">
-
-    <div class="paciente-nombre-container">
-      <h2>
-        {{ paciente.nombre }} {{ paciente.apellido }}
-      </h2>
-
-      <span
-        class="estado-paciente"
-        [class.inactivo]="!paciente.estado">
-        {{ paciente.estado ? 'Activo' : 'Inactivo' }}
-      </span>
-    </div>
-
-    <div class="paciente-detalles">
-
-      <span>
-        <strong>Documento:</strong>
-        {{ paciente.numero_documento || 'No registrado' }}
+      <span class="material-symbols-outlined">
+        inventory_2
       </span>
 
-      <span class="separador">•</span>
+      Ver inventario
 
-      <span>
-        <strong>Edad:</strong>
-        {{ obtenerEdad() ?? 'No registrada' }}
-      </span>
-
-      <span class="separador">•</span>
-
-      <span>
-        <strong>Responsable:</strong>
-        {{
-          familiarResponsable
-            ? (familiarResponsable.nombres || '') + ' ' + (familiarResponsable.apellidos || '')
-            : 'No registrado'
-        }}
-      </span>
-
-    </div>
+    </button>
 
   </div>
 
-</div>
-
-  </section>
+</section>
 
   <!-- =========================================================
        TITULO
@@ -2184,6 +2206,46 @@
 
   </div>
 
+<!-- =========================================================
+     BARRA FINAL
+========================================================= -->
+
+<section class="barra-final" *ngIf="mostrarBarraFinal">
+
+  <div class="estado-final">
+
+    <span class="indicador"></span>
+
+    <span>
+      Información del paciente lista para finalizar.
+    </span>
+
+  </div>
+
+  <div class="acciones-finales">
+
+    <button
+      type="button"
+      class="btn-primary btn-finalizar"
+      (click)="finalizarRegistro()">
+
+      ✓ Finalizar registro
+
+    </button>
+
+  </div>
+
 </section>
 
-</div>
+
+<!-- =========================================================
+     DRAWER DE INVENTARIO DEL PACIENTE
+     ========================================================= -->
+
+<app-inventario-paciente
+  [idPaciente]="idPaciente"
+  [paciente]="paciente"
+  [isOpen]="mostrarDrawerInventario"
+  (cerrar)="cerrarInventario()">
+</app-inventario-paciente>
+

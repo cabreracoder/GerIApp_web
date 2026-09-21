@@ -1334,3 +1334,34 @@ flex-shrink: 0;
 .boton-eliminar-pendiente .material-symbols-outlined {
   font-size: 17px;
 }
+
+/* =========================================================
+   BOTÓN DE INVENTARIO EN EL ENCABEZADO
+   ========================================================= */
+
+.paciente-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.acciones-paciente-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.btn-inventario {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.btn-inventario .material-symbols-outlined {
+  font-size: 20px;
+}

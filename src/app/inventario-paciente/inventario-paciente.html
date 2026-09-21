@@ -1,0 +1,442 @@
+<div
+  class="med-drawer-backdrop"
+  [class.active]="isOpen"
+  (click)="closeDrawer()"
+  aria-hidden="true">
+</div>
+
+<aside
+  class="med-drawer"
+  [class.open]="isOpen"
+  role="dialog"
+  aria-labelledby="drawer-title"
+  aria-modal="true">
+
+  <!-- ENCABEZADO -->
+  <div class="drawer-header">
+
+    <div class="header-info">
+
+      <div class="header-badges">
+
+        <span class="location-badge">
+          <span class="material-symbols-outlined icon-sm">
+            meeting_room
+          </span>
+
+          Habitación
+          {{ paciente?.habitacion || 'No registrada' }}
+        </span>
+
+        <span class="custody-badge">
+          <span class="material-symbols-outlined icon-sm">
+            inventory_2
+          </span>
+
+          Inventario de medicamentos
+        </span>
+
+      </div>
+
+      <h2
+        id="drawer-title"
+        class="patient-title">
+
+        Medicamentos de
+        {{ paciente?.nombre }}
+        {{ paciente?.apellido }}
+
+      </h2>
+
+      <p class="patient-meta">
+
+        ID:
+        {{ paciente?.id_paciente }}
+
+        &bull;
+
+        C.C.
+        {{ paciente?.numero_documento || 'No registrada' }}
+
+        &bull;
+
+        EPS:
+        {{ paciente?.eps || 'No registrada' }}
+
+      </p>
+
+    </div>
+
+    <button
+      type="button"
+      class="close-btn"
+      (click)="closeDrawer()"
+      aria-label="Cerrar inventario">
+
+      <span class="material-symbols-outlined">
+        close
+      </span>
+
+    </button>
+
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-grid">
+
+    <div class="kpi-card">
+
+      <span class="kpi-label">
+        Medicamentos activos
+      </span>
+
+      <span class="kpi-value text-primary">
+        {{ totalActivos }}
+      </span>
+
+      <span class="kpi-subtext">
+        Registrados para el paciente
+      </span>
+
+    </div>
+
+    <div class="kpi-card warn">
+
+      <span class="kpi-label">
+        Stock bajo
+      </span>
+
+      <span class="kpi-value text-warn">
+        {{ totalStockBajo }}
+      </span>
+
+      <span class="kpi-subtext">
+        Menos de 5 unidades
+      </span>
+
+    </div>
+
+    <div class="kpi-card danger">
+
+      <span class="kpi-label">
+        Por vencer
+      </span>
+
+      <span class="kpi-value text-danger">
+        {{ totalPorVencer }}
+      </span>
+
+      <span class="kpi-subtext">
+        Próximos 30 días
+      </span>
+
+    </div>
+
+  </div>
+
+  <!-- BUSCADOR Y FILTROS -->
+  <div class="filters-section">
+
+    <div class="search-input-wrapper">
+
+      <span class="material-symbols-outlined search-icon">
+        search
+      </span>
+
+      <input
+        type="search"
+        class="search-input"
+        placeholder="Buscar medicamento o principio activo..."
+        [value]="searchQuery"
+        (input)="onSearchChange($event)" />
+
+    </div>
+
+    <div class="category-chips">
+
+      <button
+        type="button"
+        *ngFor="let categoria of categorias"
+        class="chip-btn"
+        [class.active]="selectedCategory === categoria.value"
+        (click)="selectCategory(categoria.value)">
+
+        {{ categoria.label }}
+
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- CARGANDO -->
+  <div
+    class="loading-state"
+    *ngIf="cargando">
+
+    <span class="material-symbols-outlined loading-icon">
+      progress_activity
+    </span>
+
+    <p>
+      Cargando inventario...
+    </p>
+
+  </div>
+
+  <!-- LISTA -->
+  <div
+    class="med-list-container"
+    *ngIf="!cargando">
+
+    <!-- VACÍO -->
+    <div
+      *ngIf="medicamentosFiltrados.length === 0"
+      class="empty-state">
+
+      <span class="material-symbols-outlined empty-icon">
+        inventory_2
+      </span>
+
+      <h3>
+        No hay medicamentos
+      </h3>
+
+      <p>
+        No se encontraron medicamentos asociados
+        a este paciente con los filtros aplicados.
+      </p>
+
+    </div>
+
+    <!-- MEDICAMENTOS -->
+    <article
+      *ngFor="let med of medicamentosFiltrados"
+      class="med-card"
+      [class.card-critical]="med.stockBajo"
+      [class.card-expired]="med.estaVencido">
+
+      <!-- CABECERA -->
+      <div class="med-card-header">
+
+        <div class="med-main-info">
+
+          <div class="med-title-row">
+
+            <h3 class="med-name">
+              {{ med.nombre }}
+            </h3>
+
+            <span
+              class="tag-type"
+              *ngIf="med.concentracion">
+
+              {{ med.concentracion }}
+
+            </span>
+
+          </div>
+
+          <p class="med-category-subtitle">
+
+            {{ med.principioActivo }}
+
+            <span *ngIf="med.presentacion">
+              &bull;
+              {{ med.presentacion }}
+            </span>
+
+          </p>
+
+        </div>
+
+        <span
+          class="stock-badge"
+          [ngClass]="obtenerClaseStock(med)">
+
+          {{
+            med.stockBajo
+              ? 'Stock bajo'
+              : 'Stock seguro'
+          }}
+
+        </span>
+
+      </div>
+
+      <!-- STOCK -->
+      <div class="stock-info-grid">
+
+        <div class="stock-data">
+
+          <span class="info-label">
+            Stock actual:
+          </span>
+
+          <span class="info-value strong">
+            {{ med.cantidad }}
+            {{ med.unidad }}
+          </span>
+
+        </div>
+
+        <div class="stock-data">
+
+          <span class="info-label">
+            Estado:
+          </span>
+
+          <span
+            class="estado-texto"
+            [class.estado-inactivo]="!med.estado">
+
+            {{ med.estado ? 'Activo' : 'Inactivo' }}
+
+          </span>
+
+        </div>
+
+        <div class="progress-bar-container">
+
+          <div
+            class="progress-fill"
+            [ngClass]="obtenerClaseStock(med)"
+            [style.width.%]="calcularPorcentajeStock(med.cantidad)">
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- FECHAS -->
+      <div class="med-dates-row">
+
+        <span class="date-item">
+
+          <strong>
+            Último ingreso:
+          </strong>
+
+          {{ formatearFecha(med.fechaIngreso) }}
+
+        </span>
+
+        <span
+          class="date-item"
+          [ngClass]="obtenerClaseVencimiento(med)">
+
+          <strong>
+            Vencimiento:
+          </strong>
+
+          {{ formatearFecha(med.fechaVencimiento) }}
+
+          <span
+            *ngIf="med.estaPorVencer"
+            class="expiring-badge">
+
+            {{ obtenerTextoVencimiento(med) }}
+
+          </span>
+
+          <span
+            *ngIf="med.estaVencido"
+            class="expired-badge">
+
+            Vencido
+
+          </span>
+
+        </span>
+
+      </div>
+
+      <!-- OBSERVACIONES -->
+      <div
+        class="med-observations"
+        *ngIf="med.observaciones">
+
+        <span class="material-symbols-outlined">
+          notes
+        </span>
+
+        <span>
+          {{ med.observaciones }}
+        </span>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="med-card-footer">
+
+        <span class="med-instruction">
+
+          <span class="material-symbols-outlined">
+            medication
+          </span>
+
+          Medicamento asociado al paciente
+
+        </span>
+
+        <div class="med-actions">
+
+          <button
+            *ngIf="med.stockBajo"
+            type="button"
+            class="btn-reorder"
+            (click)="requestRefill(med)">
+
+            Reponer
+
+          </button>
+
+          <button
+            type="button"
+            class="btn-details"
+            (click)="viewDetails(med)">
+
+            Detalles
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </article>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="drawer-footer">
+
+    <button
+      type="button"
+      class="btn-primary-action"
+      (click)="onRegisterNewMedicine()">
+
+      <span class="material-symbols-outlined icon-sm">
+        add
+      </span>
+
+      Registrar medicamento
+
+    </button>
+
+    <button
+      type="button"
+      class="btn-secondary-action"
+      (click)="onNotifyTutor()">
+
+      <span class="material-symbols-outlined icon-sm">
+        notifications
+      </span>
+
+      Notificar reposición
+
+    </button>
+
+  </div>
+
+</aside>

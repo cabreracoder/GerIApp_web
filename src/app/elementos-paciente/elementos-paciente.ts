@@ -6,13 +6,15 @@ import { HttpClient } from '@angular/common/http';
 //Esta importacion me permite hacerle varias peticiones al backend 
 import { forkJoin } from 'rxjs';
 import Swal from 'sweetalert2';
+import { InventarioPaciente } from '../inventario-paciente/inventario-paciente';
 
 @Component({
   selector: 'app-elementos-paciente',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    InventarioPaciente
   ],
   templateUrl: './elementos-paciente.html',
   styleUrl: './elementos-paciente.css'
@@ -31,6 +33,23 @@ export class ElementosPaciente implements OnInit {
   // ============================================================
 
   idPaciente: number = 0;
+
+  // ============================================================
+  // INVENTARIO DEL PACIENTE
+  // ============================================================
+
+  // Controla si el drawer de inventario está abierto.
+  mostrarDrawerInventario = false;
+
+  // Abre el inventario del paciente.
+  mostrarInventario(): void {
+    this.mostrarDrawerInventario = true;
+  }
+
+  // Cierra el inventario del paciente.
+  cerrarInventario(): void {
+    this.mostrarDrawerInventario = false;
+  }
 
   // ============================================================
   // INFORMACIÓN DEL PACIENTE
