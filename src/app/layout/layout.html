@@ -136,16 +136,8 @@
             (click)="abrirConfiguracion()"
           >
 
-            <!-- MOSTRAR FOTO SI EXISTE -->
-            <img
-              *ngIf="fotoUsuario"
-              [src]="fotoUsuario"
-              alt="Foto de perfil"
-              class="foto-usuario"
-            >
-
-            <!-- MOSTRAR INICIALES SI NO HAY FOTO -->
-            <span *ngIf="!fotoUsuario">
+            <!-- MOSTRAR INICIALES -->
+            <span>
               {{ inicialesUsuario }}
             </span>
 

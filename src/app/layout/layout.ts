@@ -6,7 +6,6 @@ import {
   RouterOutlet,
   Router
 } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 
 interface OpcionMenu {
   nombre: string;
@@ -22,7 +21,6 @@ interface UsuarioActualizado {
   correo?: string;
   telefono?: string | null;
   rol?: string;
-  foto?: string | null;
   [key: string]: any;
 }
 
@@ -69,8 +67,7 @@ export class Layout implements OnDestroy {
 
   constructor(
     private router: Router,
-    private cdr: ChangeDetectorRef,
-    private http: HttpClient
+    private cdr: ChangeDetectorRef
   ) {
 
     this.cargarUsuario();
@@ -84,13 +81,6 @@ export class Layout implements OnDestroy {
       this.usuarioActualizadoListener
     );
   }
-
-  // =====================================================
-  // API
-  // =====================================================
-
-  private readonly apiUrl =
-    'https://geriapp-backend.onrender.com/api';
 
   // =====================================================
   // DATOS GENERALES DE LA APLICACIÓN
@@ -114,9 +104,6 @@ export class Layout implements OnDestroy {
   rolUsuario = '';
 
   inicialesUsuario = '';
-
-  // URL de la foto del usuario
-  fotoUsuario: string | null = null;
 
   // =====================================================
   // MENÚ FLOTANTE DE PACIENTES
@@ -222,14 +209,7 @@ export class Layout implements OnDestroy {
         usuario
       );
 
-      // Primero mostramos los datos que ya tenemos
       this.actualizarDatosUsuario(usuario);
-
-      // Después consultamos el backend para obtener
-      // la información actualizada, incluida la foto.
-      this.cargarFotoDesdeApi(
-        usuario.id_usuario
-      );
 
     } catch (error) {
 
@@ -238,97 +218,6 @@ export class Layout implements OnDestroy {
         error
       );
     }
-  }
-
-  // =====================================================
-  // CARGAR FOTO DESDE EL BACKEND
-  // =====================================================
-
-  private cargarFotoDesdeApi(
-    idUsuario: number
-  ): void {
-
-    console.log(
-      'LAYOUT - CONSULTANDO FOTO DEL USUARIO:',
-      idUsuario
-    );
-
-    this.http.get<UsuarioActualizado>(
-      `${this.apiUrl}/usuarios/${idUsuario}/`
-    ).subscribe({
-
-      next: (usuarioApi) => {
-
-        console.log(
-          'LAYOUT - USUARIO OBTENIDO DESDE API:',
-          usuarioApi
-        );
-
-        // Actualizar la foto directamente
-        // con la información actual del backend.
-        this.fotoUsuario =
-          this.normalizarUrlFoto(
-            usuarioApi.foto
-          );
-
-        console.log(
-          'LAYOUT - FOTO OBTENIDA DESDE API:',
-          usuarioApi.foto
-        );
-
-        console.log(
-          'LAYOUT - URL FINAL DE FOTO:',
-          this.fotoUsuario
-        );
-
-        // Actualizar localStorage para que la próxima
-        // carga ya tenga la foto disponible.
-        const usuarioGuardado =
-          localStorage.getItem('usuario');
-
-        if (usuarioGuardado) {
-
-          try {
-
-            const usuarioLocal:
-              UsuarioActualizado =
-              JSON.parse(usuarioGuardado);
-
-            const usuarioActualizado:
-              UsuarioActualizado = {
-              ...usuarioLocal,
-              ...usuarioApi
-            };
-
-            localStorage.setItem(
-              'usuario',
-              JSON.stringify(usuarioActualizado)
-            );
-
-          } catch (error) {
-
-            console.error(
-              'LAYOUT - ERROR AL ACTUALIZAR LOCALSTORAGE:',
-              error
-            );
-          }
-        }
-
-        this.cdr.detectChanges();
-      },
-
-      error: (error) => {
-
-        console.error(
-          'LAYOUT - ERROR AL CONSULTAR USUARIO:',
-          error
-        );
-
-        // Si falla la consulta, conservamos los datos
-        // que ya estaban cargados desde localStorage.
-        this.cdr.detectChanges();
-      }
-    });
   }
 
   // =====================================================
@@ -367,62 +256,6 @@ export class Layout implements OnDestroy {
     this.inicialesUsuario =
       `${nombres.charAt(0)}${apellidos.charAt(0)}`
         .toUpperCase();
-
-    // ---------------------------------------------------
-    // FOTO DE PERFIL
-    // ---------------------------------------------------
-
-    this.fotoUsuario =
-      this.normalizarUrlFoto(usuario.foto);
-
-    console.log(
-      'LAYOUT - FOTO RECIBIDA:',
-      usuario.foto
-    );
-
-    console.log(
-      'LAYOUT - URL FINAL DE FOTO:',
-      this.fotoUsuario
-    );
-  }
-
-  // =====================================================
-  // NORMALIZAR URL DE LA FOTO
-  // =====================================================
-
-  private normalizarUrlFoto(
-    foto: string | null | undefined
-  ): string | null {
-
-    if (!foto) {
-      return null;
-    }
-
-    // Si Django ya devuelve una URL completa
-    if (
-      foto.startsWith('http://') ||
-      foto.startsWith('https://')
-    ) {
-      return foto;
-    }
-
-    // Asegurar que la ruta empiece con /
-    if (!foto.startsWith('/')) {
-      foto = `/${foto}`;
-    }
-
-    // Si ya viene con /media/
-    if (foto.startsWith('/media/')) {
-      return `https://geriapp-backend.onrender.com${foto}`;
-    }
-
-    // Si viene como /usuarios/foto.jpg
-    // agregar /media/
-    if (foto.startsWith('/usuarios/')) {
-      return `https://geriapp-backend.onrender.com/media${foto}`;
-    }
-
-    return `https://geriapp-backend.onrender.com${foto}`;
   }
 
   // =====================================================
@@ -467,4 +300,3 @@ export class Layout implements OnDestroy {
     );
   }
 }
-

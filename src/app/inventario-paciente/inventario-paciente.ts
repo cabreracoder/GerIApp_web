@@ -138,22 +138,33 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['isOpen'] && this.isOpen) {
-      this.bloquearScroll();
-    }
 
-    if (changes['isOpen'] && !this.isOpen) {
+  if (changes['isOpen']) {
+
+    if (this.isOpen) {
+      this.bloquearScroll();
+
+      // Cuando se abre el inventario,
+      // cargamos los datos del paciente.
+      if (this.idPaciente > 0) {
+        this.cargarInventario();
+      }
+
+    } else {
       this.restaurarScroll();
     }
-
-    if (
-      changes['idPaciente'] &&
-      this.idPaciente > 0 &&
-      this.isOpen
-    ) {
-      this.cargarInventario();
-    }
   }
+
+  // Si cambia el paciente mientras el inventario
+  // ya está abierto, volvemos a cargar sus datos.
+  if (
+    changes['idPaciente'] &&
+    this.idPaciente > 0 &&
+    this.isOpen
+  ) {
+    this.cargarInventario();
+  }
+}
 
   ngOnDestroy(): void {
     if (typeof window !== 'undefined') {
@@ -256,97 +267,98 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
    * Construye la información que mostrará
    * el drawer usando elementos_paciente + medicamentos.
    */
-  private construirInventario(): void {
+ private construirInventario(): void {
+  
+  this.medicamentosInventario =
+    this.elementosPaciente
+      .filter(elemento => {
+        return elemento.id_medicamentos !== null &&
+               elemento.id_medicamentos !== undefined;
+      })
+      .map(elemento => {
 
-    this.medicamentosInventario =
-      this.elementosPaciente
-        .filter(elemento => {
-          return elemento.id_medicamentos !== null &&
-                 elemento.id_medicamentos !== undefined;
-        })
-        .map(elemento => {
+        const idMedicamento =
+          this.obtenerIdMedicamento(
+            elemento.id_medicamentos
+          );
 
-          const idMedicamento =
-            this.obtenerIdMedicamento(
-              elemento.id_medicamentos
-            );
+        const medicamento =
+          this.medicamentos.find(item =>
+            Number(item.id_medicamentos) ===
+            Number(idMedicamento)
+          );
 
-          const medicamento =
-            this.medicamentos.find(item =>
-              Number(item.id_medicamentos) ===
-              Number(idMedicamento)
-            );
+        const cantidad =
+          Number(elemento.cantidad) || 0;
 
-          const cantidad =
-            Number(elemento.cantidad) || 0;
+        const fechaVencimiento =
+          elemento.fecha_vencimiento || null;
 
-          const fechaVencimiento =
-            elemento.fecha_vencimiento || null;
+        const diasParaVencer =
+          this.calcularDiasParaVencer(
+            fechaVencimiento
+          );
 
-          const diasParaVencer =
-            this.calcularDiasParaVencer(
-              fechaVencimiento
-            );
+        const estaVencido =
+          diasParaVencer !== null &&
+          diasParaVencer < 0;
 
-          const estaVencido =
-            diasParaVencer !== null &&
-            diasParaVencer < 0;
+        const estaPorVencer =
+          diasParaVencer !== null &&
+          diasParaVencer >= 0 &&
+          diasParaVencer <= 30;
 
-          const estaPorVencer =
-            diasParaVencer !== null &&
-            diasParaVencer >= 0 &&
-            diasParaVencer <= 30;
+        const stockMinimo = 5;
 
-          /*
-           * El backend no tiene un campo minRequired.
-           * Para el inventario visual utilizamos 5 unidades
-           * como referencia de stock bajo.
-           *
-           * Si posteriormente quieres que el mínimo sea
-           * configurable desde la base de datos, lo podemos
-           * cambiar.
-           */
-          const stockMinimo = 5;
+        const stockBajo =
+          cantidad < stockMinimo;
 
-          const stockBajo =
-            cantidad < stockMinimo;
+        return {
+          id: Number(idMedicamento) || 0,
+          idElemento: elemento.id_elemento,
+          nombre: medicamento?.nombre || 'Medicamento no encontrado',
+          principioActivo:
+            medicamento?.principio_activo || 'No registrado',
+          concentracion:
+            medicamento?.concentracion || '',
+          presentacion:
+            medicamento?.presentacion || 'No registrada',
+          cantidad: cantidad,
+          unidad:
+            medicamento?.unidad_medida ||
+            medicamento?.presentacion ||
+            'unidades',
+          fechaIngreso:
+            elemento.fecha_ingreso || '',
+          fechaVencimiento:
+            fechaVencimiento,
+          observaciones:
+            elemento.observaciones || '',
+          estado:
+            elemento.estado ?? true,
+          diasParaVencer:
+            diasParaVencer,
+          estaPorVencer:
+            estaPorVencer,
+          estaVencido:
+            estaVencido,
+          stockBajo:
+            stockBajo
+        };
+      });
 
-          return {
-            id: Number(idMedicamento) || 0,
-            idElemento: elemento.id_elemento,
-            nombre: medicamento?.nombre || 'Medicamento no encontrado',
-            principioActivo:
-              medicamento?.principio_activo || 'No registrado',
-            concentracion:
-              medicamento?.concentracion || '',
-            presentacion:
-              medicamento?.presentacion || 'No registrada',
-            cantidad: cantidad,
-            unidad:
-              medicamento?.unidad_medida ||
-              medicamento?.presentacion ||
-              'unidades',
-            fechaIngreso:
-              elemento.fecha_ingreso || '',
-            fechaVencimiento:
-              fechaVencimiento,
-            observaciones:
-              elemento.observaciones || '',
-            estado:
-              elemento.estado ?? true,
-            diasParaVencer:
-              diasParaVencer,
-            estaPorVencer:
-              estaPorVencer,
-            estaVencido:
-              estaVencido,
-            stockBajo:
-              stockBajo
-          };
-        });
+  console.log(
+    'MEDICAMENTOS CONSTRUIDOS PARA INVENTARIO:',
+    this.medicamentosInventario
+  );
 
-    this.aplicarFiltros();
-  }
+  this.aplicarFiltros();
+
+  console.log(
+    'MEDICAMENTOS DESPUÉS DE FILTROS:',
+    this.medicamentosFiltrados
+  );
+}
 
   /**
    * Búsqueda por nombre, principio activo,
