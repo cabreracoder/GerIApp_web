@@ -2155,35 +2155,35 @@
 
   </section>
 
-  <!-- =========================================================
-       BARRA FINAL
-       ========================================================= -->
+<!-- =========================================================
+     BARRA FINAL
+========================================================= -->
 
-  <section class="barra-final">
+<section class="barra-final" *ngIf="mostrarBarraFinal">
 
-<div class="estado-final">
+  <div class="estado-final">
 
-  <span class="indicador"></span>
+    <span class="indicador"></span>
 
-  <span>
-    Información del paciente lista para finalizar.
-  </span>
+    <span>
+      Información del paciente lista para finalizar.
+    </span>
 
-</div>
+  </div>
 
-<div class="acciones-finales">
+  <div class="acciones-finales">
 
-  <button
-    type="button"
-    class="btn-primary btn-finalizar"
-    (click)="finalizarRegistro()">
+    <button
+      type="button"
+      class="btn-primary btn-finalizar"
+      (click)="finalizarRegistro()">
 
-    ✓ Finalizar registro
+      ✓ Finalizar registro
 
-  </button>
+    </button>
 
-</div>
+  </div>
 
-  </section>
+</section>
 
 </div>

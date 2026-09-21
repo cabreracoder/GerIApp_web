@@ -153,6 +153,8 @@ export class ElementosPaciente implements OnInit {
 
   insumosPendientes: FormularioElemento[] = [];
 
+  mostrarBarraFinal: boolean = true;
+
   // ============================================================
   // CUIDADOS DE ENFERMERÍA
   // ============================================================
@@ -3998,43 +4000,88 @@ agregarInsumoPendiente(): void {
   // ============================================================
 
   finalizarRegistro(): void {
+  const faltantes: string[] = [];
 
+  // Validar información básica del paciente
+  if (!this.paciente) {
+    faltantes.push('Información básica del paciente');
+  }
+
+  // Validar elementos del paciente
+  if (!this.elementosPaciente || this.elementosPaciente.length === 0) {
+    faltantes.push('Elementos del paciente');
+  }
+
+  // Validar cuidados de enfermería
+if (!this.cuidados) {
+  faltantes.push('Cuidados de enfermería');
+}
+
+// Validar recomendaciones
+if (!this.recomendaciones) {
+  faltantes.push('Recomendaciones');
+}
+  // Validar historia clínica
+  if (!this.historiaClinica) {
+    faltantes.push('Historia clínica');
+  }
+
+  // Si faltan datos, mostrar cuáles faltan
+  if (faltantes.length > 0) {
     Swal.fire({
+      icon: 'warning',
+      title: 'Registro incompleto',
+      html: `
+        <p>Aún faltan datos por completar:</p>
 
-      icon: 'question',
+        <ul style="text-align: left;">
+          ${faltantes.map(item => `<li>${item}</li>`).join('')}
+        </ul>
 
-      title: '¿Finalizar registro?',
+        <p>
+          Completa toda la información antes de finalizar el registro.
+        </p>
+      `,
+      confirmButtonText: 'Entendido'
+    });
 
-      text:
-        'Verifique que la información del paciente esté completa.',
+    return;
+  }
 
-      showCancelButton: true,
+  // Si todo está completo, mostrar confirmación
+  Swal.fire({
+    icon: 'question',
+    title: '¿Finalizar registro?',
+    text: 'Toda la información del paciente está completa.',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, finalizar',
+    cancelButtonText: 'Cancelar',
+    reverseButtons: true
+  }).then((resultado) => {
 
-      confirmButtonText:
-        'Sí, finalizar',
+    if (!resultado.isConfirmed) {
+      return;
+    }
 
-      cancelButtonText:
-        'Cancelar'
+    // Mostrar mensaje de registro exitoso
+    Swal.fire({
+      icon: 'success',
+      title: '¡Registro finalizado!',
+      text: 'La información del paciente se registró correctamente.',
+      timer: 2000,
+      showConfirmButton: false
+    }).then(() => {
 
-    }).then((resultado) => {
+      // Ocultar la barra inferior después de mostrar la notificación
+      this.mostrarBarraFinal = false;
 
-      if (!resultado.isConfirmed) {
-        return;
-      }
-
-      Swal.fire({
-        icon: 'success',
-        title: 'Registro finalizado',
-        text:
-          'El registro del paciente fue finalizado correctamente.',
-        timer: 2000,
-        showConfirmButton: false
-      });
+      // Actualizar la vista
+      this.cdr.detectChanges();
 
     });
 
-  }
-
+  });
+}
   // ============================================================
   // FECHA ACTUAL
   // ============================================================
