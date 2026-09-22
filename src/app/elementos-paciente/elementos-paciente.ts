@@ -8,6 +8,329 @@ import { forkJoin } from 'rxjs';
 import Swal from 'sweetalert2';
 import { InventarioPaciente } from '../inventario-paciente/inventario-paciente';
 
+// ============================================================
+// INTERFAZ RESPUESTA PAGINADA
+// ============================================================
+
+interface RespuestaPaginada<T> {
+
+  count: number;
+
+  next: string | null;
+
+  previous: string | null;
+
+  results: T[];
+
+}
+
+// ============================================================
+// INTERFAZ PACIENTE
+// ============================================================
+
+interface Paciente {
+
+  id_paciente: number;
+
+  nombre: string;
+
+  apellido: string;
+
+  eps: string;
+
+  sede: string;
+
+  fecha_ingreso: string;
+
+  habitacion: number;
+
+  id_usuario:
+    number |
+    {
+      id_usuario?: number;
+    } |
+    null;
+
+  tipo_documento: string;
+
+  numero_documento: string;
+
+  fecha_nacimiento: string;
+
+  genero: string;
+
+  grupo_sanguineo: string;
+
+  rh: string;
+
+  cama: number;
+
+  estado: boolean;
+
+}
+
+// ============================================================
+// FAMILIAR RESPONSABLE
+// ============================================================
+
+interface FamiliarResponsable {
+
+  id_familiar_responsable: number;
+
+  id_paciente:
+    number |
+    {
+      id_paciente?: number;
+    } |
+    null;
+
+  nombres: string;
+
+  apellidos: string;
+
+  parentesco: string;
+
+  telefono_uno: string;
+
+  telefono_dos: string | null;
+
+  direccion: string | null;
+
+  correo: string | null;
+
+  municipio: string | null;
+
+}
+
+// ============================================================
+// MEDICAMENTO
+// ============================================================
+
+interface Medicamento {
+
+  id_medicamentos: number;
+
+  nombre: string;
+
+  descripcion: string;
+
+  principio_activo: string;
+
+  concentracion: string;
+
+  presentacion: string;
+
+  estado: boolean;
+
+  unidad_medida: string;
+
+}
+
+// ============================================================
+// TIPO DE INSUMO
+// ============================================================
+
+interface TipoInsumo {
+
+  id_tipo_insumo: number;
+
+  nombre: string;
+
+  descripcion?: string;
+
+  estado?: boolean;
+
+}
+
+// ============================================================
+// INSUMO
+// ============================================================
+
+interface Insumo {
+
+  id_insumo: number;
+
+  id_tipo_insumo:
+    number |
+    {
+      id_tipo_insumo?: number;
+    } |
+    null;
+
+  nombre: string;
+
+  descripcion: string;
+
+  unidad_medida: string;
+
+  estado: boolean;
+
+}
+
+// ============================================================
+// ELEMENTO DEL PACIENTE
+// ============================================================
+
+interface ElementoPaciente {
+
+  id_elemento: number;
+
+  cantidad: number;
+
+  fecha_ingreso: string;
+
+  fecha_vencimiento: string | null;
+
+  observaciones: string | null;
+
+  estado: boolean | null;
+
+  id_paciente:
+    number |
+    {
+      id_paciente?: number;
+    } |
+    null;
+
+  id_medicamentos:
+    number |
+    {
+      id_medicamentos?: number;
+      nombre?: string;
+    } |
+    null;
+
+  id_insumo:
+    number |
+    {
+      id_insumo?: number;
+      nombre?: string;
+    } |
+    null;
+
+}
+
+// ============================================================
+// FORMULARIO ELEMENTO
+// ============================================================
+
+interface FormularioElemento {
+
+  id_medicamentos: number | null;
+
+  id_insumo: number | null;
+
+  // Se utiliza para seleccionar el tipo
+  // antes de seleccionar el insumo.
+  id_tipo_insumo: number | null;
+
+  cantidad: number;
+
+  fecha_ingreso: string;
+
+  fecha_vencimiento: string;
+
+  observaciones: string;
+
+  estado: boolean;
+
+}
+
+// ============================================================
+// CUIDADOS DE ENFERMERÍA
+// ============================================================
+
+interface CuidadoEnfermeria {
+
+  id_cuidado: number;
+
+  bano_paciente: string | null;
+
+  peso_talla: string | null;
+
+  control_glucemia: string | null;
+
+  curaciones: string | null;
+
+  liquidos_administrados_eliminados: string | null;
+
+  control_deposicion: string | null;
+
+  administracion_medicamentos: string | null;
+
+  id_paciente:
+    number |
+    {
+      id_paciente?: number;
+    } |
+    null;
+
+}
+
+// ============================================================
+// RECOMENDACIONES
+// ============================================================
+
+interface Recomendacion {
+
+  id_recomendacion: number;
+
+  hidratar_piel: string | null;
+
+  asistir_alimentacion: string | null;
+
+  via_alimentacion: string | null;
+
+  prevencion_caidas: string | null;
+
+  terapias_fisicas: string | null;
+
+  terapia_respiratoria: string | null;
+
+  actividad_ocupacional: string | null;
+
+  corte_unas: string | null;
+
+  corte_cabello: string | null;
+
+  higiene_oral: string | null;
+
+  id_paciente:
+    number |
+    {
+      id_paciente?: number;
+    } |
+    null;
+
+}
+
+// ============================================================
+// HISTORIA CLÍNICA
+// ============================================================
+
+interface HistoriaClinica {
+
+  id_historia_clinica: number;
+
+  fecha_apertura: string;
+
+  antecedentes: string;
+
+  alergias: string;
+
+  observaciones: string;
+
+  estado: boolean;
+
+  id_paciente:
+    number |
+    {
+      id_paciente?: number;
+    } |
+    null;
+
+}
+
 @Component({
   selector: 'app-elementos-paciente',
   standalone: true,
@@ -468,6 +791,66 @@ export class ElementosPaciente implements OnInit {
     }
 
     return edad;
+  }
+
+  // ============================================================
+  // OBTENER FECHA ACTUAL
+  // ============================================================
+
+  private obtenerFechaActual(): string {
+
+    const ahora = new Date();
+
+    const anio =
+      ahora.getFullYear();
+
+    const mes =
+      String(
+        ahora.getMonth() + 1
+      ).padStart(2, '0');
+
+    const dia =
+      String(
+        ahora.getDate()
+      ).padStart(2, '0');
+
+    return `${anio}-${mes}-${dia}`;
+
+  }
+
+  // ============================================================
+  // OBTENER FECHA Y HORA ACTUAL
+  // ============================================================
+
+  private obtenerFechaHoraActual(): string {
+
+    const ahora = new Date();
+
+    const anio =
+      ahora.getFullYear();
+
+    const mes =
+      String(
+        ahora.getMonth() + 1
+      ).padStart(2, '0');
+
+    const dia =
+      String(
+        ahora.getDate()
+      ).padStart(2, '0');
+
+    const horas =
+      String(
+        ahora.getHours()
+      ).padStart(2, '0');
+
+    const minutos =
+      String(
+        ahora.getMinutes()
+      ).padStart(2, '0');
+
+    return `${anio}-${mes}-${dia}T${horas}:${minutos}`;
+
   }
 
   // ============================================================
@@ -956,7 +1339,7 @@ export class ElementosPaciente implements OnInit {
       cantidad: 1,
 
       fecha_ingreso:
-        this.obtenerFechaActual(),
+        this.obtenerFechaHoraActual(),
 
       fecha_vencimiento: '',
 
@@ -1013,7 +1396,7 @@ export class ElementosPaciente implements OnInit {
       cantidad: 1,
 
       fecha_ingreso:
-        this.obtenerFechaActual(),
+        this.obtenerFechaHoraActual(),
 
       fecha_vencimiento: '',
 
@@ -1068,7 +1451,7 @@ export class ElementosPaciente implements OnInit {
       cantidad: 1,
 
       fecha_ingreso:
-        this.obtenerFechaActual(),
+        this.obtenerFechaHoraActual(),
 
       fecha_vencimiento: '',
 
@@ -1216,6 +1599,134 @@ export class ElementosPaciente implements OnInit {
     this.cdr.detectChanges();
 
   }
+
+// ============================================================
+// CONVERTIR FECHA PARA INPUT
+// ============================================================
+
+private convertirFechaParaInput(
+  fecha: string | null | undefined
+): string {
+
+  if (!fecha) {
+    return '';
+  }
+
+  try {
+
+    const fechaConvertida =
+      new Date(fecha);
+
+    if (isNaN(fechaConvertida.getTime())) {
+      return '';
+    }
+
+    const anio =
+      fechaConvertida.getFullYear();
+
+    const mes =
+      String(
+        fechaConvertida.getMonth() + 1
+      ).padStart(2, '0');
+
+    const dia =
+      String(
+        fechaConvertida.getDate()
+      ).padStart(2, '0');
+
+    return `${anio}-${mes}-${dia}`;
+
+  } catch (error) {
+
+    return '';
+
+  }
+
+}
+
+// ============================================================
+// MOSTRAR ERROR DE LA API
+// ============================================================
+
+private mostrarErrorApi(
+  error: any,
+  mensajePorDefecto: string = 'Ocurrió un error al comunicarse con el servidor.'
+): void {
+
+  let mensaje =
+    mensajePorDefecto;
+
+  if (
+    error &&
+    error.error
+  ) {
+
+    if (
+      typeof error.error === 'string'
+    ) {
+
+      mensaje =
+        error.error;
+
+    } else if (
+      error.error.detail
+    ) {
+
+      mensaje =
+        error.error.detail;
+
+    } else if (
+      error.error.message
+    ) {
+
+      mensaje =
+        error.error.message;
+
+    } else if (
+      error.error.mensaje
+    ) {
+
+      mensaje =
+        error.error.mensaje;
+
+    } else {
+
+      try {
+
+        mensaje =
+          Object
+            .values(error.error)
+            .flat()
+            .join(' ');
+
+      } catch (e) {
+
+        mensaje =
+          mensajePorDefecto;
+
+      }
+
+    }
+
+  } else if (
+    error &&
+    error.message
+  ) {
+
+    mensaje =
+      error.message;
+
+  }
+
+  Swal.fire({
+    icon: 'error',
+    title: 'Error',
+    text: mensaje,
+    confirmButtonText: 'Entendido'
+  });
+
+}
+
 
   // ============================================================
   // OBTENER ID MEDICAMENTO
@@ -1508,7 +2019,7 @@ export class ElementosPaciente implements OnInit {
       cantidad: 1,
 
       fecha_ingreso:
-        this.obtenerFechaActual(),
+        this.obtenerFechaHoraActual(),
 
       fecha_vencimiento: '',
 
@@ -1612,7 +2123,7 @@ agregarInsumoPendiente(): void {
     cantidad: 1,
 
     fecha_ingreso:
-      this.obtenerFechaActual(),
+      this.obtenerFechaHoraActual(),
 
     fecha_vencimiento: '',
 
@@ -1628,6 +2139,7 @@ agregarInsumoPendiente(): void {
 
   this.cdr.detectChanges();
 }
+
   // ============================================================
   // OBTENER NOMBRE DEL MEDICAMENTO PENDIENTE
   // ============================================================
@@ -1901,7 +2413,7 @@ agregarInsumoPendiente(): void {
 
       fecha_ingreso:
         this.formularioElemento.fecha_ingreso ||
-        this.obtenerFechaActual(),
+        this.obtenerFechaHoraActual(),
 
       fecha_vencimiento:
         this.tipoElemento === 'medicamento'
@@ -2075,7 +2587,7 @@ agregarInsumoPendiente(): void {
 
             fecha_ingreso:
               medicamento.fecha_ingreso ||
-              this.obtenerFechaActual(),
+              this.obtenerFechaHoraActual(),
 
             fecha_vencimiento:
               medicamento.fecha_vencimiento ||
@@ -2183,7 +2695,7 @@ agregarInsumoPendiente(): void {
 
             fecha_ingreso:
               insumo.fecha_ingreso ||
-              this.obtenerFechaActual(),
+              this.obtenerFechaHoraActual(),
 
             // Los insumos no manejan vencimiento.
             fecha_vencimiento:
@@ -2296,7 +2808,7 @@ agregarInsumoPendiente(): void {
       cantidad: 1,
 
       fecha_ingreso:
-        this.obtenerFechaActual(),
+        this.obtenerFechaHoraActual(),
 
       fecha_vencimiento: '',
 
@@ -2344,7 +2856,7 @@ agregarInsumoPendiente(): void {
       cantidad: 1,
 
       fecha_ingreso:
-        this.obtenerFechaActual(),
+        this.obtenerFechaHoraActual(),
 
       fecha_vencimiento: '',
 
@@ -4014,530 +4526,184 @@ agregarInsumoPendiente(): void {
 
   }
 
-  // ============================================================
-  // FINALIZAR REGISTRO
-  // ============================================================
+// ============================================================
+// FINALIZAR REGISTRO
+// ============================================================
 
-  finalizarRegistro(): void {
+finalizarRegistro(): void {
+
   const faltantes: string[] = [];
 
-  // Validar información básica del paciente
-  if (!this.paciente) {
-    faltantes.push('Información básica del paciente');
+  // ============================================================
+  // VALIDAR INFORMACIÓN BÁSICA DEL PACIENTE
+  // ============================================================
+
+  if (
+    !this.paciente ||
+    !this.paciente.id_paciente ||
+    this.paciente.id_paciente <= 0
+  ) {
+
+    faltantes.push(
+      'Información básica del paciente'
+    );
+
   }
 
-  // Validar elementos del paciente
-  if (!this.elementosPaciente || this.elementosPaciente.length === 0) {
-    faltantes.push('Elementos del paciente');
+  // ============================================================
+  // VALIDAR ELEMENTOS DEL PACIENTE
+  // ============================================================
+
+  if (
+    !this.elementosPaciente ||
+    this.elementosPaciente.length === 0
+  ) {
+
+    faltantes.push(
+      'Elementos del paciente'
+    );
+
   }
 
-  // Validar cuidados de enfermería
-if (!this.cuidados) {
-  faltantes.push('Cuidados de enfermería');
-}
+  // ============================================================
+  // VALIDAR CUIDADOS DE ENFERMERÍA
+  // ============================================================
 
-// Validar recomendaciones
-if (!this.recomendaciones) {
-  faltantes.push('Recomendaciones');
-}
-  // Validar historia clínica
-  if (!this.historiaClinica) {
-    faltantes.push('Historia clínica');
+  if (
+    !this.cuidados ||
+    !this.cuidados.id_cuidado ||
+    this.cuidados.id_cuidado <= 0
+  ) {
+
+    faltantes.push(
+      'Cuidados de enfermería'
+    );
+
   }
 
-  // Si faltan datos, mostrar cuáles faltan
+  // ============================================================
+  // VALIDAR RECOMENDACIONES
+  // ============================================================
+
+  if (
+    !this.recomendaciones ||
+    !this.recomendaciones.id_recomendacion ||
+    this.recomendaciones.id_recomendacion <= 0
+  ) {
+
+    faltantes.push(
+      'Recomendaciones'
+    );
+
+  }
+
+  // ============================================================
+  // VALIDAR HISTORIA CLÍNICA
+  // ============================================================
+
+  if (
+    !this.historiaClinica ||
+    !this.historiaClinica.id_historia_clinica ||
+    this.historiaClinica.id_historia_clinica <= 0
+  ) {
+
+    faltantes.push(
+      'Historia clínica'
+    );
+
+  }
+
+  // ============================================================
+  // MOSTRAR APARTADOS FALTANTES
+  // ============================================================
+
   if (faltantes.length > 0) {
+
     Swal.fire({
+
       icon: 'warning',
+
       title: 'Registro incompleto',
+
       html: `
-        <p>Aún faltan datos por completar:</p>
+        <p>Aún faltan apartados por completar:</p>
 
         <ul style="text-align: left;">
-          ${faltantes.map(item => `<li>${item}</li>`).join('')}
+          ${faltantes
+            .map(item => `<li>${item}</li>`)
+            .join('')}
         </ul>
 
         <p>
           Completa toda la información antes de finalizar el registro.
         </p>
       `,
+
       confirmButtonText: 'Entendido'
+
     });
 
     return;
   }
 
-  // Si todo está completo, mostrar confirmación
+  // ============================================================
+  // CONFIRMAR FINALIZACIÓN
+  // ============================================================
+
   Swal.fire({
+
     icon: 'question',
+
     title: '¿Finalizar registro?',
-    text: 'Toda la información del paciente está completa.',
+
+    text:
+      'Toda la información del paciente está completa.',
+
     showCancelButton: true,
-    confirmButtonText: 'Sí, finalizar',
-    cancelButtonText: 'Cancelar',
+
+    confirmButtonText:
+      'Sí, finalizar',
+
+    cancelButtonText:
+      'Cancelar',
+
     reverseButtons: true
+
   }).then((resultado) => {
 
     if (!resultado.isConfirmed) {
       return;
     }
 
-    // Mostrar mensaje de registro exitoso
+    // ============================================================
+    // REGISTRO FINALIZADO
+    // ============================================================
+
     Swal.fire({
+
       icon: 'success',
+
       title: '¡Registro finalizado!',
-      text: 'La información del paciente se registró correctamente.',
+
+      text:
+        'La información del paciente se registró correctamente.',
+
       timer: 2000,
+
       showConfirmButton: false
+
     }).then(() => {
 
-      // Ocultar la barra inferior después de mostrar la notificación
+      // Ocultar la barra inferior.
       this.mostrarBarraFinal = false;
 
-      // Actualizar la vista
+      // Actualizar la vista.
       this.cdr.detectChanges();
 
     });
 
   });
-}
-  // ============================================================
-  // FECHA ACTUAL
-  // ============================================================
-
-  private obtenerFechaActual(): string {
-
-    const ahora =
-      new Date();
-
-    const año =
-      ahora.getFullYear();
-
-    const mes =
-      String(
-        ahora.getMonth() + 1
-      ).padStart(2, '0');
-
-    const dia =
-      String(
-        ahora.getDate()
-      ).padStart(2, '0');
-
-    const horas =
-      String(
-        ahora.getHours()
-      ).padStart(2, '0');
-
-    const minutos =
-      String(
-        ahora.getMinutes()
-      ).padStart(2, '0');
-
-    return `${año}-${mes}-${dia}T${horas}:${minutos}`;
-
-  }
-
-  // ============================================================
-  // CONVERTIR FECHA PARA INPUT
-  // ============================================================
-
-  private convertirFechaParaInput(
-    fecha: string | null
-  ): string {
-
-    if (!fecha) {
-      return '';
-    }
-
-    return fecha.substring(
-      0,
-      16
-    );
-
-  }
-
-  // ============================================================
-  // ERROR DEL API
-  // ============================================================
-
-  private mostrarErrorApi(
-    error: any,
-    mensajeDefault: string
-  ): void {
-
-    let mensaje =
-      mensajeDefault;
-
-    if (error?.error) {
-
-      if (
-        typeof error.error === 'string'
-      ) {
-
-        mensaje =
-          error.error;
-
-      } else if (
-        typeof error.error === 'object'
-      ) {
-
-        const errores =
-          Object.entries(
-            error.error
-          )
-          .map(
-            ([campo, valor]: [string, any]) => {
-
-              const textoValor =
-                Array.isArray(valor)
-                  ? valor.join(', ')
-                  : typeof valor === 'object'
-                    ? JSON.stringify(valor)
-                    : String(valor);
-
-              return `${campo}: ${textoValor}`;
-
-            }
-          )
-          .join('\n');
-
-        if (errores) {
-          mensaje = errores;
-        }
-
-      }
-
-    }
-
-    Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: mensaje
-    });
-
-  }
 
 }
-
-// ============================================================
-// INTERFAZ RESPUESTA PAGINADA
-// ============================================================
-
-interface RespuestaPaginada<T> {
-
-  count: number;
-
-  next: string | null;
-
-  previous: string | null;
-
-  results: T[];
-
-}
-
-// ============================================================
-// INTERFAZ PACIENTE
-// ============================================================
-
-interface Paciente {
-
-  id_paciente: number;
-
-  nombre: string;
-
-  apellido: string;
-
-  eps: string;
-
-  sede: string;
-
-  fecha_ingreso: string;
-
-  habitacion: number;
-
-  id_usuario:
-    number |
-    {
-      id_usuario?: number;
-    } |
-    null;
-
-  tipo_documento: string;
-
-  numero_documento: string;
-
-  fecha_nacimiento: string;
-
-  genero: string;
-
-  grupo_sanguineo: string;
-
-  rh: string;
-
-  cama: number;
-
-  estado: boolean;
-
-}
-
-// ============================================================
-// FAMILIAR RESPONSABLE
-// ============================================================
-
-interface FamiliarResponsable {
-
-  id_familiar_responsable: number;
-
-  id_paciente:
-    number |
-    {
-      id_paciente?: number;
-    } |
-    null;
-
-  nombres: string;
-
-  apellidos: string;
-
-  parentesco: string;
-
-  telefono_uno: string;
-
-  telefono_dos: string | null;
-
-  direccion: string | null;
-
-  correo: string | null;
-
-  municipio: string | null;
-
-}
-
-// ============================================================
-// MEDICAMENTO
-// ============================================================
-
-interface Medicamento {
-
-  id_medicamentos: number;
-
-  nombre: string;
-
-  descripcion: string;
-
-  principio_activo: string;
-
-  concentracion: string;
-
-  presentacion: string;
-
-  estado: boolean;
-
-  unidad_medida: string;
-
-}
-
-// ============================================================
-// TIPO DE INSUMO
-// ============================================================
-
-interface TipoInsumo {
-
-  id_tipo_insumo: number;
-
-  nombre: string;
-
-  descripcion?: string;
-
-  estado?: boolean;
-
-}
-
-// ============================================================
-// INSUMO
-// ============================================================
-
-interface Insumo {
-
-  id_insumo: number;
-
-  id_tipo_insumo:
-    number |
-    {
-      id_tipo_insumo?: number;
-    } |
-    null;
-
-  nombre: string;
-
-  descripcion: string;
-
-  unidad_medida: string;
-
-  estado: boolean;
-
-}
-
-// ============================================================
-// ELEMENTO DEL PACIENTE
-// ============================================================
-
-interface ElementoPaciente {
-
-  id_elemento: number;
-
-  cantidad: number;
-
-  fecha_ingreso: string;
-
-  fecha_vencimiento: string | null;
-
-  observaciones: string | null;
-
-  estado: boolean | null;
-
-  id_paciente:
-    number |
-    {
-      id_paciente?: number;
-    } |
-    null;
-
-  id_medicamentos:
-    number |
-    {
-      id_medicamentos?: number;
-      nombre?: string;
-    } |
-    null;
-
-  id_insumo:
-    number |
-    {
-      id_insumo?: number;
-      nombre?: string;
-    } |
-    null;
-
-}
-
-// ============================================================
-// FORMULARIO ELEMENTO
-// ============================================================
-
-interface FormularioElemento {
-
-  id_medicamentos: number | null;
-
-  id_insumo: number | null;
-
-  // Se utiliza para seleccionar el tipo
-  // antes de seleccionar el insumo.
-  id_tipo_insumo: number | null;
-
-  cantidad: number;
-
-  fecha_ingreso: string;
-
-  fecha_vencimiento: string;
-
-  observaciones: string;
-
-  estado: boolean;
-
-}
-
-// ============================================================
-// CUIDADOS DE ENFERMERÍA
-// ============================================================
-
-interface CuidadoEnfermeria {
-
-  id_cuidado: number;
-
-  bano_paciente: string | null;
-
-  peso_talla: string | null;
-
-  control_glucemia: string | null;
-
-  curaciones: string | null;
-
-  liquidos_administrados_eliminados: string | null;
-
-  control_deposicion: string | null;
-
-  administracion_medicamentos: string | null;
-
-  id_paciente:
-    number |
-    {
-      id_paciente?: number;
-    } |
-    null;
-
-}
-
-// ============================================================
-// RECOMENDACIONES
-// ============================================================
-
-interface Recomendacion {
-
-  id_recomendacion: number;
-
-  hidratar_piel: string | null;
-
-  asistir_alimentacion: string | null;
-
-  via_alimentacion: string | null;
-
-  prevencion_caidas: string | null;
-
-  terapias_fisicas: string | null;
-
-  terapia_respiratoria: string | null;
-
-  actividad_ocupacional: string | null;
-
-  corte_unas: string | null;
-
-  corte_cabello: string | null;
-
-  higiene_oral: string | null;
-
-  id_paciente:
-    number |
-    {
-      id_paciente?: number;
-    } |
-    null;
-
-}
-
-// ============================================================
-// HISTORIA CLÍNICA
-// ============================================================
-
-interface HistoriaClinica {
-
-  id_historia_clinica: number;
-
-  fecha_apertura: string;
-
-  antecedentes: string;
-
-  alergias: string;
-
-  observaciones: string;
-
-  estado: boolean;
-
-  id_paciente:
-    number |
-    {
-      id_paciente?: number;
-    } |
-    null;
 
 }

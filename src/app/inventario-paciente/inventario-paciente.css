@@ -1,47 +1,79 @@
 :host {
+
   --geriapp-primary: #3b5bdb;
+
   --geriapp-primary-dark: #2f49b3;
+
   --geriapp-primary-light: #edf2ff;
+
   --geriapp-surface: #f8fafc;
+
   --geriapp-card-bg: #ffffff;
+
   --geriapp-border: #e2e8f0;
+
   --geriapp-text: #1e293b;
+
   --geriapp-text-muted: #64748b;
+
   --geriapp-warn: #f59e0b;
+
   --geriapp-warn-light: #fef3c7;
+
   --geriapp-danger: #ef4444;
+
   --geriapp-danger-light: #fee2e2;
+
   --geriapp-success: #10b981;
+
   --geriapp-success-light: #d1fae5;
 
   display: contents;
+
 }
 
 .med-drawer-backdrop {
+
   position: fixed;
+
   inset: 0;
+
   background: rgba(15, 23, 42, 0.4);
+
   backdrop-filter: blur(4px);
+
   opacity: 0;
+
   visibility: hidden;
+
   transition:
     opacity 0.3s ease,
     visibility 0.3s ease;
+
   z-index: 998;
+
 }
 
 .med-drawer-backdrop.active {
+
   opacity: 1;
+
   visibility: visible;
+
 }
 
 .med-drawer {
+
   position: fixed;
+
   top: 0;
+
   right: 0;
+
   bottom: 0;
 
   width: 100%;
+
   max-width: 560px;
 
   background: var(--geriapp-surface);
@@ -50,6 +82,7 @@
     -4px 0 25px rgba(0, 0, 0, 0.15);
 
   display: flex;
+
   flex-direction: column;
 
   transform: translateX(100%);
@@ -68,21 +101,31 @@
     sans-serif;
 
   color: var(--geriapp-text);
+
 }
 
 .med-drawer.open {
+
   transform: translateX(0);
+
 }
 
 .icon-sm {
+
   font-size: 18px;
+
   width: 18px;
+
   height: 18px;
+
 }
 
 .drawer-header {
+
   display: flex;
+
   justify-content: space-between;
+
   align-items: flex-start;
 
   gap: 16px;
@@ -93,55 +136,76 @@
 
   border-bottom:
     1px solid var(--geriapp-border);
+
 }
 
 .header-info {
+
   min-width: 0;
+
 }
 
 .header-badges {
+
   display: flex;
+
   flex-wrap: wrap;
 
   gap: 8px;
 
   margin-bottom: 9px;
+
 }
 
 .location-badge,
 .custody-badge {
+
   display: inline-flex;
+
   align-items: center;
+
   gap: 5px;
 
   font-size: 0.72rem;
+
   font-weight: 700;
 
   padding: 5px 10px;
 
   border-radius: 999px;
+
 }
 
 .location-badge {
+
   background: var(--geriapp-primary-light);
+
   color: var(--geriapp-primary);
+
 }
 
 .custody-badge {
+
   background: var(--geriapp-success-light);
+
   color: #047857;
+
 }
 
 .patient-title {
+
   margin: 0;
 
   font-size: 1.2rem;
+
   font-weight: 800;
 
   color: var(--geriapp-text);
+
 }
 
 .patient-meta {
+
   margin: 5px 0 0;
 
   font-size: 0.78rem;
@@ -149,21 +213,27 @@
   line-height: 1.5;
 
   color: var(--geriapp-text-muted);
+
 }
 
 .close-btn {
+
   flex-shrink: 0;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   width: 36px;
+
   height: 36px;
 
   padding: 0;
 
   border: none;
+
   border-radius: 8px;
 
   background: transparent;
@@ -175,54 +245,57 @@
   transition:
     background 0.15s ease,
     color 0.15s ease;
+
 }
 
 .close-btn:hover {
+
   background: #f1f5f9;
+
   color: var(--geriapp-text);
+
 }
 
-/* KPIs */
+/* =========================================================
+   KPIs
+   ========================================================= */
 
 .kpi-grid {
   display: grid;
-
-  grid-template-columns:
-    repeat(3, 1fr);
-
-  gap: 10px;
-
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
   padding: 14px 24px;
 }
 
 .kpi-card {
   display: flex;
   flex-direction: column;
-
-  background:
-    var(--geriapp-card-bg);
-
-  border:
-    1px solid var(--geriapp-border);
-
+  background: var(--geriapp-card-bg);
+  border: 1px solid var(--geriapp-border);
   border-radius: 10px;
-
-  padding: 11px;
-
+  padding: 9px 6px;
   text-align: center;
+  min-width: 0;
 }
 
 .kpi-card.warn {
+
   border-color: #fde68a;
+
   background: #fffbeb;
+
 }
 
 .kpi-card.danger {
+
   border-color: #fecaca;
+
   background: #fef2f2;
+
 }
 
 .kpi-label {
+
   font-size: 0.68rem;
 
   font-weight: 700;
@@ -230,9 +303,11 @@
   text-transform: uppercase;
 
   color: var(--geriapp-text-muted);
+
 }
 
 .kpi-value {
+
   margin: 4px 0 1px;
 
   font-size: 1.6rem;
@@ -240,45 +315,63 @@
   font-weight: 800;
 
   line-height: 1.2;
+
 }
 
 .kpi-subtext {
+
   font-size: 0.65rem;
 
   color: var(--geriapp-text-muted);
+
 }
 
 .text-primary {
+
   color: var(--geriapp-primary);
+
 }
 
 .text-warn {
+
   color: #d97706;
+
 }
 
 .text-danger {
+
   color: var(--geriapp-danger);
+
 }
 
-/* FILTROS */
+/* =========================================================
+   FILTROS
+   ========================================================= */
 
 .filters-section {
+
   display: flex;
+
   flex-direction: column;
 
   gap: 10px;
 
   padding: 0 24px 12px;
+
 }
 
 .search-input-wrapper {
+
   position: relative;
+
 }
 
 .search-icon {
+
   position: absolute;
 
   left: 11px;
+
   top: 50%;
 
   transform: translateY(-50%);
@@ -288,9 +381,11 @@
   color: #94a3b8;
 
   pointer-events: none;
+
 }
 
 .search-input {
+
   width: 100%;
 
   box-sizing: border-box;
@@ -317,17 +412,21 @@
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
+
 }
 
 .search-input:focus {
+
   border-color: var(--geriapp-primary);
 
   box-shadow:
     0 0 0 3px
     rgba(59, 91, 219, 0.15);
+
 }
 
 .category-chips {
+
   display: flex;
 
   gap: 7px;
@@ -335,9 +434,11 @@
   overflow-x: auto;
 
   padding-bottom: 3px;
+
 }
 
 .chip-btn {
+
   flex-shrink: 0;
 
   padding: 6px 12px;
@@ -360,52 +461,72 @@
   white-space: nowrap;
 
   transition: all 0.15s ease;
+
 }
 
 .chip-btn:hover {
+
   border-color: var(--geriapp-primary);
+
 }
 
 .chip-btn.active {
+
   background: var(--geriapp-primary);
 
   border-color: var(--geriapp-primary);
 
   color: #ffffff;
+
 }
 
-/* CARGANDO */
+/* =========================================================
+   CARGANDO
+   ========================================================= */
 
 .loading-state {
+
   flex: 1;
 
   display: flex;
+
   flex-direction: column;
 
   align-items: center;
+
   justify-content: center;
 
   gap: 8px;
 
   color: var(--geriapp-text-muted);
+
 }
 
 .loading-icon {
+
   font-size: 30px;
 
   animation:
     girar 1s linear infinite;
+
 }
 
 @keyframes girar {
+
   to {
+
     transform: rotate(360deg);
+
   }
+
 }
 
-/* LISTA */
+/* =========================================================
+   LISTA
+   ========================================================= */
 
 .med-list-container {
+
   flex: 1;
 
   overflow-y: auto;
@@ -420,9 +541,11 @@
   flex-direction: column;
 
   gap: 11px;
+
 }
 
 .empty-state {
+
   display: flex;
 
   flex-direction: column;
@@ -436,25 +559,31 @@
   text-align: center;
 
   color: var(--geriapp-text-muted);
+
 }
 
 .empty-icon {
+
   font-size: 42px;
 
   margin-bottom: 8px;
 
   color: #94a3b8;
+
 }
 
 .empty-state h3 {
+
   margin: 0 0 5px;
 
   font-size: 0.95rem;
 
   color: var(--geriapp-text);
+
 }
 
 .empty-state p {
+
   margin: 0;
 
   max-width: 340px;
@@ -462,11 +591,15 @@
   font-size: 0.78rem;
 
   line-height: 1.5;
+
 }
 
-/* CARD */
+/* =========================================================
+   TARJETA
+   ========================================================= */
 
 .med-card {
+
   background:
     var(--geriapp-card-bg);
 
@@ -484,29 +617,37 @@
   transition:
     transform 0.15s ease,
     box-shadow 0.15s ease;
+
 }
 
 .med-card:hover {
+
   transform: translateY(-1px);
 
   box-shadow:
     0 4px 12px
     rgba(0, 0, 0, 0.08);
+
 }
 
 .med-card.card-critical {
+
   border-color: #fca5a5;
 
   background: #fffafa;
+
 }
 
 .med-card.card-expired {
+
   border-color: #ef4444;
 
   background: #fff7f7;
+
 }
 
 .med-card-header {
+
   display: flex;
 
   justify-content: space-between;
@@ -516,13 +657,17 @@
   gap: 12px;
 
   margin-bottom: 12px;
+
 }
 
 .med-main-info {
+
   min-width: 0;
+
 }
 
 .med-title-row {
+
   display: flex;
 
   align-items: center;
@@ -530,9 +675,11 @@
   flex-wrap: wrap;
 
   gap: 7px;
+
 }
 
 .med-name {
+
   margin: 0;
 
   font-size: 0.96rem;
@@ -540,9 +687,11 @@
   font-weight: 800;
 
   color: var(--geriapp-text);
+
 }
 
 .tag-type {
+
   padding: 2px 6px;
 
   border-radius: 4px;
@@ -556,9 +705,11 @@
   font-size: 0.66rem;
 
   font-weight: 700;
+
 }
 
 .med-category-subtitle {
+
   margin: 3px 0 0;
 
   font-size: 0.74rem;
@@ -566,9 +717,11 @@
   line-height: 1.4;
 
   color: var(--geriapp-text-muted);
+
 }
 
 .stock-badge {
+
   flex-shrink: 0;
 
   padding: 4px 8px;
@@ -578,25 +731,33 @@
   font-size: 0.67rem;
 
   font-weight: 800;
+
 }
 
 .stock-normal {
+
   background:
     var(--geriapp-success-light);
 
   color: #047857;
+
 }
 
 .stock-bajo {
+
   background:
     var(--geriapp-danger-light);
 
   color: #b91c1c;
+
 }
 
-/* STOCK */
+/* =========================================================
+   STOCK
+   ========================================================= */
 
 .stock-info-grid {
+
   display: grid;
 
   grid-template-columns:
@@ -611,43 +772,55 @@
   background: #f8fafc;
 
   margin-bottom: 10px;
+
 }
 
 .stock-data {
+
   display: flex;
 
   align-items: center;
 
   gap: 4px;
+
 }
 
 .info-label {
+
   font-size: 0.7rem;
 
   color: var(--geriapp-text-muted);
+
 }
 
 .info-value.strong {
+
   font-size: 0.83rem;
 
   font-weight: 800;
 
   color: var(--geriapp-text);
+
 }
 
 .estado-texto {
+
   font-size: 0.72rem;
 
   font-weight: 700;
 
   color: #047857;
+
 }
 
 .estado-texto.estado-inactivo {
+
   color: var(--geriapp-danger);
+
 }
 
 .progress-bar-container {
+
   grid-column: 1 / -1;
 
   width: 100%;
@@ -662,30 +835,40 @@
   border-radius: 999px;
 
   overflow: hidden;
+
 }
 
 .progress-fill {
+
   height: 100%;
 
   border-radius: 999px;
 
   transition:
     width 0.4s ease;
+
 }
 
 .progress-fill.stock-normal {
+
   background:
     var(--geriapp-primary);
+
 }
 
 .progress-fill.stock-bajo {
+
   background:
     var(--geriapp-danger);
+
 }
 
-/* FECHAS */
+/* =========================================================
+   FECHAS
+   ========================================================= */
 
 .med-dates-row {
+
   display: flex;
 
   justify-content: space-between;
@@ -701,43 +884,59 @@
   font-size: 0.7rem;
 
   color: var(--geriapp-text-muted);
+
 }
 
 .date-item {
+
   line-height: 1.4;
+
 }
 
 .date-item strong {
+
   color: var(--geriapp-text);
+
 }
 
 .date-item.por-vencer {
+
   color: #b45309;
+
 }
 
 .date-item.vencido {
+
   color: #b91c1c;
+
 }
 
 .expiring-badge {
+
   display: block;
 
   margin-top: 2px;
 
   font-weight: 700;
+
 }
 
 .expired-badge {
+
   display: block;
 
   margin-top: 2px;
 
   font-weight: 800;
+
 }
 
-/* OBSERVACIONES */
+/* =========================================================
+   OBSERVACIONES
+   ========================================================= */
 
 .med-observations {
+
   display: flex;
 
   align-items: flex-start;
@@ -751,17 +950,23 @@
   line-height: 1.4;
 
   color: var(--geriapp-text-muted);
+
 }
 
 .med-observations .material-symbols-outlined {
+
   flex-shrink: 0;
 
   font-size: 17px;
+
 }
 
-/* FOOTER CARD */
+/* =========================================================
+   PIE DE TARJETA
+   ========================================================= */
 
 .med-card-footer {
+
   display: flex;
 
   justify-content: space-between;
@@ -771,9 +976,11 @@
   gap: 10px;
 
   margin-top: 10px;
+
 }
 
 .med-instruction {
+
   display: inline-flex;
 
   align-items: center;
@@ -783,22 +990,29 @@
   font-size: 0.69rem;
 
   color: var(--geriapp-text-muted);
+
 }
 
 .med-instruction .material-symbols-outlined {
+
   font-size: 16px;
+
 }
 
 .med-actions {
+
   display: flex;
 
   align-items: center;
 
   gap: 7px;
+
 }
 
 .btn-reorder,
+
 .btn-details {
+
   padding: 5px 10px;
 
   border-radius: 6px;
@@ -808,22 +1022,28 @@
   font-weight: 700;
 
   cursor: pointer;
+
 }
 
 .btn-reorder {
+
   border: none;
 
   background:
     var(--geriapp-danger);
 
   color: #ffffff;
+
 }
 
 .btn-reorder:hover {
+
   background: #dc2626;
+
 }
 
 .btn-details {
+
   border:
     1px solid
     var(--geriapp-border);
@@ -832,19 +1052,25 @@
 
   color:
     var(--geriapp-primary);
+
 }
 
 .btn-details:hover {
+
   background:
     var(--geriapp-primary-light);
 
   border-color:
     var(--geriapp-primary);
+
 }
 
-/* FOOTER */
+/* =========================================================
+   PIE DEL PANEL
+   ========================================================= */
 
 .drawer-footer {
+
   display: flex;
 
   flex-direction: column;
@@ -860,10 +1086,13 @@
   border-top:
     1px solid
     var(--geriapp-border);
+
 }
 
 .btn-primary-action,
+
 .btn-secondary-action {
+
   width: 100%;
 
   display: inline-flex;
@@ -885,23 +1114,29 @@
   cursor: pointer;
 
   transition: all 0.2s ease;
+
 }
 
 .btn-primary-action {
+
   border: none;
 
   background:
     var(--geriapp-primary);
 
   color: #ffffff;
+
 }
 
 .btn-primary-action:hover {
+
   background:
     var(--geriapp-primary-dark);
+
 }
 
 .btn-secondary-action {
+
   border:
     1px solid
     var(--geriapp-border);
@@ -910,83 +1145,15 @@
 
   color:
     var(--geriapp-primary);
+
 }
 
 .btn-secondary-action:hover {
+
   background:
     var(--geriapp-primary-light);
 
   border-color:
     var(--geriapp-primary);
-}
-
-/* RESPONSIVE */
-
-@media (max-width: 600px) {
-
-  .med-drawer {
-    max-width: 100%;
-  }
-
-  .drawer-header {
-    padding: 18px 16px 14px;
-  }
-
-  .kpi-grid {
-    padding:
-      12px 16px;
-  }
-
-  .filters-section {
-    padding:
-      0 16px 10px;
-  }
-
-  .med-list-container {
-    padding:
-      5px 16px 14px;
-  }
-
-  .drawer-footer {
-    padding:
-      12px 16px;
-  }
-
-  .med-card-header {
-    flex-direction: column;
-  }
-
-  .stock-badge {
-    align-self: flex-start;
-  }
-
-  .med-dates-row {
-    flex-direction: column;
-  }
-
-  .med-card-footer {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .med-actions {
-    justify-content: flex-end;
-  }
-
-}
-
-@media (max-width: 420px) {
-
-  .kpi-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .stock-info-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .progress-bar-container {
-    grid-column: auto;
-  }
 
 }

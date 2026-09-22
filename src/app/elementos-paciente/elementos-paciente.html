@@ -2206,35 +2206,6 @@
 
   </div>
 
-<!-- =========================================================
-     BARRA FINAL
-========================================================= -->
-
-<section class="barra-final" *ngIf="mostrarBarraFinal">
-
-  <div class="estado-final">
-
-    <span class="indicador"></span>
-
-    <span>
-      Información del paciente lista para finalizar.
-    </span>
-
-  </div>
-
-  <div class="acciones-finales">
-
-    <button
-      type="button"
-      class="btn-primary btn-finalizar"
-      (click)="finalizarRegistro()">
-
-      ✓ Finalizar registro
-
-    </button>
-
-  </div>
-
 </section>
 
 
@@ -2245,7 +2216,6 @@
 <app-inventario-paciente
   [idPaciente]="idPaciente"
   [paciente]="paciente"
-  [isOpen]="mostrarDrawerInventario"
+  [estaAbierto]="mostrarDrawerInventario"
   (cerrar)="cerrarInventario()">
 </app-inventario-paciente>
-

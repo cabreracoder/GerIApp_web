@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
 
@@ -39,9 +47,21 @@ interface Medicamento {
 
 interface ElementoPaciente {
   id_elemento: number;
-  id_paciente: number | { id_paciente?: number } | null;
-  id_medicamentos: number | { id_medicamentos?: number } | null;
-  id_insumo?: number | { id_insumo?: number } | null;
+  id_paciente:
+    number |
+    { id_paciente?: number } |
+    null;
+
+  id_medicamentos:
+    number |
+    { id_medicamentos?: number } |
+    null;
+
+  id_insumo?:
+    number |
+    { id_insumo?: number } |
+    null;
+
   cantidad: number;
   fecha_ingreso: string;
   fecha_vencimiento?: string | null;
@@ -81,7 +101,8 @@ interface MedicamentoInventario {
   templateUrl: './inventario-paciente.html',
   styleUrl: './inventario-paciente.css'
 })
-export class InventarioPaciente implements OnChanges, OnDestroy {
+export class InventarioPaciente
+  implements OnChanges, OnDestroy {
 
   // ============================================================
   // CONFIGURACIÓN DE LA API
@@ -91,16 +112,20 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
     'https://geriapp-backend.onrender.com/api';
 
   // ============================================================
-  // ENTRADAS Y SALIDAS DEL COMPONENTE
+  // ENTRADAS Y SALIDAS
   // ============================================================
 
-  @Input() idPaciente: number = 0;
+  @Input()
+  idPaciente: number = 0;
 
-  @Input() paciente: Paciente | null = null;
+  @Input()
+  paciente: Paciente | null = null;
 
-  @Input() isOpen: boolean = false;
+  @Input()
+  estaAbierto: boolean = false;
 
-  @Output() cerrar = new EventEmitter<void>();
+  @Output()
+  cerrar = new EventEmitter<void>();
 
   // ============================================================
   // VARIABLES DEL INVENTARIO
@@ -114,11 +139,11 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
 
   medicamentosFiltrados: MedicamentoInventario[] = [];
 
-  cargando = false;
+  cargando: boolean = false;
 
-  searchQuery = '';
+  textoBusqueda: string = '';
 
-  selectedCategory:
+  categoriaSeleccionada:
     'todos' |
     'stock-bajo' |
     'por-vencer' |
@@ -127,19 +152,19 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
   categorias = [
     {
       label: 'Todos',
-      value: 'todos'
+      value: 'todos' as const
     },
     {
       label: 'Stock bajo',
-      value: 'stock-bajo'
+      value: 'stock-bajo' as const
     },
     {
       label: 'Por vencer',
-      value: 'por-vencer'
+      value: 'por-vencer' as const
     },
     {
       label: 'Vencidos',
-      value: 'vencidos'
+      value: 'vencidos' as const
     }
   ];
 
@@ -147,11 +172,19 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
   // EVENTO PARA CERRAR CON ESCAPE
   // ============================================================
 
-  private readonly listenerEscape = (event: KeyboardEvent): void => {
-    if (event.key === 'Escape' && this.isOpen) {
-      this.closeDrawer();
-    }
-  };
+  private readonly escucharEscape =
+    (evento: KeyboardEvent): void => {
+
+      if (
+        evento.key === 'Escape' &&
+        this.estaAbierto
+      ) {
+
+        this.cerrarPanel();
+
+      }
+
+    };
 
   // ============================================================
   // CONSTRUCTOR
@@ -160,38 +193,56 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
   constructor(
     private http: HttpClient
   ) {
+
     if (typeof window !== 'undefined') {
-      window.addEventListener('keydown', this.listenerEscape);
+
+      window.addEventListener(
+        'keydown',
+        this.escucharEscape
+      );
+
     }
+
   }
 
   // ============================================================
   // CAMBIOS EN LOS INPUT
   // ============================================================
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(
+    cambios: SimpleChanges
+  ): void {
 
-    if (changes['isOpen']) {
+    if (cambios['estaAbierto']) {
 
-      if (this.isOpen) {
+      if (this.estaAbierto) {
+
         this.bloquearScroll();
 
         if (this.idPaciente > 0) {
+
           this.cargarInventario();
+
         }
 
       } else {
+
         this.restaurarScroll();
+
       }
+
     }
 
     if (
-      changes['idPaciente'] &&
+      cambios['idPaciente'] &&
       this.idPaciente > 0 &&
-      this.isOpen
+      this.estaAbierto
     ) {
+
       this.cargarInventario();
+
     }
+
   }
 
   // ============================================================
@@ -201,10 +252,16 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
   ngOnDestroy(): void {
 
     if (typeof window !== 'undefined') {
-      window.removeEventListener('keydown', this.listenerEscape);
+
+      window.removeEventListener(
+        'keydown',
+        this.escucharEscape
+      );
+
     }
 
     this.restaurarScroll();
+
   }
 
   // ============================================================
@@ -213,9 +270,17 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
 
   cargarInventario(): void {
 
-    if (!this.idPaciente || this.idPaciente <= 0) {
-      console.error('ID de paciente inválido.');
+    if (
+      !this.idPaciente ||
+      this.idPaciente <= 0
+    ) {
+
+      console.error(
+        'ID de paciente inválido.'
+      );
+
       return;
+
     }
 
     this.cargando = true;
@@ -223,19 +288,32 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
     this.http.get<
       ElementoPaciente[] |
       RespuestaPaginada<ElementoPaciente>
-    >(`${this.apiUrl}/elementos_paciente/`).subscribe({
+    >(
+      `${this.apiUrl}/elementos_paciente/`
+    ).subscribe({
 
       next: (respuesta) => {
 
-        const elementos = this.obtenerResultados(respuesta);
+        const elementos =
+          this.obtenerResultados(respuesta);
 
-        this.elementosPaciente = elementos.filter(elemento => {
+        this.elementosPaciente =
+          elementos.filter(
+            elemento => {
 
-          const idPacienteElemento =
-            this.obtenerIdPaciente(elemento.id_paciente);
+              const idPacienteElemento =
+                this.obtenerIdPaciente(
+                  elemento.id_paciente
+                );
 
-          return Number(idPacienteElemento) === Number(this.idPaciente);
-        });
+              return Number(
+                idPacienteElemento
+              ) === Number(
+                this.idPaciente
+              );
+
+            }
+          );
 
         this.cargarMedicamentos();
 
@@ -253,10 +331,14 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'No fue posible cargar el inventario del paciente.'
+          text:
+            'No fue posible cargar el inventario del paciente.'
         });
+
       }
+
     });
+
   }
 
   // ============================================================
@@ -268,7 +350,9 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
     this.http.get<
       Medicamento[] |
       RespuestaPaginada<Medicamento>
-    >(`${this.apiUrl}/medicamentos/`).subscribe({
+    >(
+      `${this.apiUrl}/medicamentos/`
+    ).subscribe({
 
       next: (respuesta) => {
 
@@ -278,6 +362,7 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
         this.construirInventario();
 
         this.cargando = false;
+
       },
 
       error: (error) => {
@@ -292,10 +377,14 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'No fue posible cargar el catálogo de medicamentos.'
+          text:
+            'No fue posible cargar el catálogo de medicamentos.'
         });
+
       }
+
     });
+
   }
 
   // ============================================================
@@ -306,10 +395,14 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
 
     this.medicamentosInventario =
       this.elementosPaciente
+
         .filter(elemento => {
+
           return elemento.id_medicamentos !== null &&
                  elemento.id_medicamentos !== undefined;
+
         })
+
         .map(elemento => {
 
           const idMedicamento =
@@ -318,9 +411,13 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
             );
 
           const medicamento =
-            this.medicamentos.find(item =>
-              Number(item.id_medicamentos) ===
-              Number(idMedicamento)
+            this.medicamentos.find(
+              item =>
+                Number(
+                  item.id_medicamentos
+                ) === Number(
+                  idMedicamento
+                )
             );
 
           const cantidad =
@@ -349,72 +446,102 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
             cantidad < stockMinimo;
 
           return {
-            id: Number(idMedicamento) || 0,
-            idElemento: elemento.id_elemento,
-            nombre: medicamento?.nombre || 'Medicamento no encontrado',
+
+            id:
+              Number(idMedicamento) || 0,
+
+            idElemento:
+              elemento.id_elemento,
+
+            nombre:
+              medicamento?.nombre ||
+              'Medicamento no encontrado',
+
             principioActivo:
-              medicamento?.principio_activo || 'No registrado',
+              medicamento?.principio_activo ||
+              'No registrado',
+
             concentracion:
-              medicamento?.concentracion || '',
+              medicamento?.concentracion ||
+              '',
+
             presentacion:
-              medicamento?.presentacion || 'No registrada',
-            cantidad: cantidad,
+              medicamento?.presentacion ||
+              'No registrada',
+
+            cantidad:
+              cantidad,
+
             unidad:
               medicamento?.unidad_medida ||
               medicamento?.presentacion ||
               'unidades',
+
             fechaIngreso:
               elemento.fecha_ingreso || '',
+
             fechaVencimiento:
               fechaVencimiento,
+
             observaciones:
               elemento.observaciones || '',
+
             estado:
               elemento.estado ?? true,
+
             diasParaVencer:
               diasParaVencer,
+
             estaPorVencer:
               estaPorVencer,
+
             estaVencido:
               estaVencido,
+
             stockBajo:
               stockBajo
-          };
-        });
 
-    console.log(
-      'MEDICAMENTOS CONSTRUIDOS PARA INVENTARIO:',
-      this.medicamentosInventario
-    );
+          };
+
+        });
 
     this.aplicarFiltros();
 
-    console.log(
-      'MEDICAMENTOS DESPUÉS DE FILTROS:',
-      this.medicamentosFiltrados
-    );
   }
 
   // ============================================================
-  // BÚSQUEDA
+  // CAMBIAR BÚSQUEDA
   // ============================================================
 
-  onSearchChange(event: Event): void {
+  cambiarBusqueda(evento: Event): void {
 
-    const input =
-      event.target as HTMLInputElement;
+    const entrada =
+      evento.target as HTMLInputElement;
 
-    this.searchQuery =
-      input.value;
+    this.textoBusqueda =
+      entrada.value;
 
     this.aplicarFiltros();
+
+  }
+
+  // ============================================================
+  // LIMPIAR BÚSQUEDA
+  // ============================================================
+
+  limpiarBusqueda(): void {
+
+    this.textoBusqueda = '';
+
+    this.aplicarFiltros();
+
   }
 
   // ============================================================
   // SELECCIONAR CATEGORÍA
   // ============================================================
 
-  selectCategory(
+  seleccionarCategoria(
     categoria:
       'todos' |
       'stock-bajo' |
@@ -422,10 +549,11 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
       'vencidos'
   ): void {
 
-    this.selectedCategory =
+    this.categoriaSeleccionada =
       categoria;
 
     this.aplicarFiltros();
+
   }
 
   // ============================================================
@@ -435,48 +563,67 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
   private aplicarFiltros(): void {
 
     const texto =
-      this.searchQuery
+      this.textoBusqueda
         .trim()
         .toLowerCase();
 
     this.medicamentosFiltrados =
-      this.medicamentosInventario.filter(medicamento => {
+      this.medicamentosInventario.filter(
+        medicamento => {
 
-        const coincideBusqueda =
-          !texto ||
-          medicamento.nombre
-            .toLowerCase()
-            .includes(texto) ||
-          medicamento.principioActivo
-            .toLowerCase()
-            .includes(texto) ||
-          medicamento.concentracion
-            .toLowerCase()
-            .includes(texto) ||
-          medicamento.presentacion
-            .toLowerCase()
-            .includes(texto);
+          const coincideBusqueda =
+            !texto ||
+            medicamento.nombre
+              .toLowerCase()
+              .includes(texto) ||
+            medicamento.principioActivo
+              .toLowerCase()
+              .includes(texto) ||
+            medicamento.concentracion
+              .toLowerCase()
+              .includes(texto) ||
+            medicamento.presentacion
+              .toLowerCase()
+              .includes(texto);
 
-        let coincideCategoria = true;
+          let coincideCategoria = true;
 
-        if (this.selectedCategory === 'stock-bajo') {
-          coincideCategoria =
-            medicamento.stockBajo;
+          if (
+            this.categoriaSeleccionada ===
+            'stock-bajo'
+          ) {
+
+            coincideCategoria =
+              medicamento.stockBajo;
+
+          }
+
+          if (
+            this.categoriaSeleccionada ===
+            'por-vencer'
+          ) {
+
+            coincideCategoria =
+              medicamento.estaPorVencer;
+
+          }
+
+          if (
+            this.categoriaSeleccionada ===
+            'vencidos'
+          ) {
+
+            coincideCategoria =
+              medicamento.estaVencido;
+
+          }
+
+          return coincideBusqueda &&
+                 coincideCategoria;
+
         }
+      );
 
-        if (this.selectedCategory === 'por-vencer') {
-          coincideCategoria =
-            medicamento.estaPorVencer;
-        }
-
-        if (this.selectedCategory === 'vencidos') {
-          coincideCategoria =
-            medicamento.estaVencido;
-        }
-
-        return coincideBusqueda &&
-               coincideCategoria;
-      });
   }
 
   // ============================================================
@@ -486,35 +633,47 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
   get totalActivos(): number {
 
     return this.medicamentosInventario
-      .filter(medicamento =>
-        medicamento.estado
-      ).length;
+      .filter(
+        medicamento =>
+          medicamento.estado
+      )
+      .length;
+
   }
 
   get totalStockBajo(): number {
 
     return this.medicamentosInventario
-      .filter(medicamento =>
-        medicamento.stockBajo &&
-        medicamento.estado
-      ).length;
+      .filter(
+        medicamento =>
+          medicamento.stockBajo &&
+          medicamento.estado
+      )
+      .length;
+
   }
 
   get totalPorVencer(): number {
 
     return this.medicamentosInventario
-      .filter(medicamento =>
-        medicamento.estaPorVencer &&
-        !medicamento.estaVencido
-      ).length;
+      .filter(
+        medicamento =>
+          medicamento.estaPorVencer &&
+          !medicamento.estaVencido
+      )
+      .length;
+
   }
 
   get totalVencidos(): number {
 
     return this.medicamentosInventario
-      .filter(medicamento =>
-        medicamento.estaVencido
-      ).length;
+      .filter(
+        medicamento =>
+          medicamento.estaVencido
+      )
+      .length;
+
   }
 
   // ============================================================
@@ -526,19 +685,32 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
   ): number | null {
 
     if (!fecha) {
+
       return null;
+
     }
 
     const fechaVencimiento =
       new Date(`${fecha}T00:00:00`);
 
-    if (isNaN(fechaVencimiento.getTime())) {
+    if (
+      isNaN(
+        fechaVencimiento.getTime()
+      )
+    ) {
+
       return null;
+
     }
 
     const hoy = new Date();
 
-    hoy.setHours(0, 0, 0, 0);
+    hoy.setHours(
+      0,
+      0,
+      0,
+      0
+    );
 
     const diferencia =
       fechaVencimiento.getTime() -
@@ -548,6 +720,7 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
       diferencia /
       (1000 * 60 * 60 * 24)
     );
+
   }
 
   // ============================================================
@@ -558,28 +731,43 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
     medicamento: MedicamentoInventario
   ): string {
 
-    if (!medicamento.fechaVencimiento) {
+    if (
+      !medicamento.fechaVencimiento
+    ) {
+
       return 'No registrada';
+
     }
 
-    if (medicamento.estaVencido) {
+    if (
+      medicamento.estaVencido
+    ) {
+
       return 'Vencido';
+
     }
 
-    if (medicamento.diasParaVencer === 0) {
+    if (
+      medicamento.diasParaVencer === 0
+    ) {
+
       return 'Vence hoy';
+
     }
 
     if (
       medicamento.diasParaVencer !== null &&
       medicamento.diasParaVencer <= 30
     ) {
+
       return `Vence en ${medicamento.diasParaVencer} días`;
+
     }
 
     return this.formatearFecha(
       medicamento.fechaVencimiento
     );
+
   }
 
   // ============================================================
@@ -590,15 +778,24 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
     medicamento: MedicamentoInventario
   ): string {
 
-    if (medicamento.estaVencido) {
+    if (
+      medicamento.estaVencido
+    ) {
+
       return 'vencido';
+
     }
 
-    if (medicamento.estaPorVencer) {
+    if (
+      medicamento.estaPorVencer
+    ) {
+
       return 'por-vencer';
+
     }
 
     return '';
+
   }
 
   // ============================================================
@@ -612,7 +809,9 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
     const maximoVisual = 30;
 
     if (cantidad <= 0) {
+
       return 0;
+
     }
 
     return Math.min(
@@ -621,6 +820,7 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
         (cantidad / maximoVisual) * 100
       )
     );
+
   }
 
   // ============================================================
@@ -631,11 +831,16 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
     medicamento: MedicamentoInventario
   ): string {
 
-    if (medicamento.stockBajo) {
+    if (
+      medicamento.stockBajo
+    ) {
+
       return 'stock-bajo';
+
     }
 
     return 'stock-normal';
+
   }
 
   // ============================================================
@@ -647,14 +852,22 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
   ): string {
 
     if (!fecha) {
+
       return 'No registrada';
+
     }
 
     const fechaObj =
       new Date(fecha);
 
-    if (isNaN(fechaObj.getTime())) {
+    if (
+      isNaN(
+        fechaObj.getTime()
+      )
+    ) {
+
       return fecha;
+
     }
 
     return fechaObj.toLocaleDateString(
@@ -665,105 +878,102 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
         year: 'numeric'
       }
     );
+
   }
 
   // ============================================================
   // VER DETALLES
   // ============================================================
 
-  viewDetails(
+  verDetalles(
     medicamento: MedicamentoInventario
   ): void {
 
     Swal.fire({
+
       icon: 'info',
-      title: medicamento.nombre,
+
+      title:
+        medicamento.nombre,
+
       html: `
         <div style="text-align:left">
-          <p><strong>Principio activo:</strong> ${medicamento.principioActivo}</p>
-          <p><strong>Concentración:</strong> ${medicamento.concentracion || 'No registrada'}</p>
-          <p><strong>Presentación:</strong> ${medicamento.presentacion}</p>
-          <p><strong>Cantidad:</strong> ${medicamento.cantidad} ${medicamento.unidad}</p>
-          <p><strong>Fecha de ingreso:</strong> ${this.formatearFecha(medicamento.fechaIngreso)}</p>
-          <p><strong>Vencimiento:</strong> ${this.formatearFecha(medicamento.fechaVencimiento)}</p>
-          <p><strong>Estado:</strong> ${medicamento.estado ? 'Activo' : 'Inactivo'}</p>
+
+          <p>
+            <strong>Principio activo:</strong>
+            ${medicamento.principioActivo}
+          </p>
+
+          <p>
+            <strong>Concentración:</strong>
+            ${medicamento.concentracion || 'No registrada'}
+          </p>
+
+          <p>
+            <strong>Presentación:</strong>
+            ${medicamento.presentacion}
+          </p>
+
+          <p>
+            <strong>Cantidad:</strong>
+            ${medicamento.cantidad}
+            ${medicamento.unidad}
+          </p>
+
+          <p>
+            <strong>Fecha de ingreso:</strong>
+            ${this.formatearFecha(
+              medicamento.fechaIngreso
+            )}
+          </p>
+
+          <p>
+            <strong>Vencimiento:</strong>
+            ${this.formatearFecha(
+              medicamento.fechaVencimiento
+            )}
+          </p>
+
+          <p>
+            <strong>Estado:</strong>
+            ${
+              medicamento.estado
+                ? 'Activo'
+                : 'Inactivo'
+            }
+          </p>
+
           ${
             medicamento.observaciones
-              ? `<p><strong>Observaciones:</strong> ${medicamento.observaciones}</p>`
+              ? `
+                <p>
+                  <strong>Observaciones:</strong>
+                  ${medicamento.observaciones}
+                </p>
+              `
               : ''
           }
+
         </div>
       `,
-      confirmButtonText: 'Cerrar'
+
+      confirmButtonText:
+        'Cerrar'
+
     });
+
   }
 
   // ============================================================
-  // SOLICITAR REPOSICIÓN
+  // CERRAR PANEL
   // ============================================================
 
-  requestRefill(
-    medicamento: MedicamentoInventario
-  ): void {
-
-    Swal.fire({
-      icon: 'warning',
-      title: 'Solicitud de reposición',
-      text:
-        `Se solicitará la reposición de ${medicamento.nombre}.`,
-      showCancelButton: true,
-      confirmButtonText: 'Solicitar',
-      cancelButtonText: 'Cancelar'
-    }).then(resultado => {
-
-      if (!resultado.isConfirmed) {
-        return;
-      }
-
-      Swal.fire({
-        icon: 'success',
-        title: 'Solicitud registrada',
-        text:
-          `La solicitud de reposición de ${medicamento.nombre} fue registrada.`,
-        timer: 1800,
-        showConfirmButton: false
-      });
-    });
-  }
-
-  // ============================================================
-  // REGISTRAR NUEVO MEDICAMENTO
-  // ============================================================
-
-  onRegisterNewMedicine(): void {
-
-    this.closeDrawer();
-  }
-
-  // ============================================================
-  // NOTIFICAR AL RESPONSABLE
-  // ============================================================
-
-  onNotifyTutor(): void {
-
-    Swal.fire({
-      icon: 'info',
-      title: 'Notificación',
-      text:
-        'La funcionalidad de notificación se conectará con el módulo de Notificaciones de GerIApp.',
-      confirmButtonText: 'Entendido'
-    });
-  }
-
-  // ============================================================
-  // CERRAR DRAWER
-  // ============================================================
-
-  closeDrawer(): void {
+  cerrarPanel(): void {
 
     this.restaurarScroll();
 
     this.cerrar.emit();
+
   }
 
   // ============================================================
@@ -772,9 +982,15 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
 
   private bloquearScroll(): void {
 
-    if (typeof document !== 'undefined') {
-      document.body.style.overflow = 'hidden';
+    if (
+      typeof document !== 'undefined'
+    ) {
+
+      document.body.style.overflow =
+        'hidden';
+
     }
+
   }
 
   // ============================================================
@@ -783,9 +999,15 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
 
   private restaurarScroll(): void {
 
-    if (typeof document !== 'undefined') {
-      document.body.style.overflow = '';
+    if (
+      typeof document !== 'undefined'
+    ) {
+
+      document.body.style.overflow =
+        '';
+
     }
+
   }
 
   // ============================================================
@@ -798,18 +1020,27 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
       RespuestaPaginada<T>
   ): T[] {
 
-    if (Array.isArray(respuesta)) {
+    if (
+      Array.isArray(respuesta)
+    ) {
+
       return respuesta;
+
     }
 
     if (
       respuesta &&
-      Array.isArray(respuesta.results)
+      Array.isArray(
+        respuesta.results
+      )
     ) {
+
       return respuesta.results;
+
     }
 
     return [];
+
   }
 
   // ============================================================
@@ -823,24 +1054,35 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
       null
   ): number | null {
 
-    if (relacion === null) {
+    if (
+      relacion === null
+    ) {
+
       return null;
+
     }
 
-    if (typeof relacion === 'number') {
+    if (
+      typeof relacion === 'number'
+    ) {
+
       return relacion;
+
     }
 
     if (
       typeof relacion === 'object' &&
       relacion.id_paciente !== undefined
     ) {
+
       return Number(
         relacion.id_paciente
       );
+
     }
 
     return null;
+
   }
 
   // ============================================================
@@ -854,23 +1096,35 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
       null
   ): number | null {
 
-    if (relacion === null) {
+    if (
+      relacion === null
+    ) {
+
       return null;
+
     }
 
-    if (typeof relacion === 'number') {
+    if (
+      typeof relacion === 'number'
+    ) {
+
       return relacion;
+
     }
 
     if (
       typeof relacion === 'object' &&
       relacion.id_medicamentos !== undefined
     ) {
+
       return Number(
         relacion.id_medicamentos
       );
+
     }
 
     return null;
+
   }
+
 }
