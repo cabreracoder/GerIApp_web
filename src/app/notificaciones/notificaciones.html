@@ -251,17 +251,6 @@
 
               </button>
 
-
-              <button
-                type="button"
-                class="boton-eliminar"
-                (click)="eliminarNotificacion(notificacion.id)"
-                title="Eliminar">
-
-                <i class="fa-regular fa-trash-can"></i>
-
-              </button>
-
             </div>
 
           </div>
@@ -714,34 +703,6 @@
 
 
         <div class="lista-configuracion">
-
-          <div class="fila-configuracion">
-
-            <div class="informacion-configuracion">
-
-              <p>
-                Sistema Global de Notificaciones
-              </p>
-
-              <span>
-                Control maestro para activar o pausar
-                el envío automático de avisos.
-              </span>
-
-            </div>
-
-
-            <label class="interruptor">
-
-              <input
-                type="checkbox"
-                [(ngModel)]="notificacionesActivas">
-
-              <span class="control-interruptor"></span>
-
-            </label>
-
-          </div>
 
 
           <div class="seccion-canales">
