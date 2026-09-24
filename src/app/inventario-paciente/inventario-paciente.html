@@ -8,7 +8,6 @@
   (click)="cerrarPanel()"
 ></div>
 
-
 <!-- =========================================================
      PANEL LATERAL
      ========================================================= -->
@@ -20,7 +19,6 @@
   aria-modal="true"
   aria-label="Inventario de medicamentos del paciente"
 >
-
 
   <!-- =========================================================
        ENCABEZADO
@@ -43,7 +41,6 @@
 
         </span>
 
-
         <span class="custody-badge">
 
           <span class="material-symbols-outlined icon-sm">
@@ -56,14 +53,12 @@
 
       </div>
 
-
       <h2 class="patient-title">
 
-        {{ paciente?.nombre }}
-        {{ paciente?.apellido }}
+        {{ paciente?.nombres }}
+        {{ paciente?.apellidos }}
 
       </h2>
-
 
       <p class="patient-meta">
 
@@ -83,7 +78,6 @@
       </p>
 
     </div>
-
 
     <!-- =======================================================
          BOTÓN CERRAR
@@ -105,109 +99,15 @@
 
   </header>
 
-
-  <!-- =========================================================
-       INDICADORES
-       ========================================================= -->
-
-  <section class="kpi-grid">
-
-
-    <!-- ACTIVOS -->
-
-    <article class="kpi-card">
-
-      <span class="kpi-label">
-        Activos
-      </span>
-
-      <span class="kpi-value text-primary">
-        {{ totalActivos }}
-      </span>
-
-      <span class="kpi-subtext">
-        Medicamentos activos
-      </span>
-
-    </article>
-
-
-    <!-- STOCK BAJO -->
-
-    <article
-      class="kpi-card"
-      [class.warn]="totalStockBajo > 0"
-    >
-
-      <span class="kpi-label">
-        Stock bajo
-      </span>
-
-      <span class="kpi-value text-warn">
-        {{ totalStockBajo }}
-      </span>
-
-      <span class="kpi-subtext">
-        Requieren revisión
-      </span>
-
-    </article>
-
-
-    <!-- POR VENCER -->
-
-    <article
-      class="kpi-card"
-      [class.warn]="totalPorVencer > 0"
-    >
-
-      <span class="kpi-label">
-        Por vencer
-      </span>
-
-      <span class="kpi-value text-warn">
-        {{ totalPorVencer }}
-      </span>
-
-      <span class="kpi-subtext">
-        Próximos 30 días
-      </span>
-
-    </article>
-
-
-    <!-- VENCIDOS -->
-
-    <article
-      class="kpi-card"
-      [class.danger]="totalVencidos > 0"
-    >
-
-      <span class="kpi-label">
-        Vencidos
-      </span>
-
-      <span class="kpi-value text-danger">
-        {{ totalVencidos }}
-      </span>
-
-      <span class="kpi-subtext">
-        Requieren atención
-      </span>
-
-    </article>
-
-  </section>
-
-
   <!-- =========================================================
        FILTROS
        ========================================================= -->
 
   <section class="filters-section">
 
-
-    <!-- BUSCADOR -->
+    <!-- =======================================================
+         BUSCADOR
+         ======================================================= -->
 
     <div class="search-input-wrapper">
 
@@ -226,7 +126,6 @@
 
     </div>
 
-
     <!-- =======================================================
          CATEGORÍAS
          ======================================================= -->
@@ -235,23 +134,23 @@
 
       @for (
         categoria of categorias;
-        track categoria.value
+        track categoria.id
       ) {
 
         <button
           type="button"
           class="chip-btn"
           [class.active]="
-            categoriaSeleccionada === categoria.value
+            categoriaSeleccionada === categoria.id
           "
           (click)="
             seleccionarCategoria(
-              categoria.value
+              categoria.id
             )
           "
         >
 
-          {{ categoria.label }}
+          {{ categoria.nombre }}
 
         </button>
 
@@ -260,7 +159,6 @@
     </div>
 
   </section>
-
 
   <!-- =========================================================
        CARGANDO
@@ -282,7 +180,6 @@
 
   }
 
-
   <!-- =========================================================
        LISTA DEL INVENTARIO
        ========================================================= -->
@@ -296,11 +193,11 @@
 
       @for (
         medicamento of medicamentosFiltrados;
-        track medicamento.idElemento
+        track medicamento.idMedicamento
       ) {
 
         <!-- ===================================================
-             TARJETA
+             TARJETA DEL MEDICAMENTO
              =================================================== -->
 
         <article
@@ -308,11 +205,7 @@
           [class.card-critical]="
             medicamento.stockBajo
           "
-          [class.card-expired]="
-            medicamento.estaVencido
-          "
         >
-
 
           <!-- =================================================
                ENCABEZADO DEL MEDICAMENTO
@@ -334,7 +227,6 @@
 
               </div>
 
-
               <p class="med-category-subtitle">
 
                 {{ medicamento.principioActivo }}
@@ -352,15 +244,17 @@
 
             </div>
 
-
-            <!-- ESTADO DEL STOCK -->
+            <!-- =================================================
+                 ESTADO DEL STOCK
+                 ================================================= -->
 
             <span
               class="stock-badge"
-              [ngClass]="
-                obtenerClaseStock(
-                  medicamento
-                )
+              [class.stock-bajo]="
+                medicamento.stockBajo
+              "
+              [class.stock-normal]="
+                !medicamento.stockBajo
               "
             >
 
@@ -374,31 +268,28 @@
 
           </div>
 
-
           <!-- =================================================
                INFORMACIÓN DEL STOCK
                ================================================= -->
 
           <div class="stock-info-grid">
 
-
-            <!-- CANTIDAD -->
+            <!-- CANTIDAD TOTAL -->
 
             <div class="stock-data">
 
               <span class="info-label">
-                Cantidad
+                Cantidad total
               </span>
 
               <span class="info-value strong">
 
                 {{ medicamento.cantidad }}
-                {{ medicamento.unidad }}
+                {{ medicamento.unidadMedida }}
 
               </span>
 
             </div>
-
 
             <!-- PRESENTACIÓN -->
 
@@ -415,7 +306,6 @@
               </span>
 
             </div>
-
 
             <!-- ESTADO -->
 
@@ -442,7 +332,6 @@
 
             </div>
 
-
             <!-- CONCENTRACIÓN -->
 
             <div class="stock-data">
@@ -462,114 +351,7 @@
 
             </div>
 
-
-            <!-- BARRA DE STOCK -->
-
-            <div class="progress-bar-container">
-
-              <div
-                class="progress-fill"
-                [ngClass]="
-                  obtenerClaseStock(
-                    medicamento
-                  )
-                "
-                [style.width.%]="
-                  calcularPorcentajeStock(
-                    medicamento.cantidad
-                  )
-                "
-              ></div>
-
-            </div>
-
           </div>
-
-
-          <!-- =================================================
-               FECHAS
-               ================================================= -->
-
-          <div class="med-dates-row">
-
-
-            <!-- FECHA DE INGRESO -->
-
-            <div class="date-item">
-
-              Ingreso:
-
-              <strong>
-
-                {{
-                  formatearFecha(
-                    medicamento.fechaIngreso
-                  )
-                }}
-
-              </strong>
-
-            </div>
-
-
-            <!-- FECHA DE VENCIMIENTO -->
-
-            <div
-              class="date-item"
-              [ngClass]="
-                obtenerClaseVencimiento(
-                  medicamento
-                )
-              "
-            >
-
-              Vencimiento:
-
-              <strong>
-
-                {{
-                  formatearFecha(
-                    medicamento.fechaVencimiento
-                  )
-                }}
-
-              </strong>
-
-
-              @if (
-                medicamento.estaVencido
-              ) {
-
-                <span class="expired-badge">
-
-                  {{
-                    obtenerTextoVencimiento(
-                      medicamento
-                    )
-                  }}
-
-                </span>
-
-              } @else if (
-                medicamento.estaPorVencer
-              ) {
-
-                <span class="expiring-badge">
-
-                  {{
-                    obtenerTextoVencimiento(
-                      medicamento
-                    )
-                  }}
-
-                </span>
-
-              }
-
-            </div>
-
-          </div>
-
 
           <!-- =================================================
                OBSERVACIONES
@@ -593,13 +375,11 @@
 
           }
 
-
           <!-- =================================================
                PIE DE TARJETA
                ================================================= -->
 
           <div class="med-card-footer">
-
 
             <div class="med-instruction">
 
@@ -610,12 +390,11 @@
               <span>
 
                 {{ medicamento.cantidad }}
-                {{ medicamento.unidad }}
+                {{ medicamento.unidadMedida }}
 
               </span>
 
             </div>
-
 
             <div class="med-actions">
 
@@ -634,7 +413,6 @@
                 </button>
 
               }
-
 
               <button
                 type="button"
@@ -657,7 +435,6 @@
     </section>
 
   }
-
 
   <!-- =========================================================
        SIN RESULTADOS
@@ -706,7 +483,6 @@
 
   }
 
-
   <!-- =========================================================
        PIE DEL PANEL
        ========================================================= -->
@@ -730,3 +506,4 @@
   </footer>
 
 </aside>
+

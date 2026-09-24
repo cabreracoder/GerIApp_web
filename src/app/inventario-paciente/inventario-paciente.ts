@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import {
   Component,
   EventEmitter,
@@ -6,15 +5,17 @@ import {
   OnChanges,
   OnDestroy,
   Output,
-  SimpleChanges
+  SimpleChanges,
+  ChangeDetectorRef
 } from '@angular/core';
+
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
 
 // ============================================================
-// INTERFACES
+// INTERFAZ DE RESPUESTA PAGINADA
 // ============================================================
-
 interface RespuestaPaginada<T> {
   count: number;
   next: string | null;
@@ -22,690 +23,979 @@ interface RespuestaPaginada<T> {
   results: T[];
 }
 
+// ============================================================
+// INTERFAZ DEL PACIENTE
+// ============================================================
 interface Paciente {
-  id_paciente: number;
-  nombre: string;
-  apellido: string;
-  eps: string;
-  sede: string;
-  habitacion: number;
-  cama: number;
-  numero_documento: string;
-  estado: boolean;
+  id_paciente?: number;
+  id?: number;
+  numero_documento?: string;
+  documento?: string;
+  nombres?: string;
+  apellidos?: string;
+  eps?: string;
+  habitacion?: string | number;
+  cama?: string | number;
 }
 
+// ============================================================
+// INTERFAZ DEL MEDICAMENTO
+// ============================================================
 interface Medicamento {
-  id_medicamentos: number;
+  id_medicamentos?: number;
+  id_medicamento?: number;
+  id?: number;
   nombre: string;
-  descripcion?: string | null;
-  principio_activo?: string | null;
-  concentracion?: string | null;
-  presentacion?: string | null;
+  descripcion?: string;
+  principio_activo?: string;
+  concentracion?: string;
+  presentacion?: string;
   estado?: boolean;
-  unidad_medida?: string | null;
+  unidad_medida?: string;
 }
 
-interface ElementoPaciente {
-  id_elemento: number;
-  id_paciente:
-    number |
-    { id_paciente?: number } |
-    null;
+// ============================================================
+// INTERFAZ DEL REGISTRO DE INVENTARIO
+// ============================================================
+interface RegistroInventario {
+  id_inventario?: number;
 
-  id_medicamentos:
-    number |
-    { id_medicamentos?: number } |
-    null;
+  id_paciente?:
+    | number
+    | string
+    | {
+        id_paciente?: number;
+        id?: number;
+      }
+    | null;
 
-  id_insumo?:
-    number |
-    { id_insumo?: number } |
-    null;
+  id_medicamentos?:
+    | number
+    | string
+    | {
+        id_medicamentos?: number;
+        id_medicamento?: number;
+        id?: number;
+      }
+    | null;
 
-  cantidad: number;
-  fecha_ingreso: string;
+  cantidad_actual?: number | string;
+  cantidad_minima?: number | string;
+  fecha_ultimo_ingreso?: string | null;
   fecha_vencimiento?: string | null;
-  observaciones?: string | null;
-  estado: boolean;
+  estado?: boolean | string;
 }
 
-interface MedicamentoInventario {
-  id: number;
-  idElemento: number;
+// ============================================================
+// INTERFAZ DEL MEDICAMENTO MOSTRADO
+// ============================================================
+export interface MedicamentoInventario {
+  id: string;
+  idInventario: number;
+  idMedicamento: number;
   nombre: string;
+  descripcion: string;
   principioActivo: string;
   concentracion: string;
   presentacion: string;
+  unidadMedida: string;
   cantidad: number;
-  unidad: string;
-  fechaIngreso: string;
+  cantidadMinima: number;
+  cantidadRegistros: number;
+  fechaIngreso: string | null;
   fechaVencimiento: string | null;
-  observaciones: string;
-  estado: boolean;
   diasParaVencer: number | null;
   estaPorVencer: boolean;
   estaVencido: boolean;
   stockBajo: boolean;
+  estado: boolean;
+  observaciones: string;
+  registros: RegistroInventario[];
 }
-
-// ============================================================
-// CONFIGURACIÓN DEL COMPONENTE
-// ============================================================
 
 @Component({
   selector: 'app-inventario-paciente',
   standalone: true,
-  imports: [
-    CommonModule
-  ],
+  imports: [CommonModule],
   templateUrl: './inventario-paciente.html',
-  styleUrl: './inventario-paciente.css'
+  styleUrls: ['./inventario-paciente.css']
 })
-export class InventarioPaciente
-  implements OnChanges, OnDestroy {
+export class InventarioPaciente implements OnChanges, OnDestroy {
 
-  // ============================================================
-  // CONFIGURACIÓN DE LA API
-  // ============================================================
-
-  private readonly apiUrl =
+  private apiUrl =
     'https://geriapp-backend.onrender.com/api';
 
-  // ============================================================
-  // ENTRADAS Y SALIDAS
-  // ============================================================
+  @Input() idPaciente!: number | string;
 
-  @Input()
-  idPaciente: number = 0;
+  @Input() paciente: Paciente | null = null;
 
-  @Input()
-  paciente: Paciente | null = null;
+  @Input() estaAbierto = false;
 
-  @Input()
-  estaAbierto: boolean = false;
-
-  @Output()
-  cerrar = new EventEmitter<void>();
+  @Output() cerrar =
+    new EventEmitter<void>();
 
   // ============================================================
-  // VARIABLES DEL INVENTARIO
+  // DATOS
   // ============================================================
+  inventario: RegistroInventario[] = [];
 
   medicamentos: Medicamento[] = [];
 
-  elementosPaciente: ElementoPaciente[] = [];
+  medicamentosInventario:
+    MedicamentoInventario[] = [];
 
-  medicamentosInventario: MedicamentoInventario[] = [];
+  medicamentosFiltrados:
+    MedicamentoInventario[] = [];
 
-  medicamentosFiltrados: MedicamentoInventario[] = [];
+  // ============================================================
+  // ESTADO
+  // ============================================================
+  cargando = false;
 
-  cargando: boolean = false;
-
-  textoBusqueda: string = '';
+  textoBusqueda = '';
 
   categoriaSeleccionada:
-    'todos' |
-    'stock-bajo' |
-    'por-vencer' |
-    'vencidos' = 'todos';
+    'todos' | 'stock-bajo' = 'todos';
 
+  // ============================================================
+  // CATEGORÍAS
+  // ============================================================
   categorias = [
     {
-      label: 'Todos',
-      value: 'todos' as const
+      id: 'todos' as const,
+      nombre: 'Todos'
     },
     {
-      label: 'Stock bajo',
-      value: 'stock-bajo' as const
-    },
-    {
-      label: 'Por vencer',
-      value: 'por-vencer' as const
-    },
-    {
-      label: 'Vencidos',
-      value: 'vencidos' as const
+      id: 'stock-bajo' as const,
+      nombre: 'Stock bajo'
     }
   ];
 
   // ============================================================
-  // EVENTO PARA CERRAR CON ESCAPE
-  // ============================================================
-
-  private readonly escucharEscape =
-    (evento: KeyboardEvent): void => {
-
-      if (
-        evento.key === 'Escape' &&
-        this.estaAbierto
-      ) {
-
-        this.cerrarPanel();
-
-      }
-
-    };
-
-  // ============================================================
   // CONSTRUCTOR
   // ============================================================
-
   constructor(
-    private http: HttpClient
-  ) {
-
-    if (typeof window !== 'undefined') {
-
-      window.addEventListener(
-        'keydown',
-        this.escucharEscape
-      );
-
-    }
-
-  }
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   // ============================================================
-  // CAMBIOS EN LOS INPUT
+  // CAMBIOS DE LOS INPUTS
   // ============================================================
+  ngOnChanges(changes: SimpleChanges): void {
 
-  ngOnChanges(
-    cambios: SimpleChanges
-  ): void {
-
-    if (cambios['estaAbierto']) {
-
-      if (this.estaAbierto) {
-
-        this.bloquearScroll();
-
-        if (this.idPaciente > 0) {
-
-          this.cargarInventario();
-
-        }
-
-      } else {
-
-        this.restaurarScroll();
-
-      }
-
-    }
-
+    // ==========================================================
+    // CARGAR CUANDO SE ABRE EL PANEL
+    // ==========================================================
     if (
-      cambios['idPaciente'] &&
-      this.idPaciente > 0 &&
+      changes['estaAbierto'] &&
       this.estaAbierto
     ) {
 
       this.cargarInventario();
 
+      this.bloquearScroll();
     }
 
+    // ==========================================================
+    // CARGAR SI CAMBIA EL PACIENTE
+    // ==========================================================
+    if (
+      changes['idPaciente'] &&
+      this.idPaciente &&
+      this.estaAbierto
+    ) {
+
+      this.cargarInventario();
+    }
+
+    // ==========================================================
+    // RESTAURAR SCROLL AL CERRAR
+    // ==========================================================
+    if (
+      changes['estaAbierto'] &&
+      !this.estaAbierto
+    ) {
+
+      this.restaurarScroll();
+    }
   }
 
   // ============================================================
-  // DESTRUCCIÓN DEL COMPONENTE
+  // DESTRUIR COMPONENTE
   // ============================================================
-
   ngOnDestroy(): void {
-
-    if (typeof window !== 'undefined') {
-
-      window.removeEventListener(
-        'keydown',
-        this.escucharEscape
-      );
-
-    }
 
     this.restaurarScroll();
 
+    document.removeEventListener(
+      'keydown',
+      this.manejarTeclaEscape
+    );
   }
 
-  // ============================================================
-  // CARGAR INVENTARIO
-  // ============================================================
+ 
+// ============================================================
+// CARGAR INVENTARIO DEL PACIENTE
+// ============================================================
 
-  cargarInventario(): void {
+cargarInventario(): void {
 
-    if (
-      !this.idPaciente ||
-      this.idPaciente <= 0
-    ) {
+  // ==========================================================
+  // VALIDAR QUE EXISTA EL ID DEL PACIENTE
+  // ==========================================================
 
-      console.error(
-        'ID de paciente inválido.'
+  if (!this.idPaciente) {
+
+    console.warn(
+      'No se puede cargar el inventario porque no existe idPaciente'
+    );
+
+    this.inventario = [];
+    this.medicamentosInventario = [];
+    this.medicamentosFiltrados = [];
+
+    return;
+  }
+
+  // ==========================================================
+  // ACTIVAR ESTADO DE CARGA
+  // ==========================================================
+
+  this.cargando = true;
+
+  // ==========================================================
+  // CONSULTAR INVENTARIO DEL PACIENTE
+  // ==========================================================
+
+  const url = `${this.apiUrl}/inventario/?id_paciente=${this.idPaciente}`;
+
+  console.log('Consultando inventario:', url);
+
+  this.http.get<
+    RespuestaPaginada<RegistroInventario> |
+    RegistroInventario[]
+  >(url).subscribe({
+
+    // ========================================================
+    // RESPUESTA EXITOSA
+    // ========================================================
+
+    next: (respuesta) => {
+
+      console.log(
+        'Inventario recibido del paciente:',
+        respuesta
       );
 
-      return;
+      // ======================================================
+      // EXTRAER LOS REGISTROS
+      // ======================================================
 
+      this.inventario = this.extraerResultados(respuesta);
+
+      console.log(
+        'Registros de inventario:',
+        this.inventario
+      );
+
+      // ======================================================
+      // CARGAR CATÁLOGO DE MEDICAMENTOS
+      // ======================================================
+
+      this.cargarMedicamentos();
+    },
+
+    // ========================================================
+    // ERROR
+    // ========================================================
+
+    error: (error) => {
+
+      console.error(
+        'Error al cargar el inventario:',
+        error
+      );
+
+      this.inventario = [];
+      this.medicamentosInventario = [];
+      this.medicamentosFiltrados = [];
+
+      this.cargando = false;
+
+      this.cdr.detectChanges();
     }
-
-    this.cargando = true;
-
-    this.http.get<
-      ElementoPaciente[] |
-      RespuestaPaginada<ElementoPaciente>
-    >(
-      `${this.apiUrl}/elementos_paciente/`
-    ).subscribe({
-
-      next: (respuesta) => {
-
-        const elementos =
-          this.obtenerResultados(respuesta);
-
-        this.elementosPaciente =
-          elementos.filter(
-            elemento => {
-
-              const idPacienteElemento =
-                this.obtenerIdPaciente(
-                  elemento.id_paciente
-                );
-
-              return Number(
-                idPacienteElemento
-              ) === Number(
-                this.idPaciente
-              );
-
-            }
-          );
-
-        this.cargarMedicamentos();
-
-      },
-
-      error: (error) => {
-
-        console.error(
-          'Error al cargar elementos del paciente:',
-          error
-        );
-
-        this.cargando = false;
-
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text:
-            'No fue posible cargar el inventario del paciente.'
-        });
-
-      }
-
-    });
-
-  }
+  });
+}
 
   // ============================================================
   // CARGAR MEDICAMENTOS
   // ============================================================
-
   private cargarMedicamentos(): void {
 
     this.http.get<
-      Medicamento[] |
-      RespuestaPaginada<Medicamento>
+      RespuestaPaginada<Medicamento> |
+      Medicamento[]
     >(
       `${this.apiUrl}/medicamentos/`
     ).subscribe({
 
       next: (respuesta) => {
 
+        console.log(
+          'Respuesta de /medicamentos/:',
+          respuesta
+        );
+
         this.medicamentos =
-          this.obtenerResultados(respuesta);
+          this.extraerResultados(
+            respuesta
+          );
+
+        console.log(
+          'Medicamentos cargados:',
+          this.medicamentos
+        );
 
         this.construirInventario();
 
         this.cargando = false;
 
+        this.cdr.detectChanges();
       },
 
       error: (error) => {
 
         console.error(
-          'Error al cargar medicamentos:',
+          'Error al consultar /medicamentos/:',
           error
         );
 
+        this.medicamentos = [];
+
+        this.construirInventario();
+
         this.cargando = false;
 
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text:
-            'No fue posible cargar el catálogo de medicamentos.'
-        });
-
+        this.cdr.detectChanges();
       }
-
     });
-
   }
 
   // ============================================================
-  // CONSTRUIR INVENTARIO
+  // CONSTRUIR INVENTARIO AGRUPADO
   // ============================================================
-
   private construirInventario(): void {
 
-    this.medicamentosInventario =
-      this.elementosPaciente
+    const grupos =
+      new Map<
+        number,
+        RegistroInventario[]
+      >();
 
-        .filter(elemento => {
+    // ==========================================================
+    // AGRUPAR POR MEDICAMENTO
+    // ==========================================================
+    for (
+      const registro of this.inventario
+    ) {
 
-          return elemento.id_medicamentos !== null &&
-                 elemento.id_medicamentos !== undefined;
+      const idMedicamento =
+        this.obtenerIdMedicamento(
+          registro
+        );
 
-        })
+      console.log(
+        'Medicamento encontrado en inventario:',
+        {
+          idMedicamento,
+          registro
+        }
+      );
 
-        .map(elemento => {
+      if (!idMedicamento) {
+        continue;
+      }
 
-          const idMedicamento =
-            this.obtenerIdMedicamento(
-              elemento.id_medicamentos
-            );
+      if (!grupos.has(idMedicamento)) {
+        grupos.set(
+          idMedicamento,
+          []
+        );
+      }
 
-          const medicamento =
-            this.medicamentos.find(
-              item =>
-                Number(
-                  item.id_medicamentos
-                ) === Number(
-                  idMedicamento
+      grupos
+        .get(idMedicamento)!
+        .push(registro);
+    }
+
+    console.log(
+      'Grupos de medicamentos:',
+      grupos
+    );
+
+    const inventarioAgrupado:
+      MedicamentoInventario[] = [];
+
+    // ==========================================================
+    // CREAR TARJETAS
+    // ==========================================================
+    grupos.forEach(
+      (registros, idMedicamento) => {
+
+        const medicamento =
+          this.buscarMedicamento(
+            idMedicamento
+          );
+
+        // ======================================================
+        // SUMAR CANTIDAD ACTUAL
+        // ======================================================
+        const cantidadTotal =
+          registros.reduce(
+            (
+              total,
+              registro
+            ) => {
+
+              return (
+                total +
+                (
+                  Number(
+                    registro.cantidad_actual
+                  ) || 0
                 )
+              );
+            },
+            0
+          );
+
+        // ======================================================
+        // CANTIDAD MÍNIMA
+        // ======================================================
+        const cantidadMinima =
+          registros.reduce(
+            (
+              minima,
+              registro
+            ) => {
+
+              const cantidad =
+                Number(
+                  registro.cantidad_minima
+                ) || 0;
+
+              if (
+                minima === 0
+              ) {
+                return cantidad;
+              }
+
+              if (
+                cantidad > 0 &&
+                cantidad < minima
+              ) {
+                return cantidad;
+              }
+
+              return minima;
+            },
+            0
+          );
+
+        // ======================================================
+        // STOCK BAJO
+        // ======================================================
+        const stockBajo =
+          cantidadTotal < 5;
+
+        // ======================================================
+        // REGISTRO PRINCIPAL
+        // ======================================================
+        const registroPrincipal =
+          registros[0];
+
+        // ======================================================
+        // FECHA DE VENCIMIENTO
+        // ======================================================
+        const fechasVencimiento =
+          registros
+            .map(
+              registro =>
+                registro.fecha_vencimiento
+            )
+            .filter(
+              (
+                fecha
+              ): fecha is string =>
+                !!fecha
             );
 
-          const cantidad =
-            Number(elemento.cantidad) || 0;
+        let fechaVencimiento:
+          string | null = null;
 
-          const fechaVencimiento =
-            elemento.fecha_vencimiento || null;
+        if (
+          fechasVencimiento.length > 0
+        ) {
 
-          const diasParaVencer =
-            this.calcularDiasParaVencer(
-              fechaVencimiento
+          fechaVencimiento =
+            [
+              ...fechasVencimiento
+            ].sort(
+              (a, b) =>
+                new Date(a).getTime() -
+                new Date(b).getTime()
+            )[0];
+        }
+
+        // ======================================================
+        // FECHA DE INGRESO
+        // ======================================================
+        const fechasIngreso =
+          registros
+            .map(
+              registro =>
+                registro.fecha_ultimo_ingreso
+            )
+            .filter(
+              (
+                fecha
+              ): fecha is string =>
+                !!fecha
             );
 
-          const estaVencido =
-            diasParaVencer !== null &&
-            diasParaVencer < 0;
+        let fechaIngreso:
+          string | null = null;
 
-          const estaPorVencer =
-            diasParaVencer !== null &&
-            diasParaVencer >= 0 &&
-            diasParaVencer <= 30;
+        if (
+          fechasIngreso.length > 0
+        ) {
 
-          const stockMinimo = 5;
+          fechaIngreso =
+            [
+              ...fechasIngreso
+            ].sort(
+              (a, b) =>
+                new Date(a).getTime() -
+                new Date(b).getTime()
+            )[0];
+        }
 
-          const stockBajo =
-            cantidad < stockMinimo;
+        // ======================================================
+        // DÍAS PARA VENCER
+        // ======================================================
+        const diasParaVencer =
+          this.calcularDiasParaVencer(
+            fechaVencimiento
+          );
 
-          return {
+        // ======================================================
+        // ESTADO DE VENCIMIENTO
+        // ======================================================
+        const estaVencido =
+          registros.some(
+            registro =>
+              this.estaRegistroVencido(
+                registro.fecha_vencimiento
+              )
+          );
 
-            id:
-              Number(idMedicamento) || 0,
+        const estaPorVencer =
+          registros.some(
+            registro =>
+              this.estaRegistroPorVencer(
+                registro.fecha_vencimiento
+              )
+          );
 
-            idElemento:
-              elemento.id_elemento,
+        // ======================================================
+        // DATOS DEL MEDICAMENTO
+        // ======================================================
+        const nombre =
+          medicamento?.nombre ||
+          'Medicamento';
 
-            nombre:
-              medicamento?.nombre ||
-              'Medicamento no encontrado',
+        const principioActivo =
+          medicamento?.principio_activo ||
+          'No especificado';
 
-            principioActivo:
-              medicamento?.principio_activo ||
-              'No registrado',
+        const concentracion =
+          medicamento?.concentracion ||
+          'No especificada';
 
-            concentracion:
-              medicamento?.concentracion ||
-              '',
+        const presentacion =
+          medicamento?.presentacion ||
+          'No especificada';
 
-            presentacion:
-              medicamento?.presentacion ||
-              'No registrada',
+        const unidadMedida =
+          medicamento?.unidad_medida ||
+          'unidades';
 
-            cantidad:
-              cantidad,
+        const descripcion =
+          medicamento?.descripcion ||
+          '';
 
-            unidad:
-              medicamento?.unidad_medida ||
-              medicamento?.presentacion ||
-              'unidades',
+        const estado =
+          medicamento?.estado !== undefined
+            ? medicamento.estado
+            : this.convertirEstado(
+                registroPrincipal.estado
+              );
 
-            fechaIngreso:
-              elemento.fecha_ingreso || '',
+        // ======================================================
+        // CREAR OBJETO PARA LA TARJETA
+        // ======================================================
+        inventarioAgrupado.push({
 
-            fechaVencimiento:
-              fechaVencimiento,
+          id:
+            `medicamento-${idMedicamento}`,
 
-            observaciones:
-              elemento.observaciones || '',
+          idInventario:
+            Number(
+              registroPrincipal.id_inventario ||
+              0
+            ),
 
-            estado:
-              elemento.estado ?? true,
+          idMedicamento,
 
-            diasParaVencer:
-              diasParaVencer,
+          nombre,
 
-            estaPorVencer:
-              estaPorVencer,
+          descripcion,
 
-            estaVencido:
-              estaVencido,
+          principioActivo,
 
-            stockBajo:
-              stockBajo
+          concentracion,
 
-          };
+          presentacion,
 
+          unidadMedida,
+
+          cantidad:
+            cantidadTotal,
+
+          cantidadMinima,
+
+          cantidadRegistros:
+            registros.length,
+
+          fechaIngreso,
+
+          fechaVencimiento,
+
+          diasParaVencer,
+
+          estaPorVencer,
+
+          estaVencido,
+
+          stockBajo,
+
+          estado,
+
+          observaciones: '',
+
+          registros
         });
+      }
+    );
 
+    // ==========================================================
+    // ORDENAR
+    // ==========================================================
+    this.medicamentosInventario =
+      inventarioAgrupado.sort(
+        (a, b) =>
+          a.nombre.localeCompare(
+            b.nombre
+          )
+      );
+
+    console.log(
+      'Inventario final para mostrar:',
+      this.medicamentosInventario
+    );
+
+    // ==========================================================
+    // APLICAR FILTROS
+    // ==========================================================
     this.aplicarFiltros();
+  }
 
+  // ============================================================
+  // OBTENER ID DEL PACIENTE
+  // ============================================================
+  private obtenerIdPaciente(
+    registro: RegistroInventario
+  ): number {
+
+    const paciente =
+      registro.id_paciente;
+
+    // ==========================================================
+    // SI VIENE COMO NÚMERO
+    // ==========================================================
+    if (
+      typeof paciente === 'number'
+    ) {
+
+      return paciente;
+    }
+
+    // ==========================================================
+    // SI VIENE COMO TEXTO
+    // ==========================================================
+    if (
+      typeof paciente === 'string'
+    ) {
+
+      return Number(
+        paciente
+      );
+    }
+
+    // ==========================================================
+    // SI VIENE COMO OBJETO
+    // ==========================================================
+    if (
+      paciente &&
+      typeof paciente === 'object'
+    ) {
+
+      return Number(
+        paciente.id_paciente ||
+        paciente.id ||
+        0
+      );
+    }
+
+    return 0;
+  }
+
+  // ============================================================
+  // OBTENER ID DEL MEDICAMENTO
+  // ============================================================
+  private obtenerIdMedicamento(
+    registro: RegistroInventario
+  ): number {
+
+    const medicamento =
+      registro.id_medicamentos;
+
+    // ==========================================================
+    // SI VIENE COMO NÚMERO
+    // ==========================================================
+    if (
+      typeof medicamento === 'number'
+    ) {
+
+      return medicamento;
+    }
+
+    // ==========================================================
+    // SI VIENE COMO TEXTO
+    // ==========================================================
+    if (
+      typeof medicamento === 'string'
+    ) {
+
+      return Number(
+        medicamento
+      );
+    }
+
+    // ==========================================================
+    // SI VIENE COMO OBJETO
+    // ==========================================================
+    if (
+      medicamento &&
+      typeof medicamento === 'object'
+    ) {
+
+      return Number(
+        medicamento.id_medicamentos ||
+        medicamento.id_medicamento ||
+        medicamento.id ||
+        0
+      );
+    }
+
+    return 0;
+  }
+
+  // ============================================================
+  // BUSCAR MEDICAMENTO
+  // ============================================================
+  private buscarMedicamento(
+    idMedicamento: number
+  ): Medicamento | undefined {
+
+    return this.medicamentos.find(
+      medicamento =>
+        this.obtenerIdMedicamentoCatalogo(
+          medicamento
+        ) === idMedicamento
+    );
+  }
+
+  // ============================================================
+  // OBTENER ID DEL CATÁLOGO
+  // ============================================================
+  private obtenerIdMedicamentoCatalogo(
+    medicamento: Medicamento
+  ): number {
+
+    return Number(
+      medicamento.id_medicamentos ||
+      medicamento.id_medicamento ||
+      medicamento.id ||
+      0
+    );
   }
 
   // ============================================================
   // CAMBIAR BÚSQUEDA
   // ============================================================
+  cambiarBusqueda(
+    evento: Event
+  ): void {
 
-  cambiarBusqueda(evento: Event): void {
-
-    const entrada =
+    const input =
       evento.target as HTMLInputElement;
 
     this.textoBusqueda =
-      entrada.value;
+      input.value;
 
     this.aplicarFiltros();
-
   }
 
   // ============================================================
   // LIMPIAR BÚSQUEDA
   // ============================================================
-
   limpiarBusqueda(): void {
 
     this.textoBusqueda = '';
 
     this.aplicarFiltros();
-
   }
 
   // ============================================================
   // SELECCIONAR CATEGORÍA
   // ============================================================
-
   seleccionarCategoria(
     categoria:
       'todos' |
-      'stock-bajo' |
-      'por-vencer' |
-      'vencidos'
+      'stock-bajo'
   ): void {
 
     this.categoriaSeleccionada =
       categoria;
 
     this.aplicarFiltros();
-
   }
 
   // ============================================================
   // APLICAR FILTROS
   // ============================================================
+  aplicarFiltros(): void {
 
-  private aplicarFiltros(): void {
+    let resultado =
+      [
+        ...this.medicamentosInventario
+      ];
 
     const texto =
       this.textoBusqueda
         .trim()
         .toLowerCase();
 
+    // ==========================================================
+    // BUSCAR TEXTO
+    // ==========================================================
+    if (texto) {
+
+      resultado =
+        resultado.filter(
+          medicamento => {
+
+            const nombre =
+              medicamento.nombre
+                .toLowerCase();
+
+            const principio =
+              medicamento.principioActivo
+                .toLowerCase();
+
+            const concentracion =
+              medicamento.concentracion
+                .toLowerCase();
+
+            const presentacion =
+              medicamento.presentacion
+                .toLowerCase();
+
+            return (
+              nombre.includes(texto) ||
+              principio.includes(texto) ||
+              concentracion.includes(texto) ||
+              presentacion.includes(texto)
+            );
+          }
+        );
+    }
+
+    // ==========================================================
+    // FILTRO STOCK BAJO
+    // ==========================================================
+    if (
+      this.categoriaSeleccionada ===
+      'stock-bajo'
+    ) {
+
+      resultado =
+        resultado.filter(
+          medicamento =>
+            medicamento.stockBajo
+        );
+    }
+
     this.medicamentosFiltrados =
-      this.medicamentosInventario.filter(
-        medicamento => {
-
-          const coincideBusqueda =
-            !texto ||
-            medicamento.nombre
-              .toLowerCase()
-              .includes(texto) ||
-            medicamento.principioActivo
-              .toLowerCase()
-              .includes(texto) ||
-            medicamento.concentracion
-              .toLowerCase()
-              .includes(texto) ||
-            medicamento.presentacion
-              .toLowerCase()
-              .includes(texto);
-
-          let coincideCategoria = true;
-
-          if (
-            this.categoriaSeleccionada ===
-            'stock-bajo'
-          ) {
-
-            coincideCategoria =
-              medicamento.stockBajo;
-
-          }
-
-          if (
-            this.categoriaSeleccionada ===
-            'por-vencer'
-          ) {
-
-            coincideCategoria =
-              medicamento.estaPorVencer;
-
-          }
-
-          if (
-            this.categoriaSeleccionada ===
-            'vencidos'
-          ) {
-
-            coincideCategoria =
-              medicamento.estaVencido;
-
-          }
-
-          return coincideBusqueda &&
-                 coincideCategoria;
-
-        }
-      );
-
-  }
-
-  // ============================================================
-  // CONTADORES
-  // ============================================================
-
-  get totalActivos(): number {
-
-    return this.medicamentosInventario
-      .filter(
-        medicamento =>
-          medicamento.estado
-      )
-      .length;
-
-  }
-
-  get totalStockBajo(): number {
-
-    return this.medicamentosInventario
-      .filter(
-        medicamento =>
-          medicamento.stockBajo &&
-          medicamento.estado
-      )
-      .length;
-
-  }
-
-  get totalPorVencer(): number {
-
-    return this.medicamentosInventario
-      .filter(
-        medicamento =>
-          medicamento.estaPorVencer &&
-          !medicamento.estaVencido
-      )
-      .length;
-
-  }
-
-  get totalVencidos(): number {
-
-    return this.medicamentosInventario
-      .filter(
-        medicamento =>
-          medicamento.estaVencido
-      )
-      .length;
-
+      resultado;
   }
 
   // ============================================================
   // CALCULAR DÍAS PARA VENCER
   // ============================================================
-
-  private calcularDiasParaVencer(
+  calcularDiasParaVencer(
     fecha: string | null
   ): number | null {
 
     if (!fecha) {
-
       return null;
-
     }
 
     const fechaVencimiento =
-      new Date(`${fecha}T00:00:00`);
+      new Date(fecha);
 
     if (
-      isNaN(
+      Number.isNaN(
         fechaVencimiento.getTime()
       )
     ) {
 
       return null;
-
     }
 
-    const hoy = new Date();
+    const hoy =
+      new Date();
 
     hoy.setHours(
+      0,
+      0,
+      0,
+      0
+    );
+
+    fechaVencimiento.setHours(
       0,
       0,
       0,
@@ -720,60 +1010,94 @@ export class InventarioPaciente
       diferencia /
       (1000 * 60 * 60 * 24)
     );
-
   }
 
   // ============================================================
-  // TEXTO DEL VENCIMIENTO
+  // VERIFICAR VENCIDO
   // ============================================================
+  private estaRegistroVencido(
+    fecha:
+      string |
+      null |
+      undefined
+  ): boolean {
 
+    const dias =
+      this.calcularDiasParaVencer(
+        fecha || null
+      );
+
+    return (
+      dias !== null &&
+      dias < 0
+    );
+  }
+
+  // ============================================================
+  // VERIFICAR POR VENCER
+  // ============================================================
+  private estaRegistroPorVencer(
+    fecha:
+      string |
+      null |
+      undefined
+  ): boolean {
+
+    const dias =
+      this.calcularDiasParaVencer(
+        fecha || null
+      );
+
+    return (
+      dias !== null &&
+      dias >= 0 &&
+      dias <= 30
+    );
+  }
+
+  // ============================================================
+  // TEXTO DE VENCIMIENTO
+  // ============================================================
   obtenerTextoVencimiento(
     medicamento: MedicamentoInventario
   ): string {
-
-    if (
-      !medicamento.fechaVencimiento
-    ) {
-
-      return 'No registrada';
-
-    }
 
     if (
       medicamento.estaVencido
     ) {
 
       return 'Vencido';
-
-    }
-
-    if (
-      medicamento.diasParaVencer === 0
-    ) {
-
-      return 'Vence hoy';
-
     }
 
     if (
       medicamento.diasParaVencer !== null &&
-      medicamento.diasParaVencer <= 30
+      medicamento.diasParaVencer === 0
+    ) {
+
+      return 'Vence hoy';
+    }
+
+    if (
+      medicamento.diasParaVencer !== null &&
+      medicamento.diasParaVencer === 1
+    ) {
+
+      return 'Vence mañana';
+    }
+
+    if (
+      medicamento.diasParaVencer !== null
     ) {
 
       return `Vence en ${medicamento.diasParaVencer} días`;
-
     }
 
-    return this.formatearFecha(
-      medicamento.fechaVencimiento
-    );
-
+    return '';
   }
 
   // ============================================================
-  // CLASE VISUAL DEL VENCIMIENTO
+  // CLASE DE VENCIMIENTO
   // ============================================================
-
   obtenerClaseVencimiento(
     medicamento: MedicamentoInventario
   ): string {
@@ -783,7 +1107,6 @@ export class InventarioPaciente
     ) {
 
       return 'vencido';
-
     }
 
     if (
@@ -791,86 +1114,35 @@ export class InventarioPaciente
     ) {
 
       return 'por-vencer';
-
     }
 
     return '';
-
   }
 
   // ============================================================
-  // PORCENTAJE DEL STOCK
+  // FORMATEAR FECHA
   // ============================================================
-
-  calcularPorcentajeStock(
-    cantidad: number
-  ): number {
-
-    const maximoVisual = 30;
-
-    if (cantidad <= 0) {
-
-      return 0;
-
-    }
-
-    return Math.min(
-      100,
-      Math.round(
-        (cantidad / maximoVisual) * 100
-      )
-    );
-
-  }
-
-  // ============================================================
-  // CLASE VISUAL DEL STOCK
-  // ============================================================
-
-  obtenerClaseStock(
-    medicamento: MedicamentoInventario
-  ): string {
-
-    if (
-      medicamento.stockBajo
-    ) {
-
-      return 'stock-bajo';
-
-    }
-
-    return 'stock-normal';
-
-  }
-
-  // ============================================================
-  // FORMATEAR FECHAS
-  // ============================================================
-
   formatearFecha(
     fecha: string | null
   ): string {
 
     if (!fecha) {
-
-      return 'No registrada';
-
+      return 'No disponible';
     }
 
-    const fechaObj =
+    const fechaFormateada =
       new Date(fecha);
 
     if (
-      isNaN(
-        fechaObj.getTime()
+      Number.isNaN(
+        fechaFormateada.getTime()
       )
     ) {
 
-      return fecha;
-
+      return 'No disponible';
     }
 
-    return fechaObj.toLocaleDateString(
+    return fechaFormateada.toLocaleDateString(
       'es-CO',
       {
         day: '2-digit',
@@ -878,20 +1150,24 @@ export class InventarioPaciente
         year: 'numeric'
       }
     );
-
   }
 
   // ============================================================
   // VER DETALLES
   // ============================================================
-
   verDetalles(
     medicamento: MedicamentoInventario
   ): void {
 
-    Swal.fire({
+    const cantidadRegistros =
+      medicamento.cantidadRegistros;
 
-      icon: 'info',
+    const textoRegistros =
+      cantidadRegistros === 1
+        ? '1 registro'
+        : `${cantidadRegistros} registros`;
+
+    Swal.fire({
 
       title:
         medicamento.nombre,
@@ -906,7 +1182,7 @@ export class InventarioPaciente
 
           <p>
             <strong>Concentración:</strong>
-            ${medicamento.concentracion || 'No registrada'}
+            ${medicamento.concentracion}
           </p>
 
           <p>
@@ -915,23 +1191,14 @@ export class InventarioPaciente
           </p>
 
           <p>
-            <strong>Cantidad:</strong>
+            <strong>Cantidad total:</strong>
             ${medicamento.cantidad}
-            ${medicamento.unidad}
+            ${medicamento.unidadMedida}
           </p>
 
           <p>
-            <strong>Fecha de ingreso:</strong>
-            ${this.formatearFecha(
-              medicamento.fechaIngreso
-            )}
-          </p>
-
-          <p>
-            <strong>Vencimiento:</strong>
-            ${this.formatearFecha(
-              medicamento.fechaVencimiento
-            )}
+            <strong>Registros de inventario:</strong>
+            ${textoRegistros}
           </p>
 
           <p>
@@ -943,81 +1210,24 @@ export class InventarioPaciente
             }
           </p>
 
-          ${
-            medicamento.observaciones
-              ? `
-                <p>
-                  <strong>Observaciones:</strong>
-                  ${medicamento.observaciones}
-                </p>
-              `
-              : ''
-          }
-
         </div>
       `,
 
       confirmButtonText:
-        'Cerrar'
+        'Cerrar',
 
+      width:
+        '500px'
     });
-
   }
 
   // ============================================================
-  // CERRAR PANEL
+  // EXTRAER RESULTADOS
   // ============================================================
-
-  cerrarPanel(): void {
-
-    this.restaurarScroll();
-
-    this.cerrar.emit();
-
-  }
-
-  // ============================================================
-  // BLOQUEAR SCROLL
-  // ============================================================
-
-  private bloquearScroll(): void {
-
-    if (
-      typeof document !== 'undefined'
-    ) {
-
-      document.body.style.overflow =
-        'hidden';
-
-    }
-
-  }
-
-  // ============================================================
-  // RESTAURAR SCROLL
-  // ============================================================
-
-  private restaurarScroll(): void {
-
-    if (
-      typeof document !== 'undefined'
-    ) {
-
-      document.body.style.overflow =
-        '';
-
-    }
-
-  }
-
-  // ============================================================
-  // OBTENER RESULTADOS
-  // ============================================================
-
-  private obtenerResultados<T>(
+  private extraerResultados<T>(
     respuesta:
-      T[] |
-      RespuestaPaginada<T>
+      RespuestaPaginada<T> |
+      T[]
   ): T[] {
 
     if (
@@ -1025,106 +1235,103 @@ export class InventarioPaciente
     ) {
 
       return respuesta;
-
     }
 
-    if (
-      respuesta &&
-      Array.isArray(
-        respuesta.results
-      )
-    ) {
-
-      return respuesta.results;
-
-    }
-
-    return [];
-
+    return (
+      respuesta?.results ||
+      []
+    );
   }
 
   // ============================================================
-  // OBTENER ID DEL PACIENTE
+  // CONVERTIR ESTADO
   // ============================================================
-
-  private obtenerIdPaciente(
-    relacion:
-      number |
-      { id_paciente?: number } |
-      null
-  ): number | null {
+  private convertirEstado(
+    estado:
+      boolean |
+      string |
+      undefined
+  ): boolean {
 
     if (
-      relacion === null
+      typeof estado ===
+      'boolean'
     ) {
 
-      return null;
-
+      return estado;
     }
 
     if (
-      typeof relacion === 'number'
+      typeof estado ===
+      'string'
     ) {
 
-      return relacion;
+      return (
+        estado.toLowerCase() ===
+          'activo' ||
 
-    }
+        estado.toLowerCase() ===
+          'true' ||
 
-    if (
-      typeof relacion === 'object' &&
-      relacion.id_paciente !== undefined
-    ) {
-
-      return Number(
-        relacion.id_paciente
+        estado === '1'
       );
-
     }
 
-    return null;
-
+    return true;
   }
 
   // ============================================================
-  // OBTENER ID DEL MEDICAMENTO
+  // CERRAR PANEL
   // ============================================================
+  cerrarPanel(): void {
 
-  private obtenerIdMedicamento(
-    relacion:
-      number |
-      { id_medicamentos?: number } |
-      null
-  ): number | null {
+    this.cerrar.emit();
 
-    if (
-      relacion === null
-    ) {
-
-      return null;
-
-    }
-
-    if (
-      typeof relacion === 'number'
-    ) {
-
-      return relacion;
-
-    }
-
-    if (
-      typeof relacion === 'object' &&
-      relacion.id_medicamentos !== undefined
-    ) {
-
-      return Number(
-        relacion.id_medicamentos
-      );
-
-    }
-
-    return null;
-
+    this.restaurarScroll();
   }
 
+  // ============================================================
+  // TECLA ESCAPE
+  // ============================================================
+  manejarTeclaEscape = (
+    evento: KeyboardEvent
+  ): void => {
+
+    if (
+      evento.key === 'Escape' &&
+      this.estaAbierto
+    ) {
+
+      this.cerrarPanel();
+    }
+  };
+
+  // ============================================================
+  // BLOQUEAR SCROLL
+  // ============================================================
+  private bloquearScroll(): void {
+
+    document.body.style.overflow =
+      'hidden';
+
+    document.addEventListener(
+      'keydown',
+      this.manejarTeclaEscape
+    );
+  }
+
+  // ============================================================
+  // RESTAURAR SCROLL
+  // ============================================================
+  private restaurarScroll(): void {
+
+    document.body.style.overflow =
+      '';
+
+    document.removeEventListener(
+      'keydown',
+      this.manejarTeclaEscape
+    );
+  }
 }
+

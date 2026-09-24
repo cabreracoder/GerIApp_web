@@ -257,94 +257,6 @@
 }
 
 /* =========================================================
-   KPIs
-   ========================================================= */
-
-.kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  padding: 14px 24px;
-}
-
-.kpi-card {
-  display: flex;
-  flex-direction: column;
-  background: var(--geriapp-card-bg);
-  border: 1px solid var(--geriapp-border);
-  border-radius: 10px;
-  padding: 9px 6px;
-  text-align: center;
-  min-width: 0;
-}
-
-.kpi-card.warn {
-
-  border-color: #fde68a;
-
-  background: #fffbeb;
-
-}
-
-.kpi-card.danger {
-
-  border-color: #fecaca;
-
-  background: #fef2f2;
-
-}
-
-.kpi-label {
-
-  font-size: 0.68rem;
-
-  font-weight: 700;
-
-  text-transform: uppercase;
-
-  color: var(--geriapp-text-muted);
-
-}
-
-.kpi-value {
-
-  margin: 4px 0 1px;
-
-  font-size: 1.6rem;
-
-  font-weight: 800;
-
-  line-height: 1.2;
-
-}
-
-.kpi-subtext {
-
-  font-size: 0.65rem;
-
-  color: var(--geriapp-text-muted);
-
-}
-
-.text-primary {
-
-  color: var(--geriapp-primary);
-
-}
-
-.text-warn {
-
-  color: #d97706;
-
-}
-
-.text-danger {
-
-  color: var(--geriapp-danger);
-
-}
-
-/* =========================================================
    FILTROS
    ========================================================= */
 
@@ -595,7 +507,7 @@
 }
 
 /* =========================================================
-   TARJETA
+   TARJETA DEL MEDICAMENTO
    ========================================================= */
 
 .med-card {
@@ -1010,7 +922,6 @@
 }
 
 .btn-reorder,
-
 .btn-details {
 
   padding: 5px 10px;
@@ -1090,7 +1001,6 @@
 }
 
 .btn-primary-action,
-
 .btn-secondary-action {
 
   width: 100%;
@@ -1157,3 +1067,4 @@
     var(--geriapp-primary);
 
 }
+
