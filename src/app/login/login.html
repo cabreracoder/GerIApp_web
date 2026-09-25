@@ -81,15 +81,12 @@
 
           <div class="input-container">
 
-            
 
-            <input [type]="mostrarContrasena ? 'text' : 'password'" id="contrasena" name="contrasena" [(ngModel)]="usuario.contrasena"
-              placeholder="Ingresa tu contraseña" autocomplete="new-password" required>
 
-           <button
-              type="button"
-              class="password-icon"
-              (click)="mostrarContrasena = !mostrarContrasena"
+            <input [type]="mostrarContrasena ? 'text' : 'password'" id="contrasena" name="contrasena"
+              [(ngModel)]="usuario.contrasena" placeholder="Ingresa tu contraseña" autocomplete="new-password" required>
+
+            <button type="button" class="password-icon" (click)="mostrarContrasena = !mostrarContrasena"
               [attr.aria-label]="mostrarContrasena ? 'Ocultar contraseña' : 'Mostrar contraseña'">
 
               {{ mostrarContrasena ? '◉' : '◌' }}
@@ -147,14 +144,11 @@
       </div>
 
 
-      <!-- GOOGLE -->
-      <button type="button" class="btn-google">
+      <div class="google-container">
 
-        <span class="google-icon">G</span>
+        <asl-google-signin-button></asl-google-signin-button>
 
-        <span>Continuar con Google</span>
-
-      </button>
+      </div>
 
 
       <!-- REGISTRO -->
