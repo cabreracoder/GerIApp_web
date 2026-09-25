@@ -50,7 +50,27 @@
 
   </section>
 
+  <section class="selector-mes-dashboard">
 
+    <div class="selector-mes-header">
+      <span class="titulo-mes">
+        Resumen del periodo
+      </span>
+
+      <span class="mes-activo">
+        {{ mesSeleccionado }}
+      </span>
+    </div>
+
+    <div class="barra-mes" (click)="cambiarMes($event)">
+      <div class="barra-mes-progreso" [style.width.%]="progresoMes">
+      </div>
+
+      <div class="barra-mes-punto" [style.left.%]="progresoMes">
+      </div>
+    </div>
+
+  </section>
   <!-- =====================================================
        RESUMEN PRINCIPAL
   ====================================================== -->
@@ -80,22 +100,6 @@
       </div>
 
 
-      <!-- Selector de meses -->
-
-      <div class="mb3">
-
-
-
-        <div class="msl" (click)="cambiarMes($event)">
-          <div class="mf" [style.width.%]="progresoMes">
-          </div>
-
-          <div class="mt" [style.left.%]="progresoMes">
-          </div>
-
-        </div>
-
-      </div>
 
 
       <!-- Progreso -->
@@ -429,11 +433,11 @@
         <div>
 
           <h2 class="ct">
-            Ocupación
+            Capacidad del centro
           </h2>
 
           <p class="cs">
-            Progreso de capacidad · {{ mesActual }}
+            Progreso de capacidad · {{ mesSeleccionado }}
           </p>
 
         </div>
@@ -479,7 +483,7 @@
           </span>
 
           <span>
-            Meta: {{ metaOcupacion }}% · {{ mesActual }}
+            Meta: {{ metaOcupacion }}%
           </span>
 
         </div>
