@@ -456,26 +456,35 @@ export class Notificaciones {
     if (
       !this.destinatarioSeleccionado.trim()
     ) {
-      this.mensajeError =
-        'Debe seleccionar un destinatario válido.';
-      return;
-    }
+        Swal.fire(
+          'Campos incompletos',
+          'Debe seleccionar un destinatario válido.',
+          'warning'
+        );
+        return;
+      }
 
     if (
       !this.tituloNotificacion.trim()
     ) {
-      this.mensajeError =
-        'Debe ingresar un título para la notificación.';
-      return;
-    }
+        Swal.fire(
+          'Campos incompletos',
+          'Debe ingresar un título para la notificación.',
+          'warning'
+        );
+        return;
+      }
 
     if (
       !this.mensajeNotificacion.trim()
     ) {
-      this.mensajeError =
-        'El contenido del mensaje no puede estar vacío.';
-      return;
-    }
+        Swal.fire(
+          'Campos incompletos',
+          'El contenido del mensaje no puede estar vacío.',
+          'warning'
+        );
+        return;
+      }
 
     const idUsuario =
       this.obtenerIdUsuarioActual();
@@ -739,8 +748,14 @@ export class Notificaciones {
           notificacionCreada
         );
 
-        this.mensajeExito =
-          'Notificación creada correctamente.';
+        
+        Swal.fire({
+          icon: 'success',
+          title: 'Notificación creada',
+          text: 'Notificación creada correctamente.',
+          timer: 1500,
+          showConfirmButton: false
+        });
 
         this.limpiarFormulario();
 
@@ -749,9 +764,6 @@ export class Notificaciones {
         setTimeout(() => {
           this.pestanaActual =
             'bandeja';
-
-          this.mensajeExito =
-            '';
         }, 1500);
       },
       error: (error) => {
