@@ -5,13 +5,15 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef } from '@angular/core';
 import Swal from 'sweetalert2';
-
+import { SocialAuthService, GoogleLoginProvider, SocialUser, GoogleSigninButtonDirective } from '@abacritt/angularx-social-login';
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    GoogleSigninButtonDirective
+
   ],
   templateUrl: './login.html',
   styleUrl: './login.css'
@@ -70,9 +72,24 @@ export class Login {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private cd: ChangeDetectorRef
-  ) { }
+    private cd: ChangeDetectorRef,
+    private socialAuthService: SocialAuthService
 
+  ) {
+
+    this.socialAuthService.authState.subscribe(user => {
+
+      console.log("Usuario Google:", user);
+
+      if (user) {
+
+        this.loginGoogleBackend(user.idToken!);
+
+      }
+
+    });
+
+  }
   // =========================================================
   // INICIAR SESIÓN
   // =========================================================
@@ -428,6 +445,82 @@ export class Login {
       }
 
     });
+  }
+
+  // =========================================================
+  // LOGIN CON GOOGLE
+  // =========================================================
+
+  loginGoogleBackend(token: string): void {
+
+    this.http.post<any>(
+      `${this.apiUrl}/auth/login-google/`,
+      {
+        token: token
+      }
+    )
+      .subscribe({
+
+        next: (respuesta) => {
+
+          console.log(
+            'Respuesta backend Google:',
+            respuesta
+          );
+
+
+          if (respuesta.usuario) {
+
+            localStorage.setItem(
+              'usuario',
+              JSON.stringify(respuesta.usuario)
+            );
+
+          }
+
+
+          Swal.fire({
+            title: '¡Bienvenido!',
+            text: 'Inicio de sesión con Google exitoso.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          })
+            .then(() => {
+
+              this.router.navigate([
+                '/dashboard'
+              ]);
+
+            });
+
+
+        },
+
+
+        error: (error) => {
+
+          console.log(
+            'Error backend Google:',
+            error
+          );
+
+
+          Swal.fire({
+
+            title: 'Usuario no registrado',
+
+            text:
+              error.error.error ||
+              'Debe crear una cuenta para ingresar con Google.',
+
+            icon: 'warning'
+
+          });
+
+        }
+
+      });
+
   }
 
 }
