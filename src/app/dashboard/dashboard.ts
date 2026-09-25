@@ -420,6 +420,8 @@ export class DashboardComponent implements OnInit {
 
     this.seleccionarMes(indice);
     this.cargarPacientes();
+    this.cargarCuidadores();
+    this.cargarAlertas();
 
 
   }
@@ -441,8 +443,14 @@ export class DashboardComponent implements OnInit {
           const anioActual = new Date().getFullYear();
 
 
-          // Último día del mes seleccionado
-          const fechaLimite = new Date(
+          const inicioMes = new Date(
+            anioActual,
+            this.mesSeleccionadoIndex,
+            1
+          );
+
+
+          let finMes = new Date(
             anioActual,
             this.mesSeleccionadoIndex + 1,
             0,
@@ -453,15 +461,26 @@ export class DashboardComponent implements OnInit {
           );
 
 
+          // Si es el mes actual, hasta hoy
+          if (
+            this.mesSeleccionadoIndex === new Date().getMonth()
+          ) {
+            finMes = new Date();
+          }
+
+
           // Pacientes que ya habían ingresado
-          // hasta el mes seleccionado
           const pacientesHastaMes = pacientes.filter(
             paciente => {
 
               const fechaIngreso =
                 new Date(paciente.fecha_ingreso);
 
-              return fechaIngreso <= fechaLimite;
+
+              return (
+                fechaIngreso >= inicioMes &&
+                fechaIngreso <= finMes
+              );
 
             }
           );
@@ -532,18 +551,89 @@ export class DashboardComponent implements OnInit {
             usuario => usuario.id_rol === 5
           );
 
-          // Total registrados
+
+          const fechaActual = new Date();
+
+          const mesActual = fechaActual.getMonth();
+
+
+
+          let cuidadoresPeriodo = [];
+
+
+
+          // Mes actual
+          if (this.mesSeleccionadoIndex === mesActual) {
+
+
+            cuidadoresPeriodo = cuidadores.filter(
+              cuidador => cuidador.estado === true
+            );
+
+
+          }
+
+          // Mes anterior
+          else {
+
+
+            const ultimoDiaMes = new Date(
+              fechaActual.getFullYear(),
+              this.mesSeleccionadoIndex + 1,
+              0,
+              23,
+              59,
+              59
+            );
+
+
+
+            cuidadoresPeriodo = cuidadores.filter(
+              cuidador => {
+
+                const fechaIngreso =
+                  new Date(cuidador.fecha_ingreso);
+
+
+                return fechaIngreso <= ultimoDiaMes;
+
+              }
+            );
+
+          }
+
+
+
+          // Registrados hasta ese periodo
           this.totalCuidadores =
-            cuidadores.length;
+            cuidadoresPeriodo.length;
 
 
-          // Ingresos = cuidadores activos
+
+          // Ingresos hasta ese periodo
           this.ingresosCuidadores =
-            cuidadores.filter(
+            cuidadoresPeriodo.filter(
               cuidador => cuidador.estado === true
             ).length;
+
+
+
           this.cargarTurnos();
+
+
           this.cd.detectChanges();
+
+
+
+          console.log(
+            "Gestión cuidadores:",
+            {
+              mes: this.mesSeleccionado,
+              registrados: this.totalCuidadores,
+              ingresos: this.ingresosCuidadores
+            }
+          );
+
 
         },
 
@@ -557,6 +647,7 @@ export class DashboardComponent implements OnInit {
 
         }
 
+
       });
 
   }
@@ -569,35 +660,78 @@ export class DashboardComponent implements OnInit {
 
         next: (turnos) => {
 
-          const fechaHoy = new Date()
-            .toISOString()
-            .split('T')[0];
+          const fechaActual = new Date();
+
+          const mesActual = fechaActual.getMonth();
+
+          let turnosFiltrados = [];
 
 
-          const turnosHoy = turnos.filter(
-            turno =>
-              turno.fecha === fechaHoy &&
-              turno.estado === "Asignado"
+          // Si está seleccionado el mes actual
+          if (this.mesSeleccionadoIndex === mesActual) {
+
+            const fechaHoy = fechaActual
+              .toISOString()
+              .split('T')[0];
+
+
+            turnosFiltrados = turnos.filter(
+              turno =>
+                turno.fecha === fechaHoy &&
+                turno.estado === "Asignado"
+            );
+
+
+          }
+          // Si selecciona un mes anterior
+          else {
+
+            turnosFiltrados = turnos.filter(
+              turno => {
+
+                const fechaTurno = new Date(turno.fecha);
+
+                return (
+                  fechaTurno.getMonth() === this.mesSeleccionadoIndex &&
+                  fechaTurno.getFullYear() === fechaActual.getFullYear() &&
+                  turno.estado === "Asignado"
+                );
+
+              }
+            );
+
+          }
+          const usuariosEnTurno = new Set(
+            turnosFiltrados.map(
+              turno => turno.id_usuario
+            )
           );
 
 
-          const usuariosEnTurno =
-            new Set(
-              turnosHoy.map(
-                turno => turno.id_usuario
-              )
-            );
+          if (this.mesSeleccionadoIndex === mesActual) {
+
+            // Hoy
+            this.cuidadoresEnTurno = usuariosEnTurno.size;
+
+            this.cuidadoresLibres =
+              Math.max(
+                this.ingresosCuidadores - this.cuidadoresEnTurno,
+                0
+              );
+
+          } else {
+
+            // Mes histórico
+            this.cuidadoresEnTurno = usuariosEnTurno.size;
 
 
-          this.cuidadoresEnTurno =
-            usuariosEnTurno.size;
+            this.cuidadoresLibres =
+              Math.max(
+                this.totalCuidadores - this.cuidadoresEnTurno,
+                0
+              );
 
-
-          this.cuidadoresLibres =
-            Math.max(
-              this.ingresosCuidadores - this.cuidadoresEnTurno,
-              0
-            );
+          }
 
           this.cd.detectChanges();
 
@@ -605,14 +739,12 @@ export class DashboardComponent implements OnInit {
           console.log(
             "Gestión cuidadores:",
             {
-              //turnos
-              fecha: fechaHoy,
+              mes: this.mesSeleccionado,
               enTurno: this.cuidadoresEnTurno,
               libres: this.cuidadoresLibres,
               activos: this.ingresosCuidadores
             }
           );
-
         },
 
         error: (error) => {
@@ -635,30 +767,98 @@ export class DashboardComponent implements OnInit {
         next: (notificaciones) => {
 
 
-          this.totalAlertas = notificaciones.length;
+          const fechaActual = new Date();
+
+
+          const anioActual =
+            fechaActual.getFullYear();
+
+
+
+          const inicioMes = new Date(
+            anioActual,
+            this.mesSeleccionadoIndex,
+            1
+          );
+
+
+          let finMes = new Date(
+            anioActual,
+            this.mesSeleccionadoIndex + 1,
+            0,
+            23,
+            59,
+            59
+          );
+
+
+
+          // Si es el mes actual, hasta hoy
+          if (
+            this.mesSeleccionadoIndex === fechaActual.getMonth()
+          ) {
+
+            finMes = fechaActual;
+
+          }
+
+
+
+          const alertasPeriodo =
+            notificaciones.filter(
+              alerta => {
+
+                const fechaAlerta =
+                  new Date(alerta.fecha_hora);
+
+
+                return (
+                  fechaAlerta >= inicioMes &&
+                  fechaAlerta <= finMes
+                );
+
+              }
+            );
+
+
+
+          this.totalAlertas =
+            alertasPeriodo.length;
+
 
 
           this.alertasCriticas =
-            notificaciones.filter(
-              alerta => alerta.tipo === 'critica'
+            alertasPeriodo.filter(
+              alerta =>
+                alerta.tipo === 'critica'
             ).length;
+
 
 
           this.alertasAvisos =
-            notificaciones.filter(
-              alerta => alerta.tipo === 'advertencia'
+            alertasPeriodo.filter(
+              alerta =>
+                alerta.tipo === 'advertencia'
             ).length;
+
 
 
           this.alertasInfo =
-            notificaciones.filter(
-              alerta => alerta.tipo === 'informacion'
+            alertasPeriodo.filter(
+              alerta =>
+                alerta.tipo === 'informacion'
             ).length;
 
 
+
+          this.cd.detectChanges();
+
+
+
           console.log(
-            "Alertas dashboard:",
+            "Alertas periodo:",
             {
+              mes: this.mesSeleccionado,
               total: this.totalAlertas,
               criticas: this.alertasCriticas,
               advertencias: this.alertasAvisos,
@@ -666,8 +866,6 @@ export class DashboardComponent implements OnInit {
             }
           );
 
-
-          this.cd.detectChanges();
 
         },
 
@@ -680,6 +878,7 @@ export class DashboardComponent implements OnInit {
           );
 
         }
+
 
       });
 

@@ -1309,3 +1309,93 @@
 .card>.flex.ic.jb.mb1 .titulo-pacientes {
   max-width: 120px;
 }
+
+.selector-mes-dashboard {
+
+  background: var(--bg-surface);
+
+  border: 1px solid var(--border-color);
+
+  border-radius: var(--radius-lg);
+
+  padding: var(--spacing-md);
+
+  margin-bottom: var(--spacing-md);
+
+}
+
+
+.selector-mes-header {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+}
+
+
+.titulo-mes {
+
+  font-weight: 700;
+
+}
+
+
+.mes-activo {
+
+  color: var(--color-primary);
+
+  font-family: monospace;
+
+}
+
+
+.barra-mes {
+
+  position: relative;
+
+  height: 8px;
+
+  background: var(--bg-neutral-light);
+
+  border-radius: 50px;
+
+  margin-top: 15px;
+
+  cursor: pointer;
+
+}
+
+
+.barra-mes-progreso {
+
+  height: 100%;
+
+  background: var(--color-primary);
+
+  border-radius: 50px;
+
+}
+
+
+.barra-mes-punto {
+
+  position: absolute;
+
+  top: 50%;
+
+  width: 16px;
+
+  height: 16px;
+
+  transform: translate(-50%, -50%);
+
+  background: var(--color-primary);
+
+  border: 2px solid white;
+
+  border-radius: 50%;
+
+}
