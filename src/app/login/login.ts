@@ -26,7 +26,6 @@ export class Login {
 
   private readonly apiUrl =
     'https://geriapp-backend.onrender.com/api';
-
   // =========================================================
   // DATOS DEL USUARIO
   // =========================================================
