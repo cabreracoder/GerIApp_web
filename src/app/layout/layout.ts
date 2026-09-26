@@ -6,6 +6,7 @@ import {
   RouterOutlet,
   Router
 } from '@angular/router';
+import { SocialAuthService } from '@abacritt/angularx-social-login';
 
 interface OpcionMenu {
   nombre: string;
@@ -67,7 +68,9 @@ export class Layout implements OnDestroy {
 
   constructor(
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private socialAuthService: SocialAuthService
+
   ) {
 
     this.cargarUsuario();
@@ -279,6 +282,8 @@ export class Layout implements OnDestroy {
       'Cerrando sesión...'
     );
 
+    this.socialAuthService.signOut();
+
     localStorage.removeItem(
       'usuario'
     );
@@ -286,8 +291,8 @@ export class Layout implements OnDestroy {
     this.router.navigate([
       '/login'
     ]);
-  }
 
+  }
   // =====================================================
   // DESTRUIR COMPONENTE
   // =====================================================
