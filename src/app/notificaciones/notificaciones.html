@@ -65,19 +65,7 @@
         </button>
 
 
-        <button
-          type="button"
-          class="opcion-navegacion"
-          [class.active]="pestanaActual === 'configuracion'"
-          (click)="cambiarPestana('configuracion')">
-
-          <i class="fa-solid fa-gear"></i>
-
-          <span>
-            Canales y Sistema
-          </span>
-
-        </button>
+        
 
       </div>
 
@@ -480,6 +468,52 @@
             </button>
 
           </div>
+          <div class="seccion-canales">
+
+            <p class="titulo-canales">
+              Canales de Envío Autorizados
+            </p>
+
+
+            <label class="fila-checkbox">
+
+              <input
+                type="checkbox"
+                [(ngModel)]="emailActivo">
+
+              <span>
+                Correo Electrónico (Email Institucional)
+              </span>
+
+            </label>
+
+
+            <label class="fila-checkbox">
+
+              <input
+                type="checkbox"
+                [(ngModel)]="smsActivo">
+
+              <span>
+                SMS (Mensajería de Texto a Cuidadores)
+              </span>
+
+            </label>
+
+
+            <label class="fila-checkbox">
+
+              <input
+                type="checkbox"
+                [(ngModel)]="notificacionesPushActivas">
+
+              <span>
+                Aplicación Móvil (Notificaciones Push directas)
+              </span>
+
+            </label>
+
+          </div>
 
         </form>
 
@@ -683,105 +717,7 @@
       </div>
 
 
-      <div
-        *ngIf="pestanaActual === 'configuracion'"
-        class="tarjeta-formulario">
-
-
-        <div class="encabezado-formulario">
-
-          <h3>
-            Configuración de Canales y Activación General
-          </h3>
-
-          <p>
-            Habilite o deshabilite el motor de notificaciones y
-            seleccione los medios de distribución.
-          </p>
-
-        </div>
-
-
-        <div class="lista-configuracion">
-
-
-          <div class="seccion-canales">
-
-            <p class="titulo-canales">
-              Canales de Envío Autorizados
-            </p>
-
-
-            <label class="fila-checkbox">
-
-              <input
-                type="checkbox"
-                [(ngModel)]="emailActivo">
-
-              <span>
-                Correo Electrónico (Email Institucional)
-              </span>
-
-            </label>
-
-
-            <label class="fila-checkbox">
-
-              <input
-                type="checkbox"
-                [(ngModel)]="smsActivo">
-
-              <span>
-                SMS (Mensajería de Texto a Cuidadores)
-              </span>
-
-            </label>
-
-
-            <label class="fila-checkbox">
-
-              <input
-                type="checkbox"
-                [(ngModel)]="notificacionesPushActivas">
-
-              <span>
-                Aplicación Móvil (Notificaciones Push directas)
-              </span>
-
-            </label>
-
-          </div>
-
-        </div>
-
-
-        <div
-          *ngIf="mensajeConfiguracion"
-          class="mensaje-formulario exito">
-
-          <i class="fa-solid fa-circle-check"></i>
-
-          {{ mensajeConfiguracion }}
-
-        </div>
-
-
-        <div class="acciones-formulario">
-
-          <button
-            type="button"
-            class="boton-principal"
-            (click)="guardarConfiguracion()">
-
-            <i class="fa-solid fa-floppy-disk"></i>
-
-            Guardar Configuración
-
-          </button>
-
-        </div>
-
-      </div>
+      
 
     </div>
 
