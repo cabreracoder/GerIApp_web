@@ -28,6 +28,7 @@ export class Registro {
   };
 
   confirmarContrasena = '';
+  fotoSeleccionada: File | null = null;
 
   mensaje = '';
   error = '';
@@ -37,6 +38,22 @@ export class Registro {
     private http: HttpClient,
     private router: Router
   ) {}
+
+  // Seleccionar la foto de perfil
+  seleccionarFoto(evento: Event): void {
+
+    const input = evento.target as HTMLInputElement;
+
+    if (input.files && input.files.length > 0) {
+
+      this.fotoSeleccionada = input.files[0];
+
+      console.log(
+        'Foto seleccionada:',
+        this.fotoSeleccionada
+      );
+    }
+  }
 
   registrar(): void {
 
@@ -65,7 +82,7 @@ export class Registro {
       return;
     }
 
-    // VALIDAR FORMATO DEL CORREO
+    // Validar formato del correo
     const formatoCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!formatoCorreo.test(this.usuario.correo.trim())) {
@@ -81,7 +98,7 @@ export class Registro {
       return;
     }
 
-    // VALIDAR NÚMERO DE DIGITOS DEL DOCUMENTO DE IDENTIDAD =8 E =10
+    // Validar número de dígitos del documento de identidad
     const formatoDocumento = /^\d{8}$|^\d{10}$/;
 
     if (!formatoDocumento.test(this.usuario.numero_documento.trim())) {
@@ -97,7 +114,7 @@ export class Registro {
       return;
     }
 
-    // VALIDAR CONFIRMACIÓN DE CONTRASEÑA
+    // Validar confirmación de contraseña
     if (this.usuario.contrasena !== this.confirmarContrasena) {
 
       Swal.fire({
@@ -113,10 +130,57 @@ export class Registro {
 
     this.cargando = true;
 
-    // Conexión directa con la API de Django
+    // Crear FormData para enviar los datos y la imagen
+    const datosFormulario = new FormData();
+
+    datosFormulario.append(
+      'tipo_documento',
+      this.usuario.tipo_documento
+    );
+
+    datosFormulario.append(
+      'numero_documento',
+      this.usuario.numero_documento
+    );
+
+    datosFormulario.append(
+      'nombres',
+      this.usuario.nombres
+    );
+
+    datosFormulario.append(
+      'apellidos',
+      this.usuario.apellidos
+    );
+
+    datosFormulario.append(
+      'correo',
+      this.usuario.correo
+    );
+
+    datosFormulario.append(
+      'telefono',
+      this.usuario.telefono
+    );
+
+    datosFormulario.append(
+      'contrasena',
+      this.usuario.contrasena
+    );
+
+    // Agregar la foto si fue seleccionada
+    if (this.fotoSeleccionada) {
+
+      datosFormulario.append(
+        'foto',
+        this.fotoSeleccionada
+      );
+    }
+
+    // Enviar los datos a Django
     this.http.post<any>(
-      'http://localhost:8000/usuarios/registro/',
-      this.usuario
+      'http://localhost:8000/api/usuarios/registro/',
+      datosFormulario
     ).subscribe({
 
       next: (respuesta) => {
@@ -201,4 +265,3 @@ export class Registro {
 
   }
 }
-

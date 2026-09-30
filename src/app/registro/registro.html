@@ -313,6 +313,33 @@
 
         </div>
 
+      <!-- =================================================
+             FOTO DE PERFIL
+             ================================================= -->
+        <div class="campo campo-completo">
+
+          <label for="foto">
+            Foto de perfil
+          </label>
+
+          <div class="input-container">
+
+            <span class="input-icon">
+              *
+            </span>
+
+            <input
+              type="file"
+              id="foto"
+              name="foto"
+              accept="image/*"
+              (change)="seleccionarFoto($event)"
+            >
+
+          </div>
+
+        </div>
+
 
         <!-- =================================================
              MENSAJES
