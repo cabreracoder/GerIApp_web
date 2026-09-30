@@ -7,7 +7,16 @@ import Swal from 'sweetalert2';
 interface Catalogo {
   nombre: string;
 }
+interface TablaPersonalizada {
+  nombre: string;
+  descripcion: string;
+  campos: CampoTabla[];
+}
 
+interface CampoTabla {
+  nombre: string;
+  tipo: string;
+}
 interface Medicamento {
   id_medicamentos?: number;
   nombre: string;
@@ -73,11 +82,33 @@ export class BancoDatos implements OnInit {
     },
     {
       nombre: 'Turnos',
-     
+
     }
   ];
 
   catalogoSeleccionado = 'Medicamentos';
+  // =========================================================
+  // TABLAS PERSONALIZADAS
+  // =========================================================
+
+  tablasPersonalizadas: TablaPersonalizada[] = [];
+
+  mostrandoFormularioTabla = false;
+
+  tablaNueva: TablaPersonalizada = {
+
+    nombre: '',
+
+    descripcion: '',
+
+    campos: [
+      {
+        nombre: '',
+        tipo: 'Texto'
+      }
+    ]
+
+  };
 
   // =========================================================
   // ESTADOS GENERALES
@@ -215,7 +246,7 @@ export class BancoDatos implements OnInit {
   constructor(
     private http: HttpClient,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   // =========================================================
   // INICIO
@@ -254,7 +285,107 @@ export class BancoDatos implements OnInit {
         break;
     }
   }
+  // =========================================================
+  // TABLAS PERSONALIZADAS
+  // =========================================================
 
+
+  abrirNuevaTabla(): void {
+
+    this.mostrandoFormularioTabla = true;
+
+  }
+  cerrarFormularioTabla(): void {
+
+    this.mostrandoFormularioTabla = false;
+
+  }
+  esTablaPersonalizada(): boolean {
+
+    return this.tablasPersonalizadas.some(
+      tabla => tabla.nombre === this.catalogoSeleccionado
+    );
+
+  }
+
+
+
+  obtenerDescripcionTabla(nombre: string): string {
+
+    const tabla = this.tablasPersonalizadas.find(
+      item => item.nombre === nombre
+    );
+
+
+    return tabla?.descripcion ?? '';
+
+  }
+
+
+
+  obtenerCamposTabla(nombre: string): CampoTabla[] {
+
+    const tabla = this.tablasPersonalizadas.find(
+      item => item.nombre === nombre
+    );
+
+
+    return tabla?.campos ?? [];
+
+  }
+  crearTabla(): void {
+
+    if (!this.tablaNueva.nombre.trim()) {
+      Swal.fire({
+        title: 'Campo obligatorio',
+        text: 'Debe ingresar el nombre de la tabla.',
+        icon: 'warning',
+        confirmButtonColor: '#3B5BDB'
+      });
+
+      return;
+    }
+
+
+    // Guardar tabla creada
+    this.tablasPersonalizadas.push({
+      ...this.tablaNueva
+    });
+
+
+    // Crear nueva pestaña
+    this.catalogos.push({
+      nombre: this.tablaNueva.nombre
+    });
+
+
+    // Seleccionar la nueva tabla
+    this.catalogoSeleccionado = this.tablaNueva.nombre;
+
+
+    // Cerrar formulario
+    this.mostrandoFormularioTabla = false;
+
+
+    Swal.fire({
+      title: 'Tabla creada',
+      text: `La tabla ${this.tablaNueva.nombre} fue creada correctamente.`,
+      icon: 'success',
+      confirmButtonColor: '#3B5BDB'
+    });
+
+  }
+  agregarCampoTabla(): void {
+
+    this.tablaNueva.campos.push({
+
+      nombre: '',
+
+      tipo: 'Texto'
+
+    });
+
+  }
   // =========================================================
   // CERRAR TODOS LOS FORMULARIOS
   // =========================================================
@@ -327,114 +458,114 @@ export class BancoDatos implements OnInit {
     });
   }
 
-// =========================================================
-// MEDICAMENTOS - GUARDAR
-// =========================================================
+  // =========================================================
+  // MEDICAMENTOS - GUARDAR
+  // =========================================================
 
-guardarMedicamento(): void {
-  this.limpiarMensajes();
+  guardarMedicamento(): void {
+    this.limpiarMensajes();
 
-  if (!this.validarMedicamento()) {
-    return;
+    if (!this.validarMedicamento()) {
+      return;
+    }
+
+    this.cargando = true;
+
+    // Solo enviamos los campos que existen en la tabla medicamentos
+    const datosMedicamento = {
+      nombre: this.medicamentoForm.nombre,
+      descripcion: this.medicamentoForm.descripcion,
+      principio_activo: this.medicamentoForm.principio_activo,
+      concentracion: this.medicamentoForm.concentracion,
+      presentacion: this.medicamentoForm.presentacion,
+      estado: this.medicamentoForm.estado,
+      unidad_medida: this.medicamentoForm.unidad_medida
+    };
+
+    if (this.medicamentoEditando !== null) {
+
+      this.http.patch(
+        `https://geriapp-backend.onrender.com/api/medicamentos/${this.medicamentoEditando}/`,
+        datosMedicamento
+      ).subscribe({
+
+        next: () => {
+          this.cargando = false;
+
+          Swal.fire({
+            title: 'Actualizado',
+            text: 'Medicamento actualizado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
+
+          this.limpiarFormularioMedicamento();
+          this.mostrandoFormulario = false;
+          this.modoEdicion = false;
+
+          this.cargarMedicamentos();
+        },
+
+        error: (error) => {
+          this.cargando = false;
+
+          console.error('ERROR AL ACTUALIZAR MEDICAMENTO:', error);
+
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(
+              error,
+              'No se pudo actualizar el medicamento.'
+            ),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
+        }
+      });
+
+    } else {
+
+      this.http.post(
+        'https://geriapp-backend.onrender.com/api/medicamentos/',
+        datosMedicamento
+      ).subscribe({
+
+        next: () => {
+          this.cargando = false;
+
+          Swal.fire({
+            title: 'Creado',
+            text: 'Medicamento creado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
+
+          this.limpiarFormularioMedicamento();
+          this.mostrandoFormulario = false;
+          this.modoEdicion = false;
+
+          this.cargarMedicamentos();
+        },
+
+        error: (error) => {
+          this.cargando = false;
+
+          console.error('ERROR AL CREAR MEDICAMENTO:', error);
+          console.error('RESPUESTA DEL SERVIDOR:', error.error);
+
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(
+              error,
+              'No se pudo crear el medicamento.'
+            ),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
+        }
+      });
+    }
   }
-
-  this.cargando = true;
-
-  // Solo enviamos los campos que existen en la tabla medicamentos
-  const datosMedicamento = {
-    nombre: this.medicamentoForm.nombre,
-    descripcion: this.medicamentoForm.descripcion,
-    principio_activo: this.medicamentoForm.principio_activo,
-    concentracion: this.medicamentoForm.concentracion,
-    presentacion: this.medicamentoForm.presentacion,
-    estado: this.medicamentoForm.estado,
-    unidad_medida: this.medicamentoForm.unidad_medida
-  };
-
-  if (this.medicamentoEditando !== null) {
-
-    this.http.patch(
-      `https://geriapp-backend.onrender.com/api/medicamentos/${this.medicamentoEditando}/`,
-      datosMedicamento
-    ).subscribe({
-
-      next: () => {
-        this.cargando = false;
-
-        Swal.fire({
-          title: 'Actualizado',
-          text: 'Medicamento actualizado correctamente.',
-          icon: 'success',
-          confirmButtonColor: '#3B5BDB'
-        });
-
-        this.limpiarFormularioMedicamento();
-        this.mostrandoFormulario = false;
-        this.modoEdicion = false;
-
-        this.cargarMedicamentos();
-      },
-
-      error: (error) => {
-        this.cargando = false;
-
-        console.error('ERROR AL ACTUALIZAR MEDICAMENTO:', error);
-
-        Swal.fire({
-          title: 'Error',
-          text: this.obtenerMensajeError(
-            error,
-            'No se pudo actualizar el medicamento.'
-          ),
-          icon: 'error',
-          confirmButtonColor: '#3B5BDB'
-        });
-      }
-    });
-
-  } else {
-
-    this.http.post(
-      'https://geriapp-backend.onrender.com/api/medicamentos/',
-      datosMedicamento
-    ).subscribe({
-
-      next: () => {
-        this.cargando = false;
-
-        Swal.fire({
-          title: 'Creado',
-          text: 'Medicamento creado correctamente.',
-          icon: 'success',
-          confirmButtonColor: '#3B5BDB'
-        });
-
-        this.limpiarFormularioMedicamento();
-        this.mostrandoFormulario = false;
-        this.modoEdicion = false;
-
-        this.cargarMedicamentos();
-      },
-
-      error: (error) => {
-        this.cargando = false;
-
-        console.error('ERROR AL CREAR MEDICAMENTO:', error);
-        console.error('RESPUESTA DEL SERVIDOR:', error.error);
-
-        Swal.fire({
-          title: 'Error',
-          text: this.obtenerMensajeError(
-            error,
-            'No se pudo crear el medicamento.'
-          ),
-          icon: 'error',
-          confirmButtonColor: '#3B5BDB'
-        });
-      }
-    });
-  }
-}
 
   // =========================================================
   // MEDICAMENTOS - EDITAR
