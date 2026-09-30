@@ -4,11 +4,136 @@
        ENCABEZADO
   ====================================================== -->
   <header class="encabezado-banco-datos">
-    <h1>Banco de datos</h1>
-    <p>Administración de los catálogos y datos base del sistema.</p>
+
+    <div class="titulo-banco">
+
+      <div>
+        <h1>Banco de datos</h1>
+
+        <p>
+          Administración de los catálogos y datos base del sistema.
+        </p>
+      </div>
+
+
+      <button type="button" class="boton-nuevo" (click)="abrirNuevaTabla()">
+
+        <span class="material-symbols-outlined">
+          add
+        </span>
+
+        Agregar tabla
+
+      </button>
+
+
+    </div>
+
   </header>
 
+  <!-- ========================================================= -->
+  <!-- CREAR TABLA PERSONALIZADA -->
+  <!-- ========================================================= -->
 
+  <div class="formulario-catalogo" *ngIf="mostrandoFormularioTabla">
+
+    <div class="encabezado-formulario">
+
+      <h3>
+        Crear nueva tabla
+      </h3>
+
+      <button type="button" class="boton-cerrar" (click)="cerrarFormularioTabla()">
+        ✕
+      </button>
+
+    </div>
+
+
+    <div class="campo-formulario">
+
+      <label>
+        Nombre de la tabla
+      </label>
+
+      <input type="text" [(ngModel)]="tablaNueva.nombre" placeholder="Ejemplo: Habitaciones">
+
+    </div>
+
+
+    <div class="campo-formulario">
+
+      <label>
+        Descripción
+      </label>
+
+      <textarea [(ngModel)]="tablaNueva.descripcion" placeholder="Descripción de la tabla"></textarea>
+
+    </div>
+
+
+    <div class="seccion-campos">
+
+      <h4>
+        Campos de la tabla
+      </h4>
+      <button type="button" class="boton-nuevo" (click)="agregarCampoTabla()">
+
+        <span class="material-symbols-outlined">
+          add
+        </span>
+
+        Agregar campo
+
+      </button>
+
+      <div class="fila-campo" *ngFor="let campo of tablaNueva.campos">
+
+        <input type="text" [(ngModel)]="campo.nombre" placeholder="Nombre del campo">
+
+
+        <select [(ngModel)]="campo.tipo">
+
+          <option value="Texto">
+            Texto
+          </option>
+
+          <option value="Número">
+            Número
+          </option>
+
+          <option value="Fecha">
+            Fecha
+          </option>
+
+        </select>
+
+
+      </div>
+
+
+    </div>
+
+
+    <div class="acciones-formulario">
+
+      <button type="button" class="boton-cancelar" (click)="cerrarFormularioTabla()">
+        Cancelar
+      </button>
+
+
+      <button type="button" class="boton-guardar" (click)="crearTabla()">
+        <span class="material-symbols-outlined">
+          save
+        </span>
+
+        Crear tabla
+      </button>
+
+    </div>
+
+
+  </div>
   <!-- =====================================================
        CONTENEDOR DE CATÁLOGOS
   ====================================================== -->
@@ -16,13 +141,8 @@
 
     <nav class="barra-catalogos">
 
-      <button
-        type="button"
-        class="boton-catalogo"
-        *ngFor="let catalogo of catalogos"
-        [class.activo]="catalogoSeleccionado === catalogo.nombre"
-        (click)="seleccionarCatalogo(catalogo.nombre)"
-      >
+      <button type="button" class="boton-catalogo" *ngFor="let catalogo of catalogos"
+        [class.activo]="catalogoSeleccionado === catalogo.nombre" (click)="seleccionarCatalogo(catalogo.nombre)">
         {{ catalogo.nombre }}
       </button>
 
@@ -39,10 +159,7 @@
     <!-- ===================================================
          MEDICAMENTOS
     ==================================================== -->
-    <section
-      class="pantalla-catalogo"
-      *ngIf="catalogoSeleccionado === 'Medicamentos'"
-    >
+    <section class="pantalla-catalogo" *ngIf="catalogoSeleccionado === 'Medicamentos'">
 
       <!-- ENCABEZADO -->
       <div class="encabezado-catalogo">
@@ -56,12 +173,7 @@
         </div>
 
         <!-- BOTÓN NUEVO -->
-        <button
-          type="button"
-          class="boton-nuevo"
-          *ngIf="!mostrandoFormulario"
-          (click)="abrirNuevoMedicamento()"
-        >
+        <button type="button" class="boton-nuevo" *ngIf="!mostrandoFormulario" (click)="abrirNuevoMedicamento()">
           <span class="material-symbols-outlined">
             add
           </span>
@@ -75,10 +187,7 @@
       <!-- ===============================================
            FORMULARIO MEDICAMENTO
       ================================================= -->
-      <div
-        class="formulario-catalogo"
-        *ngIf="mostrandoFormulario"
-      >
+      <div class="formulario-catalogo" *ngIf="mostrandoFormulario">
 
         <div class="encabezado-formulario">
 
@@ -86,27 +195,23 @@
 
             <h3>
               {{
-                modoEdicion
-                  ? 'Editar medicamento'
-                  : 'Nuevo medicamento'
+              modoEdicion
+              ? 'Editar medicamento'
+              : 'Nuevo medicamento'
               }}
             </h3>
 
             <p>
               {{
-                modoEdicion
-                  ? 'Modifique la información del medicamento.'
-                  : 'Ingrese la información del nuevo medicamento.'
+              modoEdicion
+              ? 'Modifique la información del medicamento.'
+              : 'Ingrese la información del nuevo medicamento.'
               }}
             </p>
 
           </div>
 
-          <button
-            type="button"
-            class="boton-cerrar"
-            (click)="cerrarFormulario()"
-          >
+          <button type="button" class="boton-cerrar" (click)="cerrarFormulario()">
             <span class="material-symbols-outlined">
               close
             </span>
@@ -115,10 +220,7 @@
         </div>
 
 
-        <form
-          (ngSubmit)="guardarMedicamento()"
-          #formMedicamento="ngForm"
-        >
+        <form (ngSubmit)="guardarMedicamento()" #formMedicamento="ngForm">
 
           <div class="formulario-grid">
 
@@ -129,14 +231,8 @@
                 Nombre
               </label>
 
-              <input
-                id="nombreMedicamento"
-                type="text"
-                [(ngModel)]="medicamentoActual.nombre"
-                name="nombreMedicamento"
-                placeholder="Ej. Acetaminofén"
-                required
-              >
+              <input id="nombreMedicamento" type="text" [(ngModel)]="medicamentoActual.nombre" name="nombreMedicamento"
+                placeholder="Ej. Acetaminofén" required>
 
             </div>
 
@@ -148,14 +244,8 @@
                 Principio activo
               </label>
 
-              <input
-                id="principioActivo"
-                type="text"
-                [(ngModel)]="medicamentoActual.principio_activo"
-                name="principioActivo"
-                placeholder="Ej. Paracetamol"
-                required
-              >
+              <input id="principioActivo" type="text" [(ngModel)]="medicamentoActual.principio_activo"
+                name="principioActivo" placeholder="Ej. Paracetamol" required>
 
             </div>
 
@@ -167,13 +257,8 @@
                 Concentración
               </label>
 
-              <input
-                id="concentracion"
-                type="text"
-                [(ngModel)]="medicamentoActual.concentracion"
-                name="concentracion"
-                placeholder="Ej. 500 mg"
-              >
+              <input id="concentracion" type="text" [(ngModel)]="medicamentoActual.concentracion" name="concentracion"
+                placeholder="Ej. 500 mg">
 
             </div>
 
@@ -185,13 +270,8 @@
                 Presentación
               </label>
 
-              <input
-                id="presentacion"
-                type="text"
-                [(ngModel)]="medicamentoActual.presentacion"
-                name="presentacion"
-                placeholder="Ej. Tabletas"
-              >
+              <input id="presentacion" type="text" [(ngModel)]="medicamentoActual.presentacion" name="presentacion"
+                placeholder="Ej. Tabletas">
 
             </div>
 
@@ -203,13 +283,8 @@
                 Unidad de medida
               </label>
 
-              <input
-                id="unidadMedidaMedicamento"
-                type="text"
-                [(ngModel)]="medicamentoActual.unidad_medida"
-                name="unidadMedidaMedicamento"
-                placeholder="Ej. mg"
-              >
+              <input id="unidadMedidaMedicamento" type="text" [(ngModel)]="medicamentoActual.unidad_medida"
+                name="unidadMedidaMedicamento" placeholder="Ej. mg">
 
             </div>
 
@@ -220,11 +295,7 @@
                 Estado
               </label>
 
-              <select
-                id="estadoMedicamento"
-                [(ngModel)]="medicamentoActual.estado"
-                name="estadoMedicamento"
-              >
+              <select id="estadoMedicamento" [(ngModel)]="medicamentoActual.estado" name="estadoMedicamento">
                 <option [ngValue]="true">
                   Activo
                 </option>
@@ -244,13 +315,9 @@
                 Descripción
               </label>
 
-              <textarea
-                id="descripcionMedicamento"
-                [(ngModel)]="medicamentoActual.descripcion"
-                name="descripcionMedicamento"
-                placeholder="Ingrese una descripción del medicamento..."
-                rows="3"
-              ></textarea>
+              <textarea id="descripcionMedicamento" [(ngModel)]="medicamentoActual.descripcion"
+                name="descripcionMedicamento" placeholder="Ingrese una descripción del medicamento..."
+                rows="3"></textarea>
 
             </div>
 
@@ -260,27 +327,19 @@
           <!-- ACCIONES -->
           <div class="acciones-formulario">
 
-            <button
-              type="button"
-              class="boton-secundario"
-              (click)="cerrarFormulario()"
-            >
+            <button type="button" class="boton-secundario" (click)="cerrarFormulario()">
               Cancelar
             </button>
 
-            <button
-              type="submit"
-              class="boton-guardar"
-              [disabled]="formMedicamento.invalid"
-            >
+            <button type="submit" class="boton-guardar" [disabled]="formMedicamento.invalid">
               <span class="material-symbols-outlined">
                 save
               </span>
 
               {{
-                modoEdicion
-                  ? 'Actualizar registro'
-                  : 'Guardar registro'
+              modoEdicion
+              ? 'Actualizar registro'
+              : 'Guardar registro'
               }}
             </button>
 
@@ -296,10 +355,7 @@
       ================================================= -->
       <div class="tabla-contenedor">
 
-        <div
-          class="estado-cargando"
-          *ngIf="cargandoMedicamentos"
-        >
+        <div class="estado-cargando" *ngIf="cargandoMedicamentos">
           <span class="material-symbols-outlined">
             progress_activity
           </span>
@@ -327,9 +383,7 @@
 
           <tbody>
 
-            <tr
-              *ngFor="let medicamento of medicamentos"
-            >
+            <tr *ngFor="let medicamento of medicamentos">
 
               <td>
                 {{ medicamento.nombre }}
@@ -353,15 +407,12 @@
 
               <td>
 
-                <span
-                  class="estado"
-                  [class.estado-activo]="medicamento.estado"
-                  [class.estado-inactivo]="!medicamento.estado"
-                >
+                <span class="estado" [class.estado-activo]="medicamento.estado"
+                  [class.estado-inactivo]="!medicamento.estado">
                   {{
-                    medicamento.estado
-                      ? 'Activo'
-                      : 'Inactivo'
+                  medicamento.estado
+                  ? 'Activo'
+                  : 'Inactivo'
                   }}
                 </span>
 
@@ -371,23 +422,15 @@
 
                 <div class="acciones-tabla">
 
-                  <button
-                    type="button"
-                    class="boton-accion boton-editar"
-                    title="Editar"
-                    (click)="editarMedicamento(medicamento)"
-                  >
+                  <button type="button" class="boton-accion boton-editar" title="Editar"
+                    (click)="editarMedicamento(medicamento)">
                     <span class="material-symbols-outlined">
                       edit
                     </span>
                   </button>
 
-                  <button
-                    type="button"
-                    class="boton-accion boton-eliminar"
-                    title="Eliminar"
-                    (click)="eliminarMedicamento(medicamento)"
-                  >
+                  <button type="button" class="boton-accion boton-eliminar" title="Eliminar"
+                    (click)="eliminarMedicamento(medicamento)">
                     <span class="material-symbols-outlined">
                       delete
                     </span>
@@ -402,10 +445,7 @@
 
             <tr *ngIf="medicamentos.length === 0">
 
-              <td
-                colspan="7"
-                class="sin-registros"
-              >
+              <td colspan="7" class="sin-registros">
                 No hay medicamentos registrados.
               </td>
 
@@ -424,10 +464,7 @@
     <!-- ===================================================
          INSUMOS
     ==================================================== -->
-    <section
-      class="pantalla-catalogo"
-      *ngIf="catalogoSeleccionado === 'Insumos'"
-    >
+    <section class="pantalla-catalogo" *ngIf="catalogoSeleccionado === 'Insumos'">
 
       <div class="encabezado-catalogo">
 
@@ -441,12 +478,7 @@
 
         </div>
 
-        <button
-          type="button"
-          class="boton-nuevo"
-          *ngIf="!mostrandoFormularioInsumo"
-          (click)="abrirNuevoInsumo()"
-        >
+        <button type="button" class="boton-nuevo" *ngIf="!mostrandoFormularioInsumo" (click)="abrirNuevoInsumo()">
           <span class="material-symbols-outlined">
             add
           </span>
@@ -458,10 +490,7 @@
 
 
       <!-- FORMULARIO -->
-      <div
-        class="formulario-catalogo"
-        *ngIf="mostrandoFormularioInsumo"
-      >
+      <div class="formulario-catalogo" *ngIf="mostrandoFormularioInsumo">
 
         <div class="encabezado-formulario">
 
@@ -469,27 +498,23 @@
 
             <h3>
               {{
-                modoEdicionInsumo
-                  ? 'Editar insumo'
-                  : 'Nuevo insumo'
+              modoEdicionInsumo
+              ? 'Editar insumo'
+              : 'Nuevo insumo'
               }}
             </h3>
 
             <p>
               {{
-                modoEdicionInsumo
-                  ? 'Modifique la información del insumo.'
-                  : 'Ingrese la información del nuevo insumo.'
+              modoEdicionInsumo
+              ? 'Modifique la información del insumo.'
+              : 'Ingrese la información del nuevo insumo.'
               }}
             </p>
 
           </div>
 
-          <button
-            type="button"
-            class="boton-cerrar"
-            (click)="cerrarFormularioInsumo()"
-          >
+          <button type="button" class="boton-cerrar" (click)="cerrarFormularioInsumo()">
             <span class="material-symbols-outlined">
               close
             </span>
@@ -498,10 +523,7 @@
         </div>
 
 
-        <form
-          (ngSubmit)="guardarInsumo()"
-          #formInsumo="ngForm"
-        >
+        <form (ngSubmit)="guardarInsumo()" #formInsumo="ngForm">
 
           <div class="formulario-grid">
 
@@ -511,14 +533,8 @@
                 Nombre
               </label>
 
-              <input
-                id="nombreInsumo"
-                type="text"
-                [(ngModel)]="insumoActual.nombre"
-                name="nombreInsumo"
-                placeholder="Ej. Guantes"
-                required
-              >
+              <input id="nombreInsumo" type="text" [(ngModel)]="insumoActual.nombre" name="nombreInsumo"
+                placeholder="Ej. Guantes" required>
 
             </div>
 
@@ -529,20 +545,13 @@
                 Tipo de insumo
               </label>
 
-              <select
-                id="tipoInsumo"
-                [(ngModel)]="insumoActual.id_tipo_insumo"
-                name="tipoInsumo"
-              >
+              <select id="tipoInsumo" [(ngModel)]="insumoActual.id_tipo_insumo" name="tipoInsumo">
 
                 <option [ngValue]="null">
                   Seleccione un tipo
                 </option>
 
-                <option
-                  *ngFor="let tipo of tiposInsumo"
-                  [ngValue]="tipo.id_tipo_insumo"
-                >
+                <option *ngFor="let tipo of tiposInsumo" [ngValue]="tipo.id_tipo_insumo">
                   {{ tipo.nombre }}
                 </option>
 
@@ -557,13 +566,8 @@
                 Unidad de medida
               </label>
 
-              <input
-                id="unidadMedidaInsumo"
-                type="text"
-                [(ngModel)]="insumoActual.unidad_medida"
-                name="unidadMedidaInsumo"
-                placeholder="Ej. Caja"
-              >
+              <input id="unidadMedidaInsumo" type="text" [(ngModel)]="insumoActual.unidad_medida"
+                name="unidadMedidaInsumo" placeholder="Ej. Caja">
 
             </div>
 
@@ -574,11 +578,7 @@
                 Estado
               </label>
 
-              <select
-                id="estadoInsumo"
-                [(ngModel)]="insumoActual.estado"
-                name="estadoInsumo"
-              >
+              <select id="estadoInsumo" [(ngModel)]="insumoActual.estado" name="estadoInsumo">
 
                 <option [ngValue]="true">
                   Activo
@@ -599,13 +599,8 @@
                 Descripción
               </label>
 
-              <textarea
-                id="descripcionInsumo"
-                [(ngModel)]="insumoActual.descripcion"
-                name="descripcionInsumo"
-                placeholder="Ingrese una descripción del insumo..."
-                rows="3"
-              ></textarea>
+              <textarea id="descripcionInsumo" [(ngModel)]="insumoActual.descripcion" name="descripcionInsumo"
+                placeholder="Ingrese una descripción del insumo..." rows="3"></textarea>
 
             </div>
 
@@ -614,27 +609,19 @@
 
           <div class="acciones-formulario">
 
-            <button
-              type="button"
-              class="boton-secundario"
-              (click)="cerrarFormularioInsumo()"
-            >
+            <button type="button" class="boton-secundario" (click)="cerrarFormularioInsumo()">
               Cancelar
             </button>
 
-            <button
-              type="submit"
-              class="boton-guardar"
-              [disabled]="formInsumo.invalid"
-            >
+            <button type="submit" class="boton-guardar" [disabled]="formInsumo.invalid">
               <span class="material-symbols-outlined">
                 save
               </span>
 
               {{
-                modoEdicionInsumo
-                  ? 'Actualizar registro'
-                  : 'Guardar registro'
+              modoEdicionInsumo
+              ? 'Actualizar registro'
+              : 'Guardar registro'
               }}
             </button>
 
@@ -648,10 +635,7 @@
       <!-- TABLA -->
       <div class="tabla-contenedor">
 
-        <div
-          class="estado-cargando"
-          *ngIf="cargandoInsumos"
-        >
+        <div class="estado-cargando" *ngIf="cargandoInsumos">
           <span class="material-symbols-outlined">
             progress_activity
           </span>
@@ -698,15 +682,11 @@
 
               <td>
 
-                <span
-                  class="estado"
-                  [class.estado-activo]="insumo.estado"
-                  [class.estado-inactivo]="!insumo.estado"
-                >
+                <span class="estado" [class.estado-activo]="insumo.estado" [class.estado-inactivo]="!insumo.estado">
                   {{
-                    insumo.estado
-                      ? 'Activo'
-                      : 'Inactivo'
+                  insumo.estado
+                  ? 'Activo'
+                  : 'Inactivo'
                   }}
                 </span>
 
@@ -716,23 +696,14 @@
 
                 <div class="acciones-tabla">
 
-                  <button
-                    type="button"
-                    class="boton-accion boton-editar"
-                    title="Editar"
-                    (click)="editarInsumo(insumo)"
-                  >
+                  <button type="button" class="boton-accion boton-editar" title="Editar" (click)="editarInsumo(insumo)">
                     <span class="material-symbols-outlined">
                       edit
                     </span>
                   </button>
 
-                  <button
-                    type="button"
-                    class="boton-accion boton-eliminar"
-                    title="Eliminar"
-                    (click)="eliminarInsumo(insumo)"
-                  >
+                  <button type="button" class="boton-accion boton-eliminar" title="Eliminar"
+                    (click)="eliminarInsumo(insumo)">
                     <span class="material-symbols-outlined">
                       delete
                     </span>
@@ -747,10 +718,7 @@
 
             <tr *ngIf="insumos.length === 0">
 
-              <td
-                colspan="6"
-                class="sin-registros"
-              >
+              <td colspan="6" class="sin-registros">
                 No hay insumos registrados.
               </td>
 
@@ -769,10 +737,7 @@
     <!-- ===================================================
          TIPOS DE INSUMO
     ==================================================== -->
-    <section
-      class="pantalla-catalogo"
-      *ngIf="catalogoSeleccionado === 'Tipos de insumo'"
-    >
+    <section class="pantalla-catalogo" *ngIf="catalogoSeleccionado === 'Tipos de insumo'">
 
       <div class="encabezado-catalogo">
 
@@ -786,12 +751,8 @@
 
         </div>
 
-        <button
-          type="button"
-          class="boton-nuevo"
-          *ngIf="!mostrandoFormularioTipoInsumo"
-          (click)="abrirNuevoTipoInsumo()"
-        >
+        <button type="button" class="boton-nuevo" *ngIf="!mostrandoFormularioTipoInsumo"
+          (click)="abrirNuevoTipoInsumo()">
           <span class="material-symbols-outlined">
             add
           </span>
@@ -803,10 +764,7 @@
 
 
       <!-- FORMULARIO -->
-      <div
-        class="formulario-catalogo"
-        *ngIf="mostrandoFormularioTipoInsumo"
-      >
+      <div class="formulario-catalogo" *ngIf="mostrandoFormularioTipoInsumo">
 
         <div class="encabezado-formulario">
 
@@ -814,27 +772,23 @@
 
             <h3>
               {{
-                modoEdicionTipoInsumo
-                  ? 'Editar tipo de insumo'
-                  : 'Nuevo tipo de insumo'
+              modoEdicionTipoInsumo
+              ? 'Editar tipo de insumo'
+              : 'Nuevo tipo de insumo'
               }}
             </h3>
 
             <p>
               {{
-                modoEdicionTipoInsumo
-                  ? 'Modifique la información del tipo de insumo.'
-                  : 'Ingrese la información del nuevo tipo de insumo.'
+              modoEdicionTipoInsumo
+              ? 'Modifique la información del tipo de insumo.'
+              : 'Ingrese la información del nuevo tipo de insumo.'
               }}
             </p>
 
           </div>
 
-          <button
-            type="button"
-            class="boton-cerrar"
-            (click)="cerrarFormularioTipoInsumo()"
-          >
+          <button type="button" class="boton-cerrar" (click)="cerrarFormularioTipoInsumo()">
             <span class="material-symbols-outlined">
               close
             </span>
@@ -843,10 +797,7 @@
         </div>
 
 
-        <form
-          (ngSubmit)="guardarTipoInsumo()"
-          #formTipoInsumo="ngForm"
-        >
+        <form (ngSubmit)="guardarTipoInsumo()" #formTipoInsumo="ngForm">
 
           <div class="formulario-grid">
 
@@ -856,14 +807,8 @@
                 Nombre
               </label>
 
-              <input
-                id="nombreTipoInsumo"
-                type="text"
-                [(ngModel)]="tipoInsumoActual.nombre"
-                name="nombreTipoInsumo"
-                placeholder="Ej. Elementos de protección"
-                required
-              >
+              <input id="nombreTipoInsumo" type="text" [(ngModel)]="tipoInsumoActual.nombre" name="nombreTipoInsumo"
+                placeholder="Ej. Elementos de protección" required>
 
             </div>
 
@@ -874,11 +819,7 @@
                 Estado
               </label>
 
-              <select
-                id="estadoTipoInsumo"
-                [(ngModel)]="tipoInsumoActual.estado"
-                name="estadoTipoInsumo"
-              >
+              <select id="estadoTipoInsumo" [(ngModel)]="tipoInsumoActual.estado" name="estadoTipoInsumo">
 
                 <option value="Activo">
                   Activo
@@ -899,13 +840,8 @@
                 Descripción
               </label>
 
-              <textarea
-                id="descripcionTipoInsumo"
-                [(ngModel)]="tipoInsumoActual.descripcion"
-                name="descripcionTipoInsumo"
-                placeholder="Ingrese una descripción..."
-                rows="3"
-              ></textarea>
+              <textarea id="descripcionTipoInsumo" [(ngModel)]="tipoInsumoActual.descripcion"
+                name="descripcionTipoInsumo" placeholder="Ingrese una descripción..." rows="3"></textarea>
 
             </div>
 
@@ -914,27 +850,19 @@
 
           <div class="acciones-formulario">
 
-            <button
-              type="button"
-              class="boton-secundario"
-              (click)="cerrarFormularioTipoInsumo()"
-            >
+            <button type="button" class="boton-secundario" (click)="cerrarFormularioTipoInsumo()">
               Cancelar
             </button>
 
-            <button
-              type="submit"
-              class="boton-guardar"
-              [disabled]="formTipoInsumo.invalid"
-            >
+            <button type="submit" class="boton-guardar" [disabled]="formTipoInsumo.invalid">
               <span class="material-symbols-outlined">
                 save
               </span>
 
               {{
-                modoEdicionTipoInsumo
-                  ? 'Actualizar registro'
-                  : 'Guardar registro'
+              modoEdicionTipoInsumo
+              ? 'Actualizar registro'
+              : 'Guardar registro'
               }}
             </button>
 
@@ -948,10 +876,7 @@
       <!-- TABLA -->
       <div class="tabla-contenedor">
 
-        <div
-          class="estado-cargando"
-          *ngIf="cargandoTiposInsumo"
-        >
+        <div class="estado-cargando" *ngIf="cargandoTiposInsumo">
           <span class="material-symbols-outlined">
             progress_activity
           </span>
@@ -988,11 +913,8 @@
 
               <td>
 
-                <span
-                  class="estado"
-                  [class.estado-activo]="tipo.estado === 'Activo'"
-                  [class.estado-inactivo]="tipo.estado === 'Inactivo'"
-                >
+                <span class="estado" [class.estado-activo]="tipo.estado === 'Activo'"
+                  [class.estado-inactivo]="tipo.estado === 'Inactivo'">
                   {{ tipo.estado }}
                 </span>
 
@@ -1002,23 +924,15 @@
 
                 <div class="acciones-tabla">
 
-                  <button
-                    type="button"
-                    class="boton-accion boton-editar"
-                    title="Editar"
-                    (click)="editarTipoInsumo(tipo)"
-                  >
+                  <button type="button" class="boton-accion boton-editar" title="Editar"
+                    (click)="editarTipoInsumo(tipo)">
                     <span class="material-symbols-outlined">
                       edit
                     </span>
                   </button>
 
-                  <button
-                    type="button"
-                    class="boton-accion boton-eliminar"
-                    title="Eliminar"
-                    (click)="eliminarTipoInsumo(tipo)"
-                  >
+                  <button type="button" class="boton-accion boton-eliminar" title="Eliminar"
+                    (click)="eliminarTipoInsumo(tipo)">
                     <span class="material-symbols-outlined">
                       delete
                     </span>
@@ -1033,10 +947,7 @@
 
             <tr *ngIf="tiposInsumo.length === 0">
 
-              <td
-                colspan="4"
-                class="sin-registros"
-              >
+              <td colspan="4" class="sin-registros">
                 No hay tipos de insumo registrados.
               </td>
 
@@ -1050,344 +961,360 @@
 
     </section>
 
-<!-- ===================================================
+    <!-- ===================================================
   TURNOS
 ==================================================== -->
 
-<section
-  class="pantalla-catalogo"
-  *ngIf="catalogoSeleccionado === 'Turnos'"
->
+    <section class="pantalla-catalogo" *ngIf="catalogoSeleccionado === 'Turnos'">
 
-  <div class="encabezado-catalogo">
+      <div class="encabezado-catalogo">
 
 
-<div>
-  <h2>Turnos</h2>
+        <div>
+          <h2>Turnos</h2>
 
-  <p>
-    Administre los turnos disponibles en el sistema.
-  </p>
-</div>
+          <p>
+            Administre los turnos disponibles en el sistema.
+          </p>
+        </div>
 
-<button
-  type="button"
-  class="boton-nuevo"
-  *ngIf="!mostrandoFormularioTurno"
-  (click)="abrirNuevoTurno()"
->
-  <span class="material-symbols-outlined">
-    add
-  </span>
+        <button type="button" class="boton-nuevo" *ngIf="!mostrandoFormularioTurno" (click)="abrirNuevoTurno()">
+          <span class="material-symbols-outlined">
+            add
+          </span>
 
-  Nuevo registro
-</button>
+          Nuevo registro
+        </button>
 
 
-  </div>
+      </div>
 
-  <!-- FORMULARIO -->
+      <!-- FORMULARIO -->
 
-  <div
-    class="formulario-catalogo"
-    *ngIf="mostrandoFormularioTurno"
-  >
+      <div class="formulario-catalogo" *ngIf="mostrandoFormularioTurno">
 
 
-<div class="encabezado-formulario">
+        <div class="encabezado-formulario">
 
-  <div>
+          <div>
 
-    <h3>
-      {{
-        modoEdicionTurno
-          ? 'Editar turno'
-          : 'Nuevo turno'
-      }}
-    </h3>
+            <h3>
+              {{
+              modoEdicionTurno
+              ? 'Editar turno'
+              : 'Nuevo turno'
+              }}
+            </h3>
 
-    <p>
-      {{
-        modoEdicionTurno
-          ? 'Modifique la información del turno.'
-          : 'Ingrese la información del nuevo turno.'
-      }}
-    </p>
+            <p>
+              {{
+              modoEdicionTurno
+              ? 'Modifique la información del turno.'
+              : 'Ingrese la información del nuevo turno.'
+              }}
+            </p>
 
-  </div>
+          </div>
 
-  <button
-    type="button"
-    class="boton-cerrar"
-    (click)="cerrarFormularioTurno()"
-  >
-    <span class="material-symbols-outlined">
-      close
-    </span>
-  </button>
-
-</div>
-
-
-<form
-  (ngSubmit)="guardarTurno()"
-  #formTurno="ngForm"
->
-
-  <div class="formulario-grid">
-
-    <!-- NOMBRE -->
-    <div class="campo-formulario">
-
-      <label for="nombreTurno">
-        Nombre
-      </label>
-
-      <input
-        id="nombreTurno"
-        type="text"
-        [(ngModel)]="turnoActual.nombre"
-        name="nombreTurno"
-        placeholder="Ej. Turno mañana"
-        required
-      >
-
-    </div>
-
-
-    <!-- HORA DE INICIO -->
-    <div class="campo-formulario">
-
-      <label for="horaInicio">
-        Hora de inicio
-      </label>
-
-      <input
-        id="horaInicio"
-        type="time"
-        [(ngModel)]="turnoActual.hora_inicio"
-        name="horaInicio"
-        required
-      >
-
-    </div>
-
-
-    <!-- HORA DE FINALIZACIÓN -->
-    <div class="campo-formulario">
-
-      <label for="horaFin">
-        Hora de finalización
-      </label>
-
-      <input
-        id="horaFin"
-        type="time"
-        [(ngModel)]="turnoActual.hora_fin"
-        name="horaFin"
-      >
-
-    </div>
-
-
-    <!-- ESTADO -->
-    <div class="campo-formulario">
-
-      <label for="estadoTurno">
-        Estado
-      </label>
-
-      <select
-        id="estadoTurno"
-        [(ngModel)]="turnoActual.estado"
-        name="estadoTurno"
-      >
-
-        <option [ngValue]="true">
-          Activo
-        </option>
-
-        <option [ngValue]="false">
-          Inactivo
-        </option>
-
-      </select>
-
-    </div>
-
-
-    <!-- DESCRIPCIÓN -->
-    <div class="campo-formulario campo-completo">
-
-      <label for="descripcionTurno">
-        Descripción
-      </label>
-
-      <textarea
-        id="descripcionTurno"
-        [(ngModel)]="turnoActual.descripcion"
-        name="descripcionTurno"
-        placeholder="Ingrese una descripción del turno..."
-        rows="3"
-      ></textarea>
-
-    </div>
-
-  </div>
-
-
-  <!-- ACCIONES -->
-  <div class="acciones-formulario">
-
-    <button
-      type="button"
-      class="boton-secundario"
-      (click)="cerrarFormularioTurno()"
-    >
-      Cancelar
-    </button>
-
-    <button
-      type="submit"
-      class="boton-guardar"
-      [disabled]="formTurno.invalid"
-    >
-
-      <span class="material-symbols-outlined">
-        save
-      </span>
-
-      {{
-        modoEdicionTurno
-          ? 'Actualizar registro'
-          : 'Guardar registro'
-      }}
-
-    </button>
-
-  </div>
-
-</form>
-
-
-  </div>
-
-  <!-- TABLA -->
-
-  <div class="tabla-contenedor">
-
-
-<div
-  class="estado-cargando"
-  *ngIf="cargandoTurnos"
->
-
-  <span class="material-symbols-outlined">
-    progress_activity
-  </span>
-
-  Cargando turnos...
-
-</div>
-
-
-<table *ngIf="!cargandoTurnos">
-
-  <thead>
-
-    <tr>
-      <th>Nombre</th>
-      <th>Hora inicio</th>
-      <th>Hora fin</th>
-      <th>Estado</th>
-      <th>Acciones</th>
-    </tr>
-
-  </thead>
-
-
-  <tbody>
-
-    <tr *ngFor="let turno of turnos">
-
-      <td>
-        {{ turno.nombre }}
-      </td>
-
-      <td>
-        {{ turno.hora_inicio }}
-      </td>
-
-      <td>
-        {{ turno.hora_fin || 'No definida' }}
-      </td>
-
-      <td>
-
-        <span
-          class="estado"
-          [class.estado-activo]="turno.estado"
-          [class.estado-inactivo]="!turno.estado"
-        >
-          {{
-            turno.estado
-              ? 'Activo'
-              : 'Inactivo'
-          }}
-        </span>
-
-      </td>
-
-      <td>
-
-        <div class="acciones-tabla">
-
-          <button
-            type="button"
-            class="boton-accion boton-editar"
-            title="Editar"
-            (click)="editarTurno(turno)"
-          >
+          <button type="button" class="boton-cerrar" (click)="cerrarFormularioTurno()">
             <span class="material-symbols-outlined">
-              edit
-            </span>
-          </button>
-
-          <button
-            type="button"
-            class="boton-accion boton-eliminar"
-            title="Eliminar"
-            (click)="eliminarTurno(turno)"
-          >
-            <span class="material-symbols-outlined">
-              delete
+              close
             </span>
           </button>
 
         </div>
 
-      </td>
 
-    </tr>
+        <form (ngSubmit)="guardarTurno()" #formTurno="ngForm">
 
+          <div class="formulario-grid">
 
-    <!-- SIN REGISTROS -->
-    <tr *ngIf="turnos.length === 0">
+            <!-- NOMBRE -->
+            <div class="campo-formulario">
 
-      <td
-        colspan="5"
-        class="sin-registros"
-      >
-        No hay turnos registrados.
-      </td>
+              <label for="nombreTurno">
+                Nombre
+              </label>
 
-    </tr>
+              <input id="nombreTurno" type="text" [(ngModel)]="turnoActual.nombre" name="nombreTurno"
+                placeholder="Ej. Turno mañana" required>
 
-  </tbody>
-
-</table>
+            </div>
 
 
-  </div>
+            <!-- HORA DE INICIO -->
+            <div class="campo-formulario">
 
-</section>
+              <label for="horaInicio">
+                Hora de inicio
+              </label>
+
+              <input id="horaInicio" type="time" [(ngModel)]="turnoActual.hora_inicio" name="horaInicio" required>
+
+            </div>
+
+
+            <!-- HORA DE FINALIZACIÓN -->
+            <div class="campo-formulario">
+
+              <label for="horaFin">
+                Hora de finalización
+              </label>
+
+              <input id="horaFin" type="time" [(ngModel)]="turnoActual.hora_fin" name="horaFin">
+
+            </div>
+
+
+            <!-- ESTADO -->
+            <div class="campo-formulario">
+
+              <label for="estadoTurno">
+                Estado
+              </label>
+
+              <select id="estadoTurno" [(ngModel)]="turnoActual.estado" name="estadoTurno">
+
+                <option [ngValue]="true">
+                  Activo
+                </option>
+
+                <option [ngValue]="false">
+                  Inactivo
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <!-- DESCRIPCIÓN -->
+            <div class="campo-formulario campo-completo">
+
+              <label for="descripcionTurno">
+                Descripción
+              </label>
+
+              <textarea id="descripcionTurno" [(ngModel)]="turnoActual.descripcion" name="descripcionTurno"
+                placeholder="Ingrese una descripción del turno..." rows="3"></textarea>
+
+            </div>
+
+          </div>
+
+
+          <!-- ACCIONES -->
+          <div class="acciones-formulario">
+
+            <button type="button" class="boton-secundario" (click)="cerrarFormularioTurno()">
+              Cancelar
+            </button>
+
+            <button type="submit" class="boton-guardar" [disabled]="formTurno.invalid">
+
+              <span class="material-symbols-outlined">
+                save
+              </span>
+
+              {{
+              modoEdicionTurno
+              ? 'Actualizar registro'
+              : 'Guardar registro'
+              }}
+
+            </button>
+
+          </div>
+
+        </form>
+
+
+      </div>
+
+      <!-- TABLA -->
+
+      <div class="tabla-contenedor">
+
+
+        <div class="estado-cargando" *ngIf="cargandoTurnos">
+
+          <span class="material-symbols-outlined">
+            progress_activity
+          </span>
+
+          Cargando turnos...
+
+        </div>
+
+
+        <table *ngIf="!cargandoTurnos">
+
+          <thead>
+
+            <tr>
+              <th>Nombre</th>
+              <th>Hora inicio</th>
+              <th>Hora fin</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr *ngFor="let turno of turnos">
+
+              <td>
+                {{ turno.nombre }}
+              </td>
+
+              <td>
+                {{ turno.hora_inicio }}
+              </td>
+
+              <td>
+                {{ turno.hora_fin || 'No definida' }}
+              </td>
+
+              <td>
+
+                <span class="estado" [class.estado-activo]="turno.estado" [class.estado-inactivo]="!turno.estado">
+                  {{
+                  turno.estado
+                  ? 'Activo'
+                  : 'Inactivo'
+                  }}
+                </span>
+
+              </td>
+
+              <td>
+
+                <div class="acciones-tabla">
+
+                  <button type="button" class="boton-accion boton-editar" title="Editar" (click)="editarTurno(turno)">
+                    <span class="material-symbols-outlined">
+                      edit
+                    </span>
+                  </button>
+
+                  <button type="button" class="boton-accion boton-eliminar" title="Eliminar"
+                    (click)="eliminarTurno(turno)">
+                    <span class="material-symbols-outlined">
+                      delete
+                    </span>
+                  </button>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+
+            <!-- SIN REGISTROS -->
+            <tr *ngIf="turnos.length === 0">
+
+              <td colspan="5" class="sin-registros">
+                No hay turnos registrados.
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+        <!-- =================================================== -->
+        <!-- TABLAS PERSONALIZADAS -->
+        <!-- =================================================== -->
+
+        <section class="pantalla-catalogo" *ngIf="esTablaPersonalizada()">
+
+
+          <div class="encabezado-catalogo">
+
+            <div>
+
+              <h2>
+                {{ catalogoSeleccionado }}
+              </h2>
+
+              <p>
+                {{ obtenerDescripcionTabla(catalogoSeleccionado) }}
+              </p>
+
+            </div>
+
+
+            <button type="button" class="boton-nuevo">
+
+              <span class="material-symbols-outlined">
+                add
+              </span>
+
+              Nuevo registro
+
+            </button>
+
+
+          </div>
+
+
+
+          <div class="tabla-contenedor">
+
+
+            <table>
+
+              <thead>
+
+                <tr>
+
+                  <th *ngFor="let campo of obtenerCamposTabla(catalogoSeleccionado)">
+
+                    {{ campo.nombre }}
+
+                  </th>
+
+
+                  <th>
+                    Acciones
+                  </th>
+
+                </tr>
+
+
+              </thead>
+
+
+              <tbody>
+
+
+                <tr>
+
+                  <td [attr.colspan]="obtenerCamposTabla(catalogoSeleccionado).length + 1" class="sin-registros">
+
+                    No hay registros todavía.
+
+                  </td>
+
+
+                </tr>
+
+
+              </tbody>
+
+
+            </table>
+
+
+          </div>
+
+
+        </section>
+      </div>
+
+    </section>
