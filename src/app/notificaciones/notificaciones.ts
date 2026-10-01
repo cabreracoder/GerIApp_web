@@ -9,7 +9,7 @@ interface Notificacion {
   id: number;
   titulo: string;
   mensaje: string;
-  tipo: 'critica' | 'advertencia' | 'informacion';
+  tipo: 'critica' | 'advertencia' | 'informacion' | 'evento_adverso';
   tiempo: string;
   leida?: boolean;
   icono: string;
@@ -829,7 +829,8 @@ export class Notificaciones {
     tipo:
       'critica' |
       'advertencia' |
-      'informacion'
+      'informacion' |
+      'evento_adverso'
   ): string {
     switch (tipo) {
       case 'critica':
@@ -837,6 +838,9 @@ export class Notificaciones {
 
       case 'advertencia':
         return 'fa-solid fa-circle-exclamation';
+
+      case 'evento_adverso':
+        return 'fa-solid fa-notes-medical';
 
       default:
         return 'fa-regular fa-bell';
@@ -848,7 +852,8 @@ export class Notificaciones {
   ):
     'critica' |
     'advertencia' |
-    'informacion' {
+    'informacion' |
+    'evento_adverso' {
     const tipoNormalizado =
       tipo
         .toLowerCase()
@@ -866,6 +871,13 @@ export class Notificaciones {
       'advertencia'
     ) {
       return 'advertencia';
+    }
+
+    if (
+    tipoNormalizado ===
+    'evento_adverso'
+    ) {
+      return 'evento_adverso';
     }
 
     return 'informacion';

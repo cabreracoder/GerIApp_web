@@ -153,6 +153,16 @@
 
           </button>
 
+          <button
+            type="button"
+            class="boton-filtro evento-adverso"
+            [class.active]="tipoFiltro === 'evento_adverso'"
+            (click)="tipoFiltro = 'evento_adverso'">
+
+            Eventos adversos
+
+          </button>
+
         </div>
 
 
@@ -164,6 +174,7 @@
             [class.tipo-critico]="notificacion.tipo === 'critica'"
             [class.tipo-advertencia]="notificacion.tipo === 'advertencia'"
             [class.tipo-informacion]="notificacion.tipo === 'informacion'"
+            [class.tipo-evento-adverso]="notificacion.tipo === 'evento_adverso'"
             [class.leida]="notificacion.leida">
 
 
@@ -187,7 +198,9 @@
                   class="insignia-tipo"
                   [class.critica]="notificacion.tipo === 'critica'"
                   [class.advertencia]="notificacion.tipo === 'advertencia'"
-                  [class.informacion]="notificacion.tipo === 'informacion'">
+                  [class.informacion]="notificacion.tipo === 'informacion'"
+                  [class.evento-adverso]="notificacion.tipo === 'evento_adverso'">
+                  
 
                   {{ notificacion.tipo }}
 
@@ -685,7 +698,8 @@
                     class="insignia-tipo"
                     [class.critica]="notificacion.tipo === 'critica'"
                     [class.advertencia]="notificacion.tipo === 'advertencia'"
-                    [class.informacion]="notificacion.tipo === 'informacion'">
+                    [class.informacion]="notificacion.tipo === 'informacion'"
+                    [class.evento-adverso]="notificacion.tipo === 'evento_adverso'">
 
                     {{ notificacion.tipo }}
 
