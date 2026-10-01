@@ -22,6 +22,7 @@ interface UsuarioActualizado {
   correo?: string;
   telefono?: string | null;
   rol?: string;
+  foto?: string | null;
   [key: string]: any;
 }
 
@@ -70,7 +71,6 @@ export class Layout implements OnDestroy {
     private router: Router,
     private cdr: ChangeDetectorRef,
     private socialAuthService: SocialAuthService
-
   ) {
 
     this.cargarUsuario();
@@ -107,6 +107,8 @@ export class Layout implements OnDestroy {
   rolUsuario = '';
 
   inicialesUsuario = '';
+
+  fotoUsuario: string | null = null;
 
   // =====================================================
   // MENÚ FLOTANTE DE PACIENTES
@@ -247,6 +249,13 @@ export class Layout implements OnDestroy {
       usuario.rol ?? '';
 
     // ---------------------------------------------------
+    // FOTO DE PERFIL
+    // ---------------------------------------------------
+
+    this.fotoUsuario =
+      usuario.foto ?? null;
+
+    // ---------------------------------------------------
     // INICIALES
     // ---------------------------------------------------
 
@@ -262,7 +271,7 @@ export class Layout implements OnDestroy {
   }
 
   // =====================================================
-  // ABRIR CONFIGURACIÓN DESDE LAS INICIALES
+  // ABRIR CONFIGURACIÓN DESDE EL AVATAR
   // =====================================================
 
   abrirConfiguracion(): void {
@@ -291,8 +300,8 @@ export class Layout implements OnDestroy {
     this.router.navigate([
       '/login'
     ]);
-
   }
+
   // =====================================================
   // DESTRUIR COMPONENTE
   // =====================================================
@@ -305,3 +314,4 @@ export class Layout implements OnDestroy {
     );
   }
 }
+

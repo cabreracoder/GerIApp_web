@@ -116,6 +116,7 @@
         <!-- USUARIO -->
         <div class="layout-user">
 
+          <!-- INFORMACIÓN DEL USUARIO -->
           <div class="layout-user-info">
 
             <strong>
@@ -136,10 +137,20 @@
             (click)="abrirConfiguracion()"
           >
 
-            <!-- MOSTRAR INICIALES -->
-            <span>
-              {{ inicialesUsuario }}
-            </span>
+            <!-- MOSTRAR FOTO SI EXISTE -->
+            <img
+              *ngIf="fotoUsuario; else mostrarIniciales"
+              [src]="fotoUsuario"
+              alt="Foto de perfil"
+              class="layout-avatar-image"
+            >
+
+            <!-- MOSTRAR INICIALES SI NO HAY FOTO -->
+            <ng-template #mostrarIniciales>
+              <span>
+                {{ inicialesUsuario }}
+              </span>
+            </ng-template>
 
           </button>
 
@@ -161,3 +172,4 @@
   </div>
 
 </div>
+
