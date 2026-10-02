@@ -8,6 +8,210 @@ import { forkJoin } from 'rxjs';
 import Swal from 'sweetalert2';
 import { InventarioPaciente } from '../inventario-paciente/inventario-paciente';
 
+// =====================================================
+// ALERTAS (SweetAlert2 + Tailwind)
+// =====================================================
+
+type Tono = 'rojo' | 'ambar' | 'azul' | 'verde';
+
+const TONOS: Record<Tono, { panel: string; boton: string }> = {
+  rojo: { panel: 'bg-linear-to-b from-red-500 to-red-700', boton: 'bg-red-600 hover:bg-red-700' },
+  ambar: { panel: 'bg-linear-to-b from-amber-500 to-amber-700', boton: 'bg-amber-600 hover:bg-amber-700' },
+  azul: { panel: 'bg-linear-to-b from-blue-500 to-blue-700', boton: 'bg-blue-600 hover:bg-blue-700' },
+  verde: { panel: 'bg-linear-to-b from-emerald-500 to-emerald-700', boton: 'bg-emerald-600 hover:bg-emerald-700' },
+};
+
+// Iconos blancos del panel (papelera, prohibido, lápiz, check, equis, alerta)
+const svgIcono = (trazos: string): string =>
+  `<svg class="h-11 w-11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${trazos}</svg>`;
+
+const ICONOS = {
+  papelera: svgIcono('<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/>'),
+  prohibido: svgIcono('<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/>'),
+  lapiz: svgIcono('<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>'),
+  check: svgIcono('<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>'),
+  equis: svgIcono('<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>'),
+  alerta: svgIcono('<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>'),
+};
+
+// Evita que un nombre del backend inyecte HTML
+function escaparHtml(texto: string): string {
+  return String(texto ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function inicialesAlerta(nombre: string): string {
+  const partes = nombre.trim().split(/\s+/).filter(Boolean);
+  if (partes.length === 0) return '?';
+  if (partes.length === 1) return partes[0].slice(0, 2).toUpperCase();
+  return (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
+}
+
+interface ConfigAlerta {
+  tono: Tono;
+  icono: 'warning' | 'question' | 'success' | 'error';
+  iconoSvg: string;
+  titulo: string;
+  html?: string;
+  confirmar: string;
+  cancelar?: string;
+  confirmarIzquierda?: boolean;   // true = "Sí, ..." a la izquierda (como en Editar)
+  enfocarCancelar?: boolean;
+  autoCerrar?: boolean;           // true = sin botones, se cierra a los 1,8 s
+}
+
+// Motor único: todas las alertas pasan por aquí.
+// Las clases con "!" ganan sobre el CSS que SweetAlert2 trae por defecto.
+function mostrarAlerta(c: ConfigAlerta) {
+
+  const tono = TONOS[c.tono];
+  const conBotones = !c.autoCerrar;
+  const conCancelar = !!c.cancelar;
+  const botonSolo = conBotones && !conCancelar;
+  const tituloSinPie = !conBotones && !c.html;
+
+  return Swal.fire({
+    icon: c.icono,
+    iconHtml: c.iconoSvg,
+    title: escaparHtml(c.titulo),
+    html: c.html,
+
+    showConfirmButton: conBotones,
+    showCancelButton: conCancelar,
+    confirmButtonText: c.confirmar,
+    cancelButtonText: c.cancelar,
+    reverseButtons: !c.confirmarIzquierda,
+    focusCancel: !!c.enfocarCancelar,
+    timer: c.autoCerrar ? 1800 : undefined,
+
+    buttonsStyling: false,
+    backdrop: 'rgba(15, 23, 42, 0.65)',
+
+    customClass: {
+      popup: '!grid-cols-[26%_1fr] !w-[34rem] !max-w-[92vw] !p-0 !rounded-[2.2rem] !overflow-hidden !bg-white',
+      icon: `col-start-1 row-start-1 row-span-3 !m-0 !flex !h-auto !w-auto !items-center !justify-center !rounded-none !border-0 !animate-none ${tono.panel}`,
+      title: `col-start-2 row-start-1 !m-0 !px-7 !pt-8 ${tituloSinPie ? '!pb-8' : '!pb-0'} !text-left !text-[1.6rem] !leading-tight !font-extrabold !text-slate-900`,
+      htmlContainer: `col-start-2 row-start-2 !m-0 !px-7 !pt-0 ${conBotones ? '!pb-0' : '!pb-8'} !justify-start !overflow-visible !text-left !text-base !font-normal`,
+      actions: `col-start-2 row-start-3 !m-0 !w-auto !flex-nowrap !gap-3 !px-7 !pt-6 !pb-8 ${botonSolo ? '!justify-end' : '!justify-stretch'}`,
+      confirmButton: `${botonSolo ? 'w-[calc(50%-0.375rem)]' : 'flex-1'} cursor-pointer rounded-2xl px-4 py-3 text-[1.1rem] font-bold text-white transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-slate-300 ${tono.boton}`,
+      cancelButton: 'flex-1 cursor-pointer rounded-2xl bg-slate-100 px-4 py-3 text-[1.1rem] font-bold text-slate-600 transition-colors hover:bg-slate-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-slate-300',
+    },
+  });
+}
+
+// ---- Confirmaciones: subtítulo gris + avatar con iniciales + pregunta ----
+
+function alertaConfirmar(c: {
+  tono: Tono;
+  icono: 'warning' | 'question';
+  iconoSvg: string;
+  verbo: string;
+  entidad: string;
+  nombre: string;
+  subtitulo: string;
+  confirmar: string;
+  confirmarIzquierda?: boolean;
+  enfocarCancelar?: boolean;
+}) {
+
+  const html = `
+    <p class="m-0 text-[1.1rem] leading-snug text-slate-400">${escaparHtml(c.subtitulo)}</p>
+    <div class="mt-4 flex items-center gap-3.5">
+      <span class="flex h-[2.4rem] w-[2.4rem] shrink-0 items-center justify-center rounded-xl bg-slate-100 text-sm font-bold text-slate-600">${escaparHtml(inicialesAlerta(c.nombre))}</span>
+      <p class="m-0 text-[1.15rem] leading-snug text-slate-700">¿${c.verbo} a <strong class="font-bold">${escaparHtml(c.nombre)}</strong>?</p>
+    </div>
+  `;
+
+  return mostrarAlerta({
+    tono: c.tono,
+    icono: c.icono,
+    iconoSvg: c.iconoSvg,
+    titulo: `${c.verbo} ${c.entidad}`,
+    html,
+    confirmar: c.confirmar,
+    cancelar: 'Cancelar',
+    confirmarIzquierda: c.confirmarIzquierda,
+    enfocarCancelar: c.enfocarCancelar,
+  });
+}
+
+// Imagen 1: rojo
+function alertaEliminar(nombre: string, entidad = 'encargado') {
+  return alertaConfirmar({
+    tono: 'rojo', icono: 'warning', iconoSvg: ICONOS.papelera,
+    verbo: 'Eliminar', entidad, nombre,
+    subtitulo: 'Acción permanente · no se puede deshacer',
+    confirmar: 'Sí, eliminar',
+    enfocarCancelar: true,
+  });
+}
+
+// Imagen 2: ámbar
+function alertaDesactivar(nombre: string, entidad = 'encargado') {
+  return alertaConfirmar({
+    tono: 'ambar', icono: 'warning', iconoSvg: ICONOS.prohibido,
+    verbo: 'Desactivar', entidad, nombre,
+    subtitulo: 'Cambio reversible · puedes reactivarlo luego',
+    confirmar: 'Sí, desactivar',
+  });
+}
+
+// Imagen 3: azul ("Sí, editar" va a la izquierda)
+function alertaEditar(nombre: string, entidad = 'encargado') {
+  return alertaConfirmar({
+    tono: 'azul', icono: 'question', iconoSvg: ICONOS.lapiz,
+    verbo: 'Editar', entidad, nombre,
+    subtitulo: 'Se abrirá el formulario de edición',
+    confirmar: 'Sí, editar',
+    confirmarIzquierda: true,
+  });
+}
+
+// Misma forma que Editar, en verde
+function alertaActivar(nombre: string, entidad = 'encargado') {
+  return alertaConfirmar({
+    tono: 'verde', icono: 'question', iconoSvg: ICONOS.check,
+    verbo: 'Activar', entidad, nombre,
+    subtitulo: 'Volverá a estar activo · puedes desactivarlo luego',
+    confirmar: 'Sí, activar',
+    confirmarIzquierda: true,
+  });
+}
+
+// ---- Avisos: mismo panel, título y texto; un solo botón a la derecha ----
+
+function htmlMensaje(mensaje?: string): string | undefined {
+  return mensaje
+    ? `<p class="m-0 text-[1.15rem] leading-snug text-slate-700">${escaparHtml(mensaje)}</p>`
+    : undefined;
+}
+
+// Se cierra solo a los 1,8 s (sin botones)
+function alertaExito(titulo: string, mensaje?: string) {
+  return mostrarAlerta({
+    tono: 'verde', icono: 'success', iconoSvg: ICONOS.check,
+    titulo, html: htmlMensaje(mensaje), confirmar: 'Aceptar', autoCerrar: true,
+  });
+}
+
+// Siempre lleva botón, para que no se pierda
+function alertaError(titulo: string, mensaje?: string) {
+  return mostrarAlerta({
+    tono: 'rojo', icono: 'error', iconoSvg: ICONOS.equis,
+    titulo, html: htmlMensaje(mensaje), confirmar: 'Aceptar',
+  });
+}
+
+function alertaAdvertencia(titulo: string, mensaje?: string) {
+  return mostrarAlerta({
+    tono: 'ambar', icono: 'warning', iconoSvg: ICONOS.alerta,
+    titulo, html: htmlMensaje(mensaje), confirmar: 'Aceptar',
+  });
+}
+
 // ============================================================
 // INTERFAZ RESPUESTA PAGINADA
 // ============================================================
@@ -665,12 +869,7 @@ export class ElementosPaciente implements OnInit {
 
           this.cargandoPaciente = false;
 
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text:
-              'No fue posible cargar la información del paciente.'
-          });
+          alertaError('Error', 'No fue posible cargar la información del paciente.');
 
         }
 
@@ -912,12 +1111,7 @@ export class ElementosPaciente implements OnInit {
 
           this.cargandoMedicamentos = false;
 
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text:
-              'No fue posible cargar los medicamentos.'
-          });
+          alertaError('Error', 'No fue posible cargar los medicamentos.');
 
         }
 
@@ -972,12 +1166,7 @@ export class ElementosPaciente implements OnInit {
 
           this.cargandoTiposInsumo = false;
 
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text:
-              'No fue posible cargar los tipos de insumo.'
-          });
+          alertaError('Error', 'No fue posible cargar los tipos de insumo.');
 
         }
 
@@ -1040,12 +1229,7 @@ export class ElementosPaciente implements OnInit {
 
           this.cargandoInsumos = false;
 
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text:
-              'No fue posible cargar los insumos.'
-          });
+         alertaError('Error', 'No fue posible cargar los insumos.');
 
         }
 
@@ -1197,12 +1381,7 @@ export class ElementosPaciente implements OnInit {
 
           this.cargandoElementos = false;
 
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text:
-              'No fue posible cargar los elementos del paciente.'
-          });
+         alertaError('Error', 'No fue posible cargar los elementos del paciente.');
 
         }
 
@@ -1718,12 +1897,7 @@ private mostrarErrorApi(
 
   }
 
-  Swal.fire({
-    icon: 'error',
-    title: 'Error',
-    text: mensaje,
-    confirmButtonText: 'Entendido'
-  });
+  alertaError('Error', mensaje);
 
 }
 
@@ -1947,13 +2121,7 @@ private mostrarErrorApi(
       !this.formularioElemento.id_medicamentos
     ) {
 
-      Swal.fire({
-        icon: 'warning',
-        title: 'Medicamento requerido',
-        text:
-          'Selecciona un medicamento antes de agregarlo.'
-      });
-
+      alertaAdvertencia('Medicamento requerido', 'Selecciona un medicamento antes de agregarlo.');
       return;
     }
 
@@ -1967,13 +2135,7 @@ private mostrarErrorApi(
       cantidad <= 0
     ) {
 
-      Swal.fire({
-        icon: 'warning',
-        title: 'Cantidad inválida',
-        text:
-          'La cantidad debe ser mayor que cero.'
-      });
-
+      alertaAdvertencia('Cantidad inválida', 'La cantidad debe ser mayor que cero.');
       return;
     }
 
@@ -1986,13 +2148,7 @@ private mostrarErrorApi(
 
     if (medicamentoExistente) {
 
-      Swal.fire({
-        icon: 'warning',
-        title: 'Medicamento repetido',
-        text:
-          'Este medicamento ya fue agregado a la lista.'
-      });
-
+     alertaAdvertencia('Medicamento repetido', 'Este medicamento ya fue agregado a la lista.');
       return;
     }
 
@@ -2042,11 +2198,7 @@ agregarInsumoPendiente(): void {
   // Validar tipo de insumo.
   if (!this.formularioElemento.id_tipo_insumo) {
 
-    Swal.fire({
-      icon: 'warning',
-      title: 'Tipo de insumo requerido',
-      text: 'Selecciona un tipo de insumo antes de agregarlo.'
-    });
+   alertaAdvertencia('Tipo de insumo requerido', 'Selecciona un tipo de insumo antes de agregarlo.');
 
     return;
   }
@@ -2054,11 +2206,7 @@ agregarInsumoPendiente(): void {
   // Validar insumo.
   if (!this.formularioElemento.id_insumo) {
 
-    Swal.fire({
-      icon: 'warning',
-      title: 'Insumo requerido',
-      text: 'Selecciona un insumo antes de agregarlo.'
-    });
+    alertaAdvertencia('Insumo requerido', 'Selecciona un insumo antes de agregarlo.');
 
     return;
   }
@@ -2070,11 +2218,7 @@ agregarInsumoPendiente(): void {
 
   if (!cantidad || cantidad <= 0) {
 
-    Swal.fire({
-      icon: 'warning',
-      title: 'Cantidad inválida',
-      text: 'La cantidad debe ser mayor que cero.'
-    });
+    alertaAdvertencia('Cantidad inválida', 'La cantidad debe ser mayor que cero.');
 
     return;
   }
@@ -2090,12 +2234,7 @@ agregarInsumoPendiente(): void {
 
   if (insumoExistente) {
 
-    Swal.fire({
-      icon: 'warning',
-      title: 'Insumo repetido',
-      text: 'Este insumo ya fue agregado a la lista.'
-    });
-
+    alertaAdvertencia('Insumo repetido', 'Este insumo ya fue agregado a la lista.');
     return;
   }
 
@@ -2230,13 +2369,7 @@ agregarInsumoPendiente(): void {
 
     if (!this.idPaciente || this.idPaciente <= 0) {
 
-      Swal.fire({
-        icon: 'warning',
-        title: 'Paciente no identificado',
-        text:
-          'No fue posible identificar el paciente.'
-      });
-
+      alertaAdvertencia('Paciente no identificado', 'No fue posible identificar el paciente.');
       return;
     }
 
@@ -2273,13 +2406,7 @@ agregarInsumoPendiente(): void {
         this.medicamentosPendientes.length === 0
       ) {
 
-        Swal.fire({
-          icon: 'warning',
-          title: 'Medicamentos requeridos',
-          text:
-            'Agrega al menos un medicamento antes de guardar.'
-        });
-
+        alertaAdvertencia('Medicamentos requeridos', 'Agrega al menos un medicamento antes de guardar.');
         return;
       }
 
@@ -2311,13 +2438,7 @@ agregarInsumoPendiente(): void {
         this.insumosPendientes.length === 0
       ) {
 
-        Swal.fire({
-          icon: 'warning',
-          title: 'Insumos requeridos',
-          text:
-            'Agrega al menos un insumo antes de guardar.'
-        });
-
+       alertaAdvertencia('Insumos requeridos', 'Agrega al menos un insumo antes de guardar.');
         return;
       }
 
@@ -2351,13 +2472,7 @@ agregarInsumoPendiente(): void {
       cantidad <= 0
     ) {
 
-      Swal.fire({
-        icon: 'warning',
-        title: 'Cantidad inválida',
-        text:
-          'La cantidad debe ser mayor que cero.'
-      });
-
+      alertaAdvertencia('Cantidad inválida', 'La cantidad debe ser mayor que cero.');
       return;
     }
 
@@ -2366,13 +2481,7 @@ agregarInsumoPendiente(): void {
       !this.formularioElemento.id_medicamentos
     ) {
 
-      Swal.fire({
-        icon: 'warning',
-        title: 'Medicamento requerido',
-        text:
-          'Selecciona un medicamento.'
-      });
-
+     alertaAdvertencia('Medicamento requerido', 'Selecciona un medicamento.');
       return;
     }
 
@@ -2381,12 +2490,7 @@ agregarInsumoPendiente(): void {
       !this.formularioElemento.id_tipo_insumo
     ) {
 
-      Swal.fire({
-        icon: 'warning',
-        title: 'Tipo de insumo requerido',
-        text:
-          'Selecciona un tipo de insumo.'
-      });
+      alertaAdvertencia('Tipo de insumo requerido', 'Selecciona un tipo de insumo.');
 
       return;
     }
@@ -2396,12 +2500,7 @@ agregarInsumoPendiente(): void {
       !this.formularioElemento.id_insumo
     ) {
 
-      Swal.fire({
-        icon: 'warning',
-        title: 'Insumo requerido',
-        text:
-          'Selecciona un insumo.'
-      });
+      alertaAdvertencia('Insumo requerido', 'Selecciona un insumo.');
 
       return;
     }
@@ -2472,14 +2571,7 @@ agregarInsumoPendiente(): void {
               respuesta
             );
 
-            Swal.fire({
-              icon: 'success',
-              title: 'Elemento actualizado',
-              text:
-                'El elemento se actualizó correctamente.',
-              timer: 1800,
-              showConfirmButton: false
-            });
+              alertaExito('Elemento actualizado', 'El elemento se actualizó correctamente.');
 
             this.cerrarFormularioElemento();
 
@@ -2530,14 +2622,7 @@ agregarInsumoPendiente(): void {
             respuesta
           );
 
-          Swal.fire({
-            icon: 'success',
-            title: 'Elemento registrado',
-            text:
-              'El elemento se registró correctamente para el paciente.',
-            timer: 1800,
-            showConfirmButton: false
-          });
+          alertaExito('Elemento registrado', 'El elemento se registró correctamente para el paciente.');
 
           this.cerrarFormularioElemento();
 
@@ -2636,14 +2721,7 @@ agregarInsumoPendiente(): void {
           respuestas
         );
 
-        Swal.fire({
-          icon: 'success',
-          title: 'Medicamentos registrados',
-          text:
-            `Se registraron ${respuestas.length} medicamento(s) correctamente para el paciente.`,
-          timer: 2200,
-          showConfirmButton: false
-        });
+       alertaExito('Medicamentos registrados', `Se registraron ${respuestas.length} medicamento(s) correctamente para el paciente.`);
 
         this.medicamentosPendientes = [];
 
@@ -2745,14 +2823,7 @@ agregarInsumoPendiente(): void {
           respuestas
         );
 
-        Swal.fire({
-          icon: 'success',
-          title: 'Insumos registrados',
-          text:
-            `Se registraron ${respuestas.length} insumo(s) correctamente para el paciente.`,
-          timer: 2200,
-          showConfirmButton: false
-        });
+        alertaExito('Insumos registrados', `Se registraron ${respuestas.length} insumo(s) correctamente para el paciente.`);
 
         this.insumosPendientes = [];
 
@@ -2876,73 +2947,32 @@ agregarInsumoPendiente(): void {
   // ELIMINAR ELEMENTO
   // ============================================================
 
-  eliminarElemento(
-    elemento: ElementoPaciente
-  ): void {
+  eliminarElemento(elemento: ElementoPaciente): void {
 
-    Swal.fire({
+  const nombre = this.obtenerNombreElemento(elemento);
+  const entidad = this.obtenerTipoElemento(elemento) === 'Medicamento' ? 'medicamento' : 'insumo';
 
-      icon: 'warning',
+  alertaEliminar(nombre, entidad).then((resultado) => {
 
-      title: '¿Eliminar elemento?',
+    if (!resultado.isConfirmed) {
+      return;
+    }
 
-      text:
-        'Esta acción no se puede deshacer.',
+    this.http
+      .delete(`${this.apiUrl}/elementos_paciente/${elemento.id_elemento}/`)
+      .subscribe({
 
-      showCancelButton: true,
+        next: () => {
+          alertaExito('Elemento eliminado');
+          this.cargarElementosPaciente();
+        },
 
-      confirmButtonText:
-        'Sí, eliminar',
-
-      cancelButtonText:
-        'Cancelar'
-
-    }).then((resultado) => {
-
-      if (!resultado.isConfirmed) {
-        return;
-      }
-
-      this.http
-        .delete(
-          `${this.apiUrl}/elementos_paciente/${elemento.id_elemento}/`
-        )
-        .subscribe({
-
-          next: () => {
-
-            Swal.fire({
-              icon: 'success',
-              title: 'Elemento eliminado',
-              text:
-                'El elemento fue eliminado correctamente.',
-              timer: 1800,
-              showConfirmButton: false
-            });
-
-            this.cargarElementosPaciente();
-
-          },
-
-          error: (error) => {
-
-            console.error(
-              'Error al eliminar elemento:',
-              error
-            );
-
-            this.mostrarErrorApi(
-              error,
-              'No fue posible eliminar el elemento.'
-            );
-
-          }
-
-        });
-
-    });
-
-  }
+        error: (error) => {
+          this.mostrarErrorApi(error, 'No fue posible eliminar el elemento.');
+        }
+      });
+  });
+}
 
   // ============================================================
   // CARGAR CUIDADOS DE ENFERMERÍA
@@ -3099,13 +3129,7 @@ agregarInsumoPendiente(): void {
 
     if (!this.idPaciente || this.idPaciente <= 0) {
 
-      Swal.fire({
-        icon: 'warning',
-        title: 'Paciente no identificado',
-        text:
-          'No fue posible identificar el paciente.'
-      });
-
+     alertaAdvertencia('Paciente no identificado', 'No fue posible identificar el paciente.');
       return;
     }
 
@@ -3195,14 +3219,7 @@ agregarInsumoPendiente(): void {
               respuesta
             );
 
-            Swal.fire({
-              icon: 'success',
-              title: 'Cuidados actualizados',
-              text:
-                'Los cuidados de enfermería se actualizaron correctamente.',
-              timer: 1800,
-              showConfirmButton: false
-            });
+            alertaExito('Cuidados actualizados', 'Los cuidados de enfermería se actualizaron correctamente.');
 
             this.mostrarFormularioCuidados =
               false;
@@ -3254,15 +3271,7 @@ agregarInsumoPendiente(): void {
             respuesta
           );
 
-          Swal.fire({
-            icon: 'success',
-            title: 'Cuidados registrados',
-            text:
-              'Los cuidados de enfermería se registraron correctamente.',
-            timer: 1800,
-            showConfirmButton: false
-          });
-
+          alertaExito('Cuidados registrados', 'Los cuidados de enfermería se registraron correctamente.');
           this.mostrarFormularioCuidados =
             false;
 
@@ -3320,12 +3329,7 @@ agregarInsumoPendiente(): void {
 
     if (!this.cuidados.id_cuidado) {
 
-      Swal.fire({
-        icon: 'info',
-        title: 'Sin cuidados registrados',
-        text:
-          'Primero debe registrar los cuidados de enfermería.'
-      });
+      alertaAdvertencia('Sin cuidados registrados', 'Primero debe registrar los cuidados de enfermería.');
 
       return;
 
@@ -3344,93 +3348,36 @@ agregarInsumoPendiente(): void {
 
   eliminarCuidados(): void {
 
-    if (!this.cuidados.id_cuidado) {
+  if (!this.cuidados.id_cuidado) {
+    alertaAdvertencia('Sin cuidados', 'No existen cuidados de enfermería para eliminar.');
+    return;
+  }
 
-      Swal.fire({
-        icon: 'info',
-        title: 'Sin cuidados',
-        text:
-          'No existen cuidados de enfermería para eliminar.'
-      });
+  const nombre = `${this.paciente.nombre} ${this.paciente.apellido}`.trim();
 
+  alertaEliminar(nombre, 'registro de cuidados de enfermería').then((resultado) => {
+
+    if (!resultado.isConfirmed) {
       return;
     }
 
-    Swal.fire({
+    this.http
+      .delete(`${this.apiUrl}/cuidados_enfermeria/${this.cuidados.id_cuidado}/`)
+      .subscribe({
 
-      icon: 'warning',
+        next: () => {
+          alertaExito('Cuidados eliminados', 'Los cuidados fueron eliminados correctamente.');
+          this.cuidados = this.crearCuidadosVacios();
+          this.mostrarFormularioCuidados = false;
+          this.cdr.detectChanges();
+        },
 
-      title:
-        '¿Eliminar cuidados de enfermería?',
-
-      text:
-        'Esta acción eliminará los cuidados registrados para este paciente.',
-
-      showCancelButton: true,
-
-      confirmButtonText:
-        'Sí, eliminar',
-
-      cancelButtonText:
-        'Cancelar'
-
-    }).then((resultado) => {
-
-      if (!resultado.isConfirmed) {
-        return;
-      }
-
-      this.http
-        .delete(
-          `${this.apiUrl}/cuidados_enfermeria/${this.cuidados.id_cuidado}/`
-        )
-        .subscribe({
-
-          next: () => {
-
-            Swal.fire({
-              icon: 'success',
-              title: 'Cuidados eliminados',
-              text:
-                'Los cuidados fueron eliminados correctamente.',
-              timer: 1800,
-              showConfirmButton: false
-            });
-
-            this.cuidados =
-              this.crearCuidadosVacios();
-
-            this.mostrarFormularioCuidados =
-              false;
-
-            this.cdr.detectChanges();
-
-          },
-
-          error: (error) => {
-
-            console.error(
-              'Error al eliminar cuidados:',
-              error
-            );
-
-            console.error(
-              'Respuesta del servidor:',
-              error?.error
-            );
-
-            this.mostrarErrorApi(
-              error,
-              'No fue posible eliminar los cuidados de enfermería.'
-            );
-
-          }
-
-        });
-
-    });
-
-  }
+        error: (error) => {
+          this.mostrarErrorApi(error, 'No fue posible eliminar los cuidados de enfermería.');
+        }
+      });
+  });
+}
 
   // ============================================================
   // CARGAR RECOMENDACIONES
@@ -3610,12 +3557,7 @@ agregarInsumoPendiente(): void {
       this.idPaciente <= 0
     ) {
 
-      Swal.fire({
-        icon: 'warning',
-        title: 'Paciente no identificado',
-        text:
-          'No fue posible identificar el paciente.'
-      });
+      alertaAdvertencia('Paciente no identificado', 'No fue posible identificar el paciente.');
 
       return;
     }
@@ -3721,14 +3663,7 @@ agregarInsumoPendiente(): void {
               respuesta
             );
 
-            Swal.fire({
-              icon: 'success',
-              title: 'Recomendaciones actualizadas',
-              text:
-                'La información se actualizó correctamente.',
-              timer: 1800,
-              showConfirmButton: false
-            });
+           alertaExito('Recomendaciones actualizadas', 'La información se actualizó correctamente.');
 
             this.mostrarFormularioRecomendaciones =
               false;
@@ -3780,14 +3715,7 @@ agregarInsumoPendiente(): void {
             respuesta
           );
 
-          Swal.fire({
-            icon: 'success',
-            title: 'Recomendaciones registradas',
-            text:
-              'Las recomendaciones se registraron correctamente.',
-            timer: 1800,
-            showConfirmButton: false
-          });
+          alertaExito('Recomendaciones registradas', 'Las recomendaciones se registraron correctamente.');
 
           this.mostrarFormularioRecomendaciones =
             false;
@@ -3830,12 +3758,7 @@ agregarInsumoPendiente(): void {
       this.recomendaciones.id_recomendacion <= 0
     ) {
 
-      Swal.fire({
-        icon: 'info',
-        title: 'Sin recomendaciones',
-        text:
-          'Primero debe registrar las recomendaciones.'
-      });
+     alertaAdvertencia('Sin recomendaciones', 'Primero debe registrar las recomendaciones.');
 
       return;
     }
@@ -3851,98 +3774,38 @@ agregarInsumoPendiente(): void {
   // ELIMINAR RECOMENDACIONES
   // ============================================================
 
-  eliminarRecomendaciones(): void {
+eliminarRecomendaciones(): void {
 
-    if (
-      !this.recomendaciones.id_recomendacion ||
-      this.recomendaciones.id_recomendacion <= 0
-    ) {
+  if (!this.recomendaciones.id_recomendacion || this.recomendaciones.id_recomendacion <= 0) {
+    alertaAdvertencia('Sin recomendaciones', 'No existen recomendaciones para eliminar.');
+    return;
+  }
 
-      Swal.fire({
-        icon: 'info',
-        title: 'Sin recomendaciones',
-        text:
-          'No existen recomendaciones para eliminar.'
-      });
+  const nombre = `${this.paciente.nombre} ${this.paciente.apellido}`.trim();
 
+  alertaEliminar(nombre, 'registro de recomendaciones').then((resultado) => {
+
+    if (!resultado.isConfirmed) {
       return;
     }
 
-    Swal.fire({
+    this.http
+      .delete(`${this.apiUrl}/recomendaciones/${this.recomendaciones.id_recomendacion}/`)
+      .subscribe({
 
-      icon: 'warning',
+        next: () => {
+          alertaExito('Recomendaciones eliminadas', 'Las recomendaciones fueron eliminadas correctamente.');
+          this.recomendaciones = this.crearRecomendacionesVacias();
+          this.mostrarFormularioRecomendaciones = false;
+          this.cdr.detectChanges();
+        },
 
-      title:
-        '¿Eliminar recomendaciones?',
-
-      text:
-        'Esta acción eliminará las recomendaciones registradas para este paciente.',
-
-      showCancelButton: true,
-
-      confirmButtonText:
-        'Sí, eliminar',
-
-      cancelButtonText:
-        'Cancelar'
-
-    }).then((resultado) => {
-
-      if (!resultado.isConfirmed) {
-        return;
-      }
-
-      this.http
-        .delete(
-          `${this.apiUrl}/recomendaciones/${this.recomendaciones.id_recomendacion}/`
-        )
-        .subscribe({
-
-          next: () => {
-
-            Swal.fire({
-              icon: 'success',
-              title: 'Recomendaciones eliminadas',
-              text:
-                'Las recomendaciones fueron eliminadas correctamente.',
-              timer: 1800,
-              showConfirmButton: false
-            });
-
-            this.recomendaciones =
-              this.crearRecomendacionesVacias();
-
-            this.mostrarFormularioRecomendaciones =
-              false;
-
-            this.cdr.detectChanges();
-
-          },
-
-          error: (error) => {
-
-            console.error(
-              'Error al eliminar recomendaciones:',
-              error
-            );
-
-            console.error(
-              'Respuesta del servidor:',
-              error?.error
-            );
-
-            this.mostrarErrorApi(
-              error,
-              'No fue posible eliminar las recomendaciones.'
-            );
-
-          }
-
-        });
-
-    });
-
-  }
+        error: (error) => {
+          this.mostrarErrorApi(error, 'No fue posible eliminar las recomendaciones.');
+        }
+      });
+  });
+}
 
   // ============================================================
   // CARGAR HISTORIA CLÍNICA
@@ -4131,12 +3994,7 @@ agregarInsumoPendiente(): void {
       this.historiaClinica.id_historia_clinica <= 0
     ) {
 
-      Swal.fire({
-        icon: 'info',
-        title: 'Sin historia clínica',
-        text:
-          'Primero debe registrar la historia clínica.'
-      });
+      alertaAdvertencia('Sin historia clínica', 'Primero debe registrar la historia clínica.');
 
       return;
     }
@@ -4159,12 +4017,7 @@ agregarInsumoPendiente(): void {
       this.idPaciente <= 0
     ) {
 
-      Swal.fire({
-        icon: 'warning',
-        title: 'Paciente no identificado',
-        text:
-          'No fue posible identificar el paciente.'
-      });
+      alertaAdvertencia('Paciente no identificado', 'No fue posible identificar el paciente.');
 
       return;
     }
@@ -4242,14 +4095,7 @@ agregarInsumoPendiente(): void {
               respuesta
             );
 
-            Swal.fire({
-              icon: 'success',
-              title: 'Historia clínica actualizada',
-              text:
-                'La información se actualizó correctamente.',
-              timer: 1800,
-              showConfirmButton: false
-            });
+            alertaExito('Historia clínica actualizada', 'La información se actualizó correctamente.');
 
             this.mostrarFormularioHistoria =
               false;
@@ -4300,14 +4146,7 @@ agregarInsumoPendiente(): void {
             respuesta
           );
 
-          Swal.fire({
-            icon: 'success',
-            title: 'Historia clínica registrada',
-            text:
-              'La historia clínica se registró correctamente.',
-            timer: 1800,
-            showConfirmButton: false
-          });
+         alertaExito('Historia clínica registrada', 'La historia clínica se registró correctamente.');
 
           this.mostrarFormularioHistoria =
             false;
@@ -4345,96 +4184,36 @@ agregarInsumoPendiente(): void {
 
   eliminarHistoriaClinica(): void {
 
-    if (
-      !this.historiaClinica.id_historia_clinica ||
-      this.historiaClinica.id_historia_clinica <= 0
-    ) {
+  if (!this.historiaClinica.id_historia_clinica || this.historiaClinica.id_historia_clinica <= 0) {
+    alertaAdvertencia('Sin historia clínica', 'No existe una historia clínica para eliminar.');
+    return;
+  }
 
-      Swal.fire({
-        icon: 'info',
-        title: 'Sin historia clínica',
-        text:
-          'No existe una historia clínica para eliminar.'
-      });
+  const nombre = `${this.paciente.nombre} ${this.paciente.apellido}`.trim();
 
+  alertaEliminar(nombre, 'historia clínica').then((resultado) => {
+
+    if (!resultado.isConfirmed) {
       return;
     }
 
-    Swal.fire({
+    this.http
+      .delete(`${this.apiUrl}/historia_clinicas/${this.historiaClinica.id_historia_clinica}/`)
+      .subscribe({
 
-      icon: 'warning',
+        next: () => {
+          alertaExito('Historia clínica eliminada', 'La historia clínica fue eliminada correctamente.');
+          this.historiaClinica = this.crearHistoriaClinicaVacia();
+          this.mostrarFormularioHistoria = false;
+          this.cdr.detectChanges();
+        },
 
-      title:
-        '¿Eliminar historia clínica?',
-
-      text:
-        'Esta acción eliminará la historia clínica registrada para este paciente.',
-
-      showCancelButton: true,
-
-      confirmButtonText:
-        'Sí, eliminar',
-
-      cancelButtonText:
-        'Cancelar'
-
-    }).then((resultado) => {
-
-      if (!resultado.isConfirmed) {
-        return;
-      }
-
-      this.http
-        .delete(
-          `${this.apiUrl}/historia_clinicas/${this.historiaClinica.id_historia_clinica}/`
-        )
-        .subscribe({
-
-          next: () => {
-
-            Swal.fire({
-              icon: 'success',
-              title: 'Historia clínica eliminada',
-              text:
-                'La historia clínica fue eliminada correctamente.',
-              timer: 1800,
-              showConfirmButton: false
-            });
-
-            this.historiaClinica =
-              this.crearHistoriaClinicaVacia();
-
-            this.mostrarFormularioHistoria =
-              false;
-
-            this.cdr.detectChanges();
-
-          },
-
-          error: (error) => {
-
-            console.error(
-              'Error al eliminar historia clínica:',
-              error
-            );
-
-            console.error(
-              'Respuesta del servidor:',
-              error?.error
-            );
-
-            this.mostrarErrorApi(
-              error,
-              'No fue posible eliminar la historia clínica.'
-            );
-
-          }
-
-        });
-
-    });
-
-  }
+        error: (error) => {
+          this.mostrarErrorApi(error, 'No fue posible eliminar la historia clínica.');
+        }
+      });
+  });
+}
 
   // ============================================================
   // MÉTODOS COMPATIBLES CON EL HTML
@@ -4450,23 +4229,13 @@ agregarInsumoPendiente(): void {
 
   eliminarCuidado(index: number): void {
 
-    Swal.fire({
-      icon: 'info',
-      title: 'Cuidado',
-      text:
-        'Los cuidados se administran como un único registro por paciente.'
-    });
+    alertaAdvertencia('Cuidado', 'Los cuidados se administran como un único registro por paciente.');
 
   }
 
   eliminarRecomendacion(index: number): void {
 
-    Swal.fire({
-      icon: 'info',
-      title: 'Recomendaciones',
-      text:
-        'Las recomendaciones se administran como un único registro por paciente.'
-    });
+    alertaAdvertencia('Recomendaciones', 'Las recomendaciones se administran como un único registro por paciente.')
 
   }
 
@@ -4515,14 +4284,7 @@ agregarInsumoPendiente(): void {
 
   guardarBorrador(): void {
 
-    Swal.fire({
-      icon: 'success',
-      title: 'Borrador guardado',
-      text:
-        'La información registrada actualmente está guardada en el sistema.',
-      timer: 1800,
-      showConfirmButton: false
-    });
+    alertaExito('Borrador guardado', 'La información registrada actualmente está guardada en el sistema.');
 
   }
 
@@ -4618,92 +4380,56 @@ finalizarRegistro(): void {
   // ============================================================
 
   if (faltantes.length > 0) {
-
-    Swal.fire({
-
-      icon: 'warning',
-
-      title: 'Registro incompleto',
-
-      html: `
-        <p>Aún faltan apartados por completar:</p>
-
-        <ul style="text-align: left;">
-          ${faltantes
-            .map(item => `<li>${item}</li>`)
-            .join('')}
-        </ul>
-
-        <p>
-          Completa toda la información antes de finalizar el registro.
-        </p>
-      `,
-
-      confirmButtonText: 'Entendido'
-
-    });
-
-    return;
-  }
+  mostrarAlerta({
+    tono: 'ambar',
+    icono: 'warning',
+    iconoSvg: ICONOS.alerta,
+    titulo: 'Registro incompleto',
+    html: `
+      <p class="m-0 text-[1.15rem] leading-snug text-slate-700">Aún faltan apartados por completar:</p>
+      <ul class="mt-2 ml-5 list-disc text-[1.05rem] text-slate-700">
+        ${faltantes.map(item => `<li>${item}</li>`).join('')}
+      </ul>
+    `,
+    confirmar: 'Entendido'
+  });
+  return;
+}
 
   // ============================================================
   // CONFIRMAR FINALIZACIÓN
   // ============================================================
 
-  Swal.fire({
+  mostrarAlerta({
+  tono: 'azul',
+  icono: 'question',
+  iconoSvg: ICONOS.check,
+  titulo: '¿Finalizar registro?',
+  html: `<p class="m-0 text-[1.15rem] leading-snug text-slate-700">Toda la información del paciente está completa.</p>`,
+  confirmar: 'Sí, finalizar',
+  cancelar: 'Cancelar',
+  confirmarIzquierda: true
 
-    icon: 'question',
+}).then((resultado: any) => {
 
-    title: '¿Finalizar registro?',
+  if (!resultado.isConfirmed) {
+    return;
+  }
 
-    text:
-      'Toda la información del paciente está completa.',
+  alertaExito('¡Registro finalizado!', 'La información del paciente se registró correctamente.').then(() => {
 
-    showCancelButton: true,
-
-    confirmButtonText:
-      'Sí, finalizar',
-
-    cancelButtonText:
-      'Cancelar',
-
-    reverseButtons: true
-
-  }).then((resultado) => {
-
-    if (!resultado.isConfirmed) {
-      return;
-    }
-
-    // ============================================================
-    // REGISTRO FINALIZADO
-    // ============================================================
-
-    Swal.fire({
-
-      icon: 'success',
-
-      title: '¡Registro finalizado!',
-
-      text:
-        'La información del paciente se registró correctamente.',
-
-      timer: 2000,
-
-      showConfirmButton: false
-
-    }).then(() => {
-
-      // Ocultar la barra inferior.
-      this.mostrarBarraFinal = false;
-
-      // Actualizar la vista.
-      this.cdr.detectChanges();
-
-    });
+    this.mostrarBarraFinal = false;
+    this.cdr.detectChanges();
 
   });
 
-}
+});
+
+ }
 
 }
+
+
+
+
+

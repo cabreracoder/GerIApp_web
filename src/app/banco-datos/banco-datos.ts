@@ -53,6 +53,210 @@ interface Turno {
   descripcion: string;
 }
 
+// =====================================================
+// ALERTAS (SweetAlert2 + Tailwind)
+// =====================================================
+
+type Tono = 'rojo' | 'ambar' | 'azul' | 'verde';
+
+const TONOS: Record<Tono, { panel: string; boton: string }> = {
+  rojo: { panel: 'bg-linear-to-b from-red-500 to-red-700', boton: 'bg-red-600 hover:bg-red-700' },
+  ambar: { panel: 'bg-linear-to-b from-amber-500 to-amber-700', boton: 'bg-amber-600 hover:bg-amber-700' },
+  azul: { panel: 'bg-linear-to-b from-blue-500 to-blue-700', boton: 'bg-blue-600 hover:bg-blue-700' },
+  verde: { panel: 'bg-linear-to-b from-emerald-500 to-emerald-700', boton: 'bg-emerald-600 hover:bg-emerald-700' },
+};
+
+// Iconos blancos del panel (papelera, prohibido, lápiz, check, equis, alerta)
+const svgIcono = (trazos: string): string =>
+  `<svg class="h-11 w-11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${trazos}</svg>`;
+
+const ICONOS = {
+  papelera: svgIcono('<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/>'),
+  prohibido: svgIcono('<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/>'),
+  lapiz: svgIcono('<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>'),
+  check: svgIcono('<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>'),
+  equis: svgIcono('<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>'),
+  alerta: svgIcono('<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>'),
+};
+
+// Evita que un nombre del backend inyecte HTML
+function escaparHtml(texto: string): string {
+  return String(texto ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function inicialesAlerta(nombre: string): string {
+  const partes = nombre.trim().split(/\s+/).filter(Boolean);
+  if (partes.length === 0) return '?';
+  if (partes.length === 1) return partes[0].slice(0, 2).toUpperCase();
+  return (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
+}
+
+interface ConfigAlerta {
+  tono: Tono;
+  icono: 'warning' | 'question' | 'success' | 'error';
+  iconoSvg: string;
+  titulo: string;
+  html?: string;
+  confirmar: string;
+  cancelar?: string;
+  confirmarIzquierda?: boolean;   // true = "Sí, ..." a la izquierda (como en Editar)
+  enfocarCancelar?: boolean;
+  autoCerrar?: boolean;           // true = sin botones, se cierra a los 1,8 s
+}
+
+// Motor único: todas las alertas pasan por aquí.
+// Las clases con "!" ganan sobre el CSS que SweetAlert2 trae por defecto.
+function mostrarAlerta(c: ConfigAlerta) {
+
+  const tono = TONOS[c.tono];
+  const conBotones = !c.autoCerrar;
+  const conCancelar = !!c.cancelar;
+  const botonSolo = conBotones && !conCancelar;
+  const tituloSinPie = !conBotones && !c.html;
+
+  return Swal.fire({
+    icon: c.icono,
+    iconHtml: c.iconoSvg,
+    title: escaparHtml(c.titulo),
+    html: c.html,
+
+    showConfirmButton: conBotones,
+    showCancelButton: conCancelar,
+    confirmButtonText: c.confirmar,
+    cancelButtonText: c.cancelar,
+    reverseButtons: !c.confirmarIzquierda,
+    focusCancel: !!c.enfocarCancelar,
+    timer: c.autoCerrar ? 1800 : undefined,
+
+    buttonsStyling: false,
+    backdrop: 'rgba(15, 23, 42, 0.65)',
+
+    customClass: {
+      popup: '!grid-cols-[26%_1fr] !w-[34rem] !max-w-[92vw] !p-0 !rounded-[2.2rem] !overflow-hidden !bg-white',
+      icon: `col-start-1 row-start-1 row-span-3 !m-0 !flex !h-auto !w-auto !items-center !justify-center !rounded-none !border-0 !animate-none ${tono.panel}`,
+      title: `col-start-2 row-start-1 !m-0 !px-7 !pt-8 ${tituloSinPie ? '!pb-8' : '!pb-0'} !text-left !text-[1.6rem] !leading-tight !font-extrabold !text-slate-900`,
+      htmlContainer: `col-start-2 row-start-2 !m-0 !px-7 !pt-0 ${conBotones ? '!pb-0' : '!pb-8'} !justify-start !overflow-visible !text-left !text-base !font-normal`,
+      actions: `col-start-2 row-start-3 !m-0 !w-auto !flex-nowrap !gap-3 !px-7 !pt-6 !pb-8 ${botonSolo ? '!justify-end' : '!justify-stretch'}`,
+      confirmButton: `${botonSolo ? 'w-[calc(50%-0.375rem)]' : 'flex-1'} cursor-pointer rounded-2xl px-4 py-3 text-[1.1rem] font-bold text-white transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-slate-300 ${tono.boton}`,
+      cancelButton: 'flex-1 cursor-pointer rounded-2xl bg-slate-100 px-4 py-3 text-[1.1rem] font-bold text-slate-600 transition-colors hover:bg-slate-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-slate-300',
+    },
+  });
+}
+
+// ---- Confirmaciones: subtítulo gris + avatar con iniciales + pregunta ----
+
+function alertaConfirmar(c: {
+  tono: Tono;
+  icono: 'warning' | 'question';
+  iconoSvg: string;
+  verbo: string;
+  entidad: string;
+  nombre: string;
+  subtitulo: string;
+  confirmar: string;
+  confirmarIzquierda?: boolean;
+  enfocarCancelar?: boolean;
+}) {
+
+  const html = `
+    <p class="m-0 text-[1.1rem] leading-snug text-slate-400">${escaparHtml(c.subtitulo)}</p>
+    <div class="mt-4 flex items-center gap-3.5">
+      <span class="flex h-[2.4rem] w-[2.4rem] shrink-0 items-center justify-center rounded-xl bg-slate-100 text-sm font-bold text-slate-600">${escaparHtml(inicialesAlerta(c.nombre))}</span>
+      <p class="m-0 text-[1.15rem] leading-snug text-slate-700">¿${c.verbo} a <strong class="font-bold">${escaparHtml(c.nombre)}</strong>?</p>
+    </div>
+  `;
+
+  return mostrarAlerta({
+    tono: c.tono,
+    icono: c.icono,
+    iconoSvg: c.iconoSvg,
+    titulo: `${c.verbo} ${c.entidad}`,
+    html,
+    confirmar: c.confirmar,
+    cancelar: 'Cancelar',
+    confirmarIzquierda: c.confirmarIzquierda,
+    enfocarCancelar: c.enfocarCancelar,
+  });
+}
+
+// Imagen 1: rojo
+function alertaEliminar(nombre: string, entidad = 'encargado') {
+  return alertaConfirmar({
+    tono: 'rojo', icono: 'warning', iconoSvg: ICONOS.papelera,
+    verbo: 'Eliminar', entidad, nombre,
+    subtitulo: 'Acción permanente · no se puede deshacer',
+    confirmar: 'Sí, eliminar',
+    enfocarCancelar: true,
+  });
+}
+
+// Imagen 2: ámbar
+function alertaDesactivar(nombre: string, entidad = 'encargado') {
+  return alertaConfirmar({
+    tono: 'ambar', icono: 'warning', iconoSvg: ICONOS.prohibido,
+    verbo: 'Desactivar', entidad, nombre,
+    subtitulo: 'Cambio reversible · puedes reactivarlo luego',
+    confirmar: 'Sí, desactivar',
+  });
+}
+
+// Imagen 3: azul ("Sí, editar" va a la izquierda)
+function alertaEditar(nombre: string, entidad = 'encargado') {
+  return alertaConfirmar({
+    tono: 'azul', icono: 'question', iconoSvg: ICONOS.lapiz,
+    verbo: 'Editar', entidad, nombre,
+    subtitulo: 'Se abrirá el formulario de edición',
+    confirmar: 'Sí, editar',
+    confirmarIzquierda: true,
+  });
+}
+
+// Misma forma que Editar, en verde
+function alertaActivar(nombre: string, entidad = 'encargado') {
+  return alertaConfirmar({
+    tono: 'verde', icono: 'question', iconoSvg: ICONOS.check,
+    verbo: 'Activar', entidad, nombre,
+    subtitulo: 'Volverá a estar activo · puedes desactivarlo luego',
+    confirmar: 'Sí, activar',
+    confirmarIzquierda: true,
+  });
+}
+
+// ---- Avisos: mismo panel, título y texto; un solo botón a la derecha ----
+
+function htmlMensaje(mensaje?: string): string | undefined {
+  return mensaje
+    ? `<p class="m-0 text-[1.15rem] leading-snug text-slate-700">${escaparHtml(mensaje)}</p>`
+    : undefined;
+}
+
+// Se cierra solo a los 1,8 s (sin botones)
+function alertaExito(titulo: string, mensaje?: string) {
+  return mostrarAlerta({
+    tono: 'verde', icono: 'success', iconoSvg: ICONOS.check,
+    titulo, html: htmlMensaje(mensaje), confirmar: 'Aceptar', autoCerrar: true,
+  });
+}
+
+// Siempre lleva botón, para que no se pierda
+function alertaError(titulo: string, mensaje?: string) {
+  return mostrarAlerta({
+    tono: 'rojo', icono: 'error', iconoSvg: ICONOS.equis,
+    titulo, html: htmlMensaje(mensaje), confirmar: 'Aceptar',
+  });
+}
+
+function alertaAdvertencia(titulo: string, mensaje?: string) {
+  return mostrarAlerta({
+    tono: 'ambar', icono: 'warning', iconoSvg: ICONOS.alerta,
+    titulo, html: htmlMensaje(mensaje), confirmar: 'Aceptar',
+  });
+}
+
 @Component({
   selector: 'app-banco-datos',
   standalone: true,
@@ -141,6 +345,7 @@ export class BancoDatos implements OnInit {
   };
 
   medicamentoEditando: number | null = null;
+  private medicamentoOriginal: Medicamento | null = null;
 
   mostrandoFormulario = false;
   modoEdicion = false;
@@ -158,6 +363,7 @@ export class BancoDatos implements OnInit {
   };
 
   tipoInsumoEditando: number | null = null;
+  private tipoInsumoOriginal: TipoInsumo | null = null;
 
   mostrandoFormularioTipoInsumo = false;
   modoEdicionTipoInsumo = false;
@@ -177,6 +383,7 @@ export class BancoDatos implements OnInit {
   };
 
   insumoEditando: number | null = null;
+  private insumoOriginal: Insumo | null = null;
 
   mostrandoFormularioInsumo = false;
   modoEdicionInsumo = false;
@@ -196,6 +403,7 @@ export class BancoDatos implements OnInit {
   };
 
   turnoEditando: number | null = null;
+  private turnoOriginal: Turno | null = null;
 
   mostrandoFormularioTurno = false;
   modoEdicionTurno = false;
@@ -336,12 +544,7 @@ export class BancoDatos implements OnInit {
   crearTabla(): void {
 
     if (!this.tablaNueva.nombre.trim()) {
-      Swal.fire({
-        title: 'Campo obligatorio',
-        text: 'Debe ingresar el nombre de la tabla.',
-        icon: 'warning',
-        confirmButtonColor: '#3B5BDB'
-      });
+      alertaAdvertencia('Campo obligatorio', 'Debe ingresar el nombre de la tabla.');
 
       return;
     }
@@ -367,12 +570,7 @@ export class BancoDatos implements OnInit {
     this.mostrandoFormularioTabla = false;
 
 
-    Swal.fire({
-      title: 'Tabla creada',
-      text: `La tabla ${this.tablaNueva.nombre} fue creada correctamente.`,
-      icon: 'success',
-      confirmButtonColor: '#3B5BDB'
-    });
+    alertaExito('Tabla creada', `La tabla ${this.tablaNueva.nombre} fue creada correctamente.`);
 
   }
   agregarCampoTabla(): void {
@@ -469,6 +667,23 @@ export class BancoDatos implements OnInit {
       return;
     }
 
+        if (!this.validarMedicamento()) {
+      return;
+    }
+
+    if (
+      this.medicamentoEditando !== null &&
+      this.medicamentoOriginal &&
+      !this.huboCambios(this.medicamentoOriginal, this.medicamentoForm, [
+        'nombre', 'descripcion', 'principio_activo', 'concentracion', 'presentacion', 'estado', 'unidad_medida'
+      ])
+    ) {
+      alertaAdvertencia('Sin cambios', 'No modificaste ningún campo del medicamento.');
+      return;
+    }
+
+    this.cargando = true;
+
     this.cargando = true;
 
     // Solo enviamos los campos que existen en la tabla medicamentos
@@ -492,12 +707,7 @@ export class BancoDatos implements OnInit {
         next: () => {
           this.cargando = false;
 
-          Swal.fire({
-            title: 'Actualizado',
-            text: 'Medicamento actualizado correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
+         alertaExito('Medicamento actualizado', 'Medicamento actualizado correctamente.');
 
           this.limpiarFormularioMedicamento();
           this.mostrandoFormulario = false;
@@ -511,15 +721,7 @@ export class BancoDatos implements OnInit {
 
           console.error('ERROR AL ACTUALIZAR MEDICAMENTO:', error);
 
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(
-              error,
-              'No se pudo actualizar el medicamento.'
-            ),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
+          alertaError('Error al actualizar', this.obtenerMensajeError(error, 'No se pudo actualizar el medicamento.'));
         }
       });
 
@@ -533,12 +735,7 @@ export class BancoDatos implements OnInit {
         next: () => {
           this.cargando = false;
 
-          Swal.fire({
-            title: 'Creado',
-            text: 'Medicamento creado correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
+          alertaExito('Medicamento creado', 'Medicamento creado correctamente.');
 
           this.limpiarFormularioMedicamento();
           this.mostrandoFormulario = false;
@@ -553,15 +750,7 @@ export class BancoDatos implements OnInit {
           console.error('ERROR AL CREAR MEDICAMENTO:', error);
           console.error('RESPUESTA DEL SERVIDOR:', error.error);
 
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(
-              error,
-              'No se pudo crear el medicamento.'
-            ),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
+          alertaError('Error al crear', this.obtenerMensajeError(error, 'No se pudo crear el medicamento.'));
         }
       });
     }
@@ -587,6 +776,8 @@ export class BancoDatos implements OnInit {
       unidad_medida: medicamento.unidad_medida
     };
 
+    this.medicamentoOriginal = { ...medicamento }; 
+
     this.limpiarMensajes();
 
     this.modoEdicion = true;
@@ -599,57 +790,36 @@ export class BancoDatos implements OnInit {
 
   eliminarMedicamento(medicamento: Medicamento): void {
 
-    const id = medicamento.id_medicamentos;
+  const id = medicamento.id_medicamentos;
 
-    if (!id) {
+  if (!id) {
+    return;
+  }
+
+  alertaEliminar(medicamento.nombre, 'medicamento').then((resultado) => {
+
+    if (!resultado.isConfirmed) {
       return;
     }
 
-    Swal.fire({
-      title: 'Eliminar medicamento',
-      text: '¿Está seguro de eliminar este medicamento?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#3B5BDB'
-    }).then((resultado) => {
+    this.cargando = true;
 
-      if (!resultado.isConfirmed) {
-        return;
+    this.http.delete(
+      `https://geriapp-backend.onrender.com/api/medicamentos/${id}/`
+    ).subscribe({
+
+      next: () => {
+        alertaExito('Medicamento eliminado');
+        this.cargarMedicamentos();
+      },
+
+      error: (error) => {
+        this.cargando = false;
+        alertaError('Error al eliminar', this.obtenerMensajeError(error, 'No se pudo eliminar el medicamento.'));
       }
-
-      this.cargando = true;
-
-      this.http.delete(
-        `https://geriapp-backend.onrender.com/api/medicamentos/${id}/`
-      ).subscribe({
-
-        next: () => {
-          Swal.fire({
-            title: 'Eliminado',
-            text: 'Medicamento eliminado correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
-
-          this.cargarMedicamentos();
-        },
-
-        error: (error) => {
-          this.cargando = false;
-
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(error, 'No se pudo eliminar el medicamento.'),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
-        }
-      });
     });
-  }
-
+  });
+}
   // =========================================================
   // MEDICAMENTOS - LIMPIAR
   // =========================================================
@@ -676,27 +846,15 @@ export class BancoDatos implements OnInit {
 
   validarMedicamento(): boolean {
 
-    if (!this.medicamentoForm.nombre.trim()) {
-      Swal.fire({
-        title: 'Campo obligatorio',
-        text: 'El nombre del medicamento es obligatorio.',
-        icon: 'warning',
-        confirmButtonColor: '#3B5BDB'
-      });
+if (!this.medicamentoForm.nombre.trim()) {
+  alertaAdvertencia('Campo obligatorio', 'El nombre del medicamento es obligatorio.');
+  return false;
+}
 
-      return false;
-    }
-
-    if (!this.medicamentoForm.principio_activo.trim()) {
-      Swal.fire({
-        title: 'Campo obligatorio',
-        text: 'El principio activo es obligatorio.',
-        icon: 'warning',
-        confirmButtonColor: '#3B5BDB'
-      });
-
-      return false;
-    }
+if (!this.medicamentoForm.principio_activo.trim()) {
+  alertaAdvertencia('Campo obligatorio', 'El principio activo es obligatorio.');
+  return false;
+}
 
     return true;
   }
@@ -773,15 +931,26 @@ export class BancoDatos implements OnInit {
 
     if (!this.tipoInsumoForm.nombre.trim()) {
 
-      Swal.fire({
-        title: 'Campo obligatorio',
-        text: 'El nombre del tipo de insumo es obligatorio.',
-        icon: 'warning',
-        confirmButtonColor: '#3B5BDB'
-      });
-
+      alertaAdvertencia('Campo obligatorio', 'El nombre del tipo de insumo es obligatorio.');
       return;
     }
+
+        if (!this.tipoInsumoForm.nombre.trim()) {
+
+      alertaAdvertencia('Campo obligatorio', 'El nombre del tipo de insumo es obligatorio.');
+      return;
+    }
+
+    if (
+      this.tipoInsumoEditando !== null &&
+      this.tipoInsumoOriginal &&
+      !this.huboCambios(this.tipoInsumoOriginal, this.tipoInsumoForm, ['nombre', 'descripcion', 'estado'])
+    ) {
+      alertaAdvertencia('Sin cambios', 'No modificaste ningún campo del tipo de insumo.');
+      return;
+    }
+
+    this.cargando = true;
 
     this.cargando = true;
 
@@ -794,12 +963,7 @@ export class BancoDatos implements OnInit {
 
         next: () => {
 
-          Swal.fire({
-            title: 'Actualizado',
-            text: 'Tipo de insumo actualizado correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
+          alertaExito('Tipo de insumo actualizado', 'Tipo de insumo actualizado correctamente.');
 
           this.limpiarFormularioTipoInsumo();
 
@@ -813,12 +977,7 @@ export class BancoDatos implements OnInit {
 
           this.cargando = false;
 
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(error, 'No se pudo actualizar el tipo de insumo.'),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
+          alertaError('Error al actualizar', this.obtenerMensajeError(error, 'No se pudo actualizar el tipo de insumo.'));
         }
       });
 
@@ -831,12 +990,8 @@ export class BancoDatos implements OnInit {
 
         next: () => {
 
-          Swal.fire({
-            title: 'Creado',
-            text: 'Tipo de insumo creado correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
+          alertaExito('Tipo de insumo creado', 'Tipo de insumo creado correctamente.');
+
 
           this.limpiarFormularioTipoInsumo();
 
@@ -850,12 +1005,7 @@ export class BancoDatos implements OnInit {
 
           this.cargando = false;
 
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(error, 'No se pudo crear el tipo de insumo.'),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
+          alertaError('Error al crear', this.obtenerMensajeError(error, 'No se pudo crear el tipo de insumo.'));
         }
       });
     }
@@ -877,6 +1027,8 @@ export class BancoDatos implements OnInit {
       estado: tipo.estado
     };
 
+    this.tipoInsumoOriginal = { ...tipo };
+
     this.limpiarMensajes();
 
     this.modoEdicionTipoInsumo = true;
@@ -887,60 +1039,38 @@ export class BancoDatos implements OnInit {
   // TIPOS DE INSUMO - ELIMINAR
   // =========================================================
 
-  eliminarTipoInsumo(tipo: TipoInsumo): void {
+eliminarTipoInsumo(tipo: TipoInsumo): void {
 
-    const id = tipo.id_tipo_insumo;
+  const id = tipo.id_tipo_insumo;
 
-    if (!id) {
+  if (!id) {
+    return;
+  }
+
+  alertaEliminar(tipo.nombre, 'tipo de insumo').then((resultado) => {
+
+    if (!resultado.isConfirmed) {
       return;
     }
 
-    Swal.fire({
-      title: 'Eliminar tipo de insumo',
-      text: '¿Está seguro de eliminar este tipo de insumo?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#3B5BDB'
-    }).then((resultado) => {
+    this.cargando = true;
 
-      if (!resultado.isConfirmed) {
-        return;
+    this.http.delete(
+      `https://geriapp-backend.onrender.com/api/tipo_insumo/${id}/`
+    ).subscribe({
+
+      next: () => {
+        alertaExito('Tipo de insumo eliminado');
+        this.cargarTiposInsumo();
+      },
+
+      error: (error) => {
+        this.cargando = false;
+        alertaError('Error al eliminar', this.obtenerMensajeError(error, 'No se pudo eliminar el tipo de insumo.'));
       }
-
-      this.cargando = true;
-
-      this.http.delete(
-        `https://geriapp-backend.onrender.com/api/tipo_insumo/${id}/`
-      ).subscribe({
-
-        next: () => {
-
-          Swal.fire({
-            title: 'Eliminado',
-            text: 'Tipo de insumo eliminado correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
-
-          this.cargarTiposInsumo();
-        },
-
-        error: (error) => {
-
-          this.cargando = false;
-
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(error, 'No se pudo eliminar el tipo de insumo.'),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
-        }
-      });
     });
-  }
+  });
+}
 
   cancelarEdicionTipoInsumo(): void {
     this.cerrarFormularioTipoInsumo();
@@ -1029,27 +1159,37 @@ export class BancoDatos implements OnInit {
 
     if (!this.insumoForm.nombre.trim()) {
 
-      Swal.fire({
-        title: 'Campo obligatorio',
-        text: 'El nombre del insumo es obligatorio.',
-        icon: 'warning',
-        confirmButtonColor: '#3B5BDB'
-      });
+     alertaAdvertencia('Campo obligatorio', 'El nombre del insumo es obligatorio.');
 
       return;
     }
 
     if (!this.insumoForm.id_tipo_insumo) {
 
-      Swal.fire({
-        title: 'Campo obligatorio',
-        text: 'Debe seleccionar un tipo de insumo.',
-        icon: 'warning',
-        confirmButtonColor: '#3B5BDB'
-      });
+      alertaAdvertencia('Campo obligatorio', 'Debe seleccionar un tipo de insumo.');
 
       return;
     }
+
+        if (!this.insumoForm.id_tipo_insumo) {
+
+      alertaAdvertencia('Campo obligatorio', 'Debe seleccionar un tipo de insumo.');
+
+      return;
+    }
+
+    if (
+      this.insumoEditando !== null &&
+      this.insumoOriginal &&
+      !this.huboCambios(this.insumoOriginal, this.insumoForm, [
+        'nombre', 'descripcion', 'unidad_medida', 'estado', 'id_tipo_insumo'
+      ])
+    ) {
+      alertaAdvertencia('Sin cambios', 'No modificaste ningún campo del insumo.');
+      return;
+    }
+
+    this.cargando = true;
 
     this.cargando = true;
 
@@ -1062,12 +1202,8 @@ export class BancoDatos implements OnInit {
 
         next: () => {
 
-          Swal.fire({
-            title: 'Actualizado',
-            text: 'Insumo actualizado correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
+          alertaExito('Insumo actualizado', 'El insumo se ha actualizado correctamente.');
+
 
           this.limpiarFormularioInsumo();
 
@@ -1081,12 +1217,7 @@ export class BancoDatos implements OnInit {
 
           this.cargando = false;
 
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(error, 'No se pudo actualizar el insumo.'),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
+          alertaError('Error al actualizar', this.obtenerMensajeError(error, 'No se pudo actualizar el insumo.'));
         }
       });
 
@@ -1099,12 +1230,7 @@ export class BancoDatos implements OnInit {
 
         next: () => {
 
-          Swal.fire({
-            title: 'Creado',
-            text: 'Insumo creado correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
+          alertaExito('Insumo creado', 'El insumo se ha creado correctamente.');
 
           this.limpiarFormularioInsumo();
 
@@ -1118,12 +1244,7 @@ export class BancoDatos implements OnInit {
 
           this.cargando = false;
 
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(error, 'No se pudo crear el insumo.'),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
+          alertaError('Error al crear', this.obtenerMensajeError(error, 'No se pudo crear el insumo.'));
         }
       });
     }
@@ -1146,6 +1267,8 @@ export class BancoDatos implements OnInit {
       unidad_medida: insumo.unidad_medida,
       estado: insumo.estado
     };
+    
+    this.insumoOriginal = { ...insumo };
 
     this.limpiarMensajes();
 
@@ -1157,60 +1280,38 @@ export class BancoDatos implements OnInit {
   // INSUMOS - ELIMINAR
   // =========================================================
 
-  eliminarInsumo(insumo: Insumo): void {
+eliminarInsumo(insumo: Insumo): void {
 
-    const id = insumo.id_insumo;
+  const id = insumo.id_insumo;
 
-    if (!id) {
+  if (!id) {
+    return;
+  }
+
+  alertaEliminar(insumo.nombre, 'insumo').then((resultado) => {
+
+    if (!resultado.isConfirmed) {
       return;
     }
 
-    Swal.fire({
-      title: 'Eliminar insumo',
-      text: '¿Está seguro de eliminar este insumo?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#3B5BDB'
-    }).then((resultado) => {
+    this.cargando = true;
 
-      if (!resultado.isConfirmed) {
-        return;
+    this.http.delete(
+      `https://geriapp-backend.onrender.com/api/insumos/${id}/`
+    ).subscribe({
+
+      next: () => {
+        alertaExito('Insumo eliminado');
+        this.cargarInsumos();
+      },
+
+      error: (error) => {
+        this.cargando = false;
+        alertaError('Error al eliminar', this.obtenerMensajeError(error, 'No se pudo eliminar el insumo.'));
       }
-
-      this.cargando = true;
-
-      this.http.delete(
-        `https://geriapp-backend.onrender.com/api/insumos/${id}/`
-      ).subscribe({
-
-        next: () => {
-
-          Swal.fire({
-            title: 'Eliminado',
-            text: 'Insumo eliminado correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
-
-          this.cargarInsumos();
-        },
-
-        error: (error) => {
-
-          this.cargando = false;
-
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(error, 'No se pudo eliminar el insumo.'),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
-        }
-      });
     });
-  }
+  });
+}
 
   cancelarEdicionInsumo(): void {
     this.cerrarFormularioInsumo();
@@ -1317,35 +1418,32 @@ export class BancoDatos implements OnInit {
   // TURNOS - GUARDAR
   // =========================================================
 
-  guardarTurno(): void {
+ guardarTurno(): void {
 
-    this.limpiarMensajes();
+  this.limpiarMensajes();
 
-    if (!this.turnoForm.nombre.trim()) {
+  if (!this.turnoForm.nombre.trim()) {
+    alertaAdvertencia('Campo obligatorio', 'El nombre del turno es obligatorio.');
+    return;
+  }
 
-      Swal.fire({
-        title: 'Campo obligatorio',
-        text: 'El nombre del turno es obligatorio.',
-        icon: 'warning',
-        confirmButtonColor: '#3B5BDB'
-      });
+  if (!this.turnoForm.hora_inicio) {
+    alertaAdvertencia('Campo obligatorio', 'La hora de inicio es obligatoria.');
+    return;
+  }
 
-      return;
-    }
+  if (
+    this.turnoEditando !== null &&
+    this.turnoOriginal &&
+    !this.huboCambios(this.turnoOriginal, this.turnoForm, [
+      'nombre', 'descripcion', 'hora_inicio', 'hora_fin', 'estado'
+    ])
+  ) {
+    alertaAdvertencia('Sin cambios', 'No modificaste ningún campo del turno.');
+    return;
+  }
 
-    if (!this.turnoForm.hora_inicio) {
-
-      Swal.fire({
-        title: 'Campo obligatorio',
-        text: 'La hora de inicio es obligatoria.',
-        icon: 'warning',
-        confirmButtonColor: '#3B5BDB'
-      });
-
-      return;
-    }
-
-    this.cargando = true;
+  this.cargando = true;
 
     if (this.turnoEditando !== null) {
 
@@ -1356,12 +1454,7 @@ export class BancoDatos implements OnInit {
 
         next: () => {
 
-          Swal.fire({
-            title: 'Actualizado',
-            text: 'Turno actualizado correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
+          alertaExito('Turno actualizado', 'turno actualizado correctamente.');
 
           this.limpiarFormularioTurno();
 
@@ -1375,12 +1468,7 @@ export class BancoDatos implements OnInit {
 
           this.cargando = false;
 
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(error, 'No se pudo actualizar el turno.'),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
+          alertaError('Error al actualizar', this.obtenerMensajeError(error, 'No se pudo actualizar el turno.'));
         }
       });
 
@@ -1393,12 +1481,7 @@ export class BancoDatos implements OnInit {
 
         next: () => {
 
-          Swal.fire({
-            title: 'Creado',
-            text: 'Turno creado correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
+          alertaExito('Turno creado', 'Turno creado correctamente.');
 
           this.limpiarFormularioTurno();
 
@@ -1412,12 +1495,7 @@ export class BancoDatos implements OnInit {
 
           this.cargando = false;
 
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(error, 'No se pudo crear el turno.'),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
+         alertaError('Error al crear', this.obtenerMensajeError(error, 'No se pudo crear el turno.'));
         }
       });
     }
@@ -1441,6 +1519,8 @@ export class BancoDatos implements OnInit {
       descripcion: turno.descripcion
     };
 
+    this.turnoOriginal = { ...turno };
+
     this.limpiarMensajes();
 
     this.modoEdicionTurno = true;
@@ -1453,59 +1533,36 @@ export class BancoDatos implements OnInit {
 
   eliminarTurno(turno: Turno): void {
 
-    const id = turno.id_turno;
+  const id = turno.id_turno;
 
-    if (!id) {
+  if (!id) {
+    return;
+  }
+
+  alertaEliminar(turno.nombre, 'turno').then((resultado) => {
+
+    if (!resultado.isConfirmed) {
       return;
     }
 
-    Swal.fire({
-      title: 'Eliminar turno',
-      text: '¿Está seguro de eliminar este turno?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#3B5BDB'
-    }).then((resultado) => {
+    this.cargando = true;
 
-      if (!resultado.isConfirmed) {
-        return;
+    this.http.delete(
+      `https://geriapp-backend.onrender.com/api/turnos/${id}/`
+    ).subscribe({
+
+      next: () => {
+        alertaExito('Turno eliminado');
+        this.cargarTurnos();
+      },
+
+      error: (error) => {
+        this.cargando = false;
+        alertaError('Error al eliminar', this.obtenerMensajeError(error, 'No se pudo eliminar el turno.'));
       }
-
-      this.cargando = true;
-
-      this.http.delete(
-        `https://geriapp-backend.onrender.com/api/turnos/${id}/`
-      ).subscribe({
-
-        next: () => {
-
-          Swal.fire({
-            title: 'Eliminado',
-            text: 'Turno eliminado correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
-
-          this.cargarTurnos();
-        },
-
-        error: (error) => {
-
-          this.cargando = false;
-
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(error, 'No se pudo eliminar el turno.'),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
-        }
-      });
     });
-  }
-
+  });
+}
   cancelarEdicionTurno(): void {
     this.cerrarFormularioTurno();
   }
@@ -1607,4 +1664,7 @@ export class BancoDatos implements OnInit {
 
     return mensajePorDefecto;
   }
+  private huboCambios(original: any, nuevo: any, campos: string[]): boolean {
+  return campos.some(campo => (original?.[campo] ?? '') !== (nuevo?.[campo] ?? ''));
+}
 }
