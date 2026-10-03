@@ -1096,11 +1096,32 @@
           Baño del paciente
         </label>
 
-        <textarea
-          id="banoPaciente"
-          [(ngModel)]="cuidados.bano_paciente"
-          rows="3"
-          placeholder="Describa las indicaciones o cuidados relacionados con el baño del paciente..."></textarea>
+           <select
+            id="banoPaciente"
+            [(ngModel)]="cuidados.bano_paciente">
+
+            <option value="">
+              Seleccione una opción
+            </option>
+
+            <option value="Baño en cama">
+              Baño en cama
+            </option>
+
+            <option value="Baño en ducha">
+              Baño en ducha
+            </option>
+
+            <option value="Baño asistido">
+              Baño asistido
+            </option>
+
+            <option value="No requiere">
+              No requiere
+            </option>
+
+          </select>
+
       </div>
 
 
@@ -1109,11 +1130,32 @@
           Peso y talla
         </label>
 
-        <textarea
-          id="pesoTalla"
-          [(ngModel)]="cuidados.peso_talla"
-          rows="3"
-          placeholder="Registre el control de peso, talla u observaciones relacionadas..."></textarea>
+        <select
+            id="pesoTalla"
+            [(ngModel)]="cuidados.peso_talla">
+
+            <option value="">
+              Seleccione una opción
+            </option>
+
+            <option value="Mensual">
+              Mensual
+            </option>
+
+            <option value="Quincenal">
+              Quincenal
+            </option>
+
+            <option value="Semanal">
+              Semanal
+            </option>
+
+            <option value="No aplica">
+              No aplica
+            </option>
+
+          </select>
+
       </div>
 
 
@@ -1122,11 +1164,28 @@
           Control de glucemia
         </label>
 
-        <textarea
+       <select
           id="controlGlucemia"
-          [(ngModel)]="cuidados.control_glucemia"
-          rows="3"
-          placeholder="Registre valores, horarios o indicaciones para el control de glucemia..."></textarea>
+          [(ngModel)]="cuidados.control_glucemia">
+
+          <option value="">
+            Seleccione una opción
+          </option>
+
+          <option value="Diario">
+            Diario
+          </option>
+
+          <option value="Según necesidad">
+            Según necesidad
+          </option>
+
+          <option value="No aplica">
+            No aplica
+          </option>
+
+        </select>
+
       </div>
 
 
@@ -1135,11 +1194,28 @@
           Curaciones
         </label>
 
-        <textarea
-          id="curaciones"
-          [(ngModel)]="cuidados.curaciones"
-          rows="3"
-          placeholder="Describa las curaciones, procedimientos o indicaciones..."></textarea>
+        <select
+            id="curaciones"
+            [(ngModel)]="cuidados.curaciones">
+
+            <option value="">
+              Seleccione una opción
+            </option>
+
+            <option value="Sí">
+              Sí
+            </option>
+
+            <option value="No">
+              No
+            </option>
+
+            <option value="No aplica">
+              No aplica
+            </option>
+
+          </select>
+
       </div>
 
 
@@ -1161,11 +1237,32 @@
           Control de deposición
         </label>
 
-        <textarea
-          id="controlDeposicion"
-          [(ngModel)]="cuidados.control_deposicion"
-          rows="3"
-          placeholder="Registre frecuencia, características u observaciones de la deposición..."></textarea>
+        <select
+              id="controlDeposicion"
+              [(ngModel)]="cuidados.control_deposicion">
+
+              <option value="">
+                Seleccione una opción
+              </option>
+
+              <option value="Mañana">
+                Mañana
+              </option>
+
+              <option value="Tarde">
+                Tarde
+              </option>
+
+              <option value="Noche">
+                Noche
+              </option>
+
+              <option value="No aplica">
+                No aplica
+              </option>
+
+        </select>
+
       </div>
 
 
@@ -1174,11 +1271,32 @@
           Administración de medicamentos
         </label>
 
-        <textarea
-          id="administracionMedicamentos"
-          [(ngModel)]="cuidados.administracion_medicamentos"
-          rows="3"
-          placeholder="Registre las indicaciones relacionadas con la administración de medicamentos..."></textarea>
+        <select
+              id="administracionMedicamentos"
+              [(ngModel)]="cuidados.administracion_medicamentos">
+
+              <option value="">
+                Seleccione una opción
+              </option>
+
+              <option value="Mañana">
+                Mañana
+              </option>
+
+              <option value="Tarde">
+                Tarde
+              </option>
+
+              <option value="Noche">
+                Noche
+              </option>
+
+              <option value="No toma">
+                No toma
+              </option>
+
+        </select>
+
       </div>
 
     </div>
