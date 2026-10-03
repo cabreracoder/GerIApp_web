@@ -410,15 +410,14 @@ export class BancoDatos implements OnInit {
   modoEdicionHabitacion = false;
 
   habitacionEditando: number | null = null;
+  private habitacionOriginal: Habitacion | null = null;
 
 
   habitacionForm: Habitacion = {
-
     nombre: '',
     numero: '',
     descripcion: '',
     estado: true
-
   };
   // =========================================================
   // CAMAS
@@ -429,7 +428,7 @@ export class BancoDatos implements OnInit {
   mostrandoFormularioCama = false;
   modoEdicionCama = false;
   camaEditando: number | null = null;
-
+  private camaOriginal: Cama | null = null;
   camaForm: Cama = {
     nombre: '',
     numero: '',
@@ -1542,30 +1541,40 @@ export class BancoDatos implements OnInit {
 
     if (!this.habitacionForm.nombre.trim()) {
 
-      Swal.fire({
-        title: 'Campo obligatorio',
-        text: 'El nombre de la habitación es obligatorio.',
-        icon: 'warning',
-        confirmButtonColor: '#3B5BDB'
-      });
+      alertaAdvertencia(
+        'Campo obligatorio',
+        'El nombre de la habitación es obligatorio.'
+      );
 
       return;
     }
 
     if (!this.habitacionForm.numero.trim()) {
 
-      Swal.fire({
-        title: 'Campo obligatorio',
-        text: 'El número de la habitación es obligatorio.',
-        icon: 'warning',
-        confirmButtonColor: '#3B5BDB'
-      });
+      alertaAdvertencia(
+        'Campo obligatorio',
+        'El número de la habitación es obligatorio.'
+      );
 
       return;
     }
-
+    if (
+      this.habitacionEditando !== null &&
+      this.habitacionOriginal &&
+      !this.huboCambios(this.habitacionOriginal, this.habitacionForm, [
+        'nombre',
+        'numero',
+        'descripcion',
+        'estado'
+      ])
+    ) {
+      alertaAdvertencia(
+        'Sin cambios',
+        'No modificaste ningún campo de la habitación.'
+      );
+      return;
+    }
     this.cargando = true;
-
     const datosHabitacion = {
       nombre: this.habitacionForm.nombre,
       numero: this.habitacionForm.numero,
@@ -1588,12 +1597,10 @@ export class BancoDatos implements OnInit {
 
           this.cargando = false;
 
-          Swal.fire({
-            title: 'Actualizada',
-            text: 'Habitación actualizada correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
+          alertaExito(
+            'Habitación actualizada',
+            'Habitación actualizada correctamente.'
+          );
 
           this.limpiarFormularioHabitacion();
 
@@ -1611,15 +1618,13 @@ export class BancoDatos implements OnInit {
             error
           );
 
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(
+          alertaError(
+            'Error al actualizar',
+            this.obtenerMensajeError(
               error,
               'No se pudo actualizar la habitación.'
-            ),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
+            )
+          );
         }
 
       });
@@ -1642,12 +1647,10 @@ export class BancoDatos implements OnInit {
 
           this.cargando = false;
 
-          Swal.fire({
-            title: 'Creada',
-            text: 'Habitación registrada correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
+          alertaExito(
+            'Habitación creada',
+            'Habitación registrada correctamente.'
+          );
 
           this.limpiarFormularioHabitacion();
 
@@ -1665,15 +1668,13 @@ export class BancoDatos implements OnInit {
             error
           );
 
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(
+          alertaError(
+            'Error al crear',
+            this.obtenerMensajeError(
               error,
               'No se pudo crear la habitación.'
-            ),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
+            )
+          );
         }
 
       });
@@ -1686,37 +1687,46 @@ export class BancoDatos implements OnInit {
 
     if (!this.camaForm.nombre.trim()) {
 
-      Swal.fire({
-        title: 'Campo obligatorio',
-        text: 'El nombre de la cama es obligatorio.',
-        icon: 'warning',
-        confirmButtonColor: '#3B5BDB'
-      });
+      alertaAdvertencia(
+        'Campo obligatorio',
+        'El nombre de la cama es obligatorio.'
+      );
 
       return;
     }
 
     if (!this.camaForm.numero.trim()) {
 
-      Swal.fire({
-        title: 'Campo obligatorio',
-        text: 'El número de la cama es obligatorio.',
-        icon: 'warning',
-        confirmButtonColor: '#3B5BDB'
-      });
+      alertaAdvertencia(
+        'Campo obligatorio',
+        'El número de la cama es obligatorio.'
+      );
+      return;
+    }
+    if (this.camaForm.id_habitacion === null) {
+
+      alertaAdvertencia(
+        'Campo obligatorio',
+        'Debe seleccionar una habitación.'
+      );
 
       return;
     }
 
-    if (this.camaForm.id_habitacion === null) {
-
-      Swal.fire({
-        title: 'Campo obligatorio',
-        text: 'Debe seleccionar una habitación.',
-        icon: 'warning',
-        confirmButtonColor: '#3B5BDB'
-      });
-
+    if (
+      this.camaEditando !== null &&
+      this.camaOriginal &&
+      !this.huboCambios(this.camaOriginal, this.camaForm, [
+        'nombre',
+        'numero',
+        'estado',
+        'id_habitacion'
+      ])
+    ) {
+      alertaAdvertencia(
+        'Sin cambios',
+        'No modificaste ningún campo de la cama.'
+      );
       return;
     }
 
@@ -1744,12 +1754,10 @@ export class BancoDatos implements OnInit {
 
           this.cargando = false;
 
-          Swal.fire({
-            title: 'Actualizada',
-            text: 'Cama actualizada correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
+          alertaExito(
+            'Cama actualizada',
+            'Cama actualizada correctamente.'
+          );
 
           this.limpiarFormularioCama();
 
@@ -1768,15 +1776,13 @@ export class BancoDatos implements OnInit {
             error
           );
 
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(
+          alertaError(
+            'Error al actualizar',
+            this.obtenerMensajeError(
               error,
               'No se pudo actualizar la cama.'
-            ),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
+            )
+          );
         }
 
       });
@@ -1798,12 +1804,10 @@ export class BancoDatos implements OnInit {
 
           this.cargando = false;
 
-          Swal.fire({
-            title: 'Creada',
-            text: 'Cama registrada correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
+          alertaExito(
+            'Cama creada',
+            'Cama registrada correctamente.'
+          );
 
           this.limpiarFormularioCama();
 
@@ -1822,15 +1826,13 @@ export class BancoDatos implements OnInit {
             error
           );
 
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(
+          alertaError(
+            'Error al crear',
+            this.obtenerMensajeError(
               error,
               'No se pudo crear la cama.'
-            ),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
+            )
+          );
         }
 
       });
@@ -1916,7 +1918,7 @@ export class BancoDatos implements OnInit {
       estado: habitacion.estado
 
     };
-
+    this.habitacionOriginal = { ...habitacion };
     this.limpiarMensajes();
 
     this.modoEdicionHabitacion = true;
@@ -1931,15 +1933,10 @@ export class BancoDatos implements OnInit {
       return;
     }
 
-    Swal.fire({
-      title: 'Eliminar habitación',
-      text: '¿Está seguro de eliminar esta habitación?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#3B5BDB'
-    }).then((resultado) => {
+    alertaEliminar(
+      habitacion.nombre,
+      'habitación'
+    ).then((resultado) => {
 
       if (!resultado.isConfirmed) {
         return;
@@ -1953,12 +1950,10 @@ export class BancoDatos implements OnInit {
 
         next: () => {
 
-          Swal.fire({
-            title: 'Eliminada',
-            text: 'Habitación eliminada correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
+          alertaExito(
+            'Habitación eliminada',
+            'Habitación eliminada correctamente.'
+          );
 
           this.cargarHabitaciones();
         },
@@ -1972,15 +1967,13 @@ export class BancoDatos implements OnInit {
             error
           );
 
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(
+          alertaError(
+            'Error al eliminar',
+            this.obtenerMensajeError(
               error,
               'No se pudo eliminar la habitación.'
-            ),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
+            )
+          );
         }
       });
     });
@@ -1996,7 +1989,7 @@ export class BancoDatos implements OnInit {
       estado: cama.estado,
       id_habitacion: cama.id_habitacion
     };
-
+    this.camaOriginal = { ...cama };
     this.limpiarMensajes();
 
     this.modoEdicionCama = true;
@@ -2010,15 +2003,10 @@ export class BancoDatos implements OnInit {
       return;
     }
 
-    Swal.fire({
-      title: 'Eliminar cama',
-      text: '¿Está seguro de eliminar esta cama?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#3B5BDB'
-    }).then((resultado) => {
+    alertaEliminar(
+      cama.nombre,
+      'cama'
+    ).then((resultado) => {
 
       if (!resultado.isConfirmed) {
         return;
@@ -2031,13 +2019,10 @@ export class BancoDatos implements OnInit {
       ).subscribe({
 
         next: () => {
-
-          Swal.fire({
-            title: 'Eliminada',
-            text: 'Cama eliminada correctamente.',
-            icon: 'success',
-            confirmButtonColor: '#3B5BDB'
-          });
+          alertaExito(
+            'Cama eliminada',
+            'Cama eliminada correctamente.'
+          );
 
           this.cargarCamas();
         },
@@ -2051,15 +2036,13 @@ export class BancoDatos implements OnInit {
             error
           );
 
-          Swal.fire({
-            title: 'Error',
-            text: this.obtenerMensajeError(
+          alertaError(
+            'Error al eliminar',
+            this.obtenerMensajeError(
               error,
               'No se pudo eliminar la cama.'
-            ),
-            icon: 'error',
-            confirmButtonColor: '#3B5BDB'
-          });
+            )
+          );
         }
       });
     });
@@ -2080,7 +2063,7 @@ export class BancoDatos implements OnInit {
 
     this.habitacionEditando = null;
     this.modoEdicionHabitacion = false;
-
+    this.habitacionOriginal = null;
     this.habitacionForm = {
       nombre: '',
       numero: '',
@@ -2089,6 +2072,7 @@ export class BancoDatos implements OnInit {
     };
   }
   limpiarFormularioCama(): void {
+
     this.camaForm = {
       nombre: '',
       numero: '',
@@ -2097,6 +2081,7 @@ export class BancoDatos implements OnInit {
     };
 
     this.camaEditando = null;
+    this.camaOriginal = null;
   }
   // =========================================================
   // MENSAJES
