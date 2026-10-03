@@ -691,6 +691,7 @@ export class Notificaciones {
             alertaAdvertencia('Sin destinatarios', 'No se encontraron usuarios para el destinatario seleccionado.');
             return;
           }
+         
 
           const nuevaNotificacion = {
             titulo:
@@ -1068,6 +1069,7 @@ export class Notificaciones {
       null;
     this.tipoNotificacion =
       'informacion';
+    this.emailActivo = true;
   }
 
   marcarLeida(
