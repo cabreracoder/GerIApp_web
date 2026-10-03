@@ -14,126 +14,10 @@
           Administración de los catálogos y datos base del sistema.
         </p>
       </div>
-
-
-      <button type="button" class="boton-nuevo" (click)="abrirNuevaTabla()">
-
-        <span class="material-symbols-outlined">
-          add
-        </span>
-
-        Agregar tabla
-
-      </button>
-
-
     </div>
 
   </header>
 
-  <!-- ========================================================= -->
-  <!-- CREAR TABLA PERSONALIZADA -->
-  <!-- ========================================================= -->
-
-  <div class="formulario-catalogo" *ngIf="mostrandoFormularioTabla">
-
-    <div class="encabezado-formulario">
-
-      <h3>
-        Crear nueva tabla
-      </h3>
-
-      <button type="button" class="boton-cerrar" (click)="cerrarFormularioTabla()">
-        ✕
-      </button>
-
-    </div>
-
-
-    <div class="campo-formulario">
-
-      <label>
-        Nombre de la tabla
-      </label>
-
-      <input type="text" [(ngModel)]="tablaNueva.nombre" placeholder="Ejemplo: Habitaciones">
-
-    </div>
-
-
-    <div class="campo-formulario">
-
-      <label>
-        Descripción
-      </label>
-
-      <textarea [(ngModel)]="tablaNueva.descripcion" placeholder="Descripción de la tabla"></textarea>
-
-    </div>
-
-
-    <div class="seccion-campos">
-
-      <h4>
-        Campos de la tabla
-      </h4>
-      <button type="button" class="boton-nuevo" (click)="agregarCampoTabla()">
-
-        <span class="material-symbols-outlined">
-          add
-        </span>
-
-        Agregar campo
-
-      </button>
-
-      <div class="fila-campo" *ngFor="let campo of tablaNueva.campos">
-
-        <input type="text" [(ngModel)]="campo.nombre" placeholder="Nombre del campo">
-
-
-        <select [(ngModel)]="campo.tipo">
-
-          <option value="Texto">
-            Texto
-          </option>
-
-          <option value="Número">
-            Número
-          </option>
-
-          <option value="Fecha">
-            Fecha
-          </option>
-
-        </select>
-
-
-      </div>
-
-
-    </div>
-
-
-    <div class="acciones-formulario">
-
-      <button type="button" class="boton-cancelar" (click)="cerrarFormularioTabla()">
-        Cancelar
-      </button>
-
-
-      <button type="button" class="boton-guardar" (click)="crearTabla()">
-        <span class="material-symbols-outlined">
-          save
-        </span>
-
-        Crear tabla
-      </button>
-
-    </div>
-
-
-  </div>
   <!-- =====================================================
        CONTENEDOR DE CATÁLOGOS
   ====================================================== -->
@@ -1131,30 +1015,180 @@
 
       </div>
 
-      <!-- TABLA -->
+    </section>
 
-      <div class="tabla-contenedor">
+    <section class="pantalla-catalogo" *ngIf="catalogoSeleccionado === 'Habitaciones'">
 
+      <div class="encabezado-catalogo">
 
-        <div class="estado-cargando" *ngIf="cargandoTurnos">
+        <div>
+          <h2>Habitaciones</h2>
+
+          <p>
+            Administre las habitaciones disponibles en la sede.
+          </p>
+        </div>
+
+        <button type="button" class="boton-nuevo" *ngIf="!mostrandoFormularioHabitacion"
+          (click)="abrirNuevaHabitacion()">
 
           <span class="material-symbols-outlined">
-            progress_activity
+            add
           </span>
 
-          Cargando turnos...
+          Nueva habitación
+
+        </button>
+
+      </div>
+      <!-- FORMULARIO HABITACIÓN -->
+
+      <div class="formulario-catalogo" *ngIf="mostrandoFormularioHabitacion">
+
+
+        <div class="encabezado-formulario">
+
+          <div>
+
+            <h3>
+              {{
+              modoEdicionHabitacion
+              ? 'Editar habitación'
+              : 'Nueva habitación'
+              }}
+            </h3>
+
+            <p>
+              {{
+              modoEdicionHabitacion
+              ? 'Modifique la información de la habitación.'
+              : 'Ingrese la información de la nueva habitación.'
+              }}
+            </p>
+
+          </div>
+
+
+          <button type="button" class="boton-cerrar" (click)="cerrarFormularioHabitacion()">
+
+            <span class="material-symbols-outlined">
+              close
+            </span>
+
+          </button>
 
         </div>
 
 
-        <table *ngIf="!cargandoTurnos">
+
+        <form (ngSubmit)="guardarHabitacion()" #formHabitacion="ngForm">
+
+          <div class="formulario-grid">
+
+            <div class="campo-formulario">
+
+              <label for="nombreHabitacion">
+                Nombre
+              </label>
+
+              <input id="nombreHabitacion" type="text" [(ngModel)]="habitacionActual.nombre" name="nombreHabitacion"
+                placeholder="Ej. Habitación 1" required>
+
+            </div>
+
+
+            <div class="campo-formulario">
+
+              <label for="numeroHabitacion">
+                Número
+              </label>
+
+              <input id="numeroHabitacion" type="text" [(ngModel)]="habitacionActual.numero" name="numeroHabitacion"
+                placeholder="Ej. 101" required>
+
+            </div>
+
+
+            <div class="campo-formulario campo-completo">
+
+              <label for="descripcionHabitacion">
+                Descripción
+              </label>
+
+              <textarea id="descripcionHabitacion" [(ngModel)]="habitacionActual.descripcion"
+                name="descripcionHabitacion" placeholder="Ingrese una descripción de la habitación..." rows="3">
+      </textarea>
+
+            </div>
+
+
+            <div class="campo-formulario">
+
+              <label for="estadoHabitacion">
+                Estado
+              </label>
+
+              <select id="estadoHabitacion" [(ngModel)]="habitacionActual.estado" name="estadoHabitacion">
+
+                <option [ngValue]="true">
+                  Activo
+                </option>
+
+                <option [ngValue]="false">
+                  Inactivo
+                </option>
+
+              </select>
+
+            </div>
+
+          </div>
+
+
+          <div class="acciones-formulario">
+
+            <button type="button" class="boton-secundario" (click)="cerrarFormularioHabitacion()">
+
+              Cancelar
+
+            </button>
+
+
+            <button type="submit" class="boton-guardar" [disabled]="formHabitacion.invalid">
+
+              <span class="material-symbols-outlined">
+                save
+              </span>
+
+              {{
+              modoEdicionHabitacion
+              ? 'Actualizar registro'
+              : 'Guardar registro'
+              }}
+
+            </button>
+
+          </div>
+
+        </form>
+
+
+      </div>
+
+      <!-- ===================================================
+       TABLA HABITACIONES
+  ==================================================== -->
+
+      <div class="tabla-contenedor">
+
+        <table>
 
           <thead>
 
             <tr>
               <th>Nombre</th>
-              <th>Hora inicio</th>
-              <th>Hora fin</th>
+              <th>Número</th>
+              <th>Descripción</th>
               <th>Estado</th>
               <th>Acciones</th>
             </tr>
@@ -1164,47 +1198,383 @@
 
           <tbody>
 
-            <tr *ngFor="let turno of turnos">
+
+            <tr *ngFor="let habitacion of habitaciones">
+
 
               <td>
-                {{ turno.nombre }}
+                {{ habitacion.nombre }}
               </td>
 
+
               <td>
-                {{ turno.hora_inicio }}
+                {{ habitacion.numero }}
               </td>
 
+
               <td>
-                {{ turno.hora_fin || 'No definida' }}
+                {{ habitacion.descripcion }}
               </td>
 
+
               <td>
 
-                <span class="estado" [class.estado-activo]="turno.estado" [class.estado-inactivo]="!turno.estado">
+                <span class="estado" [class.estado-activo]="habitacion.estado"
+                  [class.estado-inactivo]="!habitacion.estado">
+
                   {{
-                  turno.estado
+                  habitacion.estado
                   ? 'Activo'
                   : 'Inactivo'
                   }}
+
                 </span>
 
               </td>
+
+
+              <td>
+
+
+                <div class="acciones-tabla">
+
+
+                  <!-- EDITAR -->
+
+                  <button type="button" class="boton-accion boton-editar" title="Editar habitación"
+                    (click)="editarHabitacion(habitacion)">
+
+
+                    <span class="material-symbols-outlined">
+                      edit
+                    </span>
+
+
+                  </button>
+
+
+
+                  <!-- ELIMINAR -->
+
+                  <button type="button" class="boton-accion boton-eliminar" title="Eliminar habitación"
+                    (click)="eliminarHabitacion(habitacion)">
+
+
+                    <span class="material-symbols-outlined">
+                      delete
+                    </span>
+
+
+                  </button>
+
+
+                </div>
+
+
+              </td>
+
+
+            </tr>
+
+
+
+            <!-- SIN DATOS -->
+
+            <tr *ngIf="habitaciones.length === 0">
+
+              <td colspan="5" class="sin-registros">
+
+                No hay habitaciones registradas.
+
+              </td>
+
+            </tr>
+
+
+          </tbody>
+
+
+        </table>
+
+
+      </div>
+    </section>
+    <!-- ===================================================
+         CAMAS
+    ==================================================== -->
+
+    <section class="pantalla-catalogo" *ngIf="catalogoSeleccionado === 'Camas'">
+
+      <div class="encabezado-catalogo">
+
+        <div>
+
+          <h2>Camas</h2>
+
+          <p>
+            Administre las camas disponibles en la sede.
+          </p>
+
+        </div>
+
+        <button type="button" class="boton-nuevo" *ngIf="!mostrandoFormularioCama" (click)="abrirNuevaCama()">
+
+          <span class="material-symbols-outlined">
+            add
+          </span>
+
+          Nueva cama
+
+        </button>
+
+      </div>
+
+
+      <!-- FORMULARIO CAMA -->
+
+      <div class="formulario-catalogo" *ngIf="mostrandoFormularioCama">
+
+        <div class="encabezado-formulario">
+
+          <div>
+
+            <h3>
+              {{
+              modoEdicionCama
+              ? 'Editar cama'
+              : 'Nueva cama'
+              }}
+            </h3>
+
+            <p>
+              {{
+              modoEdicionCama
+              ? 'Modifique la información de la cama.'
+              : 'Ingrese la información de la nueva cama.'
+              }}
+            </p>
+
+          </div>
+
+
+          <button type="button" class="boton-cerrar" (click)="cerrarFormularioCama()">
+
+            <span class="material-symbols-outlined">
+              close
+            </span>
+
+          </button>
+
+        </div>
+
+
+        <form (ngSubmit)="guardarCama()" #formCama="ngForm">
+
+          <div class="formulario-grid">
+
+            <!-- NOMBRE -->
+
+            <div class="campo-formulario">
+
+              <label for="nombreCama">
+                Nombre
+              </label>
+
+              <input id="nombreCama" type="text" [(ngModel)]="camaActual.nombre" name="nombreCama"
+                placeholder="Ej. Cama 1" required>
+
+            </div>
+
+
+            <!-- NÚMERO -->
+
+            <div class="campo-formulario">
+
+              <label for="numeroCama">
+                Número
+              </label>
+
+              <input id="numeroCama" type="text" [(ngModel)]="camaActual.numero" name="numeroCama"
+                placeholder="Ej. 101-A" required>
+
+            </div>
+
+
+            <!-- HABITACIÓN -->
+
+            <div class="campo-formulario">
+
+              <label for="habitacionCama">
+                Habitación
+              </label>
+
+              <select id="habitacionCama" [(ngModel)]="camaActual.id_habitacion" name="habitacionCama" required>
+
+                <option [ngValue]="null" disabled>
+                  Seleccione una habitación
+                </option>
+
+                <option *ngFor="let habitacion of habitaciones" [ngValue]="habitacion.id_habitacion">
+
+                  {{ habitacion.nombre }} - {{ habitacion.numero }}
+
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <!-- ESTADO -->
+
+            <div class="campo-formulario">
+
+              <label for="estadoCama">
+                Estado
+              </label>
+
+              <select id="estadoCama" [(ngModel)]="camaActual.estado" name="estadoCama">
+
+                <option [ngValue]="true">
+                  Activo
+                </option>
+
+                <option [ngValue]="false">
+                  Inactivo
+                </option>
+
+              </select>
+
+            </div>
+
+          </div>
+
+
+          <!-- ACCIONES -->
+
+          <div class="acciones-formulario">
+
+            <button type="button" class="boton-secundario" (click)="cerrarFormularioCama()">
+
+              Cancelar
+
+            </button>
+
+
+            <button type="submit" class="boton-guardar" [disabled]="formCama.invalid">
+
+              <span class="material-symbols-outlined">
+                save
+              </span>
+
+              {{
+              modoEdicionCama
+              ? 'Actualizar registro'
+              : 'Guardar registro'
+              }}
+
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+
+      <!-- ===================================================
+           TABLA CAMAS
+      ==================================================== -->
+
+      <div class="tabla-contenedor">
+
+        <div class="estado-cargando" *ngIf="cargandoCamas">
+
+          <span class="material-symbols-outlined">
+            progress_activity
+          </span>
+
+          Cargando camas...
+
+        </div>
+
+
+        <table *ngIf="!cargandoCamas">
+
+          <thead>
+
+            <tr>
+
+              <th>Nombre</th>
+              <th>Número</th>
+              <th>Habitación</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr *ngFor="let cama of camas">
+
+              <td>
+                {{ cama.nombre }}
+              </td>
+
+
+              <td>
+                {{ cama.numero }}
+              </td>
+
+
+              <td>
+                {{ cama.id_habitacion }}
+              </td>
+
+
+              <td>
+
+                <span class="estado" [class.estado-activo]="cama.estado" [class.estado-inactivo]="!cama.estado">
+
+                  {{
+                  cama.estado
+                  ? 'Activo'
+                  : 'Inactivo'
+                  }}
+
+                </span>
+
+              </td>
+
 
               <td>
 
                 <div class="acciones-tabla">
 
-                  <button type="button" class="boton-accion boton-editar" title="Editar" (click)="editarTurno(turno)">
+                  <!-- EDITAR -->
+
+                  <button type="button" class="boton-accion boton-editar" title="Editar cama"
+                    (click)="editarCama(cama)">
+
                     <span class="material-symbols-outlined">
                       edit
                     </span>
+
                   </button>
 
-                  <button type="button" class="boton-accion boton-eliminar" title="Eliminar"
-                    (click)="eliminarTurno(turno)">
+
+                  <!-- ELIMINAR -->
+
+                  <button type="button" class="boton-accion boton-eliminar" title="Eliminar cama"
+                    (click)="eliminarCama(cama)">
+
                     <span class="material-symbols-outlined">
                       delete
                     </span>
+
                   </button>
 
                 </div>
@@ -1214,11 +1584,14 @@
             </tr>
 
 
-            <!-- SIN REGISTROS -->
-            <tr *ngIf="turnos.length === 0">
+            <!-- SIN DATOS -->
+
+            <tr *ngIf="camas.length === 0">
 
               <td colspan="5" class="sin-registros">
-                No hay turnos registrados.
+
+                No hay camas registradas.
+
               </td>
 
             </tr>
@@ -1227,94 +1600,6 @@
 
         </table>
 
-        <!-- =================================================== -->
-        <!-- TABLAS PERSONALIZADAS -->
-        <!-- =================================================== -->
-
-        <section class="pantalla-catalogo" *ngIf="esTablaPersonalizada()">
-
-
-          <div class="encabezado-catalogo">
-
-            <div>
-
-              <h2>
-                {{ catalogoSeleccionado }}
-              </h2>
-
-              <p>
-                {{ obtenerDescripcionTabla(catalogoSeleccionado) }}
-              </p>
-
-            </div>
-
-
-            <button type="button" class="boton-nuevo">
-
-              <span class="material-symbols-outlined">
-                add
-              </span>
-
-              Nuevo registro
-
-            </button>
-
-
-          </div>
-
-
-
-          <div class="tabla-contenedor">
-
-
-            <table>
-
-              <thead>
-
-                <tr>
-
-                  <th *ngFor="let campo of obtenerCamposTabla(catalogoSeleccionado)">
-
-                    {{ campo.nombre }}
-
-                  </th>
-
-
-                  <th>
-                    Acciones
-                  </th>
-
-                </tr>
-
-
-              </thead>
-
-
-              <tbody>
-
-
-                <tr>
-
-                  <td [attr.colspan]="obtenerCamposTabla(catalogoSeleccionado).length + 1" class="sin-registros">
-
-                    No hay registros todavía.
-
-                  </td>
-
-
-                </tr>
-
-
-              </tbody>
-
-
-            </table>
-
-
-          </div>
-
-
-        </section>
       </div>
 
     </section>

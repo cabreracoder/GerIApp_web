@@ -7,16 +7,6 @@ import Swal from 'sweetalert2';
 interface Catalogo {
   nombre: string;
 }
-interface TablaPersonalizada {
-  nombre: string;
-  descripcion: string;
-  campos: CampoTabla[];
-}
-
-interface CampoTabla {
-  nombre: string;
-  tipo: string;
-}
 interface Medicamento {
   id_medicamentos?: number;
   nombre: string;
@@ -51,6 +41,20 @@ interface Turno {
   estado: boolean;
   nombre: string;
   descripcion: string;
+}
+interface Habitacion {
+  id_habitacion?: number;
+  nombre: string;
+  numero: string;
+  descripcion: string | null;
+  estado: boolean;
+}
+interface Cama {
+  id_cama?: number;
+  nombre: string;
+  numero: string;
+  estado: boolean;
+  id_habitacion: number | null;
 }
 
 // =====================================================
@@ -268,6 +272,10 @@ function alertaAdvertencia(titulo: string, mensaje?: string) {
   styleUrl: './banco-datos.css'
 })
 export class BancoDatos implements OnInit {
+  private readonly apiUrl =
+    'https://geriapp-backend.onrender.com/api';
+
+  habitaciones: Habitacion[] = [];
 
   // =========================================================
   // CATÁLOGOS
@@ -287,32 +295,18 @@ export class BancoDatos implements OnInit {
     {
       nombre: 'Turnos',
 
+    },
+    {
+      nombre: 'Habitaciones',
+    },
+    {
+      nombre: 'Camas'
     }
+
   ];
 
   catalogoSeleccionado = 'Medicamentos';
-  // =========================================================
-  // TABLAS PERSONALIZADAS
-  // =========================================================
 
-  tablasPersonalizadas: TablaPersonalizada[] = [];
-
-  mostrandoFormularioTabla = false;
-
-  tablaNueva: TablaPersonalizada = {
-
-    nombre: '',
-
-    descripcion: '',
-
-    campos: [
-      {
-        nombre: '',
-        tipo: 'Texto'
-      }
-    ]
-
-  };
 
   // =========================================================
   // ESTADOS GENERALES
@@ -324,6 +318,7 @@ export class BancoDatos implements OnInit {
   cargandoTiposInsumo = false;
   cargandoInsumos = false;
   cargandoTurnos = false;
+  cargandoHabitaciones = false;
 
   mensajeExito = '';
   mensajeError = '';
@@ -407,7 +402,40 @@ export class BancoDatos implements OnInit {
 
   mostrandoFormularioTurno = false;
   modoEdicionTurno = false;
+  // =========================================================
+  // HABITACIONES
+  // =========================================================
 
+  mostrandoFormularioHabitacion = false;
+  modoEdicionHabitacion = false;
+
+  habitacionEditando: number | null = null;
+
+
+  habitacionForm: Habitacion = {
+
+    nombre: '',
+    numero: '',
+    descripcion: '',
+    estado: true
+
+  };
+  // =========================================================
+  // CAMAS
+  // =========================================================
+
+  camas: Cama[] = [];
+  cargandoCamas = false;
+  mostrandoFormularioCama = false;
+  modoEdicionCama = false;
+  camaEditando: number | null = null;
+
+  camaForm: Cama = {
+    nombre: '',
+    numero: '',
+    estado: true,
+    id_habitacion: null
+  };
   // =========================================================
   // COMPATIBILIDAD CON EL HTML
   // =========================================================
@@ -446,6 +474,20 @@ export class BancoDatos implements OnInit {
   set turnoActual(valor: Turno) {
     this.turnoForm = valor;
   }
+  get habitacionActual(): Habitacion {
+    return this.habitacionForm;
+  }
+
+  set habitacionActual(valor: Habitacion) {
+    this.habitacionForm = valor;
+  }
+  get camaActual(): Cama {
+    return this.camaForm;
+  }
+
+  set camaActual(valor: Cama) {
+    this.camaForm = valor;
+  }
 
   // =========================================================
   // CONSTRUCTOR
@@ -464,7 +506,7 @@ export class BancoDatos implements OnInit {
     this.seleccionarCatalogo('Medicamentos');
   }
 
-  // =========================================================
+  // ===================================================
   // SELECCIONAR CATÁLOGO
   // =========================================================
 
@@ -491,98 +533,16 @@ export class BancoDatos implements OnInit {
       case 'Turnos':
         this.cargarTurnos();
         break;
+
+      case 'Habitaciones':
+        this.cargarHabitaciones();
+        break;
+
+      case 'Camas':
+        this.cargarHabitaciones();
+        this.cargarCamas();
+        break;
     }
-  }
-  // =========================================================
-  // TABLAS PERSONALIZADAS
-  // =========================================================
-
-
-  abrirNuevaTabla(): void {
-
-    this.mostrandoFormularioTabla = true;
-
-  }
-  cerrarFormularioTabla(): void {
-
-    this.mostrandoFormularioTabla = false;
-
-  }
-  esTablaPersonalizada(): boolean {
-
-    return this.tablasPersonalizadas.some(
-      tabla => tabla.nombre === this.catalogoSeleccionado
-    );
-
-  }
-
-
-
-  obtenerDescripcionTabla(nombre: string): string {
-
-    const tabla = this.tablasPersonalizadas.find(
-      item => item.nombre === nombre
-    );
-
-
-    return tabla?.descripcion ?? '';
-
-  }
-
-
-
-  obtenerCamposTabla(nombre: string): CampoTabla[] {
-
-    const tabla = this.tablasPersonalizadas.find(
-      item => item.nombre === nombre
-    );
-
-
-    return tabla?.campos ?? [];
-
-  }
-  crearTabla(): void {
-
-    if (!this.tablaNueva.nombre.trim()) {
-      alertaAdvertencia('Campo obligatorio', 'Debe ingresar el nombre de la tabla.');
-
-      return;
-    }
-
-
-    // Guardar tabla creada
-    this.tablasPersonalizadas.push({
-      ...this.tablaNueva
-    });
-
-
-    // Crear nueva pestaña
-    this.catalogos.push({
-      nombre: this.tablaNueva.nombre
-    });
-
-
-    // Seleccionar la nueva tabla
-    this.catalogoSeleccionado = this.tablaNueva.nombre;
-
-
-    // Cerrar formulario
-    this.mostrandoFormularioTabla = false;
-
-
-    alertaExito('Tabla creada', `La tabla ${this.tablaNueva.nombre} fue creada correctamente.`);
-
-  }
-  agregarCampoTabla(): void {
-
-    this.tablaNueva.campos.push({
-
-      nombre: '',
-
-      tipo: 'Texto'
-
-    });
-
   }
   // =========================================================
   // CERRAR TODOS LOS FORMULARIOS
@@ -597,6 +557,10 @@ export class BancoDatos implements OnInit {
     this.modoEdicionTipoInsumo = false;
     this.modoEdicionInsumo = false;;
     this.modoEdicionTurno = false;
+    this.mostrandoFormularioHabitacion = false;
+    this.modoEdicionHabitacion = false;
+    this.mostrandoFormularioCama = false;
+    this.modoEdicionCama = false;
   }
 
   // =========================================================
@@ -667,10 +631,6 @@ export class BancoDatos implements OnInit {
       return;
     }
 
-        if (!this.validarMedicamento()) {
-      return;
-    }
-
     if (
       this.medicamentoEditando !== null &&
       this.medicamentoOriginal &&
@@ -681,8 +641,6 @@ export class BancoDatos implements OnInit {
       alertaAdvertencia('Sin cambios', 'No modificaste ningún campo del medicamento.');
       return;
     }
-
-    this.cargando = true;
 
     this.cargando = true;
 
@@ -707,7 +665,7 @@ export class BancoDatos implements OnInit {
         next: () => {
           this.cargando = false;
 
-         alertaExito('Medicamento actualizado', 'Medicamento actualizado correctamente.');
+          alertaExito('Medicamento actualizado', 'Medicamento actualizado correctamente.');
 
           this.limpiarFormularioMedicamento();
           this.mostrandoFormulario = false;
@@ -776,7 +734,7 @@ export class BancoDatos implements OnInit {
       unidad_medida: medicamento.unidad_medida
     };
 
-    this.medicamentoOriginal = { ...medicamento }; 
+    this.medicamentoOriginal = { ...medicamento };
 
     this.limpiarMensajes();
 
@@ -790,36 +748,36 @@ export class BancoDatos implements OnInit {
 
   eliminarMedicamento(medicamento: Medicamento): void {
 
-  const id = medicamento.id_medicamentos;
+    const id = medicamento.id_medicamentos;
 
-  if (!id) {
-    return;
-  }
-
-  alertaEliminar(medicamento.nombre, 'medicamento').then((resultado) => {
-
-    if (!resultado.isConfirmed) {
+    if (!id) {
       return;
     }
 
-    this.cargando = true;
+    alertaEliminar(medicamento.nombre, 'medicamento').then((resultado) => {
 
-    this.http.delete(
-      `https://geriapp-backend.onrender.com/api/medicamentos/${id}/`
-    ).subscribe({
-
-      next: () => {
-        alertaExito('Medicamento eliminado');
-        this.cargarMedicamentos();
-      },
-
-      error: (error) => {
-        this.cargando = false;
-        alertaError('Error al eliminar', this.obtenerMensajeError(error, 'No se pudo eliminar el medicamento.'));
+      if (!resultado.isConfirmed) {
+        return;
       }
+
+      this.cargando = true;
+
+      this.http.delete(
+        `https://geriapp-backend.onrender.com/api/medicamentos/${id}/`
+      ).subscribe({
+
+        next: () => {
+          alertaExito('Medicamento eliminado');
+          this.cargarMedicamentos();
+        },
+
+        error: (error) => {
+          this.cargando = false;
+          alertaError('Error al eliminar', this.obtenerMensajeError(error, 'No se pudo eliminar el medicamento.'));
+        }
+      });
     });
-  });
-}
+  }
   // =========================================================
   // MEDICAMENTOS - LIMPIAR
   // =========================================================
@@ -846,15 +804,15 @@ export class BancoDatos implements OnInit {
 
   validarMedicamento(): boolean {
 
-if (!this.medicamentoForm.nombre.trim()) {
-  alertaAdvertencia('Campo obligatorio', 'El nombre del medicamento es obligatorio.');
-  return false;
-}
+    if (!this.medicamentoForm.nombre.trim()) {
+      alertaAdvertencia('Campo obligatorio', 'El nombre del medicamento es obligatorio.');
+      return false;
+    }
 
-if (!this.medicamentoForm.principio_activo.trim()) {
-  alertaAdvertencia('Campo obligatorio', 'El principio activo es obligatorio.');
-  return false;
-}
+    if (!this.medicamentoForm.principio_activo.trim()) {
+      alertaAdvertencia('Campo obligatorio', 'El principio activo es obligatorio.');
+      return false;
+    }
 
     return true;
   }
@@ -935,12 +893,6 @@ if (!this.medicamentoForm.principio_activo.trim()) {
       return;
     }
 
-        if (!this.tipoInsumoForm.nombre.trim()) {
-
-      alertaAdvertencia('Campo obligatorio', 'El nombre del tipo de insumo es obligatorio.');
-      return;
-    }
-
     if (
       this.tipoInsumoEditando !== null &&
       this.tipoInsumoOriginal &&
@@ -949,8 +901,6 @@ if (!this.medicamentoForm.principio_activo.trim()) {
       alertaAdvertencia('Sin cambios', 'No modificaste ningún campo del tipo de insumo.');
       return;
     }
-
-    this.cargando = true;
 
     this.cargando = true;
 
@@ -1039,38 +989,38 @@ if (!this.medicamentoForm.principio_activo.trim()) {
   // TIPOS DE INSUMO - ELIMINAR
   // =========================================================
 
-eliminarTipoInsumo(tipo: TipoInsumo): void {
+  eliminarTipoInsumo(tipo: TipoInsumo): void {
 
-  const id = tipo.id_tipo_insumo;
+    const id = tipo.id_tipo_insumo;
 
-  if (!id) {
-    return;
-  }
-
-  alertaEliminar(tipo.nombre, 'tipo de insumo').then((resultado) => {
-
-    if (!resultado.isConfirmed) {
+    if (!id) {
       return;
     }
 
-    this.cargando = true;
+    alertaEliminar(tipo.nombre, 'tipo de insumo').then((resultado) => {
 
-    this.http.delete(
-      `https://geriapp-backend.onrender.com/api/tipo_insumo/${id}/`
-    ).subscribe({
-
-      next: () => {
-        alertaExito('Tipo de insumo eliminado');
-        this.cargarTiposInsumo();
-      },
-
-      error: (error) => {
-        this.cargando = false;
-        alertaError('Error al eliminar', this.obtenerMensajeError(error, 'No se pudo eliminar el tipo de insumo.'));
+      if (!resultado.isConfirmed) {
+        return;
       }
+
+      this.cargando = true;
+
+      this.http.delete(
+        `https://geriapp-backend.onrender.com/api/tipo_insumo/${id}/`
+      ).subscribe({
+
+        next: () => {
+          alertaExito('Tipo de insumo eliminado');
+          this.cargarTiposInsumo();
+        },
+
+        error: (error) => {
+          this.cargando = false;
+          alertaError('Error al eliminar', this.obtenerMensajeError(error, 'No se pudo eliminar el tipo de insumo.'));
+        }
+      });
     });
-  });
-}
+  }
 
   cancelarEdicionTipoInsumo(): void {
     this.cerrarFormularioTipoInsumo();
@@ -1159,19 +1109,11 @@ eliminarTipoInsumo(tipo: TipoInsumo): void {
 
     if (!this.insumoForm.nombre.trim()) {
 
-     alertaAdvertencia('Campo obligatorio', 'El nombre del insumo es obligatorio.');
+      alertaAdvertencia('Campo obligatorio', 'El nombre del insumo es obligatorio.');
 
       return;
     }
-
     if (!this.insumoForm.id_tipo_insumo) {
-
-      alertaAdvertencia('Campo obligatorio', 'Debe seleccionar un tipo de insumo.');
-
-      return;
-    }
-
-        if (!this.insumoForm.id_tipo_insumo) {
 
       alertaAdvertencia('Campo obligatorio', 'Debe seleccionar un tipo de insumo.');
 
@@ -1267,7 +1209,7 @@ eliminarTipoInsumo(tipo: TipoInsumo): void {
       unidad_medida: insumo.unidad_medida,
       estado: insumo.estado
     };
-    
+
     this.insumoOriginal = { ...insumo };
 
     this.limpiarMensajes();
@@ -1280,38 +1222,38 @@ eliminarTipoInsumo(tipo: TipoInsumo): void {
   // INSUMOS - ELIMINAR
   // =========================================================
 
-eliminarInsumo(insumo: Insumo): void {
+  eliminarInsumo(insumo: Insumo): void {
 
-  const id = insumo.id_insumo;
+    const id = insumo.id_insumo;
 
-  if (!id) {
-    return;
-  }
-
-  alertaEliminar(insumo.nombre, 'insumo').then((resultado) => {
-
-    if (!resultado.isConfirmed) {
+    if (!id) {
       return;
     }
 
-    this.cargando = true;
+    alertaEliminar(insumo.nombre, 'insumo').then((resultado) => {
 
-    this.http.delete(
-      `https://geriapp-backend.onrender.com/api/insumos/${id}/`
-    ).subscribe({
-
-      next: () => {
-        alertaExito('Insumo eliminado');
-        this.cargarInsumos();
-      },
-
-      error: (error) => {
-        this.cargando = false;
-        alertaError('Error al eliminar', this.obtenerMensajeError(error, 'No se pudo eliminar el insumo.'));
+      if (!resultado.isConfirmed) {
+        return;
       }
+
+      this.cargando = true;
+
+      this.http.delete(
+        `https://geriapp-backend.onrender.com/api/insumos/${id}/`
+      ).subscribe({
+
+        next: () => {
+          alertaExito('Insumo eliminado');
+          this.cargarInsumos();
+        },
+
+        error: (error) => {
+          this.cargando = false;
+          alertaError('Error al eliminar', this.obtenerMensajeError(error, 'No se pudo eliminar el insumo.'));
+        }
+      });
     });
-  });
-}
+  }
 
   cancelarEdicionInsumo(): void {
     this.cerrarFormularioInsumo();
@@ -1418,32 +1360,32 @@ eliminarInsumo(insumo: Insumo): void {
   // TURNOS - GUARDAR
   // =========================================================
 
- guardarTurno(): void {
+  guardarTurno(): void {
 
-  this.limpiarMensajes();
+    this.limpiarMensajes();
 
-  if (!this.turnoForm.nombre.trim()) {
-    alertaAdvertencia('Campo obligatorio', 'El nombre del turno es obligatorio.');
-    return;
-  }
+    if (!this.turnoForm.nombre.trim()) {
+      alertaAdvertencia('Campo obligatorio', 'El nombre del turno es obligatorio.');
+      return;
+    }
 
-  if (!this.turnoForm.hora_inicio) {
-    alertaAdvertencia('Campo obligatorio', 'La hora de inicio es obligatoria.');
-    return;
-  }
+    if (!this.turnoForm.hora_inicio) {
+      alertaAdvertencia('Campo obligatorio', 'La hora de inicio es obligatoria.');
+      return;
+    }
 
-  if (
-    this.turnoEditando !== null &&
-    this.turnoOriginal &&
-    !this.huboCambios(this.turnoOriginal, this.turnoForm, [
-      'nombre', 'descripcion', 'hora_inicio', 'hora_fin', 'estado'
-    ])
-  ) {
-    alertaAdvertencia('Sin cambios', 'No modificaste ningún campo del turno.');
-    return;
-  }
+    if (
+      this.turnoEditando !== null &&
+      this.turnoOriginal &&
+      !this.huboCambios(this.turnoOriginal, this.turnoForm, [
+        'nombre', 'descripcion', 'hora_inicio', 'hora_fin', 'estado'
+      ])
+    ) {
+      alertaAdvertencia('Sin cambios', 'No modificaste ningún campo del turno.');
+      return;
+    }
 
-  this.cargando = true;
+    this.cargando = true;
 
     if (this.turnoEditando !== null) {
 
@@ -1495,7 +1437,7 @@ eliminarInsumo(insumo: Insumo): void {
 
           this.cargando = false;
 
-         alertaError('Error al crear', this.obtenerMensajeError(error, 'No se pudo crear el turno.'));
+          alertaError('Error al crear', this.obtenerMensajeError(error, 'No se pudo crear el turno.'));
         }
       });
     }
@@ -1533,36 +1475,36 @@ eliminarInsumo(insumo: Insumo): void {
 
   eliminarTurno(turno: Turno): void {
 
-  const id = turno.id_turno;
+    const id = turno.id_turno;
 
-  if (!id) {
-    return;
-  }
-
-  alertaEliminar(turno.nombre, 'turno').then((resultado) => {
-
-    if (!resultado.isConfirmed) {
+    if (!id) {
       return;
     }
 
-    this.cargando = true;
+    alertaEliminar(turno.nombre, 'turno').then((resultado) => {
 
-    this.http.delete(
-      `https://geriapp-backend.onrender.com/api/turnos/${id}/`
-    ).subscribe({
-
-      next: () => {
-        alertaExito('Turno eliminado');
-        this.cargarTurnos();
-      },
-
-      error: (error) => {
-        this.cargando = false;
-        alertaError('Error al eliminar', this.obtenerMensajeError(error, 'No se pudo eliminar el turno.'));
+      if (!resultado.isConfirmed) {
+        return;
       }
+
+      this.cargando = true;
+
+      this.http.delete(
+        `https://geriapp-backend.onrender.com/api/turnos/${id}/`
+      ).subscribe({
+
+        next: () => {
+          alertaExito('Turno eliminado');
+          this.cargarTurnos();
+        },
+
+        error: (error) => {
+          this.cargando = false;
+          alertaError('Error al eliminar', this.obtenerMensajeError(error, 'No se pudo eliminar el turno.'));
+        }
+      });
     });
-  });
-}
+  }
   cancelarEdicionTurno(): void {
     this.cerrarFormularioTurno();
   }
@@ -1580,7 +1522,582 @@ eliminarInsumo(insumo: Insumo): void {
       descripcion: ''
     };
   }
+  abrirNuevaHabitacion(): void {
 
+    this.limpiarFormularioHabitacion();
+    this.limpiarMensajes();
+
+    this.modoEdicionHabitacion = false;
+    this.mostrandoFormularioHabitacion = true;
+  }
+  abrirNuevaCama(): void {
+    this.limpiarFormularioCama();
+    this.modoEdicionCama = false;
+    this.camaEditando = null;
+    this.mostrandoFormularioCama = true;
+  }
+  guardarHabitacion(): void {
+
+    this.limpiarMensajes();
+
+    if (!this.habitacionForm.nombre.trim()) {
+
+      Swal.fire({
+        title: 'Campo obligatorio',
+        text: 'El nombre de la habitación es obligatorio.',
+        icon: 'warning',
+        confirmButtonColor: '#3B5BDB'
+      });
+
+      return;
+    }
+
+    if (!this.habitacionForm.numero.trim()) {
+
+      Swal.fire({
+        title: 'Campo obligatorio',
+        text: 'El número de la habitación es obligatorio.',
+        icon: 'warning',
+        confirmButtonColor: '#3B5BDB'
+      });
+
+      return;
+    }
+
+    this.cargando = true;
+
+    const datosHabitacion = {
+      nombre: this.habitacionForm.nombre,
+      numero: this.habitacionForm.numero,
+      descripcion: this.habitacionForm.descripcion,
+      estado: this.habitacionForm.estado
+    };
+
+    // =======================================================
+    // EDITAR HABITACIÓN
+    // =======================================================
+
+    if (this.habitacionEditando !== null) {
+
+      this.http.patch(
+        `${this.apiUrl}/habitaciones/${this.habitacionEditando}/`,
+        datosHabitacion
+      ).subscribe({
+
+        next: () => {
+
+          this.cargando = false;
+
+          Swal.fire({
+            title: 'Actualizada',
+            text: 'Habitación actualizada correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
+
+          this.limpiarFormularioHabitacion();
+
+          this.mostrandoFormularioHabitacion = false;
+          this.modoEdicionHabitacion = false;
+          this.cargarHabitaciones();
+        },
+
+        error: (error) => {
+
+          this.cargando = false;
+
+          console.error(
+            'ERROR AL ACTUALIZAR HABITACIÓN:',
+            error
+          );
+
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(
+              error,
+              'No se pudo actualizar la habitación.'
+            ),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
+        }
+
+      });
+
+    }
+
+
+    // =======================================================
+    // CREAR HABITACIÓN
+    // =======================================================
+
+    else {
+
+      this.http.post(
+        `${this.apiUrl}/habitaciones/`,
+        datosHabitacion
+      ).subscribe({
+
+        next: () => {
+
+          this.cargando = false;
+
+          Swal.fire({
+            title: 'Creada',
+            text: 'Habitación registrada correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
+
+          this.limpiarFormularioHabitacion();
+
+          this.mostrandoFormularioHabitacion = false;
+          this.modoEdicionHabitacion = false;
+          this.cargarHabitaciones();
+        },
+
+        error: (error) => {
+
+          this.cargando = false;
+
+          console.error(
+            'ERROR AL CREAR HABITACIÓN:',
+            error
+          );
+
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(
+              error,
+              'No se pudo crear la habitación.'
+            ),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
+        }
+
+      });
+
+    }
+  }
+  guardarCama(): void {
+
+    this.limpiarMensajes();
+
+    if (!this.camaForm.nombre.trim()) {
+
+      Swal.fire({
+        title: 'Campo obligatorio',
+        text: 'El nombre de la cama es obligatorio.',
+        icon: 'warning',
+        confirmButtonColor: '#3B5BDB'
+      });
+
+      return;
+    }
+
+    if (!this.camaForm.numero.trim()) {
+
+      Swal.fire({
+        title: 'Campo obligatorio',
+        text: 'El número de la cama es obligatorio.',
+        icon: 'warning',
+        confirmButtonColor: '#3B5BDB'
+      });
+
+      return;
+    }
+
+    if (this.camaForm.id_habitacion === null) {
+
+      Swal.fire({
+        title: 'Campo obligatorio',
+        text: 'Debe seleccionar una habitación.',
+        icon: 'warning',
+        confirmButtonColor: '#3B5BDB'
+      });
+
+      return;
+    }
+
+    this.cargando = true;
+
+    const datosCama = {
+      nombre: this.camaForm.nombre.trim(),
+      numero: this.camaForm.numero.trim(),
+      estado: this.camaForm.estado,
+      id_habitacion: this.camaForm.id_habitacion
+    };
+
+    // =======================================================
+    // EDITAR CAMA
+    // =======================================================
+
+    if (this.camaEditando !== null) {
+
+      this.http.patch(
+        `${this.apiUrl}/camas/${this.camaEditando}/`,
+        datosCama
+      ).subscribe({
+
+        next: () => {
+
+          this.cargando = false;
+
+          Swal.fire({
+            title: 'Actualizada',
+            text: 'Cama actualizada correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
+
+          this.limpiarFormularioCama();
+
+          this.mostrandoFormularioCama = false;
+          this.modoEdicionCama = false;
+
+          this.cargarCamas();
+        },
+
+        error: (error) => {
+
+          this.cargando = false;
+
+          console.error(
+            'ERROR AL ACTUALIZAR CAMA:',
+            error
+          );
+
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(
+              error,
+              'No se pudo actualizar la cama.'
+            ),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
+        }
+
+      });
+
+    }
+
+    // =======================================================
+    // CREAR CAMA
+    // =======================================================
+
+    else {
+
+      this.http.post(
+        `${this.apiUrl}/camas/`,
+        datosCama
+      ).subscribe({
+
+        next: () => {
+
+          this.cargando = false;
+
+          Swal.fire({
+            title: 'Creada',
+            text: 'Cama registrada correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
+
+          this.limpiarFormularioCama();
+
+          this.mostrandoFormularioCama = false;
+          this.modoEdicionCama = false;
+
+          this.cargarCamas();
+        },
+
+        error: (error) => {
+
+          this.cargando = false;
+
+          console.error(
+            'ERROR AL CREAR CAMA:',
+            error
+          );
+
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(
+              error,
+              'No se pudo crear la cama.'
+            ),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
+        }
+
+      });
+
+    }
+  }
+  cargarHabitaciones(): void {
+
+    this.cargando = true;
+    this.cargandoHabitaciones = true;
+
+    this.http.get<Habitacion[]>(
+      `${this.apiUrl}/habitaciones/`
+    ).subscribe({
+
+      next: (respuesta) => {
+
+        this.habitaciones = respuesta || [];
+
+        this.cargando = false;
+        this.cargandoHabitaciones = false;
+
+        this.cdr.detectChanges();
+      },
+
+      error: (error) => {
+
+        console.error(
+          'ERROR AL CARGAR HABITACIONES:',
+          error
+        );
+
+        this.cargando = false;
+        this.cargandoHabitaciones = false;
+
+        this.mensajeError = this.obtenerMensajeError(
+          error,
+          'No se pudieron cargar las habitaciones.'
+        );
+
+        this.cdr.detectChanges();
+      }
+    });
+  }
+  cargarCamas(): void {
+    this.cargando = true;
+    this.cargandoCamas = true;
+
+    this.http.get<Cama[]>(`${this.apiUrl}/camas/`).subscribe({
+      next: (respuesta) => {
+        this.camas = respuesta || [];
+        this.cargando = false;
+        this.cargandoCamas = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('ERROR AL CARGAR CAMAS:', error);
+        this.cargando = false;
+        this.cargandoCamas = false;
+        this.mensajeError = this.obtenerMensajeError(
+          error,
+          'No se pudieron cargar las camas.'
+        );
+        this.cdr.detectChanges();
+      }
+    });
+  }
+  editarHabitacion(habitacion: Habitacion): void {
+
+    this.habitacionEditando =
+      habitacion.id_habitacion ?? null;
+
+    this.habitacionForm = {
+
+      id_habitacion: habitacion.id_habitacion,
+
+      nombre: habitacion.nombre,
+
+      numero: habitacion.numero,
+
+      descripcion: habitacion.descripcion,
+
+      estado: habitacion.estado
+
+    };
+
+    this.limpiarMensajes();
+
+    this.modoEdicionHabitacion = true;
+
+    this.mostrandoFormularioHabitacion = true;
+  }
+  eliminarHabitacion(habitacion: Habitacion): void {
+
+    const id = habitacion.id_habitacion;
+
+    if (!id) {
+      return;
+    }
+
+    Swal.fire({
+      title: 'Eliminar habitación',
+      text: '¿Está seguro de eliminar esta habitación?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#3B5BDB'
+    }).then((resultado) => {
+
+      if (!resultado.isConfirmed) {
+        return;
+      }
+
+      this.cargando = true;
+
+      this.http.delete(
+        `${this.apiUrl}/habitaciones/${id}/`
+      ).subscribe({
+
+        next: () => {
+
+          Swal.fire({
+            title: 'Eliminada',
+            text: 'Habitación eliminada correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
+
+          this.cargarHabitaciones();
+        },
+
+        error: (error) => {
+
+          this.cargando = false;
+
+          console.error(
+            'ERROR AL ELIMINAR HABITACIÓN:',
+            error
+          );
+
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(
+              error,
+              'No se pudo eliminar la habitación.'
+            ),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
+        }
+      });
+    });
+  }
+  editarCama(cama: Cama): void {
+
+    this.camaEditando = cama.id_cama ?? null;
+
+    this.camaForm = {
+      id_cama: cama.id_cama,
+      nombre: cama.nombre,
+      numero: cama.numero,
+      estado: cama.estado,
+      id_habitacion: cama.id_habitacion
+    };
+
+    this.limpiarMensajes();
+
+    this.modoEdicionCama = true;
+    this.mostrandoFormularioCama = true;
+  }
+  eliminarCama(cama: Cama): void {
+
+    const id = cama.id_cama;
+
+    if (!id) {
+      return;
+    }
+
+    Swal.fire({
+      title: 'Eliminar cama',
+      text: '¿Está seguro de eliminar esta cama?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#3B5BDB'
+    }).then((resultado) => {
+
+      if (!resultado.isConfirmed) {
+        return;
+      }
+
+      this.cargando = true;
+
+      this.http.delete(
+        `${this.apiUrl}/camas/${id}/`
+      ).subscribe({
+
+        next: () => {
+
+          Swal.fire({
+            title: 'Eliminada',
+            text: 'Cama eliminada correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#3B5BDB'
+          });
+
+          this.cargarCamas();
+        },
+
+        error: (error) => {
+
+          this.cargando = false;
+
+          console.error(
+            'ERROR AL ELIMINAR CAMA:',
+            error
+          );
+
+          Swal.fire({
+            title: 'Error',
+            text: this.obtenerMensajeError(
+              error,
+              'No se pudo eliminar la cama.'
+            ),
+            icon: 'error',
+            confirmButtonColor: '#3B5BDB'
+          });
+        }
+      });
+    });
+  }
+  cerrarFormularioHabitacion() {
+
+    this.mostrandoFormularioHabitacion = false;
+
+    this.modoEdicionHabitacion = false;
+
+  }
+  cerrarFormularioCama(): void {
+    this.mostrandoFormularioCama = false;
+    this.modoEdicionCama = false;
+    this.camaEditando = null;
+  }
+  limpiarFormularioHabitacion(): void {
+
+    this.habitacionEditando = null;
+    this.modoEdicionHabitacion = false;
+
+    this.habitacionForm = {
+      nombre: '',
+      numero: '',
+      descripcion: '',
+      estado: true
+    };
+  }
+  limpiarFormularioCama(): void {
+    this.camaForm = {
+      nombre: '',
+      numero: '',
+      estado: true,
+      id_habitacion: null
+    };
+
+    this.camaEditando = null;
+  }
   // =========================================================
   // MENSAJES
   // =========================================================
@@ -1665,6 +2182,6 @@ eliminarInsumo(insumo: Insumo): void {
     return mensajePorDefecto;
   }
   private huboCambios(original: any, nuevo: any, campos: string[]): boolean {
-  return campos.some(campo => (original?.[campo] ?? '') !== (nuevo?.[campo] ?? ''));
-}
+    return campos.some(campo => (original?.[campo] ?? '') !== (nuevo?.[campo] ?? ''));
+  }
 }
