@@ -511,6 +511,7 @@ export class Notificaciones {
             );
             return;
           }
+         
 
           const nuevaNotificacion = {
             titulo:
@@ -906,6 +907,7 @@ export class Notificaciones {
       null;
     this.tipoNotificacion =
       'informacion';
+    this.emailActivo = true;
   }
 
   marcarLeida(
