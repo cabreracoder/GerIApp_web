@@ -1549,81 +1549,113 @@
 
     <div class="formulario-grid">
 
-      <div class="campo">
+          <div class="campo">
         <label for="hidratarPiel">
           Hidratación de la piel
         </label>
 
-        <textarea
-          id="hidratarPiel"
-          [(ngModel)]="recomendaciones.hidratar_piel"
-          rows="3"
-          placeholder="Registre las recomendaciones para la hidratación de la piel..."></textarea>
-      </div>
+          <select
+            id="hidratarPiel"
+            [(ngModel)]="recomendaciones.hidratar_piel">
+
+            <option value="">Seleccione una opción</option>
+            <option value="Mañana">Mañana</option>
+            <option value="Tarde">Tarde</option>
+            <option value="Noche">Noche</option>
+            <option value="No aplica">No aplica</option>
+
+          </select>
+
+        </div>
 
 
-      <div class="campo">
-        <label for="asistirAlimentacion">
-          Asistencia en la alimentación
-        </label>
+        <div class="campo">
+          <label for="asistirAlimentacion">
+            Asistencia en la alimentación
+          </label>
 
-        <textarea
-          id="asistirAlimentacion"
-          [(ngModel)]="recomendaciones.asistir_alimentacion"
-          rows="3"
-          placeholder="Describa las recomendaciones o indicaciones para asistir al paciente durante la alimentación..."></textarea>
-      </div>
+          <select
+            id="asistirAlimentacion"
+            [(ngModel)]="recomendaciones.asistir_alimentacion">
 
+            <option value="">Seleccione una opción</option>
+            <option value="Mañana">Mañana</option>
+            <option value="Tarde">Tarde</option>
+            <option value="Noche">Noche</option>
+            <option value="Vía oral">Vía oral</option>
+            <option value="Otras vías">Otras vías</option>
+            <option value="No aplica">No aplica</option>
 
-      <div class="campo">
-        <label for="viaAlimentacion">
-          Vía de alimentación
-        </label>
+          </select>
 
-        <textarea
-          id="viaAlimentacion"
-          [(ngModel)]="recomendaciones.via_alimentacion"
-          rows="3"
-          placeholder="Indique la vía de alimentación y las recomendaciones correspondientes..."></textarea>
-      </div>
+        </div>
 
 
-      <div class="campo">
-        <label for="prevencionCaidas">
-          Prevención de caídas
-        </label>
+        <div class="campo">
+          <label for="viaAlimentacion">
+            Vía de alimentación
+          </label>
 
-        <textarea
-          id="prevencionCaidas"
-          [(ngModel)]="recomendaciones.prevencion_caidas"
-          rows="3"
-          placeholder="Registre las recomendaciones para prevenir caídas..."></textarea>
-      </div>
+          <textarea
+            id="viaAlimentacion"
+            [(ngModel)]="recomendaciones.via_alimentacion"
+            rows="3"
+            placeholder="Indique la vía de alimentación y las recomendaciones correspondientes...">
+          </textarea>
 
-
-      <div class="campo">
-        <label for="terapiasFisicas">
-          Terapias físicas
-        </label>
-
-        <textarea
-          id="terapiasFisicas"
-          [(ngModel)]="recomendaciones.terapias_fisicas"
-          rows="3"
-          placeholder="Registre las recomendaciones relacionadas con terapias físicas..."></textarea>
-      </div>
+        </div>
 
 
-      <div class="campo">
-        <label for="terapiaRespiratoria">
-          Terapia respiratoria
-        </label>
+        <div class="campo">
+          <label for="prevencionCaidas">
+            Prevención de caídas
+          </label>
 
-        <textarea
-          id="terapiaRespiratoria"
-          [(ngModel)]="recomendaciones.terapia_respiratoria"
-          rows="3"
-          placeholder="Registre las recomendaciones relacionadas con terapia respiratoria..."></textarea>
+          <textarea
+            id="prevencionCaidas"
+            [(ngModel)]="recomendaciones.prevencion_caidas"
+            rows="3"
+            placeholder="Registre las recomendaciones para prevenir caídas...">
+          </textarea>
+
+        </div>
+
+
+        <div class="campo">
+          <label for="terapiasFisicas">
+            Terapias físicas
+          </label>
+
+          <select
+            id="terapiasFisicas"
+            [(ngModel)]="recomendaciones.terapias_fisicas">
+
+            <option value="">Seleccione una opción</option>
+            <option value="Mañana">Mañana</option>
+            <option value="Tarde">Tarde</option>
+            <option value="Según necesidad">Según necesidad</option>
+            <option value="No aplica">No aplica</option>
+
+          </select>
+        </div>
+
+
+        <div class="campo">
+          <label for="terapiaRespiratoria">
+            Terapia respiratoria
+          </label>
+
+          <select
+            id="terapiaRespiratoria"
+            [(ngModel)]="recomendaciones.terapia_respiratoria">
+
+            <option value="">Seleccione una opción</option>
+            <option value="Mañana">Mañana</option>
+            <option value="Tarde">Tarde</option>
+            <option value="Según necesidad">Según necesidad</option>
+            <option value="No aplica">No aplica</option>
+
+          </select>
       </div>
 
 
@@ -1636,7 +1668,9 @@
           id="actividadOcupacional"
           [(ngModel)]="recomendaciones.actividad_ocupacional"
           rows="3"
-          placeholder="Registre las recomendaciones para actividades ocupacionales..."></textarea>
+          placeholder="Registre las recomendaciones para actividades ocupacionales...">
+        </textarea>
+
       </div>
 
 
@@ -1645,11 +1679,17 @@
           Corte de uñas
         </label>
 
-        <textarea
+        <select
           id="corteUnas"
-          [(ngModel)]="recomendaciones.corte_unas"
-          rows="3"
-          placeholder="Registre las recomendaciones para el cuidado y corte de uñas..."></textarea>
+          [(ngModel)]="recomendaciones.corte_unas">
+
+          <option value="">Seleccione una opción</option>
+          <option value="Quincenal">Quincenal</option>
+          <option value="Mensual">Mensual</option>
+          <option value="No aplica">No aplica</option>
+
+        </select>
+
       </div>
 
 
@@ -1658,11 +1698,17 @@
           Corte de cabello
         </label>
 
-        <textarea
+        <select
           id="corteCabello"
-          [(ngModel)]="recomendaciones.corte_cabello"
-          rows="3"
-          placeholder="Registre las recomendaciones para el cuidado y corte de cabello..."></textarea>
+          [(ngModel)]="recomendaciones.corte_cabello">
+
+          <option value="">Seleccione una opción</option>
+          <option value="Quincenal">Quincenal</option>
+          <option value="Mensual">Mensual</option>
+          <option value="No aplica">No aplica</option>
+
+        </select>
+        
       </div>
 
 
@@ -1671,11 +1717,17 @@
           Higiene oral
         </label>
 
-        <textarea
+        <select
           id="higieneOral"
-          [(ngModel)]="recomendaciones.higiene_oral"
-          rows="3"
-          placeholder="Registre las recomendaciones para la higiene oral del paciente..."></textarea>
+          [(ngModel)]="recomendaciones.higiene_oral">
+
+          <option value="">Seleccione una opción</option>
+          <option value="Mañana">Mañana</option>
+          <option value="Tarde">Tarde</option>
+          <option value="Noche">Noche</option>
+
+        </select>
+
       </div>
 
     </div>
