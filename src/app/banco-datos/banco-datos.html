@@ -71,168 +71,170 @@
       <!-- ===============================================
            FORMULARIO MEDICAMENTO
       ================================================= -->
-      <div class="formulario-catalogo" *ngIf="mostrandoFormulario">
+      <div class="modal-overlay" *ngIf="mostrandoFormulario">
 
-        <div class="encabezado-formulario">
+        <div class="formulario-catalogo modal-contenido">
 
-          <div>
+          <div class="encabezado-formulario">
 
-            <h3>
-              {{
-              modoEdicion
-              ? 'Editar medicamento'
-              : 'Nuevo medicamento'
-              }}
-            </h3>
+            <div>
 
-            <p>
-              {{
-              modoEdicion
-              ? 'Modifique la información del medicamento.'
-              : 'Ingrese la información del nuevo medicamento.'
-              }}
-            </p>
+              <h3>
+                {{
+                modoEdicion
+                ? 'Editar medicamento'
+                : 'Nuevo medicamento'
+                }}
+              </h3>
+
+              <p>
+                {{
+                modoEdicion
+                ? 'Modifique la información del medicamento.'
+                : 'Ingrese la información del nuevo medicamento.'
+                }}
+              </p>
+
+            </div>
+
+            <button type="button" class="boton-cerrar" (click)="cerrarFormulario()">
+              <span class="material-symbols-outlined">
+                close
+              </span>
+            </button>
 
           </div>
 
-          <button type="button" class="boton-cerrar" (click)="cerrarFormulario()">
-            <span class="material-symbols-outlined">
-              close
-            </span>
-          </button>
+
+          <form (ngSubmit)="guardarMedicamento()" #formMedicamento="ngForm">
+
+            <div class="formulario-grid">
+
+              <!-- NOMBRE -->
+              <div class="campo-formulario">
+
+                <label for="nombreMedicamento">
+                  Nombre
+                </label>
+
+                <input id="nombreMedicamento" type="text" [(ngModel)]="medicamentoActual.nombre"
+                  name="nombreMedicamento" placeholder="Ej. Acetaminofén" required>
+
+              </div>
+
+
+              <!-- PRINCIPIO ACTIVO -->
+              <div class="campo-formulario">
+
+                <label for="principioActivo">
+                  Principio activo
+                </label>
+
+                <input id="principioActivo" type="text" [(ngModel)]="medicamentoActual.principio_activo"
+                  name="principioActivo" placeholder="Ej. Paracetamol" required>
+
+              </div>
+
+
+              <!-- CONCENTRACIÓN -->
+              <div class="campo-formulario">
+
+                <label for="concentracion">
+                  Concentración
+                </label>
+
+                <input id="concentracion" type="text" [(ngModel)]="medicamentoActual.concentracion" name="concentracion"
+                  placeholder="Ej. 500 mg">
+
+              </div>
+
+
+              <!-- PRESENTACIÓN -->
+              <div class="campo-formulario">
+
+                <label for="presentacion">
+                  Presentación
+                </label>
+
+                <input id="presentacion" type="text" [(ngModel)]="medicamentoActual.presentacion" name="presentacion"
+                  placeholder="Ej. Tabletas">
+
+              </div>
+
+
+              <!-- UNIDAD DE MEDIDA -->
+              <div class="campo-formulario">
+
+                <label for="unidadMedidaMedicamento">
+                  Unidad de medida
+                </label>
+
+                <input id="unidadMedidaMedicamento" type="text" [(ngModel)]="medicamentoActual.unidad_medida"
+                  name="unidadMedidaMedicamento" placeholder="Ej. mg">
+
+              </div>
+
+              <!-- ESTADO -->
+              <div class="campo-formulario">
+
+                <label for="estadoMedicamento">
+                  Estado
+                </label>
+
+                <select id="estadoMedicamento" [(ngModel)]="medicamentoActual.estado" name="estadoMedicamento">
+                  <option [ngValue]="true">
+                    Activo
+                  </option>
+
+                  <option [ngValue]="false">
+                    Inactivo
+                  </option>
+                </select>
+
+              </div>
+
+
+              <!-- DESCRIPCIÓN -->
+              <div class="campo-formulario campo-completo">
+
+                <label for="descripcionMedicamento">
+                  Descripción
+                </label>
+
+                <textarea id="descripcionMedicamento" [(ngModel)]="medicamentoActual.descripcion"
+                  name="descripcionMedicamento" placeholder="Ingrese una descripción del medicamento..."
+                  rows="3"></textarea>
+
+              </div>
+
+            </div>
+
+
+            <!-- ACCIONES -->
+            <div class="acciones-formulario">
+
+              <button type="button" class="boton-secundario" (click)="cerrarFormulario()">
+                Cancelar
+              </button>
+
+              <button type="submit" class="boton-guardar">
+                <span class="material-symbols-outlined">
+                  save
+                </span>
+
+                {{
+                modoEdicion
+                ? 'Actualizar registro'
+                : 'Guardar registro'
+                }}
+              </button>
+
+            </div>
+
+          </form>
 
         </div>
-
-
-        <form (ngSubmit)="guardarMedicamento()" #formMedicamento="ngForm">
-
-          <div class="formulario-grid">
-
-            <!-- NOMBRE -->
-            <div class="campo-formulario">
-
-              <label for="nombreMedicamento">
-                Nombre
-              </label>
-
-              <input id="nombreMedicamento" type="text" [(ngModel)]="medicamentoActual.nombre" name="nombreMedicamento"
-                placeholder="Ej. Acetaminofén" required>
-
-            </div>
-
-
-            <!-- PRINCIPIO ACTIVO -->
-            <div class="campo-formulario">
-
-              <label for="principioActivo">
-                Principio activo
-              </label>
-
-              <input id="principioActivo" type="text" [(ngModel)]="medicamentoActual.principio_activo"
-                name="principioActivo" placeholder="Ej. Paracetamol" required>
-
-            </div>
-
-
-            <!-- CONCENTRACIÓN -->
-            <div class="campo-formulario">
-
-              <label for="concentracion">
-                Concentración
-              </label>
-
-              <input id="concentracion" type="text" [(ngModel)]="medicamentoActual.concentracion" name="concentracion"
-                placeholder="Ej. 500 mg">
-
-            </div>
-
-
-            <!-- PRESENTACIÓN -->
-            <div class="campo-formulario">
-
-              <label for="presentacion">
-                Presentación
-              </label>
-
-              <input id="presentacion" type="text" [(ngModel)]="medicamentoActual.presentacion" name="presentacion"
-                placeholder="Ej. Tabletas">
-
-            </div>
-
-
-            <!-- UNIDAD DE MEDIDA -->
-            <div class="campo-formulario">
-
-              <label for="unidadMedidaMedicamento">
-                Unidad de medida
-              </label>
-
-              <input id="unidadMedidaMedicamento" type="text" [(ngModel)]="medicamentoActual.unidad_medida"
-                name="unidadMedidaMedicamento" placeholder="Ej. mg">
-
-            </div>
-
-            <!-- ESTADO -->
-            <div class="campo-formulario">
-
-              <label for="estadoMedicamento">
-                Estado
-              </label>
-
-              <select id="estadoMedicamento" [(ngModel)]="medicamentoActual.estado" name="estadoMedicamento">
-                <option [ngValue]="true">
-                  Activo
-                </option>
-
-                <option [ngValue]="false">
-                  Inactivo
-                </option>
-              </select>
-
-            </div>
-
-
-            <!-- DESCRIPCIÓN -->
-            <div class="campo-formulario campo-completo">
-
-              <label for="descripcionMedicamento">
-                Descripción
-              </label>
-
-              <textarea id="descripcionMedicamento" [(ngModel)]="medicamentoActual.descripcion"
-                name="descripcionMedicamento" placeholder="Ingrese una descripción del medicamento..."
-                rows="3"></textarea>
-
-            </div>
-
-          </div>
-
-
-          <!-- ACCIONES -->
-          <div class="acciones-formulario">
-
-            <button type="button" class="boton-secundario" (click)="cerrarFormulario()">
-              Cancelar
-            </button>
-
-            <button type="submit" class="boton-guardar">
-              <span class="material-symbols-outlined">
-                save
-              </span>
-
-              {{
-              modoEdicion
-              ? 'Actualizar registro'
-              : 'Guardar registro'
-              }}
-            </button>
-
-          </div>
-
-        </form>
-
       </div>
-
 
       <!-- ===============================================
            TABLA MEDICAMENTOS
@@ -374,145 +376,147 @@
 
 
       <!-- FORMULARIO -->
-      <div class="formulario-catalogo" *ngIf="mostrandoFormularioInsumo">
+      <div class="modal-overlay" *ngIf="mostrandoFormularioInsumo">
 
-        <div class="encabezado-formulario">
+        <div class="formulario-catalogo modal-contenido">
 
-          <div>
+          <div class="encabezado-formulario">
 
-            <h3>
-              {{
-              modoEdicionInsumo
-              ? 'Editar insumo'
-              : 'Nuevo insumo'
-              }}
-            </h3>
+            <div>
 
-            <p>
-              {{
-              modoEdicionInsumo
-              ? 'Modifique la información del insumo.'
-              : 'Ingrese la información del nuevo insumo.'
-              }}
-            </p>
+              <h3>
+                {{
+                modoEdicionInsumo
+                ? 'Editar insumo'
+                : 'Nuevo insumo'
+                }}
+              </h3>
 
-          </div>
-
-          <button type="button" class="boton-cerrar" (click)="cerrarFormularioInsumo()">
-            <span class="material-symbols-outlined">
-              close
-            </span>
-          </button>
-
-        </div>
-
-
-        <form (ngSubmit)="guardarInsumo()" #formInsumo="ngForm">
-
-          <div class="formulario-grid">
-
-            <div class="campo-formulario">
-
-              <label for="nombreInsumo">
-                Nombre
-              </label>
-
-              <input id="nombreInsumo" type="text" [(ngModel)]="insumoActual.nombre" name="nombreInsumo"
-                placeholder="Ej. Guantes" required>
+              <p>
+                {{
+                modoEdicionInsumo
+                ? 'Modifique la información del insumo.'
+                : 'Ingrese la información del nuevo insumo.'
+                }}
+              </p>
 
             </div>
 
-
-            <div class="campo-formulario">
-
-              <label for="tipoInsumo">
-                Tipo de insumo
-              </label>
-
-              <select id="tipoInsumo" [(ngModel)]="insumoActual.id_tipo_insumo" name="tipoInsumo">
-
-                <option [ngValue]="null">
-                  Seleccione un tipo
-                </option>
-
-                <option *ngFor="let tipo of tiposInsumo" [ngValue]="tipo.id_tipo_insumo">
-                  {{ tipo.nombre }}
-                </option>
-
-              </select>
-
-            </div>
-
-
-            <div class="campo-formulario">
-
-              <label for="unidadMedidaInsumo">
-                Unidad de medida
-              </label>
-
-              <input id="unidadMedidaInsumo" type="text" [(ngModel)]="insumoActual.unidad_medida"
-                name="unidadMedidaInsumo" placeholder="Ej. Caja">
-
-            </div>
-
-
-            <div class="campo-formulario">
-
-              <label for="estadoInsumo">
-                Estado
-              </label>
-
-              <select id="estadoInsumo" [(ngModel)]="insumoActual.estado" name="estadoInsumo">
-
-                <option [ngValue]="true">
-                  Activo
-                </option>
-
-                <option [ngValue]="false">
-                  Inactivo
-                </option>
-
-              </select>
-
-            </div>
-
-
-            <div class="campo-formulario campo-completo">
-
-              <label for="descripcionInsumo">
-                Descripción
-              </label>
-
-              <textarea id="descripcionInsumo" [(ngModel)]="insumoActual.descripcion" name="descripcionInsumo"
-                placeholder="Ingrese una descripción del insumo..." rows="3"></textarea>
-
-            </div>
-
-          </div>
-
-
-          <div class="acciones-formulario">
-
-            <button type="button" class="boton-secundario" (click)="cerrarFormularioInsumo()">
-              Cancelar
-            </button>
-
-            <button type="submit" class="boton-guardar">
+            <button type="button" class="boton-cerrar" (click)="cerrarFormularioInsumo()">
               <span class="material-symbols-outlined">
-                save
+                close
               </span>
-
-              {{
-              modoEdicionInsumo
-              ? 'Actualizar registro'
-              : 'Guardar registro'
-              }}
             </button>
 
           </div>
 
-        </form>
 
+          <form (ngSubmit)="guardarInsumo()" #formInsumo="ngForm">
+
+            <div class="formulario-grid">
+
+              <div class="campo-formulario">
+
+                <label for="nombreInsumo">
+                  Nombre
+                </label>
+
+                <input id="nombreInsumo" type="text" [(ngModel)]="insumoActual.nombre" name="nombreInsumo"
+                  placeholder="Ej. Guantes" required>
+
+              </div>
+
+
+              <div class="campo-formulario">
+
+                <label for="tipoInsumo">
+                  Tipo de insumo
+                </label>
+
+                <select id="tipoInsumo" [(ngModel)]="insumoActual.id_tipo_insumo" name="tipoInsumo">
+
+                  <option [ngValue]="null">
+                    Seleccione un tipo
+                  </option>
+
+                  <option *ngFor="let tipo of tiposInsumo" [ngValue]="tipo.id_tipo_insumo">
+                    {{ tipo.nombre }}
+                  </option>
+
+                </select>
+
+              </div>
+
+
+              <div class="campo-formulario">
+
+                <label for="unidadMedidaInsumo">
+                  Unidad de medida
+                </label>
+
+                <input id="unidadMedidaInsumo" type="text" [(ngModel)]="insumoActual.unidad_medida"
+                  name="unidadMedidaInsumo" placeholder="Ej. Caja">
+
+              </div>
+
+
+              <div class="campo-formulario">
+
+                <label for="estadoInsumo">
+                  Estado
+                </label>
+
+                <select id="estadoInsumo" [(ngModel)]="insumoActual.estado" name="estadoInsumo">
+
+                  <option [ngValue]="true">
+                    Activo
+                  </option>
+
+                  <option [ngValue]="false">
+                    Inactivo
+                  </option>
+
+                </select>
+
+              </div>
+
+
+              <div class="campo-formulario campo-completo">
+
+                <label for="descripcionInsumo">
+                  Descripción
+                </label>
+
+                <textarea id="descripcionInsumo" [(ngModel)]="insumoActual.descripcion" name="descripcionInsumo"
+                  placeholder="Ingrese una descripción del insumo..." rows="3"></textarea>
+
+              </div>
+
+            </div>
+
+
+            <div class="acciones-formulario">
+
+              <button type="button" class="boton-secundario" (click)="cerrarFormularioInsumo()">
+                Cancelar
+              </button>
+
+              <button type="submit" class="boton-guardar">
+                <span class="material-symbols-outlined">
+                  save
+                </span>
+
+                {{
+                modoEdicionInsumo
+                ? 'Actualizar registro'
+                : 'Guardar registro'
+                }}
+              </button>
+
+            </div>
+
+          </form>
+        </div>
       </div>
 
 
@@ -648,112 +652,114 @@
 
 
       <!-- FORMULARIO -->
-      <div class="formulario-catalogo" *ngIf="mostrandoFormularioTipoInsumo">
+      <div class="modal-overlay" *ngIf="mostrandoFormularioTipoInsumo">
 
-        <div class="encabezado-formulario">
+        <div class="formulario-catalogo modal-contenido">
 
-          <div>
+          <div class="encabezado-formulario">
 
-            <h3>
-              {{
-              modoEdicionTipoInsumo
-              ? 'Editar tipo de insumo'
-              : 'Nuevo tipo de insumo'
-              }}
-            </h3>
+            <div>
 
-            <p>
-              {{
-              modoEdicionTipoInsumo
-              ? 'Modifique la información del tipo de insumo.'
-              : 'Ingrese la información del nuevo tipo de insumo.'
-              }}
-            </p>
+              <h3>
+                {{
+                modoEdicionTipoInsumo
+                ? 'Editar tipo de insumo'
+                : 'Nuevo tipo de insumo'
+                }}
+              </h3>
 
-          </div>
-
-          <button type="button" class="boton-cerrar" (click)="cerrarFormularioTipoInsumo()">
-            <span class="material-symbols-outlined">
-              close
-            </span>
-          </button>
-
-        </div>
-
-
-        <form (ngSubmit)="guardarTipoInsumo()" #formTipoInsumo="ngForm">
-
-          <div class="formulario-grid">
-
-            <div class="campo-formulario">
-
-              <label for="nombreTipoInsumo">
-                Nombre
-              </label>
-
-              <input id="nombreTipoInsumo" type="text" [(ngModel)]="tipoInsumoActual.nombre" name="nombreTipoInsumo"
-                placeholder="Ej. Elementos de protección" required>
+              <p>
+                {{
+                modoEdicionTipoInsumo
+                ? 'Modifique la información del tipo de insumo.'
+                : 'Ingrese la información del nuevo tipo de insumo.'
+                }}
+              </p>
 
             </div>
 
-
-            <div class="campo-formulario">
-
-              <label for="estadoTipoInsumo">
-                Estado
-              </label>
-
-              <select id="estadoTipoInsumo" [(ngModel)]="tipoInsumoActual.estado" name="estadoTipoInsumo">
-
-                <option value="Activo">
-                  Activo
-                </option>
-
-                <option value="Inactivo">
-                  Inactivo
-                </option>
-
-              </select>
-
-            </div>
-
-
-            <div class="campo-formulario campo-completo">
-
-              <label for="descripcionTipoInsumo">
-                Descripción
-              </label>
-
-              <textarea id="descripcionTipoInsumo" [(ngModel)]="tipoInsumoActual.descripcion"
-                name="descripcionTipoInsumo" placeholder="Ingrese una descripción..." rows="3"></textarea>
-
-            </div>
-
-          </div>
-
-
-          <div class="acciones-formulario">
-
-            <button type="button" class="boton-secundario" (click)="cerrarFormularioTipoInsumo()">
-              Cancelar
-            </button>
-
-            <button type="submit" class="boton-guardar" >
+            <button type="button" class="boton-cerrar" (click)="cerrarFormularioTipoInsumo()">
               <span class="material-symbols-outlined">
-                save
+                close
               </span>
-
-              {{
-              modoEdicionTipoInsumo
-              ? 'Actualizar registro'
-              : 'Guardar registro'
-              }}
             </button>
 
           </div>
 
-        </form>
 
+          <form (ngSubmit)="guardarTipoInsumo()" #formTipoInsumo="ngForm">
+
+            <div class="formulario-grid">
+
+              <div class="campo-formulario">
+
+                <label for="nombreTipoInsumo">
+                  Nombre
+                </label>
+
+                <input id="nombreTipoInsumo" type="text" [(ngModel)]="tipoInsumoActual.nombre" name="nombreTipoInsumo"
+                  placeholder="Ej. Elementos de protección" required>
+
+              </div>
+
+
+              <div class="campo-formulario">
+
+                <label for="estadoTipoInsumo">
+                  Estado
+                </label>
+
+                <select id="estadoTipoInsumo" [(ngModel)]="tipoInsumoActual.estado" name="estadoTipoInsumo">
+
+                  <option value="Activo">
+                    Activo
+                  </option>
+
+                  <option value="Inactivo">
+                    Inactivo
+                  </option>
+
+                </select>
+
+              </div>
+
+
+              <div class="campo-formulario campo-completo">
+
+                <label for="descripcionTipoInsumo">
+                  Descripción
+                </label>
+
+                <textarea id="descripcionTipoInsumo" [(ngModel)]="tipoInsumoActual.descripcion"
+                  name="descripcionTipoInsumo" placeholder="Ingrese una descripción..." rows="3"></textarea>
+
+              </div>
+
+            </div>
+
+
+            <div class="acciones-formulario">
+
+              <button type="button" class="boton-secundario" (click)="cerrarFormularioTipoInsumo()">
+                Cancelar
+              </button>
+
+              <button type="submit" class="boton-guardar">
+                <span class="material-symbols-outlined">
+                  save
+                </span>
+
+                {{
+                modoEdicionTipoInsumo
+                ? 'Actualizar registro'
+                : 'Guardar registro'
+                }}
+              </button>
+
+            </div>
+
+          </form>
+        </div>
       </div>
 
 
@@ -875,144 +881,143 @@
 
       <!-- FORMULARIO -->
 
-      <div class="formulario-catalogo" *ngIf="mostrandoFormularioTurno">
+      <div class="modal-overlay" *ngIf="mostrandoFormularioTurno">
+        <div class="formulario-catalogo modal-contenido">
 
+          <div class="encabezado-formulario">
 
-        <div class="encabezado-formulario">
+            <div>
 
-          <div>
+              <h3>
+                {{
+                modoEdicionTurno
+                ? 'Editar turno'
+                : 'Nuevo turno'
+                }}
+              </h3>
 
-            <h3>
-              {{
-              modoEdicionTurno
-              ? 'Editar turno'
-              : 'Nuevo turno'
-              }}
-            </h3>
-
-            <p>
-              {{
-              modoEdicionTurno
-              ? 'Modifique la información del turno.'
-              : 'Ingrese la información del nuevo turno.'
-              }}
-            </p>
-
-          </div>
-
-          <button type="button" class="boton-cerrar" (click)="cerrarFormularioTurno()">
-            <span class="material-symbols-outlined">
-              close
-            </span>
-          </button>
-
-        </div>
-
-
-        <form (ngSubmit)="guardarTurno()" #formTurno="ngForm">
-
-          <div class="formulario-grid">
-
-            <!-- NOMBRE -->
-            <div class="campo-formulario">
-
-              <label for="nombreTurno">
-                Nombre
-              </label>
-
-              <input id="nombreTurno" type="text" [(ngModel)]="turnoActual.nombre" name="nombreTurno"
-                placeholder="Ej. Turno mañana" required>
+              <p>
+                {{
+                modoEdicionTurno
+                ? 'Modifique la información del turno.'
+                : 'Ingrese la información del nuevo turno.'
+                }}
+              </p>
 
             </div>
 
-
-            <!-- HORA DE INICIO -->
-            <div class="campo-formulario">
-
-              <label for="horaInicio">
-                Hora de inicio
-              </label>
-
-              <input id="horaInicio" type="time" [(ngModel)]="turnoActual.hora_inicio" name="horaInicio" required>
-
-            </div>
-
-
-            <!-- HORA DE FINALIZACIÓN -->
-            <div class="campo-formulario">
-
-              <label for="horaFin">
-                Hora de finalización
-              </label>
-
-              <input id="horaFin" type="time" [(ngModel)]="turnoActual.hora_fin" name="horaFin">
-
-            </div>
-
-
-            <!-- ESTADO -->
-            <div class="campo-formulario">
-
-              <label for="estadoTurno">
-                Estado
-              </label>
-
-              <select id="estadoTurno" [(ngModel)]="turnoActual.estado" name="estadoTurno">
-
-                <option [ngValue]="true">
-                  Activo
-                </option>
-
-                <option [ngValue]="false">
-                  Inactivo
-                </option>
-
-              </select>
-
-            </div>
-
-
-            <!-- DESCRIPCIÓN -->
-            <div class="campo-formulario campo-completo">
-
-              <label for="descripcionTurno">
-                Descripción
-              </label>
-
-              <textarea id="descripcionTurno" [(ngModel)]="turnoActual.descripcion" name="descripcionTurno"
-                placeholder="Ingrese una descripción del turno..." rows="3"></textarea>
-
-            </div>
-
-          </div>
-
-
-          <!-- ACCIONES -->
-          <div class="acciones-formulario">
-
-            <button type="button" class="boton-secundario" (click)="cerrarFormularioTurno()">
-              Cancelar
-            </button>
-
-            <button type="submit" class="boton-guardar" >
-
+            <button type="button" class="boton-cerrar" (click)="cerrarFormularioTurno()">
               <span class="material-symbols-outlined">
-                save
+                close
               </span>
-
-              {{
-              modoEdicionTurno
-              ? 'Actualizar registro'
-              : 'Guardar registro'
-              }}
-
             </button>
 
           </div>
 
-        </form>
+
+          <form (ngSubmit)="guardarTurno()" #formTurno="ngForm">
+
+            <div class="formulario-grid">
+
+              <!-- NOMBRE -->
+              <div class="campo-formulario">
+
+                <label for="nombreTurno">
+                  Nombre
+                </label>
+
+                <input id="nombreTurno" type="text" [(ngModel)]="turnoActual.nombre" name="nombreTurno"
+                  placeholder="Ej. Turno mañana" required>
+
+              </div>
 
 
+              <!-- HORA DE INICIO -->
+              <div class="campo-formulario">
+
+                <label for="horaInicio">
+                  Hora de inicio
+                </label>
+
+                <input id="horaInicio" type="time" [(ngModel)]="turnoActual.hora_inicio" name="horaInicio" required>
+
+              </div>
+
+
+              <!-- HORA DE FINALIZACIÓN -->
+              <div class="campo-formulario">
+
+                <label for="horaFin">
+                  Hora de finalización
+                </label>
+
+                <input id="horaFin" type="time" [(ngModel)]="turnoActual.hora_fin" name="horaFin">
+
+              </div>
+
+
+              <!-- ESTADO -->
+              <div class="campo-formulario">
+
+                <label for="estadoTurno">
+                  Estado
+                </label>
+
+                <select id="estadoTurno" [(ngModel)]="turnoActual.estado" name="estadoTurno">
+
+                  <option [ngValue]="true">
+                    Activo
+                  </option>
+
+                  <option [ngValue]="false">
+                    Inactivo
+                  </option>
+
+                </select>
+
+              </div>
+
+
+              <!-- DESCRIPCIÓN -->
+              <div class="campo-formulario campo-completo">
+
+                <label for="descripcionTurno">
+                  Descripción
+                </label>
+
+                <textarea id="descripcionTurno" [(ngModel)]="turnoActual.descripcion" name="descripcionTurno"
+                  placeholder="Ingrese una descripción del turno..." rows="3"></textarea>
+
+              </div>
+
+            </div>
+
+
+            <!-- ACCIONES -->
+            <div class="acciones-formulario">
+
+              <button type="button" class="boton-secundario" (click)="cerrarFormularioTurno()">
+                Cancelar
+              </button>
+
+              <button type="submit" class="boton-guardar">
+
+                <span class="material-symbols-outlined">
+                  save
+                </span>
+
+                {{
+                modoEdicionTurno
+                ? 'Actualizar registro'
+                : 'Guardar registro'
+                }}
+
+              </button>
+
+            </div>
+
+          </form>
+        </div>
       </div>
 
     </section>
@@ -1043,135 +1048,136 @@
       </div>
       <!-- FORMULARIO HABITACIÓN -->
 
-      <div class="formulario-catalogo" *ngIf="mostrandoFormularioHabitacion">
+      <div class="modal-overlay" *ngIf="mostrandoFormularioHabitacion">
+        <div class="formulario-catalogo modal-contenido">
 
 
-        <div class="encabezado-formulario">
+          <div class="encabezado-formulario">
 
-          <div>
+            <div>
 
-            <h3>
-              {{
-              modoEdicionHabitacion
-              ? 'Editar habitación'
-              : 'Nueva habitación'
-              }}
-            </h3>
+              <h3>
+                {{
+                modoEdicionHabitacion
+                ? 'Editar habitación'
+                : 'Nueva habitación'
+                }}
+              </h3>
 
-            <p>
-              {{
-              modoEdicionHabitacion
-              ? 'Modifique la información de la habitación.'
-              : 'Ingrese la información de la nueva habitación.'
-              }}
-            </p>
-
-          </div>
-
-
-          <button type="button" class="boton-cerrar" (click)="cerrarFormularioHabitacion()">
-
-            <span class="material-symbols-outlined">
-              close
-            </span>
-
-          </button>
-
-        </div>
-
-
-
-        <form (ngSubmit)="guardarHabitacion()" #formHabitacion="ngForm">
-
-          <div class="formulario-grid">
-
-            <div class="campo-formulario">
-
-              <label for="nombreHabitacion">
-                Nombre
-              </label>
-
-              <input id="nombreHabitacion" type="text" [(ngModel)]="habitacionActual.nombre" name="nombreHabitacion"
-                placeholder="Ej. Habitación 1" required>
+              <p>
+                {{
+                modoEdicionHabitacion
+                ? 'Modifique la información de la habitación.'
+                : 'Ingrese la información de la nueva habitación.'
+                }}
+              </p>
 
             </div>
 
 
-            <div class="campo-formulario">
-
-              <label for="numeroHabitacion">
-                Número
-              </label>
-
-              <input id="numeroHabitacion" type="text" [(ngModel)]="habitacionActual.numero" name="numeroHabitacion"
-                placeholder="Ej. 101" required>
-
-            </div>
-
-
-            <div class="campo-formulario campo-completo">
-
-              <label for="descripcionHabitacion">
-                Descripción
-              </label>
-
-              <textarea id="descripcionHabitacion" [(ngModel)]="habitacionActual.descripcion"
-                name="descripcionHabitacion" placeholder="Ingrese una descripción de la habitación..." rows="3">
-      </textarea>
-
-            </div>
-
-
-            <div class="campo-formulario">
-
-              <label for="estadoHabitacion">
-                Estado
-              </label>
-
-              <select id="estadoHabitacion" [(ngModel)]="habitacionActual.estado" name="estadoHabitacion">
-
-                <option [ngValue]="true">
-                  Activo
-                </option>
-
-                <option [ngValue]="false">
-                  Inactivo
-                </option>
-
-              </select>
-
-            </div>
-
-          </div>
-
-
-          <div class="acciones-formulario">
-
-            <button type="button" class="boton-secundario" (click)="cerrarFormularioHabitacion()">
-
-              Cancelar
-
-            </button>
-
-
-            <button type="submit" class="boton-guardar" [disabled]="formHabitacion.invalid">
+            <button type="button" class="boton-cerrar" (click)="cerrarFormularioHabitacion()">
 
               <span class="material-symbols-outlined">
-                save
+                close
               </span>
-
-              {{
-              modoEdicionHabitacion
-              ? 'Actualizar registro'
-              : 'Guardar registro'
-              }}
 
             </button>
 
           </div>
 
-        </form>
 
+
+          <form (ngSubmit)="guardarHabitacion()" #formHabitacion="ngForm">
+
+            <div class="formulario-grid">
+
+              <div class="campo-formulario">
+
+                <label for="nombreHabitacion">
+                  Nombre
+                </label>
+
+                <input id="nombreHabitacion" type="text" [(ngModel)]="habitacionActual.nombre" name="nombreHabitacion"
+                  placeholder="Ej. Habitación 1" required>
+
+              </div>
+
+
+              <div class="campo-formulario">
+
+                <label for="numeroHabitacion">
+                  Número
+                </label>
+
+                <input id="numeroHabitacion" type="text" [(ngModel)]="habitacionActual.numero" name="numeroHabitacion"
+                  placeholder="Ej. 101" required>
+
+              </div>
+
+
+              <div class="campo-formulario campo-completo">
+
+                <label for="descripcionHabitacion">
+                  Descripción
+                </label>
+
+                <textarea id="descripcionHabitacion" [(ngModel)]="habitacionActual.descripcion"
+                  name="descripcionHabitacion" placeholder="Ingrese una descripción de la habitación..." rows="3">
+      </textarea>
+
+              </div>
+
+
+              <div class="campo-formulario">
+
+                <label for="estadoHabitacion">
+                  Estado
+                </label>
+
+                <select id="estadoHabitacion" [(ngModel)]="habitacionActual.estado" name="estadoHabitacion">
+
+                  <option [ngValue]="true">
+                    Activo
+                  </option>
+
+                  <option [ngValue]="false">
+                    Inactivo
+                  </option>
+
+                </select>
+
+              </div>
+
+            </div>
+
+
+            <div class="acciones-formulario">
+
+              <button type="button" class="boton-secundario" (click)="cerrarFormularioHabitacion()">
+
+                Cancelar
+
+              </button>
+
+
+              <button type="submit" class="boton-guardar" [disabled]="formHabitacion.invalid">
+
+                <span class="material-symbols-outlined">
+                  save
+                </span>
+
+                {{
+                modoEdicionHabitacion
+                ? 'Actualizar registro'
+                : 'Guardar registro'
+                }}
+
+              </button>
+
+            </div>
+
+          </form>
+        </div>
 
       </div>
 
@@ -1332,153 +1338,153 @@
 
       <!-- FORMULARIO CAMA -->
 
-      <div class="formulario-catalogo" *ngIf="mostrandoFormularioCama">
+      <div class="modal-overlay" *ngIf="mostrandoFormularioCama">
+        <div class="formulario-catalogo modal-contenido">
+          <div class="encabezado-formulario">
 
-        <div class="encabezado-formulario">
+            <div>
 
-          <div>
+              <h3>
+                {{
+                modoEdicionCama
+                ? 'Editar cama'
+                : 'Nueva cama'
+                }}
+              </h3>
 
-            <h3>
-              {{
-              modoEdicionCama
-              ? 'Editar cama'
-              : 'Nueva cama'
-              }}
-            </h3>
-
-            <p>
-              {{
-              modoEdicionCama
-              ? 'Modifique la información de la cama.'
-              : 'Ingrese la información de la nueva cama.'
-              }}
-            </p>
-
-          </div>
-
-
-          <button type="button" class="boton-cerrar" (click)="cerrarFormularioCama()">
-
-            <span class="material-symbols-outlined">
-              close
-            </span>
-
-          </button>
-
-        </div>
-
-
-        <form (ngSubmit)="guardarCama()" #formCama="ngForm">
-
-          <div class="formulario-grid">
-
-            <!-- NOMBRE -->
-
-            <div class="campo-formulario">
-
-              <label for="nombreCama">
-                Nombre
-              </label>
-
-              <input id="nombreCama" type="text" [(ngModel)]="camaActual.nombre" name="nombreCama"
-                placeholder="Ej. Cama 1" required>
+              <p>
+                {{
+                modoEdicionCama
+                ? 'Modifique la información de la cama.'
+                : 'Ingrese la información de la nueva cama.'
+                }}
+              </p>
 
             </div>
 
 
-            <!-- NÚMERO -->
-
-            <div class="campo-formulario">
-
-              <label for="numeroCama">
-                Número
-              </label>
-
-              <input id="numeroCama" type="text" [(ngModel)]="camaActual.numero" name="numeroCama"
-                placeholder="Ej. 101-A" required>
-
-            </div>
-
-
-            <!-- HABITACIÓN -->
-
-            <div class="campo-formulario">
-
-              <label for="habitacionCama">
-                Habitación
-              </label>
-
-              <select id="habitacionCama" [(ngModel)]="camaActual.id_habitacion" name="habitacionCama" required>
-
-                <option [ngValue]="null" disabled>
-                  Seleccione una habitación
-                </option>
-
-                <option *ngFor="let habitacion of habitaciones" [ngValue]="habitacion.id_habitacion">
-
-                  {{ habitacion.nombre }} - {{ habitacion.numero }}
-
-                </option>
-
-              </select>
-
-            </div>
-
-
-            <!-- ESTADO -->
-
-            <div class="campo-formulario">
-
-              <label for="estadoCama">
-                Estado
-              </label>
-
-              <select id="estadoCama" [(ngModel)]="camaActual.estado" name="estadoCama">
-
-                <option [ngValue]="true">
-                  Activo
-                </option>
-
-                <option [ngValue]="false">
-                  Inactivo
-                </option>
-
-              </select>
-
-            </div>
-
-          </div>
-
-
-          <!-- ACCIONES -->
-
-          <div class="acciones-formulario">
-
-            <button type="button" class="boton-secundario" (click)="cerrarFormularioCama()">
-
-              Cancelar
-
-            </button>
-
-
-            <button type="submit" class="boton-guardar" [disabled]="formCama.invalid">
+            <button type="button" class="boton-cerrar" (click)="cerrarFormularioCama()">
 
               <span class="material-symbols-outlined">
-                save
+                close
               </span>
-
-              {{
-              modoEdicionCama
-              ? 'Actualizar registro'
-              : 'Guardar registro'
-              }}
 
             </button>
 
           </div>
 
-        </form>
 
+          <form (ngSubmit)="guardarCama()" #formCama="ngForm">
+
+            <div class="formulario-grid">
+
+              <!-- NOMBRE -->
+
+              <div class="campo-formulario">
+
+                <label for="nombreCama">
+                  Nombre
+                </label>
+
+                <input id="nombreCama" type="text" [(ngModel)]="camaActual.nombre" name="nombreCama"
+                  placeholder="Ej. Cama 1" required>
+
+              </div>
+
+
+              <!-- NÚMERO -->
+
+              <div class="campo-formulario">
+
+                <label for="numeroCama">
+                  Número
+                </label>
+
+                <input id="numeroCama" type="text" [(ngModel)]="camaActual.numero" name="numeroCama"
+                  placeholder="Ej. 101-A" required>
+
+              </div>
+
+
+              <!-- HABITACIÓN -->
+
+              <div class="campo-formulario">
+
+                <label for="habitacionCama">
+                  Habitación
+                </label>
+
+                <select id="habitacionCama" [(ngModel)]="camaActual.id_habitacion" name="habitacionCama" required>
+
+                  <option [ngValue]="null" disabled>
+                    Seleccione una habitación
+                  </option>
+
+                  <option *ngFor="let habitacion of habitaciones" [ngValue]="habitacion.id_habitacion">
+
+                    {{ habitacion.nombre }} - {{ habitacion.numero }}
+
+                  </option>
+
+                </select>
+
+              </div>
+
+
+              <!-- ESTADO -->
+
+              <div class="campo-formulario">
+
+                <label for="estadoCama">
+                  Estado
+                </label>
+
+                <select id="estadoCama" [(ngModel)]="camaActual.estado" name="estadoCama">
+
+                  <option [ngValue]="true">
+                    Activo
+                  </option>
+
+                  <option [ngValue]="false">
+                    Inactivo
+                  </option>
+
+                </select>
+
+              </div>
+
+            </div>
+
+
+            <!-- ACCIONES -->
+
+            <div class="acciones-formulario">
+
+              <button type="button" class="boton-secundario" (click)="cerrarFormularioCama()">
+
+                Cancelar
+
+              </button>
+
+
+              <button type="submit" class="boton-guardar" [disabled]="formCama.invalid">
+
+                <span class="material-symbols-outlined">
+                  save
+                </span>
+
+                {{
+                modoEdicionCama
+                ? 'Actualizar registro'
+                : 'Guardar registro'
+                }}
+
+              </button>
+
+            </div>
+
+          </form>
+        </div>
       </div>
 
 
