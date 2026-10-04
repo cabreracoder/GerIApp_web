@@ -1606,6 +1606,376 @@
 
         </table>
 
+         </div>
+
+    </section>
+
+    <!-- ===================================================
+         GRUPOS DE MEDICACIÓN
+    ==================================================== -->
+
+    <section class="pantalla-catalogo" *ngIf="catalogoSeleccionado === 'Grupos de medicación'">
+
+      <div class="encabezado-catalogo">
+
+        <div>
+
+          <h2>Grupos de medicación</h2>
+
+          <p>
+            Administre los grupos y rangos de horario para la administración de medicamentos.
+          </p>
+
+        </div>
+
+        <button
+          type="button"
+          class="boton-nuevo"
+          *ngIf="!mostrandoFormularioGrupoMedicacion"
+          (click)="abrirNuevoGrupoMedicacion()">
+
+          <span class="material-symbols-outlined">
+            add
+          </span>
+
+          Nuevo registro
+
+        </button>
+
+      </div>
+
+
+      <!-- =================================================
+           FORMULARIO GRUPO DE MEDICACIÓN
+      ================================================== -->
+
+      <div
+        class="modal-overlay"
+        *ngIf="mostrandoFormularioGrupoMedicacion">
+
+        <div class="formulario-catalogo modal-contenido">
+
+          <div class="encabezado-formulario">
+
+            <div>
+
+              <h3>
+                {{
+                modoEdicionGrupoMedicacion
+                ? 'Editar grupo de medicación'
+                : 'Nuevo grupo de medicación'
+                }}
+              </h3>
+
+              <p>
+                {{
+                modoEdicionGrupoMedicacion
+                ? 'Modifique la información del grupo de medicación.'
+                : 'Ingrese la información del nuevo grupo de medicación.'
+                }}
+              </p>
+
+            </div>
+
+
+            <button
+              type="button"
+              class="boton-cerrar"
+              (click)="cerrarFormularioGrupoMedicacion()">
+
+              <span class="material-symbols-outlined">
+                close
+              </span>
+
+            </button>
+
+          </div>
+
+
+          <form
+            (ngSubmit)="guardarGrupoMedicacion()"
+            #formGrupoMedicacion="ngForm">
+
+            <div class="formulario-grid">
+
+              <!-- NOMBRE -->
+
+              <div class="campo-formulario">
+
+                <label for="nombreGrupoMedicacion">
+                  Nombre
+                </label>
+
+                <input
+                  id="nombreGrupoMedicacion"
+                  type="text"
+                  [(ngModel)]="grupoMedicacionActual.nombre"
+                  name="nombreGrupoMedicacion"
+                  placeholder="Ej. Mañana"
+                  required>
+
+              </div>
+
+
+              <!-- HORA INICIAL -->
+
+              <div class="campo-formulario">
+
+                <label for="horaRangoInicial">
+                  Hora inicial
+                </label>
+
+                <input
+                  id="horaRangoInicial"
+                  type="time"
+                  [(ngModel)]="grupoMedicacionActual.hora_rango_inicial"
+                  name="horaRangoInicial"
+                  required>
+
+              </div>
+
+
+              <!-- HORA FINAL -->
+
+              <div class="campo-formulario">
+
+                <label for="horaRangoFinal">
+                  Hora final
+                </label>
+
+                <input
+                  id="horaRangoFinal"
+                  type="time"
+                  [(ngModel)]="grupoMedicacionActual.hora_rango_final"
+                  name="horaRangoFinal"
+                  required>
+
+              </div>
+
+
+              <!-- ESTADO -->
+
+              <div class="campo-formulario">
+
+                <label for="estadoGrupoMedicacion">
+                  Estado
+                </label>
+
+                <select
+                  id="estadoGrupoMedicacion"
+                  [(ngModel)]="grupoMedicacionActual.estado"
+                  name="estadoGrupoMedicacion">
+
+                  <option [ngValue]="true">
+                    Activo
+                  </option>
+
+                  <option [ngValue]="false">
+                    Inactivo
+                  </option>
+
+                </select>
+
+              </div>
+
+
+              <!-- DESCRIPCIÓN -->
+
+              <div class="campo-formulario campo-completo">
+
+                <label for="descripcionGrupoMedicacion">
+                  Descripción
+                </label>
+
+                <textarea
+                  id="descripcionGrupoMedicacion"
+                  [(ngModel)]="grupoMedicacionActual.descripcion"
+                  name="descripcionGrupoMedicacion"
+                  placeholder="Ingrese una descripción del grupo de medicación..."
+                  rows="3"></textarea>
+
+              </div>
+
+            </div>
+
+
+            <!-- ACCIONES -->
+
+            <div class="acciones-formulario">
+
+              <button
+                type="button"
+                class="boton-secundario"
+                (click)="cerrarFormularioGrupoMedicacion()">
+
+                Cancelar
+
+              </button>
+
+
+              <button
+                type="submit"
+                class="boton-guardar"
+                [disabled]="formGrupoMedicacion.invalid">
+
+                <span class="material-symbols-outlined">
+                  save
+                </span>
+
+                {{
+                modoEdicionGrupoMedicacion
+                ? 'Actualizar registro'
+                : 'Guardar registro'
+                }}
+
+              </button>
+
+            </div>
+
+          </form>
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           TABLA GRUPOS DE MEDICACIÓN
+      ================================================== -->
+
+      <div class="tabla-contenedor">
+
+        <div
+          class="estado-cargando"
+          *ngIf="cargandoGruposMedicacion">
+
+          <span class="material-symbols-outlined">
+            progress_activity
+          </span>
+
+          Cargando grupos de medicación...
+
+        </div>
+
+
+        <table *ngIf="!cargandoGruposMedicacion">
+
+          <thead>
+
+            <tr>
+
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Hora inicial</th>
+              <th>Hora final</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr *ngFor="let grupo of gruposMedicacion">
+
+              <td>
+                {{ grupo.nombre }}
+              </td>
+
+
+              <td>
+                {{ grupo.descripcion }}
+              </td>
+
+
+              <td>
+                {{ grupo.hora_rango_inicial }}
+              </td>
+
+
+              <td>
+                {{ grupo.hora_rango_final }}
+              </td>
+
+
+              <td>
+
+                <span
+                  class="estado"
+                  [class.estado-activo]="grupo.estado"
+                  [class.estado-inactivo]="!grupo.estado">
+
+                  {{
+                  grupo.estado
+                  ? 'Activo'
+                  : 'Inactivo'
+                  }}
+
+                </span>
+
+              </td>
+
+
+              <td>
+
+                <div class="acciones-tabla">
+
+                  <!-- EDITAR -->
+
+                  <button
+                    type="button"
+                    class="boton-accion boton-editar"
+                    title="Editar grupo de medicación"
+                    (click)="editarGrupoMedicacion(grupo)">
+
+                    <span class="material-symbols-outlined">
+                      edit
+                    </span>
+
+                  </button>
+
+
+                  <!-- ELIMINAR -->
+
+                  <button
+                    type="button"
+                    class="boton-accion boton-eliminar"
+                    title="Eliminar grupo de medicación"
+                    (click)="eliminarGrupoMedicacion(grupo)">
+
+                    <span class="material-symbols-outlined">
+                      delete
+                    </span>
+
+                  </button>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+
+            <!-- SIN DATOS -->
+
+            <tr *ngIf="gruposMedicacion.length === 0">
+
+              <td
+                colspan="6"
+                class="sin-registros">
+
+                No hay grupos de medicación registrados.
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
       </div>
 
     </section>
