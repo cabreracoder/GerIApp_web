@@ -14,7 +14,6 @@
     </div>
   </div>
 
-
   <div class="notificaciones-layout">
 
     <aside class="barra-lateral-notificaciones">
@@ -32,7 +31,6 @@
 
       </button>
 
-
       <div class="navegacion-notificaciones">
 
         <button
@@ -49,7 +47,6 @@
 
         </button>
 
-
         <button
           type="button"
           class="opcion-navegacion"
@@ -64,16 +61,11 @@
 
         </button>
 
-
-        
-
       </div>
 
     </aside>
 
-
     <div class="contenido-notificaciones">
-
 
       <div
         *ngIf="pestanaActual === 'bandeja'"
@@ -92,7 +84,6 @@
 
           </div>
 
-
           <button
             type="button"
             class="boton-marcar-todas"
@@ -107,7 +98,6 @@
 
         </div>
 
-
         <div class="lista-filtros">
 
           <button
@@ -120,7 +110,6 @@
 
           </button>
 
-
           <button
             type="button"
             class="boton-filtro critica"
@@ -131,7 +120,6 @@
 
           </button>
 
-
           <button
             type="button"
             class="boton-filtro advertencia"
@@ -141,7 +129,6 @@
             Advertencias
 
           </button>
-
 
           <button
             type="button"
@@ -165,7 +152,6 @@
 
         </div>
 
-
         <div class="lista-notificaciones">
 
           <div
@@ -177,13 +163,11 @@
             [class.tipo-evento-adverso]="notificacion.tipo === 'evento_adverso'"
             [class.leida]="notificacion.leida">
 
-
             <div class="contenedor-icono-notificacion">
 
               <i [ngClass]="notificacion.icono"></i>
 
             </div>
-
 
             <div class="contenido-notificacion">
 
@@ -193,19 +177,16 @@
                   {{ notificacion.titulo }}
                 </h3>
 
-
                 <span
                   class="insignia-tipo"
                   [class.critica]="notificacion.tipo === 'critica'"
                   [class.advertencia]="notificacion.tipo === 'advertencia'"
                   [class.informacion]="notificacion.tipo === 'informacion'"
                   [class.evento-adverso]="notificacion.tipo === 'evento_adverso'">
-                  
 
                   {{ notificacion.tipo }}
 
                 </span>
-
 
                 <span
                   *ngIf="notificacion.destinatario"
@@ -217,11 +198,9 @@
 
               </div>
 
-
               <p class="descripcion-notificacion">
                 {{ notificacion.mensaje }}
               </p>
-
 
               <p class="tiempo-notificacion">
 
@@ -233,14 +212,12 @@
 
             </div>
 
-
             <div class="acciones-notificacion">
 
               <span
                 *ngIf="!notificacion.leida"
                 class="indicador-no-leida">
               </span>
-
 
               <button
                 type="button"
@@ -255,7 +232,6 @@
             </div>
 
           </div>
-
 
           <div
             *ngIf="notificacionesFiltradas.length === 0"
@@ -277,7 +253,6 @@
 
       </div>
 
-
       <div
         *ngIf="pestanaActual === 'enviar'"
         class="tarjeta-formulario">
@@ -294,7 +269,6 @@
           </p>
 
         </div>
-
 
         <form
           class="formulario-notificacion"
@@ -337,7 +311,6 @@
 
             </div>
 
-
             <div class="campo-formulario">
 
               <label>
@@ -365,7 +338,6 @@
             </div>
 
           </div>
-
 
           <div
             *ngIf="
@@ -403,7 +375,6 @@
 
           </div>
 
-
           <div class="campo-formulario">
 
             <label>
@@ -419,7 +390,6 @@
 
           </div>
 
-
           <div class="campo-formulario">
 
             <div class="fila-etiqueta-mensaje">
@@ -434,7 +404,6 @@
 
             </div>
 
-
             <textarea
               [(ngModel)]="mensajeNotificacion"
               name="mensaje"
@@ -444,7 +413,6 @@
             </textarea>
 
           </div>
-
 
           <div
             *ngIf="mensajeError"
@@ -456,7 +424,6 @@
 
           </div>
 
-
           <div
             *ngIf="mensajeExito"
             class="mensaje-formulario exito">
@@ -466,7 +433,6 @@
             {{ mensajeExito }}
 
           </div>
-
 
           <div class="acciones-formulario">
 
@@ -481,18 +447,19 @@
             </button>
 
           </div>
+
           <div class="seccion-canales">
 
             <p class="titulo-canales">
               Canales de Envío Autorizados
             </p>
 
-
             <label class="fila-checkbox">
 
               <input
                 type="checkbox"
-                [(ngModel)]="emailActivo">
+                [(ngModel)]="emailActivo"
+                name="emailActivo">
 
               <span>
                 Correo Electrónico (Email Institucional)
@@ -500,12 +467,12 @@
 
             </label>
 
-
             <label class="fila-checkbox">
 
               <input
                 type="checkbox"
-                [(ngModel)]="smsActivo">
+                [(ngModel)]="smsActivo"
+                name="smsActivo">
 
               <span>
                 SMS (Mensajería de Texto a Cuidadores)
@@ -513,12 +480,12 @@
 
             </label>
 
-
             <label class="fila-checkbox">
 
               <input
                 type="checkbox"
-                [(ngModel)]="notificacionesPushActivas">
+                [(ngModel)]="notificacionesPushActivas"
+                name="notificacionesPushActivas">
 
               <span>
                 Aplicación Móvil (Notificaciones Push directas)
@@ -532,11 +499,9 @@
 
       </div>
 
-
       <div
         *ngIf="pestanaActual === 'historial'"
         class="tarjeta-historial">
-
 
         <div class="resumen-grid">
 
@@ -562,7 +527,6 @@
 
           </div>
 
-
           <div class="tarjeta-resumen">
 
             <div class="icono-resumen informacion">
@@ -585,7 +549,6 @@
 
           </div>
 
-
           <div class="tarjeta-resumen">
 
             <div class="icono-resumen critica">
@@ -607,7 +570,6 @@
             </div>
 
           </div>
-
 
           <div class="tarjeta-resumen">
 
@@ -633,7 +595,6 @@
 
         </div>
 
-
         <div class="encabezado-historial">
 
           <div>
@@ -648,13 +609,11 @@
 
           </div>
 
-
           <span class="contador-historial">
             Total Registros: {{ notificacionesHistorial.length }}
           </span>
 
         </div>
-
 
         <div class="contenedor-tabla">
 
@@ -673,7 +632,6 @@
               </tr>
 
             </thead>
-
 
             <tbody>
 
@@ -729,9 +687,6 @@
         </div>
 
       </div>
-
-
-      
 
     </div>
 

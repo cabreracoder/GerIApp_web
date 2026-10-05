@@ -331,6 +331,69 @@ interface Medicamento {
 }
 
 // ============================================================
+// GRUPO MEDICACIÓN
+// ============================================================
+
+interface GrupoMedicacion {
+
+  id_grupo: number;
+
+  nombre: string;
+
+  descripcion: string | null;
+
+  hora_administracion: string;
+
+  estado: boolean;
+
+}
+
+// ============================================================
+// FORMULACIÓN MEDICAMENTO
+// ============================================================
+
+interface FormulacionMedicamento {
+
+  id_formulacion: number;
+
+  fecha: string;
+
+  dosis: string;
+
+  via: string;
+
+  hora_administrada: string;
+
+  presentacion: string;
+
+  actual_administrado: boolean;
+
+  suspendido_fecha: string | null;
+
+  id_paciente:
+    number |
+    {
+      id_paciente?: number;
+    } |
+    null;
+
+  id_medicamentos:
+    number |
+    {
+      id_medicamentos?: number;
+    } |
+    null;
+
+  id_grupo:
+    number |
+    {
+      id_grupo?: number;
+    } |
+    null;
+
+}
+
+// ============================================================
 // TIPO DE INSUMO
 // ============================================================
 
@@ -608,16 +671,6 @@ export class ElementosPaciente implements OnInit {
   familiarResponsable: FamiliarResponsable | null = null;
 
   // ============================================================
-  // SECCIÓN ACTUAL
-  // ============================================================
-
-  seccionActual:
-    'elementos' |
-    'cuidados' |
-    'recomendaciones' |
-    'historia' = 'elementos';
-
-  // ============================================================
   // ALIAS PARA COMPATIBILIDAD CON EL HTML
   // ============================================================
 
@@ -638,6 +691,8 @@ export class ElementosPaciente implements OnInit {
   cargandoCuidados = false;
   cargandoRecomendaciones = false;
   cargandoHistoria = false;
+  cargandoGruposMedicacion = false;
+  cargandoFormulaciones = false;
 
   // ============================================================
   // CATÁLOGOS
@@ -650,6 +705,30 @@ export class ElementosPaciente implements OnInit {
   tiposInsumo: TipoInsumo[] = [];
 
   insumosFiltrados: Insumo[] = [];
+
+  gruposMedicacion: GrupoMedicacion[] = [];
+
+  formulacionesMedicamentos: FormulacionMedicamento[] = [];
+
+  // ============================================================
+  // FORMULARIO DE FORMULACIÓN
+  // ============================================================
+
+  mostrarFormularioFormulacion = false;
+
+  formulacionEditando: FormulacionMedicamento | null = null;
+
+  formularioFormulacion = {
+    fecha: '',
+    id_medicamentos: null as number | null,
+    dosis: '',
+    via: '',
+    id_grupo: null as number | null,
+    hora_administrada: '',
+    presentacion: '',
+    actual_administrado: true,
+    suspendido_fecha: ''
+  };
 
   // ============================================================
   // ELEMENTOS DEL PACIENTE
@@ -689,8 +768,6 @@ private historiaOriginal: HistoriaClinica | null = null;
     observaciones: '',
     estado: true
   };
-
-//EN ESTA PARTE CREO LAS LISTAS TEMPORALES.
 
   // ============================================================
   // MEDICAMENTOS PENDIENTES DE REGISTRO
@@ -827,6 +904,8 @@ private historiaOriginal: HistoriaClinica | null = null;
       this.cargarInformacionPaciente();
       this.cargarFamiliarResponsable();
       this.cargarCatalogos();
+      this.cargarGruposMedicacion();
+      this.cargarFormulacionesMedicamentos();
       this.cargarElementosPaciente();
       this.cargarCuidados();
       this.cargarRecomendaciones();
@@ -874,7 +953,10 @@ private historiaOriginal: HistoriaClinica | null = null;
 
           this.cargandoPaciente = false;
 
-          alertaError('Error', 'No fue posible cargar la información del paciente.');
+          alertaError(
+            'Error',
+            'No fue posible cargar la información del paciente.'
+          );
 
         }
 
@@ -1454,101 +1536,569 @@ private historiaOriginal: HistoriaClinica | null = null;
 
     return null;
   }
+// ============================================================
+// CARGAR GRUPOS DE MEDICACIÓN
+// ============================================================
 
-  // ============================================================
-  // CAMBIAR SECCIÓN
-  // ============================================================
+cargarGruposMedicacion(): void {
 
-  cambiarSeccion(
-    seccion:
-      'elementos' |
-      'cuidados' |
-      'recomendaciones' |
-      'historia'
-  ): void {
+  this.cargandoGruposMedicacion = true;
 
-    this.seccionActual =
-      seccion;
+  this.http
+    .get<
+      GrupoMedicacion[] |
+      RespuestaPaginada<GrupoMedicacion>
+    >(
+      `${this.apiUrl}/grupo_medicacion/`
+    )
+    .subscribe({
 
+      next: (respuesta) => {
+
+        this.gruposMedicacion =
+          this.obtenerResultados(respuesta);
+
+        this.cargandoGruposMedicacion = false;
+
+        console.log(
+          'Grupos de medicación cargados:',
+          this.gruposMedicacion
+        );
+
+        this.cdr.detectChanges();
+
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Error al cargar grupos de medicación:',
+          error
+        );
+
+        this.gruposMedicacion = [];
+
+        this.cargandoGruposMedicacion = false;
+
+        alertaError(
+          'Error',
+          'No fue posible cargar los grupos de medicación.'
+        );
+
+      }
+
+    });
+
+}
+
+// ============================================================
+// CARGAR FORMULACIONES DE MEDICAMENTOS
+// ============================================================
+
+cargarFormulacionesMedicamentos(): void {
+
+  this.cargandoFormulaciones = true;
+
+  this.http
+    .get<
+      FormulacionMedicamento[] |
+      RespuestaPaginada<FormulacionMedicamento>
+    >(
+      `${this.apiUrl}/formulacion_medicamentos/`
+    )
+    .subscribe({
+
+      next: (respuesta) => {
+
+        // Muestra la respuesta completa del backend
+        console.log(
+          'RESPUESTA FORMULACIONES:',
+          respuesta
+        );
+
+        // Obtiene los registros independientemente
+        // de si la respuesta viene paginada o como arreglo
+        const formulaciones =
+          this.obtenerResultados(respuesta);
+
+        console.log(
+          'FORMULACIONES OBTENIDAS:',
+          formulaciones
+        );
+
+        this.formulacionesMedicamentos =
+          formulaciones.filter(formulacion => {
+
+            // Muestra todas las propiedades que realmente
+            // está enviando el backend
+            console.log(
+              'PROPIEDADES DE FORMULACIÓN:',
+              Object.keys(formulacion)
+            );
+
+            // Muestra el objeto completo en formato JSON
+            console.log(
+              'FORMULACIÓN COMPLETA:',
+              JSON.stringify(
+                formulacion,
+                null,
+                2
+              )
+            );
+
+            // Muestra específicamente el campo que
+            // estamos intentando utilizar
+            console.log(
+              'ID PACIENTE RECIBIDO:',
+              formulacion.id_paciente
+            );
+
+            const idPaciente =
+              this.obtenerIdPaciente(
+                formulacion.id_paciente
+              );
+
+            console.log(
+              'ID paciente de formulación:',
+              idPaciente,
+              'ID paciente actual:',
+              this.idPaciente
+            );
+
+            return Number(idPaciente) ===
+              Number(this.idPaciente);
+
+          });
+
+        console.log(
+          'FORMULACIONES DEL PACIENTE:',
+          this.formulacionesMedicamentos
+        );
+
+        this.cargandoFormulaciones = false;
+
+        this.cdr.detectChanges();
+
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Error al cargar formulaciones:',
+          error
+        );
+
+        console.error(
+          'Respuesta del servidor:',
+          error?.error
+        );
+
+        this.formulacionesMedicamentos = [];
+
+        this.cargandoFormulaciones = false;
+
+        alertaError(
+          'Error',
+          'No fue posible cargar las formulaciones de medicamentos.'
+        );
+
+      }
+
+    });
+
+}
+
+// ============================================================
+// GUARDAR O ACTUALIZAR FORMULACIÓN
+// ============================================================
+
+guardarFormulacion(): void {
+  if (!this.idPaciente || this.idPaciente <= 0) {
+    alertaError(
+      'Error',
+      'No se encontró el paciente.'
+    );
+    return;
   }
 
-  // ============================================================
-  // INICIALES DEL PACIENTE
-  // ============================================================
-
-  obtenerIniciales(): string {
-
-    const nombre =
-      this.paciente.nombre?.trim() || '';
-
-    const apellido =
-      this.paciente.apellido?.trim() || '';
-
-    const inicialNombre =
-      nombre.charAt(0).toUpperCase();
-
-    const inicialApellido =
-      apellido.charAt(0).toUpperCase();
-
-    return `${inicialNombre}${inicialApellido}`;
+  if (!this.formularioFormulacion.fecha) {
+    alertaError(
+      'Campo requerido',
+      'Seleccione la fecha de la formulación.'
+    );
+    return;
   }
 
-  // ============================================================
-  // REGISTRAR MEDICAMENTO
-  // ============================================================
+  if (!this.formularioFormulacion.id_medicamentos) {
+    alertaError(
+      'Campo requerido',
+      'Seleccione un medicamento.'
+    );
+    return;
+  }
 
-  registrarMedicamento(): void {
+  if (!this.formularioFormulacion.dosis.trim()) {
+    alertaError(
+      'Campo requerido',
+      'Ingrese la dosis.'
+    );
+    return;
+  }
 
-    this.tipoElemento =
-      'medicamento';
+  if (!this.formularioFormulacion.via.trim()) {
+    alertaError(
+      'Campo requerido',
+      'Ingrese la vía de administración.'
+    );
+    return;
+  }
 
-    this.mostrarMenuElementos =
-      false;
+  if (!this.formularioFormulacion.id_grupo) {
+    alertaError(
+      'Campo requerido',
+      'Seleccione el grupo de medicación.'
+    );
+    return;
+  }
 
-    this.elementoEditando =
-      null;
+  if (!this.formularioFormulacion.hora_administrada) {
+    alertaError(
+      'Campo requerido',
+      'Seleccione la hora de administración.'
+    );
+    return;
+  }
 
-    // Iniciamos una nueva lista
-    // de medicamentos pendientes.
-    this.medicamentosPendientes = [];
+  if (!this.formularioFormulacion.presentacion.trim()) {
+    alertaError(
+      'Campo requerido',
+      'Ingrese la presentación del medicamento.'
+    );
+    return;
+  }
 
-    this.formularioElemento = {
+  const datos = {
+    fecha: this.formularioFormulacion.fecha,
+    dosis: this.formularioFormulacion.dosis.trim(),
+    via: this.formularioFormulacion.via.trim(),
+    hora_administrada:
+      this.formularioFormulacion.hora_administrada,
+    presentacion:
+      this.formularioFormulacion.presentacion.trim(),
+    actual_administrado:
+      this.formularioFormulacion.actual_administrado,
+    suspendido_fecha:
+      this.formularioFormulacion.actual_administrado
+        ? null
+        : (
+            this.formularioFormulacion.suspendido_fecha ||
+            null
+          ),
+    id_medicamentos:
+      this.formularioFormulacion.id_medicamentos,
+    id_grupo:
+      this.formularioFormulacion.id_grupo,
+    id_paciente:
+      this.idPaciente
+  };
 
-      id_medicamentos: null,
+  console.log('Datos de formulación:', datos);
 
-      id_insumo: null,
+  // Si estamos editando, actualizamos
+  if (this.formulacionEditando) {
 
-      id_tipo_insumo: null,
+    this.http
+      .put(
+        `${this.apiUrl}/formulacion_medicamentos/${this.formulacionEditando.id_formulacion}/`,
+        datos
+      )
+      .subscribe({
+        next: (respuesta) => {
+          console.log(
+            'Formulación actualizada:',
+            respuesta
+          );
 
-      cantidad: 1,
+          alertaExito(
+            'Éxito',
+            'La formulación fue actualizada correctamente.'
+          );
 
-      fecha_ingreso:
-        this.obtenerFechaHoraActual(),
+          this.cancelarFormulacion();
+          this.cargarFormulacionesMedicamentos();
+        },
+        error: (error) => {
+          console.error(
+            'Error al actualizar formulación:',
+            error
+          );
 
-      fecha_vencimiento: '',
+          console.error(
+            'Respuesta del servidor:',
+            error?.error
+          );
 
-      observaciones: '',
+          alertaError(
+            'Error',
+            'No fue posible actualizar la formulación.'
+          );
+        }
+      });
 
-      estado: true
+    return;
+  }
 
-    };
+  // Si no estamos editando, creamos una nueva
+  this.http
+    .post(
+      `${this.apiUrl}/formulacion_medicamentos/`,
+      datos
+    )
+    .subscribe({
+      next: (respuesta) => {
+        console.log(
+          'Formulación guardada:',
+          respuesta
+        );
 
-    this.insumosFiltrados = [];
+        alertaExito(
+          'Éxito',
+          'La formulación fue guardada correctamente.'
+        );
 
-    if (
-      this.medicamentos.length === 0
-    ) {
+        this.cancelarFormulacion();
+        this.cargarFormulacionesMedicamentos();
+      },
+      error: (error) => {
+        console.error(
+          'Error al guardar formulación:',
+          error
+        );
 
-      this.cargarMedicamentos();
+        console.error(
+          'Respuesta del servidor:',
+          error?.error
+        );
 
+        alertaError(
+          'Error',
+          'No fue posible guardar la formulación.'
+        );
+      }
+    });
+}
+
+// ============================================================
+// EDITAR FORMULACIÓN
+// ============================================================
+
+editarFormulacion(
+  formulacion: FormulacionMedicamento
+): void {
+
+  this.formulacionEditando = formulacion;
+
+  const idMedicamento =
+    typeof formulacion.id_medicamentos === 'object'
+      ? formulacion.id_medicamentos?.id_medicamentos ?? null
+      : formulacion.id_medicamentos;
+
+  const idGrupo =
+    typeof formulacion.id_grupo === 'object'
+      ? formulacion.id_grupo?.id_grupo ?? null
+      : formulacion.id_grupo;
+
+  this.formularioFormulacion = {
+    fecha: formulacion.fecha || '',
+    id_medicamentos: idMedicamento,
+    dosis: formulacion.dosis || '',
+    via: formulacion.via || '',
+    id_grupo: idGrupo,
+    hora_administrada:
+      formulacion.hora_administrada || '',
+    presentacion:
+      formulacion.presentacion || '',
+    actual_administrado:
+      formulacion.actual_administrado,
+    suspendido_fecha:
+      formulacion.suspendido_fecha || ''
+  };
+
+  this.mostrarFormularioFormulacion = true;
+}
+
+// ============================================================
+// ELIMINAR FORMULACIÓN
+// ===========================================================
+eliminarFormulacion(
+  formulacion: FormulacionMedicamento
+): void {
+
+  Swal.fire({
+    title: '¿Eliminar formulación?',
+    text: 'Esta formulación será eliminada permanentemente.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+    reverseButtons: true
+  }).then((resultado) => {
+
+    if (!resultado.isConfirmed) {
+      return;
     }
 
-    this.mostrarFormularioElemento =
-      true;
+    this.http
+      .delete(
+        `${this.apiUrl}/formulacion_medicamentos/${formulacion.id_formulacion}/`
+      )
+      .subscribe({
 
-    this.cdr.detectChanges();
+        next: () => {
+
+          alertaExito(
+            'Éxito',
+            'La formulación fue eliminada correctamente.'
+          );
+
+          this.cargarFormulacionesMedicamentos();
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Error al eliminar formulación:',
+            error
+          );
+
+          console.error(
+            'Respuesta del servidor:',
+            error?.error
+          );
+
+          alertaError(
+            'Error',
+            'No fue posible eliminar la formulación.'
+          );
+        }
+
+      });
+  });
+}
+
+// ============================================================
+// CANCELAR FORMULARIO DE FORMULACIÓN
+// ============================================================
+
+cancelarFormulacion(): void {
+  this.mostrarFormularioFormulacion = false;
+  this.formulacionEditando = null;
+
+  this.formularioFormulacion = {
+    fecha: '',
+    id_medicamentos: null,
+    dosis: '',
+    via: '',
+    id_grupo: null,
+    hora_administrada: '',
+    presentacion: '',
+    actual_administrado: true,
+    suspendido_fecha: ''
+  };
+}
+
+// ============================================================
+// SECCIÓN ACTUAL
+// ============================================================
+
+seccionActual: 'elementos' | 'cuidados' | 'recomendaciones' | 'historia' | 'formulacion' = 'elementos';
+
+// ============================================================
+// CAMBIAR SECCIÓN
+// ============================================================
+
+cambiarSeccion(
+  seccion: 'elementos' | 'cuidados' | 'recomendaciones' | 'historia' | 'formulacion'
+): void {
+  this.seccionActual = seccion;
+}
+// ============================================================
+// INICIALES DEL PACIENTE
+// ============================================================
+
+obtenerIniciales(): string {
+
+  const nombre =
+    this.paciente.nombre?.trim() || '';
+
+  const apellido =
+    this.paciente.apellido?.trim() || '';
+
+  const inicialNombre =
+    nombre.charAt(0).toUpperCase();
+
+  const inicialApellido =
+    apellido.charAt(0).toUpperCase();
+
+  return `${inicialNombre}${inicialApellido}`;
+}
+
+// ============================================================
+// REGISTRAR MEDICAMENTO
+// ============================================================
+
+registrarMedicamento(): void {
+
+  this.tipoElemento =
+    'medicamento';
+
+  this.mostrarMenuElementos =
+    false;
+
+  this.elementoEditando =
+    null;
+
+  // Iniciamos una nueva lista
+  // de medicamentos pendientes.
+  this.medicamentosPendientes = [];
+
+  this.formularioElemento = {
+
+    id_medicamentos: null,
+
+    id_insumo: null,
+
+    id_tipo_insumo: null,
+
+    cantidad: 1,
+
+    fecha_ingreso:
+      this.obtenerFechaHoraActual(),
+
+    fecha_vencimiento: '',
+
+    observaciones: '',
+
+    estado: true
+
+  };
+
+  this.insumosFiltrados = [];
+
+  if (
+    this.medicamentos.length === 0
+  ) {
+
+    this.cargarMedicamentos();
 
   }
+
+  this.mostrarFormularioElemento =
+    true;
+
+  this.cdr.detectChanges();
+
+}
 
   // ============================================================
   // REGISTRAR INSUMO
@@ -1910,6 +2460,64 @@ private mostrarErrorApi(
     }
 
     return null;
+  }
+
+    // ============================================================
+  // OBTENER NOMBRE DEL MEDICAMENTO DE LA FORMULACIÓN
+  // ============================================================
+
+  obtenerNombreMedicamentoFormulacion(
+    formulacion: FormulacionMedicamento
+  ): string {
+
+    const idMedicamento =
+      typeof formulacion.id_medicamentos === 'object'
+        ? formulacion.id_medicamentos?.id_medicamentos
+        : formulacion.id_medicamentos;
+
+    if (!idMedicamento) {
+      return 'Sin medicamento';
+    }
+
+    const medicamento =
+      this.medicamentos.find(
+        medicamento =>
+          Number(medicamento.id_medicamentos) ===
+          Number(idMedicamento)
+      );
+
+    return medicamento
+      ? medicamento.nombre
+      : 'Medicamento no encontrado';
+  }
+
+  // ============================================================
+  // OBTENER NOMBRE DEL GRUPO DE MEDICACIÓN
+  // ============================================================
+
+  obtenerNombreGrupoFormulacion(
+    formulacion: FormulacionMedicamento
+  ): string {
+
+    const idGrupo =
+      typeof formulacion.id_grupo === 'object'
+        ? formulacion.id_grupo?.id_grupo
+        : formulacion.id_grupo;
+
+    if (!idGrupo) {
+      return 'Sin grupo';
+    }
+
+    const grupo =
+      this.gruposMedicacion.find(
+        grupo =>
+          Number(grupo.id_grupo) ===
+          Number(idGrupo)
+      );
+
+    return grupo
+      ? grupo.nombre
+      : 'Grupo no encontrado';
   }
 
   // ============================================================
