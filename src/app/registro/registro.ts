@@ -359,7 +359,7 @@ export class Registro {
 
     // Enviar los datos a Django
     this.http.post<any>(
-      'http://localhost:8000/api/usuarios/registro/',
+      'https://geriapp-backend.onrender.com/api/usuarios/registro/',
       datosFormulario
     ).subscribe({
 
