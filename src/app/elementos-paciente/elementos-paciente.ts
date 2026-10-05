@@ -738,9 +738,11 @@ export class ElementosPaciente implements OnInit {
 
   elementoEditando: ElementoPaciente | null = null;
 
+  formularioElementoOriginal: FormularioElemento | null = null;
+
   private cuidadosOriginal: CuidadoEnfermeria | null = null;
-private recomendacionesOriginal: Recomendacion | null = null;
-private historiaOriginal: HistoriaClinica | null = null;
+  private recomendacionesOriginal: Recomendacion | null = null;
+  private historiaOriginal: HistoriaClinica | null = null;
 
   get elementos(): ElementoPaciente[] {
     return this.elementosPaciente;
@@ -2282,6 +2284,10 @@ registrarMedicamento(): void {
 
     };
 
+    this.formularioElementoOriginal = {
+    ...this.formularioElemento
+    };
+
     if (
       this.tipoElemento === 'medicamento'
     ) {
@@ -3093,6 +3099,27 @@ agregarInsumoPendiente(): void {
 
       return;
     }
+
+    if (this.elementoEditando && this.formularioElementoOriginal) {
+
+  const sinCambios =
+    Number(this.formularioElemento.cantidad) === Number(this.formularioElementoOriginal.cantidad) &&
+    this.formularioElemento.fecha_ingreso === this.formularioElementoOriginal.fecha_ingreso &&
+    this.formularioElemento.fecha_vencimiento === this.formularioElementoOriginal.fecha_vencimiento &&
+    (this.formularioElemento.observaciones || '').trim() ===
+      (this.formularioElementoOriginal.observaciones || '').trim() &&
+    this.formularioElemento.estado === this.formularioElementoOriginal.estado &&
+    this.formularioElemento.id_medicamentos === this.formularioElementoOriginal.id_medicamentos &&
+    this.formularioElemento.id_insumo === this.formularioElementoOriginal.id_insumo;
+
+  if (sinCambios) {
+    alertaAdvertencia(
+      'Sin cambios',
+      'No se realizó ninguna modificación en el elemento.'
+    );
+    return;
+  }
+}
 
     this.guardandoElementos = true;
 
@@ -4664,39 +4691,70 @@ if (!this.historiaClinica) {
   // GUARDAR HISTORIA CLÍNICA
   // ============================================================
 
-  guardarHistoriaClinica(): void {
+ guardarHistoriaClinica(): void {
 
-    if (
-  this.historiaClinica.id_historia_clinica > 0 &&
-  this.historiaOriginal &&
-  !this.huboCambios(this.historiaOriginal, this.historiaClinica, [
-    'fecha_apertura', 'antecedentes', 'alergias', 'observaciones', 'estado'
-  ])
-) {
-  alertaAdvertencia('Sin cambios', 'No modificaste ningún campo de la historia clínica.');
+  if (
+    this.historiaClinica.id_historia_clinica > 0 &&
+    this.historiaOriginal &&
+    !this.huboCambios(this.historiaOriginal, this.historiaClinica, [
+      'fecha_apertura', 'antecedentes', 'alergias', 'observaciones', 'estado'
+    ])
+  ) {
+    alertaAdvertencia(
+      'Sin cambios',
+      'No modificaste ningún campo de la historia clínica.'
+    );
+    return;
+  }
+
+const antecedentes =
+  this.historiaClinica.antecedentes?.trim() || '';
+
+const alergias =
+  this.historiaClinica.alergias?.trim() || '';
+
+const observaciones =
+  this.historiaClinica.observaciones?.trim() || '';
+
+if (!antecedentes) {
+  alertaAdvertencia(
+    'Campo requerido',
+    'Debes registrar los antecedentes del paciente.'
+  );
   return;
 }
 
-    const datos = {
+if (!alergias) {
+  alertaAdvertencia(
+    'Campo requerido',
+    'Debes registrar las alergias del paciente.'
+  );
+  return;
+}
+
+if (!observaciones) {
+  alertaAdvertencia(
+    'Campo requerido',
+    'Debes registrar las observaciones clínicas del paciente.'
+  );
+  return;
+}
+
+  const datos = {
+      
 
       fecha_apertura:
         this.historiaClinica.fecha_apertura ||
         this.obtenerFechaActual(),
 
       antecedentes:
-        this.limpiarValor(
-          this.historiaClinica.antecedentes
-        ),
+        antecedentes,
 
       alergias:
-        this.limpiarValor(
-          this.historiaClinica.alergias
-        ),
+        alergias,
 
       observaciones:
-        this.limpiarValor(
-          this.historiaClinica.observaciones
-        ),
+         observaciones,
 
       estado:
         this.historiaClinica.estado ?? true,
