@@ -208,7 +208,21 @@ function alertaAdvertencia(titulo: string, mensaje?: string) {
     titulo, html: htmlMensaje(mensaje), confirmar: 'Aceptar',
   });
 }
+interface Habitacion {
+  id_habitacion: number;
+  nombre: string;
+  numero: string;
+  descripcion?: string | null;
+  estado: boolean;
+}
 
+interface Cama {
+  id_cama: number;
+  nombre: string;
+  numero: string;
+  estado: boolean;
+  id_habitacion: number | null;
+}
 interface PatientForm {
   nombre: string;
   apellidos: string;
@@ -221,6 +235,7 @@ interface PatientForm {
   rh: string;
   eps: string;
   fechaIngreso: string;
+  foto: File | null;
   familiarNombres: string;
   familiarApellidos: string;
   parentesco: string;
@@ -233,6 +248,7 @@ interface PatientForm {
   habitacion: string;
   cama: string;
   estado: string;
+
 }
 
 @Component({
@@ -261,7 +277,11 @@ export class Pacientes {
 
   patients: any[] = [];
   patientsPaginaActual: any[] = [];
+  habitaciones: Habitacion[] = [];
+  camas: Cama[] = [];
 
+  habitacionesActivas: Habitacion[] = [];
+  camasActivas: Cama[] = [];
   patientsPorPagina = 10;
 
   paginaActual = 1;
@@ -279,7 +299,7 @@ export class Pacientes {
   selectedPatient: any = null;
 
   form: PatientForm = this.formularioVacio();
-
+  fotoPreview: string | null = null;
   // =========================================================
   // CONSTRUCTOR
   // =========================================================
@@ -295,6 +315,8 @@ export class Pacientes {
 
   ngOnInit() {
     this.listar();
+    this.cargarHabitaciones();
+    this.cargarCamas();
   }
 
   // =========================================================
@@ -314,6 +336,7 @@ export class Pacientes {
       rh: '',
       eps: '',
       fechaIngreso: '',
+      foto: null,
       familiarNombres: '',
       familiarApellidos: '',
       parentesco: '',
@@ -336,7 +359,7 @@ export class Pacientes {
   listar() {
     this.http.get<any[]>(
       `${this.apiUrl}/pacientes/`
-).subscribe({
+    ).subscribe({
       next: (respuesta) => {
         console.log('Pacientes recibidos:', respuesta);
         this.patients = [...respuesta].sort(
@@ -344,7 +367,7 @@ export class Pacientes {
         );
         console.log('TOTAL PACIENTES:', this.patients.length);
         console.log('PRIMER PACIENTE:', this.patients[0]);
-         this.actualizarPaginacion();
+        this.actualizarPaginacion();
         this.cdr.detectChanges();
       },
 
@@ -499,6 +522,66 @@ export class Pacientes {
     return edad;
   }
 
+  cargarHabitaciones(): void {
+    this.http.get<Habitacion[]>(`${this.apiUrl}/habitaciones/`).subscribe({
+      next: (respuesta) => {
+        this.habitaciones = respuesta;
+
+        // Solo habitaciones activas
+        this.habitacionesActivas = respuesta.filter(
+          habitacion => habitacion.estado === true
+        );
+      },
+      error: (error) => {
+        console.error('Error al cargar habitaciones:', error);
+        this.habitaciones = [];
+        this.habitacionesActivas = [];
+      }
+    });
+  }
+
+  cargarCamas(): void {
+    this.http.get<Cama[]>(`${this.apiUrl}/camas/`).subscribe({
+      next: (respuesta) => {
+        this.camas = respuesta;
+
+        // Al inicio no mostramos ninguna cama hasta seleccionar habitación
+        this.camasActivas = [];
+      },
+      error: (error) => {
+        console.error('Error al cargar camas:', error);
+        this.camas = [];
+        this.camasActivas = [];
+      }
+    });
+  }
+  actualizarCamasPorHabitacion(): void {
+    const idHabitacion = Number(this.form.habitacion);
+
+    // Si no hay habitación seleccionada, no mostramos camas
+    if (!idHabitacion) {
+      this.camasActivas = [];
+      this.form.cama = '';
+      return;
+    }
+
+    // Buscar únicamente camas activas pertenecientes a esa habitación
+    this.camasActivas = this.camas.filter(
+      cama =>
+        cama.estado === true &&
+        cama.id_habitacion === idHabitacion
+    );
+
+    // Si la cama que estaba seleccionada ya no pertenece
+    // a las camas disponibles, se limpia la selección
+    const camaDisponible = this.camasActivas.some(
+      cama => cama.id_cama === Number(this.form.cama)
+    );
+
+    if (!camaDisponible) {
+      this.form.cama = '';
+    }
+  }
   // =========================================================
   // NUEVO PACIENTE
   // =========================================================
@@ -507,10 +590,30 @@ export class Pacientes {
 
     this.form =
       this.formularioVacio();
-
+    this.fotoPreview = null;
     this.editingId = null;
-
+    this.camasActivas = [];
     this.modalOpen = true;
+  }
+  //agregar foto
+  seleccionarFoto(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files || input.files.length === 0) {
+      return;
+    }
+
+    const archivo = input.files[0];
+
+    this.form.foto = archivo;
+
+    const lector = new FileReader();
+
+    lector.onload = () => {
+      this.fotoPreview = lector.result as string;
+    };
+
+    lector.readAsDataURL(archivo);
   }
 
   // =========================================================
@@ -557,7 +660,7 @@ export class Pacientes {
         patient.fecha_ingreso
           ? patient.fecha_ingreso.substring(0, 10)
           : '',
-
+      foto: null,
       familiarNombres: '',
       familiarApellidos: '',
       parentesco: '',
@@ -587,7 +690,8 @@ export class Pacientes {
           ? 'active'
           : 'inactive'
     };
-
+    this.actualizarCamasPorHabitacion();
+    this.fotoPreview = patient.foto || null;
     if (this.form.nacimiento) {
       this.calcularEdad();
     }
@@ -732,10 +836,20 @@ export class Pacientes {
       'Paciente que se enviará:',
       paciente
     );
+    const datosPaciente = new FormData();
 
+    Object.entries(paciente).forEach(([campo, valor]) => {
+      if (valor !== null && valor !== undefined) {
+        datosPaciente.append(campo, String(valor));
+      }
+    });
+
+    if (this.form.foto) {
+      datosPaciente.append('foto', this.form.foto);
+    }
     this.http.post<any>(
       `${this.apiUrl}/pacientes/`,
-      paciente
+      datosPaciente
     ).subscribe({
 
       next: (respuesta) => {
@@ -817,6 +931,10 @@ export class Pacientes {
             console.error(
               'Detalle del error:',
               error.error
+            );
+            console.log(
+              'ERROR DETALLADO:',
+              JSON.stringify(error.error, null, 2)
             );
 
             alertaAdvertencia('Paciente creado, pero hubo un problema', 'No se pudo guardar el familiar responsable.');
@@ -921,6 +1039,18 @@ export class Pacientes {
         this.form.estado === 'active'
     };
 
+    const datosPaciente = new FormData();
+
+    Object.entries(paciente).forEach(([campo, valor]) => {
+      if (valor !== null && valor !== undefined) {
+        datosPaciente.append(campo, String(valor));
+      }
+    });
+
+    if (this.form.foto) {
+      datosPaciente.append('foto', this.form.foto);
+    }
+
     console.log(
       'Paciente que se actualizará:',
       paciente
@@ -928,7 +1058,7 @@ export class Pacientes {
 
     this.http.put(
       `${this.apiUrl}/pacientes/${this.editingId}/`,
-      paciente
+      datosPaciente
     ).subscribe({
 
       next: (respuesta) => {
@@ -1024,7 +1154,7 @@ export class Pacientes {
                     error.error
                   );
 
-                 alertaAdvertencia('Paciente actualizado', 'El paciente se actualizó, pero hubo un problema con el familiar responsable.');
+                  alertaAdvertencia('Paciente actualizado', 'El paciente se actualizó, pero hubo un problema con el familiar responsable.');
 
                   this.listar();
                 }
@@ -1062,7 +1192,7 @@ export class Pacientes {
                     respuestaFamiliar
                   );
 
-                 alertaExito('Paciente actualizado correctamente');
+                  alertaExito('Paciente actualizado correctamente');
 
                   this.listar();
                   this.closeModal();
@@ -1075,7 +1205,7 @@ export class Pacientes {
                     errorFamiliar
                   );
 
-                 alertaAdvertencia('Paciente actualizado', 'El paciente se actualizó, pero no se pudo guardar el familiar responsable.');
+                  alertaAdvertencia('Paciente actualizado', 'El paciente se actualizó, pero no se pudo guardar el familiar responsable.');
 
                   this.listar();
                   this.closeModal();
@@ -1124,51 +1254,51 @@ export class Pacientes {
   // CAMBIAR ESTADO
   // =========================================================
 
-cambiarEstado(patient: any) {
+  cambiarEstado(patient: any) {
 
-  const nuevoEstado = !patient.estado;
-  const nombre = `${patient.nombre} ${patient.apellido}`.trim();
+    const nuevoEstado = !patient.estado;
+    const nombre = `${patient.nombre} ${patient.apellido}`.trim();
 
-  const pregunta = nuevoEstado
-    ? alertaActivar(nombre, 'paciente')
-    : alertaDesactivar(nombre, 'paciente');
+    const pregunta = nuevoEstado
+      ? alertaActivar(nombre, 'paciente')
+      : alertaDesactivar(nombre, 'paciente');
 
-  pregunta.then((resultado) => {
+    pregunta.then((resultado) => {
 
-    if (!resultado.isConfirmed) {
-      return;
-    }
-
-    const pacienteActualizado = {
-      ...patient,
-      estado: nuevoEstado
-    };
-
-    this.http.put(
-      `${this.apiUrl}/pacientes/${patient.id_paciente}/`,
-      pacienteActualizado
-    ).subscribe({
-
-      next: () => {
-
-        patient.estado = nuevoEstado;
-        this.cdr.detectChanges();
-
-        alertaExito(
-          'Estado actualizado',
-          nuevoEstado ? 'El paciente ha sido activado.' : 'El paciente ha sido desactivado.'
-        );
-      },
-
-      error: (error) => {
-        console.error('Error al cambiar el estado del paciente:', error);
-        alertaError('Error', 'No fue posible cambiar el estado del paciente.');
+      if (!resultado.isConfirmed) {
+        return;
       }
 
-    });
+      const pacienteActualizado = {
+        ...patient,
+        estado: nuevoEstado
+      };
 
-  });
-}
+      this.http.put(
+        `${this.apiUrl}/pacientes/${patient.id_paciente}/`,
+        pacienteActualizado
+      ).subscribe({
+
+        next: () => {
+
+          patient.estado = nuevoEstado;
+          this.cdr.detectChanges();
+
+          alertaExito(
+            'Estado actualizado',
+            nuevoEstado ? 'El paciente ha sido activado.' : 'El paciente ha sido desactivado.'
+          );
+        },
+
+        error: (error) => {
+          console.error('Error al cambiar el estado del paciente:', error);
+          alertaError('Error', 'No fue posible cambiar el estado del paciente.');
+        }
+
+      });
+
+    });
+  }
 
   // =========================================================
   // INDICAR SI ESTÁ EDITANDO
@@ -1225,6 +1355,7 @@ cambiarEstado(patient: any) {
 
     this.form =
       this.formularioVacio();
+    this.fotoPreview = null;
   }
 
   // =========================================================
@@ -1378,7 +1509,29 @@ cambiarEstado(patient: any) {
 
     });
   }
+  obtenerNombreHabitacion(id: any): string {
+    const habitacion = this.habitaciones.find(
+      h => h.id_habitacion === Number(id)
+    );
 
+    if (!habitacion) {
+      return 'No registrado';
+    }
+
+    return `${habitacion.nombre} - ${habitacion.numero}`;
+  }
+
+  obtenerNombreCama(id: any): string {
+    const cama = this.camas.find(
+      c => c.id_cama === Number(id)
+    );
+
+    if (!cama) {
+      return 'No registrado';
+    }
+
+    return `${cama.nombre} - ${cama.numero}`;
+  }
   // =========================================================
   // CERRAR MODAL DE VISUALIZACIÓN
   // =========================================================

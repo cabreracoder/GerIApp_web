@@ -240,6 +240,8 @@ interface Paciente {
 
   apellido: string;
 
+  foto: string | null;
+
   eps: string;
 
   sede: string;
@@ -249,11 +251,11 @@ interface Paciente {
   habitacion: number;
 
   id_usuario:
-    number |
-    {
-      id_usuario?: number;
-    } |
-    null;
+  number |
+  {
+    id_usuario?: number;
+  } |
+  null;
 
   tipo_documento: string;
 
@@ -282,11 +284,11 @@ interface FamiliarResponsable {
   id_familiar_responsable: number;
 
   id_paciente:
-    number |
-    {
-      id_paciente?: number;
-    } |
-    null;
+  number |
+  {
+    id_paciente?: number;
+  } |
+  null;
 
   nombres: string;
 
@@ -371,25 +373,25 @@ interface FormulacionMedicamento {
   suspendido_fecha: string | null;
 
   id_paciente:
-    number |
-    {
-      id_paciente?: number;
-    } |
-    null;
+  number |
+  {
+    id_paciente?: number;
+  } |
+  null;
 
   id_medicamentos:
-    number |
-    {
-      id_medicamentos?: number;
-    } |
-    null;
+  number |
+  {
+    id_medicamentos?: number;
+  } |
+  null;
 
   id_grupo:
-    number |
-    {
-      id_grupo?: number;
-    } |
-    null;
+  number |
+  {
+    id_grupo?: number;
+  } |
+  null;
 
 }
 
@@ -418,11 +420,11 @@ interface Insumo {
   id_insumo: number;
 
   id_tipo_insumo:
-    number |
-    {
-      id_tipo_insumo?: number;
-    } |
-    null;
+  number |
+  {
+    id_tipo_insumo?: number;
+  } |
+  null;
 
   nombre: string;
 
@@ -453,27 +455,27 @@ interface ElementoPaciente {
   estado: boolean | null;
 
   id_paciente:
-    number |
-    {
-      id_paciente?: number;
-    } |
-    null;
+  number |
+  {
+    id_paciente?: number;
+  } |
+  null;
 
   id_medicamentos:
-    number |
-    {
-      id_medicamentos?: number;
-      nombre?: string;
-    } |
-    null;
+  number |
+  {
+    id_medicamentos?: number;
+    nombre?: string;
+  } |
+  null;
 
   id_insumo:
-    number |
-    {
-      id_insumo?: number;
-      nombre?: string;
-    } |
-    null;
+  number |
+  {
+    id_insumo?: number;
+    nombre?: string;
+  } |
+  null;
 
 }
 
@@ -526,11 +528,11 @@ interface CuidadoEnfermeria {
   administracion_medicamentos: string | null;
 
   id_paciente:
-    number |
-    {
-      id_paciente?: number;
-    } |
-    null;
+  number |
+  {
+    id_paciente?: number;
+  } |
+  null;
 
 }
 
@@ -563,11 +565,11 @@ interface Recomendacion {
   higiene_oral: string | null;
 
   id_paciente:
-    number |
-    {
-      id_paciente?: number;
-    } |
-    null;
+  number |
+  {
+    id_paciente?: number;
+  } |
+  null;
 
 }
 
@@ -590,11 +592,11 @@ interface HistoriaClinica {
   estado: boolean;
 
   id_paciente:
-    number |
-    {
-      id_paciente?: number;
-    } |
-    null;
+  number |
+  {
+    id_paciente?: number;
+  } |
+  null;
 
 }
 
@@ -649,6 +651,7 @@ export class ElementosPaciente implements OnInit {
     id_paciente: 0,
     nombre: '',
     apellido: '',
+    foto: null,
     eps: '',
     sede: '',
     fecha_ingreso: '',
@@ -872,7 +875,7 @@ export class ElementosPaciente implements OnInit {
     private route: ActivatedRoute,
     private http: HttpClient,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   // ============================================================
   // INICIO
@@ -1318,7 +1321,7 @@ export class ElementosPaciente implements OnInit {
 
           this.cargandoInsumos = false;
 
-         alertaError('Error', 'No fue posible cargar los insumos.');
+          alertaError('Error', 'No fue posible cargar los insumos.');
 
         }
 
@@ -1470,7 +1473,7 @@ export class ElementosPaciente implements OnInit {
 
           this.cargandoElementos = false;
 
-         alertaError('Error', 'No fue posible cargar los elementos del paciente.');
+          alertaError('Error', 'No fue posible cargar los elementos del paciente.');
 
         }
 
@@ -1538,292 +1541,334 @@ export class ElementosPaciente implements OnInit {
 
     return null;
   }
-// ============================================================
-// CARGAR GRUPOS DE MEDICACIÓN
-// ============================================================
+  // ============================================================
+  // CARGAR GRUPOS DE MEDICACIÓN
+  // ============================================================
 
-cargarGruposMedicacion(): void {
+  cargarGruposMedicacion(): void {
 
-  this.cargandoGruposMedicacion = true;
+    this.cargandoGruposMedicacion = true;
 
-  this.http
-    .get<
-      GrupoMedicacion[] |
-      RespuestaPaginada<GrupoMedicacion>
-    >(
-      `${this.apiUrl}/grupo_medicacion/`
-    )
-    .subscribe({
+    this.http
+      .get<
+        GrupoMedicacion[] |
+        RespuestaPaginada<GrupoMedicacion>
+      >(
+        `${this.apiUrl}/grupo_medicacion/`
+      )
+      .subscribe({
 
-      next: (respuesta) => {
+        next: (respuesta) => {
 
-        this.gruposMedicacion =
-          this.obtenerResultados(respuesta);
+          this.gruposMedicacion =
+            this.obtenerResultados(respuesta);
 
-        this.cargandoGruposMedicacion = false;
+          this.cargandoGruposMedicacion = false;
 
-        console.log(
-          'Grupos de medicación cargados:',
-          this.gruposMedicacion
-        );
+          console.log(
+            'Grupos de medicación cargados:',
+            this.gruposMedicacion
+          );
 
-        this.cdr.detectChanges();
+          this.cdr.detectChanges();
 
-      },
+        },
 
-      error: (error) => {
+        error: (error) => {
 
-        console.error(
-          'Error al cargar grupos de medicación:',
-          error
-        );
+          console.error(
+            'Error al cargar grupos de medicación:',
+            error
+          );
 
-        this.gruposMedicacion = [];
+          this.gruposMedicacion = [];
 
-        this.cargandoGruposMedicacion = false;
+          this.cargandoGruposMedicacion = false;
 
-        alertaError(
-          'Error',
-          'No fue posible cargar los grupos de medicación.'
-        );
+          alertaError(
+            'Error',
+            'No fue posible cargar los grupos de medicación.'
+          );
 
-      }
+        }
 
-    });
+      });
 
-}
+  }
 
-// ============================================================
-// CARGAR FORMULACIONES DE MEDICAMENTOS
-// ============================================================
+  // ============================================================
+  // CARGAR FORMULACIONES DE MEDICAMENTOS
+  // ============================================================
 
-cargarFormulacionesMedicamentos(): void {
+  cargarFormulacionesMedicamentos(): void {
 
-  this.cargandoFormulaciones = true;
+    this.cargandoFormulaciones = true;
 
-  this.http
-    .get<
-      FormulacionMedicamento[] |
-      RespuestaPaginada<FormulacionMedicamento>
-    >(
-      `${this.apiUrl}/formulacion_medicamentos/`
-    )
-    .subscribe({
+    this.http
+      .get<
+        FormulacionMedicamento[] |
+        RespuestaPaginada<FormulacionMedicamento>
+      >(
+        `${this.apiUrl}/formulacion_medicamentos/`
+      )
+      .subscribe({
 
-      next: (respuesta) => {
+        next: (respuesta) => {
 
-        // Muestra la respuesta completa del backend
-        console.log(
-          'RESPUESTA FORMULACIONES:',
-          respuesta
-        );
+          // Muestra la respuesta completa del backend
+          console.log(
+            'RESPUESTA FORMULACIONES:',
+            respuesta
+          );
 
-        // Obtiene los registros independientemente
-        // de si la respuesta viene paginada o como arreglo
-        const formulaciones =
-          this.obtenerResultados(respuesta);
+          // Obtiene los registros independientemente
+          // de si la respuesta viene paginada o como arreglo
+          const formulaciones =
+            this.obtenerResultados(respuesta);
 
-        console.log(
-          'FORMULACIONES OBTENIDAS:',
-          formulaciones
-        );
+          console.log(
+            'FORMULACIONES OBTENIDAS:',
+            formulaciones
+          );
 
-        this.formulacionesMedicamentos =
-          formulaciones.filter(formulacion => {
+          this.formulacionesMedicamentos =
+            formulaciones.filter(formulacion => {
 
-            // Muestra todas las propiedades que realmente
-            // está enviando el backend
-            console.log(
-              'PROPIEDADES DE FORMULACIÓN:',
-              Object.keys(formulacion)
-            );
+              // Muestra todas las propiedades que realmente
+              // está enviando el backend
+              console.log(
+                'PROPIEDADES DE FORMULACIÓN:',
+                Object.keys(formulacion)
+              );
 
-            // Muestra el objeto completo en formato JSON
-            console.log(
-              'FORMULACIÓN COMPLETA:',
-              JSON.stringify(
-                formulacion,
-                null,
-                2
-              )
-            );
+              // Muestra el objeto completo en formato JSON
+              console.log(
+                'FORMULACIÓN COMPLETA:',
+                JSON.stringify(
+                  formulacion,
+                  null,
+                  2
+                )
+              );
 
-            // Muestra específicamente el campo que
-            // estamos intentando utilizar
-            console.log(
-              'ID PACIENTE RECIBIDO:',
-              formulacion.id_paciente
-            );
-
-            const idPaciente =
-              this.obtenerIdPaciente(
+              // Muestra específicamente el campo que
+              // estamos intentando utilizar
+              console.log(
+                'ID PACIENTE RECIBIDO:',
                 formulacion.id_paciente
               );
 
-            console.log(
-              'ID paciente de formulación:',
-              idPaciente,
-              'ID paciente actual:',
-              this.idPaciente
-            );
+              const idPaciente =
+                this.obtenerIdPaciente(
+                  formulacion.id_paciente
+                );
 
-            return Number(idPaciente) ===
-              Number(this.idPaciente);
+              console.log(
+                'ID paciente de formulación:',
+                idPaciente,
+                'ID paciente actual:',
+                this.idPaciente
+              );
 
-          });
+              return Number(idPaciente) ===
+                Number(this.idPaciente);
 
-        console.log(
-          'FORMULACIONES DEL PACIENTE:',
-          this.formulacionesMedicamentos
-        );
+            });
 
-        this.cargandoFormulaciones = false;
+          console.log(
+            'FORMULACIONES DEL PACIENTE:',
+            this.formulacionesMedicamentos
+          );
 
-        this.cdr.detectChanges();
+          this.cargandoFormulaciones = false;
 
-      },
+          this.cdr.detectChanges();
 
-      error: (error) => {
+        },
 
-        console.error(
-          'Error al cargar formulaciones:',
-          error
-        );
+        error: (error) => {
 
-        console.error(
-          'Respuesta del servidor:',
-          error?.error
-        );
+          console.error(
+            'Error al cargar formulaciones:',
+            error
+          );
 
-        this.formulacionesMedicamentos = [];
+          console.error(
+            'Respuesta del servidor:',
+            error?.error
+          );
 
-        this.cargandoFormulaciones = false;
+          this.formulacionesMedicamentos = [];
 
-        alertaError(
-          'Error',
-          'No fue posible cargar las formulaciones de medicamentos.'
-        );
+          this.cargandoFormulaciones = false;
 
-      }
+          alertaError(
+            'Error',
+            'No fue posible cargar las formulaciones de medicamentos.'
+          );
 
-    });
+        }
 
-}
+      });
 
-// ============================================================
-// GUARDAR O ACTUALIZAR FORMULACIÓN
-// ============================================================
-
-guardarFormulacion(): void {
-  if (!this.idPaciente || this.idPaciente <= 0) {
-    alertaError(
-      'Error',
-      'No se encontró el paciente.'
-    );
-    return;
   }
 
-  if (!this.formularioFormulacion.fecha) {
-    alertaError(
-      'Campo requerido',
-      'Seleccione la fecha de la formulación.'
-    );
-    return;
-  }
+  // ============================================================
+  // GUARDAR O ACTUALIZAR FORMULACIÓN
+  // ============================================================
 
-  if (!this.formularioFormulacion.id_medicamentos) {
-    alertaError(
-      'Campo requerido',
-      'Seleccione un medicamento.'
-    );
-    return;
-  }
+  guardarFormulacion(): void {
+    if (!this.idPaciente || this.idPaciente <= 0) {
+      alertaError(
+        'Error',
+        'No se encontró el paciente.'
+      );
+      return;
+    }
 
-  if (!this.formularioFormulacion.dosis.trim()) {
-    alertaError(
-      'Campo requerido',
-      'Ingrese la dosis.'
-    );
-    return;
-  }
+    if (!this.formularioFormulacion.fecha) {
+      alertaError(
+        'Campo requerido',
+        'Seleccione la fecha de la formulación.'
+      );
+      return;
+    }
 
-  if (!this.formularioFormulacion.via.trim()) {
-    alertaError(
-      'Campo requerido',
-      'Ingrese la vía de administración.'
-    );
-    return;
-  }
+    if (!this.formularioFormulacion.id_medicamentos) {
+      alertaError(
+        'Campo requerido',
+        'Seleccione un medicamento.'
+      );
+      return;
+    }
 
-  if (!this.formularioFormulacion.id_grupo) {
-    alertaError(
-      'Campo requerido',
-      'Seleccione el grupo de medicación.'
-    );
-    return;
-  }
+    if (!this.formularioFormulacion.dosis.trim()) {
+      alertaError(
+        'Campo requerido',
+        'Ingrese la dosis.'
+      );
+      return;
+    }
 
-  if (!this.formularioFormulacion.hora_administrada) {
-    alertaError(
-      'Campo requerido',
-      'Seleccione la hora de administración.'
-    );
-    return;
-  }
+    if (!this.formularioFormulacion.via.trim()) {
+      alertaError(
+        'Campo requerido',
+        'Ingrese la vía de administración.'
+      );
+      return;
+    }
 
-  if (!this.formularioFormulacion.presentacion.trim()) {
-    alertaError(
-      'Campo requerido',
-      'Ingrese la presentación del medicamento.'
-    );
-    return;
-  }
+    if (!this.formularioFormulacion.id_grupo) {
+      alertaError(
+        'Campo requerido',
+        'Seleccione el grupo de medicación.'
+      );
+      return;
+    }
 
-  const datos = {
-    fecha: this.formularioFormulacion.fecha,
-    dosis: this.formularioFormulacion.dosis.trim(),
-    via: this.formularioFormulacion.via.trim(),
-    hora_administrada:
-      this.formularioFormulacion.hora_administrada,
-    presentacion:
-      this.formularioFormulacion.presentacion.trim(),
-    actual_administrado:
-      this.formularioFormulacion.actual_administrado,
-    suspendido_fecha:
-      this.formularioFormulacion.actual_administrado
-        ? null
-        : (
+    if (!this.formularioFormulacion.hora_administrada) {
+      alertaError(
+        'Campo requerido',
+        'Seleccione la hora de administración.'
+      );
+      return;
+    }
+
+    if (!this.formularioFormulacion.presentacion.trim()) {
+      alertaError(
+        'Campo requerido',
+        'Ingrese la presentación del medicamento.'
+      );
+      return;
+    }
+
+    const datos = {
+      fecha: this.formularioFormulacion.fecha,
+      dosis: this.formularioFormulacion.dosis.trim(),
+      via: this.formularioFormulacion.via.trim(),
+      hora_administrada:
+        this.formularioFormulacion.hora_administrada,
+      presentacion:
+        this.formularioFormulacion.presentacion.trim(),
+      actual_administrado:
+        this.formularioFormulacion.actual_administrado,
+      suspendido_fecha:
+        this.formularioFormulacion.actual_administrado
+          ? null
+          : (
             this.formularioFormulacion.suspendido_fecha ||
             null
           ),
-    id_medicamentos:
-      this.formularioFormulacion.id_medicamentos,
-    id_grupo:
-      this.formularioFormulacion.id_grupo,
-    id_paciente:
-      this.idPaciente
-  };
+      id_medicamentos:
+        this.formularioFormulacion.id_medicamentos,
+      id_grupo:
+        this.formularioFormulacion.id_grupo,
+      id_paciente:
+        this.idPaciente
+    };
 
-  console.log('Datos de formulación:', datos);
+    console.log('Datos de formulación:', datos);
 
-  // Si estamos editando, actualizamos
-  if (this.formulacionEditando) {
+    // Si estamos editando, actualizamos
+    if (this.formulacionEditando) {
 
+      this.http
+        .put(
+          `${this.apiUrl}/formulacion_medicamentos/${this.formulacionEditando.id_formulacion}/`,
+          datos
+        )
+        .subscribe({
+          next: (respuesta) => {
+            console.log(
+              'Formulación actualizada:',
+              respuesta
+            );
+
+            alertaExito(
+              'Éxito',
+              'La formulación fue actualizada correctamente.'
+            );
+
+            this.cancelarFormulacion();
+            this.cargarFormulacionesMedicamentos();
+          },
+          error: (error) => {
+            console.error(
+              'Error al actualizar formulación:',
+              error
+            );
+
+            console.error(
+              'Respuesta del servidor:',
+              error?.error
+            );
+
+            alertaError(
+              'Error',
+              'No fue posible actualizar la formulación.'
+            );
+          }
+        });
+
+      return;
+    }
+
+    // Si no estamos editando, creamos una nueva
     this.http
-      .put(
-        `${this.apiUrl}/formulacion_medicamentos/${this.formulacionEditando.id_formulacion}/`,
+      .post(
+        `${this.apiUrl}/formulacion_medicamentos/`,
         datos
       )
       .subscribe({
         next: (respuesta) => {
           console.log(
-            'Formulación actualizada:',
+            'Formulación guardada:',
             respuesta
           );
 
           alertaExito(
             'Éxito',
-            'La formulación fue actualizada correctamente.'
+            'La formulación fue guardada correctamente.'
           );
 
           this.cancelarFormulacion();
@@ -1831,7 +1876,7 @@ guardarFormulacion(): void {
         },
         error: (error) => {
           console.error(
-            'Error al actualizar formulación:',
+            'Error al guardar formulación:',
             error
           );
 
@@ -1842,265 +1887,223 @@ guardarFormulacion(): void {
 
           alertaError(
             'Error',
-            'No fue posible actualizar la formulación.'
+            'No fue posible guardar la formulación.'
           );
         }
       });
-
-    return;
   }
 
-  // Si no estamos editando, creamos una nueva
-  this.http
-    .post(
-      `${this.apiUrl}/formulacion_medicamentos/`,
-      datos
-    )
-    .subscribe({
-      next: (respuesta) => {
-        console.log(
-          'Formulación guardada:',
-          respuesta
-        );
+  // ============================================================
+  // EDITAR FORMULACIÓN
+  // ============================================================
 
-        alertaExito(
-          'Éxito',
-          'La formulación fue guardada correctamente.'
-        );
+  editarFormulacion(
+    formulacion: FormulacionMedicamento
+  ): void {
 
-        this.cancelarFormulacion();
-        this.cargarFormulacionesMedicamentos();
-      },
-      error: (error) => {
-        console.error(
-          'Error al guardar formulación:',
-          error
-        );
+    this.formulacionEditando = formulacion;
 
-        console.error(
-          'Respuesta del servidor:',
-          error?.error
-        );
+    const idMedicamento =
+      typeof formulacion.id_medicamentos === 'object'
+        ? formulacion.id_medicamentos?.id_medicamentos ?? null
+        : formulacion.id_medicamentos;
 
-        alertaError(
-          'Error',
-          'No fue posible guardar la formulación.'
-        );
+    const idGrupo =
+      typeof formulacion.id_grupo === 'object'
+        ? formulacion.id_grupo?.id_grupo ?? null
+        : formulacion.id_grupo;
+
+    this.formularioFormulacion = {
+      fecha: formulacion.fecha || '',
+      id_medicamentos: idMedicamento,
+      dosis: formulacion.dosis || '',
+      via: formulacion.via || '',
+      id_grupo: idGrupo,
+      hora_administrada:
+        formulacion.hora_administrada || '',
+      presentacion:
+        formulacion.presentacion || '',
+      actual_administrado:
+        formulacion.actual_administrado,
+      suspendido_fecha:
+        formulacion.suspendido_fecha || ''
+    };
+
+    this.mostrarFormularioFormulacion = true;
+  }
+
+  // ============================================================
+  // ELIMINAR FORMULACIÓN
+  // ===========================================================
+  eliminarFormulacion(
+    formulacion: FormulacionMedicamento
+  ): void {
+
+    Swal.fire({
+      title: '¿Eliminar formulación?',
+      text: 'Esta formulación será eliminada permanentemente.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
+    }).then((resultado) => {
+
+      if (!resultado.isConfirmed) {
+        return;
       }
+
+      this.http
+        .delete(
+          `${this.apiUrl}/formulacion_medicamentos/${formulacion.id_formulacion}/`
+        )
+        .subscribe({
+
+          next: () => {
+
+            alertaExito(
+              'Éxito',
+              'La formulación fue eliminada correctamente.'
+            );
+
+            this.cargarFormulacionesMedicamentos();
+          },
+
+          error: (error) => {
+
+            console.error(
+              'Error al eliminar formulación:',
+              error
+            );
+
+            console.error(
+              'Respuesta del servidor:',
+              error?.error
+            );
+
+            alertaError(
+              'Error',
+              'No fue posible eliminar la formulación.'
+            );
+          }
+
+        });
     });
-}
+  }
 
-// ============================================================
-// EDITAR FORMULACIÓN
-// ============================================================
+  // ============================================================
+  // CANCELAR FORMULARIO DE FORMULACIÓN
+  // ============================================================
 
-editarFormulacion(
-  formulacion: FormulacionMedicamento
-): void {
+  cancelarFormulacion(): void {
+    this.mostrarFormularioFormulacion = false;
+    this.formulacionEditando = null;
 
-  this.formulacionEditando = formulacion;
+    this.formularioFormulacion = {
+      fecha: '',
+      id_medicamentos: null,
+      dosis: '',
+      via: '',
+      id_grupo: null,
+      hora_administrada: '',
+      presentacion: '',
+      actual_administrado: true,
+      suspendido_fecha: ''
+    };
+  }
 
-  const idMedicamento =
-    typeof formulacion.id_medicamentos === 'object'
-      ? formulacion.id_medicamentos?.id_medicamentos ?? null
-      : formulacion.id_medicamentos;
+  // ============================================================
+  // SECCIÓN ACTUAL
+  // ============================================================
 
-  const idGrupo =
-    typeof formulacion.id_grupo === 'object'
-      ? formulacion.id_grupo?.id_grupo ?? null
-      : formulacion.id_grupo;
+  seccionActual: 'elementos' | 'cuidados' | 'recomendaciones' | 'historia' | 'formulacion' = 'elementos';
 
-  this.formularioFormulacion = {
-    fecha: formulacion.fecha || '',
-    id_medicamentos: idMedicamento,
-    dosis: formulacion.dosis || '',
-    via: formulacion.via || '',
-    id_grupo: idGrupo,
-    hora_administrada:
-      formulacion.hora_administrada || '',
-    presentacion:
-      formulacion.presentacion || '',
-    actual_administrado:
-      formulacion.actual_administrado,
-    suspendido_fecha:
-      formulacion.suspendido_fecha || ''
-  };
+  // ============================================================
+  // CAMBIAR SECCIÓN
+  // ============================================================
 
-  this.mostrarFormularioFormulacion = true;
-}
+  cambiarSeccion(
+    seccion: 'elementos' | 'cuidados' | 'recomendaciones' | 'historia' | 'formulacion'
+  ): void {
+    this.seccionActual = seccion;
+  }
+  // ============================================================
+  // INICIALES DEL PACIENTE
+  // ============================================================
 
-// ============================================================
-// ELIMINAR FORMULACIÓN
-// ===========================================================
-eliminarFormulacion(
-  formulacion: FormulacionMedicamento
-): void {
+  obtenerIniciales(): string {
 
-  Swal.fire({
-    title: '¿Eliminar formulación?',
-    text: 'Esta formulación será eliminada permanentemente.',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Sí, eliminar',
-    cancelButtonText: 'Cancelar',
-    reverseButtons: true
-  }).then((resultado) => {
+    const nombre =
+      this.paciente.nombre?.trim() || '';
 
-    if (!resultado.isConfirmed) {
-      return;
+    const apellido =
+      this.paciente.apellido?.trim() || '';
+
+    const inicialNombre =
+      nombre.charAt(0).toUpperCase();
+
+    const inicialApellido =
+      apellido.charAt(0).toUpperCase();
+
+    return `${inicialNombre}${inicialApellido}`;
+  }
+
+  // ============================================================
+  // REGISTRAR MEDICAMENTO
+  // ============================================================
+
+  registrarMedicamento(): void {
+
+    this.tipoElemento =
+      'medicamento';
+
+    this.mostrarMenuElementos =
+      false;
+
+    this.elementoEditando =
+      null;
+
+    // Iniciamos una nueva lista
+    // de medicamentos pendientes.
+    this.medicamentosPendientes = [];
+
+    this.formularioElemento = {
+
+      id_medicamentos: null,
+
+      id_insumo: null,
+
+      id_tipo_insumo: null,
+
+      cantidad: 1,
+
+      fecha_ingreso:
+        this.obtenerFechaHoraActual(),
+
+      fecha_vencimiento: '',
+
+      observaciones: '',
+
+      estado: true
+
+    };
+
+    this.insumosFiltrados = [];
+
+    if (
+      this.medicamentos.length === 0
+    ) {
+
+      this.cargarMedicamentos();
+
     }
 
-    this.http
-      .delete(
-        `${this.apiUrl}/formulacion_medicamentos/${formulacion.id_formulacion}/`
-      )
-      .subscribe({
+    this.mostrarFormularioElemento =
+      true;
 
-        next: () => {
-
-          alertaExito(
-            'Éxito',
-            'La formulación fue eliminada correctamente.'
-          );
-
-          this.cargarFormulacionesMedicamentos();
-        },
-
-        error: (error) => {
-
-          console.error(
-            'Error al eliminar formulación:',
-            error
-          );
-
-          console.error(
-            'Respuesta del servidor:',
-            error?.error
-          );
-
-          alertaError(
-            'Error',
-            'No fue posible eliminar la formulación.'
-          );
-        }
-
-      });
-  });
-}
-
-// ============================================================
-// CANCELAR FORMULARIO DE FORMULACIÓN
-// ============================================================
-
-cancelarFormulacion(): void {
-  this.mostrarFormularioFormulacion = false;
-  this.formulacionEditando = null;
-
-  this.formularioFormulacion = {
-    fecha: '',
-    id_medicamentos: null,
-    dosis: '',
-    via: '',
-    id_grupo: null,
-    hora_administrada: '',
-    presentacion: '',
-    actual_administrado: true,
-    suspendido_fecha: ''
-  };
-}
-
-// ============================================================
-// SECCIÓN ACTUAL
-// ============================================================
-
-seccionActual: 'elementos' | 'cuidados' | 'recomendaciones' | 'historia' | 'formulacion' = 'elementos';
-
-// ============================================================
-// CAMBIAR SECCIÓN
-// ============================================================
-
-cambiarSeccion(
-  seccion: 'elementos' | 'cuidados' | 'recomendaciones' | 'historia' | 'formulacion'
-): void {
-  this.seccionActual = seccion;
-}
-// ============================================================
-// INICIALES DEL PACIENTE
-// ============================================================
-
-obtenerIniciales(): string {
-
-  const nombre =
-    this.paciente.nombre?.trim() || '';
-
-  const apellido =
-    this.paciente.apellido?.trim() || '';
-
-  const inicialNombre =
-    nombre.charAt(0).toUpperCase();
-
-  const inicialApellido =
-    apellido.charAt(0).toUpperCase();
-
-  return `${inicialNombre}${inicialApellido}`;
-}
-
-// ============================================================
-// REGISTRAR MEDICAMENTO
-// ============================================================
-
-registrarMedicamento(): void {
-
-  this.tipoElemento =
-    'medicamento';
-
-  this.mostrarMenuElementos =
-    false;
-
-  this.elementoEditando =
-    null;
-
-  // Iniciamos una nueva lista
-  // de medicamentos pendientes.
-  this.medicamentosPendientes = [];
-
-  this.formularioElemento = {
-
-    id_medicamentos: null,
-
-    id_insumo: null,
-
-    id_tipo_insumo: null,
-
-    cantidad: 1,
-
-    fecha_ingreso:
-      this.obtenerFechaHoraActual(),
-
-    fecha_vencimiento: '',
-
-    observaciones: '',
-
-    estado: true
-
-  };
-
-  this.insumosFiltrados = [];
-
-  if (
-    this.medicamentos.length === 0
-  ) {
-
-    this.cargarMedicamentos();
+    this.cdr.detectChanges();
 
   }
-
-  this.mostrarFormularioElemento =
-    true;
-
-  this.cdr.detectChanges();
-
-}
 
   // ============================================================
   // REGISTRAR INSUMO
@@ -2227,23 +2230,23 @@ registrarMedicamento(): void {
     const idInsumo =
       !esMedicamento
         ? this.obtenerIdInsumo(
-            elemento.id_insumo
-          )
+          elemento.id_insumo
+        )
         : null;
 
     const insumo =
       idInsumo
         ? this.insumos.find(item =>
-            Number(item.id_insumo) ===
-            Number(idInsumo)
-          )
+          Number(item.id_insumo) ===
+          Number(idInsumo)
+        )
         : null;
 
     const idTipoInsumo =
       insumo
         ? this.obtenerIdTipoInsumo(
-            insumo.id_tipo_insumo
-          )
+          insumo.id_tipo_insumo
+        )
         : null;
 
     this.formularioElemento = {
@@ -2251,8 +2254,8 @@ registrarMedicamento(): void {
       id_medicamentos:
         esMedicamento
           ? this.obtenerIdMedicamento(
-              elemento.id_medicamentos
-            )
+            elemento.id_medicamentos
+          )
           : null,
 
       id_insumo:
@@ -2285,7 +2288,7 @@ registrarMedicamento(): void {
     };
 
     this.formularioElementoOriginal = {
-    ...this.formularioElemento
+      ...this.formularioElemento
     };
 
     if (
@@ -2340,97 +2343,97 @@ registrarMedicamento(): void {
 
   }
 
-// ============================================================
-// CONVERTIR FECHA PARA INPUT
-// ============================================================
+  // ============================================================
+  // CONVERTIR FECHA PARA INPUT
+  // ============================================================
 
-private convertirFechaParaInput(
-  fecha: string | null | undefined
-): string {
+  private convertirFechaParaInput(
+    fecha: string | null | undefined
+  ): string {
 
-  if (!fecha) {
-    return '';
-  }
-
-  try {
-
-    const fechaConvertida =
-      new Date(fecha);
-
-    if (isNaN(fechaConvertida.getTime())) {
+    if (!fecha) {
       return '';
     }
 
-    const anio =
-      fechaConvertida.getFullYear();
+    try {
 
-    const mes =
-      String(
-        fechaConvertida.getMonth() + 1
-      ).padStart(2, '0');
+      const fechaConvertida =
+        new Date(fecha);
 
-    const dia =
-      String(
-        fechaConvertida.getDate()
-      ).padStart(2, '0');
-
-    return `${anio}-${mes}-${dia}`;
-
-  } catch (error) {
-
-    return '';
-
-  }
-
-}
-
-// ============================================================
-// MOSTRAR ERROR DE LA API
-// ============================================================
-private huboCambios(original: any, nuevo: any, campos: string[]): boolean {
-  return campos.some(campo => (original?.[campo] ?? '') !== (nuevo?.[campo] ?? ''));
-}
-private mostrarErrorApi(
-  
-  error: any,
-  mensajePorDefecto: string = 'Ocurrió un error al comunicarse con el servidor.'
-): void {
-
-  let mensaje = mensajePorDefecto;
-
-  if (error && error.error) {
-
-    if (typeof error.error === 'string') {
-
-      // Si el backend devolvió una página de error (HTML/traceback de Django)
-      // en vez de un mensaje limpio, no la mostramos: es ilegible y muy larga.
-      const esPaginaHtml =
-        error.error.includes('<!DOCTYPE') ||
-        error.error.includes('<html') ||
-        error.error.length > 400;
-
-      mensaje = esPaginaHtml ? mensajePorDefecto : error.error;
-
-    } else if (error.error.detail) {
-      mensaje = error.error.detail;
-    } else if (error.error.message) {
-      mensaje = error.error.message;
-    } else if (error.error.mensaje) {
-      mensaje = error.error.mensaje;
-    } else {
-      try {
-        mensaje = Object.values(error.error).flat().join(' ');
-      } catch (e) {
-        mensaje = mensajePorDefecto;
+      if (isNaN(fechaConvertida.getTime())) {
+        return '';
       }
+
+      const anio =
+        fechaConvertida.getFullYear();
+
+      const mes =
+        String(
+          fechaConvertida.getMonth() + 1
+        ).padStart(2, '0');
+
+      const dia =
+        String(
+          fechaConvertida.getDate()
+        ).padStart(2, '0');
+
+      return `${anio}-${mes}-${dia}`;
+
+    } catch (error) {
+
+      return '';
+
     }
 
-  } else if (error && error.message) {
-    mensaje = error.message;
   }
 
-  alertaError('Error', mensaje);
-}
+  // ============================================================
+  // MOSTRAR ERROR DE LA API
+  // ============================================================
+  private huboCambios(original: any, nuevo: any, campos: string[]): boolean {
+    return campos.some(campo => (original?.[campo] ?? '') !== (nuevo?.[campo] ?? ''));
+  }
+  private mostrarErrorApi(
+
+    error: any,
+    mensajePorDefecto: string = 'Ocurrió un error al comunicarse con el servidor.'
+  ): void {
+
+    let mensaje = mensajePorDefecto;
+
+    if (error && error.error) {
+
+      if (typeof error.error === 'string') {
+
+        // Si el backend devolvió una página de error (HTML/traceback de Django)
+        // en vez de un mensaje limpio, no la mostramos: es ilegible y muy larga.
+        const esPaginaHtml =
+          error.error.includes('<!DOCTYPE') ||
+          error.error.includes('<html') ||
+          error.error.length > 400;
+
+        mensaje = esPaginaHtml ? mensajePorDefecto : error.error;
+
+      } else if (error.error.detail) {
+        mensaje = error.error.detail;
+      } else if (error.error.message) {
+        mensaje = error.error.message;
+      } else if (error.error.mensaje) {
+        mensaje = error.error.mensaje;
+      } else {
+        try {
+          mensaje = Object.values(error.error).flat().join(' ');
+        } catch (e) {
+          mensaje = mensajePorDefecto;
+        }
+      }
+
+    } else if (error && error.message) {
+      mensaje = error.message;
+    }
+
+    alertaError('Error', mensaje);
+  }
 
 
   // ============================================================
@@ -2468,7 +2471,7 @@ private mostrarErrorApi(
     return null;
   }
 
-    // ============================================================
+  // ============================================================
   // OBTENER NOMBRE DEL MEDICAMENTO DE LA FORMULACIÓN
   // ============================================================
 
@@ -2737,7 +2740,7 @@ private mostrarErrorApi(
 
     if (medicamentoExistente) {
 
-     alertaAdvertencia('Medicamento repetido', 'Este medicamento ya fue agregado a la lista.');
+      alertaAdvertencia('Medicamento repetido', 'Este medicamento ya fue agregado a la lista.');
       return;
     }
 
@@ -2778,95 +2781,95 @@ private mostrarErrorApi(
 
   }
 
-/// ============================================================
-// AGREGAR INSUMO A LA LISTA TEMPORAL
-// ============================================================
+  /// ============================================================
+  // AGREGAR INSUMO A LA LISTA TEMPORAL
+  // ============================================================
 
-agregarInsumoPendiente(): void {
+  agregarInsumoPendiente(): void {
 
-  // Validar tipo de insumo.
-  if (!this.formularioElemento.id_tipo_insumo) {
+    // Validar tipo de insumo.
+    if (!this.formularioElemento.id_tipo_insumo) {
 
-   alertaAdvertencia('Tipo de insumo requerido', 'Selecciona un tipo de insumo antes de agregarlo.');
+      alertaAdvertencia('Tipo de insumo requerido', 'Selecciona un tipo de insumo antes de agregarlo.');
 
-    return;
-  }
+      return;
+    }
 
-  // Validar insumo.
-  if (!this.formularioElemento.id_insumo) {
+    // Validar insumo.
+    if (!this.formularioElemento.id_insumo) {
 
-    alertaAdvertencia('Insumo requerido', 'Selecciona un insumo antes de agregarlo.');
+      alertaAdvertencia('Insumo requerido', 'Selecciona un insumo antes de agregarlo.');
 
-    return;
-  }
+      return;
+    }
 
-  // Validar cantidad.
-  const cantidad = Number(
-    this.formularioElemento.cantidad
-  );
-
-  if (!cantidad || cantidad <= 0) {
-
-    alertaAdvertencia('Cantidad inválida', 'La cantidad debe ser mayor que cero.');
-
-    return;
-  }
-
-  // Evitar registrar el mismo insumo
-  // dos veces dentro de la misma lista.
-  const insumoExistente =
-    this.insumosPendientes.some(
-      insumo =>
-        Number(insumo.id_insumo) ===
-        Number(this.formularioElemento.id_insumo)
+    // Validar cantidad.
+    const cantidad = Number(
+      this.formularioElemento.cantidad
     );
 
-  if (insumoExistente) {
+    if (!cantidad || cantidad <= 0) {
 
-    alertaAdvertencia('Insumo repetido', 'Este insumo ya fue agregado a la lista.');
-    return;
+      alertaAdvertencia('Cantidad inválida', 'La cantidad debe ser mayor que cero.');
+
+      return;
+    }
+
+    // Evitar registrar el mismo insumo
+    // dos veces dentro de la misma lista.
+    const insumoExistente =
+      this.insumosPendientes.some(
+        insumo =>
+          Number(insumo.id_insumo) ===
+          Number(this.formularioElemento.id_insumo)
+      );
+
+    if (insumoExistente) {
+
+      alertaAdvertencia('Insumo repetido', 'Este insumo ya fue agregado a la lista.');
+      return;
+    }
+
+    // Agregar una COPIA del formulario actual.
+    this.insumosPendientes.push({
+      ...this.formularioElemento,
+      cantidad: cantidad
+    });
+
+    console.log(
+      'Insumos pendientes:',
+      this.insumosPendientes
+    );
+
+    // Limpiar únicamente el formulario
+    // para poder seleccionar OTRO insumo.
+    this.formularioElemento = {
+
+      id_medicamentos: null,
+
+      id_insumo: null,
+
+      id_tipo_insumo: null,
+
+      cantidad: 1,
+
+      fecha_ingreso:
+        this.obtenerFechaHoraActual(),
+
+      fecha_vencimiento: '',
+
+      observaciones: '',
+
+      estado: true
+
+    };
+
+    // Limpiar los insumos filtrados
+    // hasta que se seleccione nuevamente un tipo.
+    this.insumosFiltrados = [];
+
+    this.cdr.detectChanges();
   }
-
-  // Agregar una COPIA del formulario actual.
-  this.insumosPendientes.push({
-    ...this.formularioElemento,
-    cantidad: cantidad
-  });
-
-  console.log(
-    'Insumos pendientes:',
-    this.insumosPendientes
-  );
-
-  // Limpiar únicamente el formulario
-  // para poder seleccionar OTRO insumo.
-  this.formularioElemento = {
-
-    id_medicamentos: null,
-
-    id_insumo: null,
-
-    id_tipo_insumo: null,
-
-    cantidad: 1,
-
-    fecha_ingreso:
-      this.obtenerFechaHoraActual(),
-
-    fecha_vencimiento: '',
-
-    observaciones: '',
-
-    estado: true
-
-  };
-
-  // Limpiar los insumos filtrados
-  // hasta que se seleccione nuevamente un tipo.
-  this.insumosFiltrados = [];
-
-  this.cdr.detectChanges();
-}
 
   // ============================================================
   // OBTENER NOMBRE DEL MEDICAMENTO PENDIENTE
@@ -2956,9 +2959,9 @@ agregarInsumoPendiente(): void {
 
   guardarElemento(): void {
 
-     if (this.guardandoElementos) {
-    return;
-  }
+    if (this.guardandoElementos) {
+      return;
+    }
 
     if (!this.idPaciente || this.idPaciente <= 0) {
 
@@ -3033,7 +3036,7 @@ agregarInsumoPendiente(): void {
         this.insumosPendientes.length === 0
       ) {
 
-       alertaAdvertencia('Insumos requeridos', 'Agrega al menos un insumo antes de guardar.');
+        alertaAdvertencia('Insumos requeridos', 'Agrega al menos un insumo antes de guardar.');
         return;
       }
 
@@ -3076,7 +3079,7 @@ agregarInsumoPendiente(): void {
       !this.formularioElemento.id_medicamentos
     ) {
 
-     alertaAdvertencia('Medicamento requerido', 'Selecciona un medicamento.');
+      alertaAdvertencia('Medicamento requerido', 'Selecciona un medicamento.');
       return;
     }
 
@@ -3102,24 +3105,24 @@ agregarInsumoPendiente(): void {
 
     if (this.elementoEditando && this.formularioElementoOriginal) {
 
-  const sinCambios =
-    Number(this.formularioElemento.cantidad) === Number(this.formularioElementoOriginal.cantidad) &&
-    this.formularioElemento.fecha_ingreso === this.formularioElementoOriginal.fecha_ingreso &&
-    this.formularioElemento.fecha_vencimiento === this.formularioElementoOriginal.fecha_vencimiento &&
-    (this.formularioElemento.observaciones || '').trim() ===
-      (this.formularioElementoOriginal.observaciones || '').trim() &&
-    this.formularioElemento.estado === this.formularioElementoOriginal.estado &&
-    this.formularioElemento.id_medicamentos === this.formularioElementoOriginal.id_medicamentos &&
-    this.formularioElemento.id_insumo === this.formularioElementoOriginal.id_insumo;
+      const sinCambios =
+        Number(this.formularioElemento.cantidad) === Number(this.formularioElementoOriginal.cantidad) &&
+        this.formularioElemento.fecha_ingreso === this.formularioElementoOriginal.fecha_ingreso &&
+        this.formularioElemento.fecha_vencimiento === this.formularioElementoOriginal.fecha_vencimiento &&
+        (this.formularioElemento.observaciones || '').trim() ===
+        (this.formularioElementoOriginal.observaciones || '').trim() &&
+        this.formularioElemento.estado === this.formularioElementoOriginal.estado &&
+        this.formularioElemento.id_medicamentos === this.formularioElementoOriginal.id_medicamentos &&
+        this.formularioElemento.id_insumo === this.formularioElementoOriginal.id_insumo;
 
-  if (sinCambios) {
-    alertaAdvertencia(
-      'Sin cambios',
-      'No se realizó ninguna modificación en el elemento.'
-    );
-    return;
-  }
-}
+      if (sinCambios) {
+        alertaAdvertencia(
+          'Sin cambios',
+          'No se realizó ninguna modificación en el elemento.'
+        );
+        return;
+      }
+    }
 
     this.guardandoElementos = true;
 
@@ -3135,9 +3138,9 @@ agregarInsumoPendiente(): void {
       fecha_vencimiento:
         this.tipoElemento === 'medicamento'
           ? (
-              this.formularioElemento
-                .fecha_vencimiento || null
-            )
+            this.formularioElemento
+              .fecha_vencimiento || null
+          )
           : null,
 
       observaciones:
@@ -3154,17 +3157,17 @@ agregarInsumoPendiente(): void {
       id_medicamentos:
         this.tipoElemento === 'medicamento'
           ? Number(
-              this.formularioElemento
-                .id_medicamentos
-            )
+            this.formularioElemento
+              .id_medicamentos
+          )
           : null,
 
       id_insumo:
         this.tipoElemento === 'insumo'
           ? Number(
-              this.formularioElemento
-                .id_insumo
-            )
+            this.formularioElemento
+              .id_insumo
+          )
           : null
 
     };
@@ -3189,15 +3192,15 @@ agregarInsumoPendiente(): void {
               respuesta
             );
 
-              alertaExito('Elemento actualizado', 'El elemento se actualizó correctamente.');
-              this.guardandoElementos = false;
-              this.cerrarFormularioElemento();
-              this.cargarElementosPaciente();
+            alertaExito('Elemento actualizado', 'El elemento se actualizó correctamente.');
+            this.guardandoElementos = false;
+            this.cerrarFormularioElemento();
+            this.cargarElementosPaciente();
           },
 
           error: (error) => {
 
-             this.guardandoElementos = false;
+            this.guardandoElementos = false;
 
             console.error(
               'Error al actualizar elemento:',
@@ -3277,238 +3280,238 @@ agregarInsumoPendiente(): void {
   // GUARDAR TODOS LOS MEDICAMENTOS PENDIENTES
   // ============================================================
 
- private guardarMedicamentosPendientes(): void {
+  private guardarMedicamentosPendientes(): void {
 
-  if (this.guardandoElementos) {
-    return;
+    if (this.guardandoElementos) {
+      return;
+    }
+
+    if (this.medicamentosPendientes.length === 0) {
+      return;
+    }
+
+    this.guardandoElementos = true;
+
+    this.guardarSiguienteMedicamento();
   }
 
-  if (this.medicamentosPendientes.length === 0) {
-    return;
-  }
+  private guardarSiguienteMedicamento(): void {
 
-  this.guardandoElementos = true;
+    if (this.medicamentosPendientes.length === 0) {
 
-  this.guardarSiguienteMedicamento();
-}
+      this.guardandoElementos = false;
 
-private guardarSiguienteMedicamento(): void {
+      alertaExito(
+        'Medicamentos registrados',
+        'Todos los medicamentos se registraron correctamente para el paciente.'
+      );
 
-  if (this.medicamentosPendientes.length === 0) {
+      this.cerrarFormularioElemento();
+      this.cargarElementosPaciente();
 
-    this.guardandoElementos = false;
+      return;
+    }
 
-    alertaExito(
-      'Medicamentos registrados',
-      'Todos los medicamentos se registraron correctamente para el paciente.'
+    const medicamento = this.medicamentosPendientes[0];
+
+    const datos = {
+
+      cantidad: Number(medicamento.cantidad),
+
+      fecha_ingreso:
+        medicamento.fecha_ingreso ||
+        this.obtenerFechaHoraActual(),
+
+      fecha_vencimiento:
+        medicamento.fecha_vencimiento || null,
+
+      observaciones:
+        medicamento.observaciones?.trim() || null,
+
+      estado:
+        medicamento.estado,
+
+      id_paciente:
+        this.idPaciente,
+
+      id_medicamentos:
+        Number(medicamento.id_medicamentos),
+
+      id_insumo:
+        null
+
+    };
+
+    console.log(
+      'Medicamento que se enviará:',
+      datos
     );
 
-    this.cerrarFormularioElemento();
-    this.cargarElementosPaciente();
+    this.http
+      .post(
+        `${this.apiUrl}/elementos_paciente/`,
+        datos
+      )
+      .subscribe({
 
-    return;
+        next: (respuesta) => {
+
+          console.log(
+            'Medicamento registrado:',
+            respuesta
+          );
+
+          // Quitamos únicamente el medicamento
+          // que el backend confirmó.
+          this.medicamentosPendientes.shift();
+
+          // Continuamos con el siguiente.
+          this.guardarSiguienteMedicamento();
+
+        },
+
+        error: (error) => {
+
+          this.guardandoElementos = false;
+
+          console.error(
+            'Error al registrar medicamento:',
+            error
+          );
+
+          console.error(
+            'Respuesta del servidor:',
+            error?.error
+          );
+
+          this.mostrarErrorApi(
+            error,
+            'No fue posible registrar todos los medicamentos.'
+          );
+
+        }
+
+      });
   }
 
-  const medicamento = this.medicamentosPendientes[0];
+  // ============================================================
+  // GUARDAR TODOS LOS INSUMOS PENDIENTES
+  // ============================================================
 
-  const datos = {
+  private guardarInsumosPendientes(): void {
 
-    cantidad: Number(medicamento.cantidad),
+    if (this.guardandoElementos) {
+      return;
+    }
 
-    fecha_ingreso:
-      medicamento.fecha_ingreso ||
-      this.obtenerFechaHoraActual(),
+    if (this.insumosPendientes.length === 0) {
+      return;
+    }
 
-    fecha_vencimiento:
-      medicamento.fecha_vencimiento || null,
+    this.guardandoElementos = true;
 
-    observaciones:
-      medicamento.observaciones?.trim() || null,
+    this.guardarSiguienteInsumo();
+  }
 
-    estado:
-      medicamento.estado,
+  private guardarSiguienteInsumo(): void {
 
-    id_paciente:
-      this.idPaciente,
+    if (this.insumosPendientes.length === 0) {
 
-    id_medicamentos:
-      Number(medicamento.id_medicamentos),
+      this.guardandoElementos = false;
 
-    id_insumo:
-      null
+      alertaExito(
+        'Insumos registrados',
+        'Todos los insumos se registraron correctamente para el paciente.'
+      );
 
-  };
+      this.cerrarFormularioElemento();
+      this.cargarElementosPaciente();
 
-  console.log(
-    'Medicamento que se enviará:',
-    datos
-  );
+      return;
+    }
 
-  this.http
-    .post(
-      `${this.apiUrl}/elementos_paciente/`,
+    const insumo = this.insumosPendientes[0];
+
+    const datos = {
+
+      cantidad:
+        Number(insumo.cantidad),
+
+      fecha_ingreso:
+        insumo.fecha_ingreso ||
+        this.obtenerFechaHoraActual(),
+
+      fecha_vencimiento:
+        null,
+
+      observaciones:
+        insumo.observaciones?.trim() || null,
+
+      estado:
+        insumo.estado,
+
+      id_paciente:
+        this.idPaciente,
+
+      id_medicamentos:
+        null,
+
+      id_insumo:
+        Number(insumo.id_insumo)
+
+    };
+
+    console.log(
+      'Insumo que se enviará:',
       datos
-    )
-    .subscribe({
-
-      next: (respuesta) => {
-
-        console.log(
-          'Medicamento registrado:',
-          respuesta
-        );
-
-        // Quitamos únicamente el medicamento
-        // que el backend confirmó.
-        this.medicamentosPendientes.shift();
-
-        // Continuamos con el siguiente.
-        this.guardarSiguienteMedicamento();
-
-      },
-
-      error: (error) => {
-
-        this.guardandoElementos = false;
-
-        console.error(
-          'Error al registrar medicamento:',
-          error
-        );
-
-        console.error(
-          'Respuesta del servidor:',
-          error?.error
-        );
-
-        this.mostrarErrorApi(
-          error,
-          'No fue posible registrar todos los medicamentos.'
-        );
-
-      }
-
-    });
-}
-
-// ============================================================
-// GUARDAR TODOS LOS INSUMOS PENDIENTES
-// ============================================================
-
-private guardarInsumosPendientes(): void {
-
-  if (this.guardandoElementos) {
-    return;
-  }
-
-  if (this.insumosPendientes.length === 0) {
-    return;
-  }
-
-  this.guardandoElementos = true;
-
-  this.guardarSiguienteInsumo();
-}
-
-private guardarSiguienteInsumo(): void {
-
-  if (this.insumosPendientes.length === 0) {
-
-    this.guardandoElementos = false;
-
-    alertaExito(
-      'Insumos registrados',
-      'Todos los insumos se registraron correctamente para el paciente.'
     );
 
-    this.cerrarFormularioElemento();
-    this.cargarElementosPaciente();
+    this.http
+      .post(
+        `${this.apiUrl}/elementos_paciente/`,
+        datos
+      )
+      .subscribe({
 
-    return;
+        next: (respuesta) => {
+
+          console.log(
+            'Insumo registrado:',
+            respuesta
+          );
+
+          // Quitamos únicamente el insumo
+          // que el backend confirmó.
+          this.insumosPendientes.shift();
+
+          // Continuamos con el siguiente.
+          this.guardarSiguienteInsumo();
+
+        },
+
+        error: (error) => {
+
+          this.guardandoElementos = false;
+
+          console.error(
+            'Error al registrar insumo:',
+            error
+          );
+
+          console.error(
+            'Respuesta del servidor:',
+            error?.error
+          );
+
+          this.mostrarErrorApi(
+            error,
+            'No fue posible registrar todos los insumos.'
+          );
+
+        }
+
+      });
   }
-
-  const insumo = this.insumosPendientes[0];
-
-  const datos = {
-
-    cantidad:
-      Number(insumo.cantidad),
-
-    fecha_ingreso:
-      insumo.fecha_ingreso ||
-      this.obtenerFechaHoraActual(),
-
-    fecha_vencimiento:
-      null,
-
-    observaciones:
-      insumo.observaciones?.trim() || null,
-
-    estado:
-      insumo.estado,
-
-    id_paciente:
-      this.idPaciente,
-
-    id_medicamentos:
-      null,
-
-    id_insumo:
-      Number(insumo.id_insumo)
-
-  };
-
-  console.log(
-    'Insumo que se enviará:',
-    datos
-  );
-
-  this.http
-    .post(
-      `${this.apiUrl}/elementos_paciente/`,
-      datos
-    )
-    .subscribe({
-
-      next: (respuesta) => {
-
-        console.log(
-          'Insumo registrado:',
-          respuesta
-        );
-
-        // Quitamos únicamente el insumo
-        // que el backend confirmó.
-        this.insumosPendientes.shift();
-
-        // Continuamos con el siguiente.
-        this.guardarSiguienteInsumo();
-
-      },
-
-      error: (error) => {
-
-        this.guardandoElementos = false;
-
-        console.error(
-          'Error al registrar insumo:',
-          error
-        );
-
-        console.error(
-          'Respuesta del servidor:',
-          error?.error
-        );
-
-        this.mostrarErrorApi(
-          error,
-          'No fue posible registrar todos los insumos.'
-        );
-
-      }
-
-    });
-}
 
   // ============================================================
   // CERRAR FORMULARIO
@@ -3603,30 +3606,30 @@ private guardarSiguienteInsumo(): void {
 
   eliminarElemento(elemento: ElementoPaciente): void {
 
-  const nombre = this.obtenerNombreElemento(elemento);
-  const entidad = this.obtenerTipoElemento(elemento) === 'Medicamento' ? 'medicamento' : 'insumo';
+    const nombre = this.obtenerNombreElemento(elemento);
+    const entidad = this.obtenerTipoElemento(elemento) === 'Medicamento' ? 'medicamento' : 'insumo';
 
-  alertaEliminar(nombre, entidad).then((resultado) => {
+    alertaEliminar(nombre, entidad).then((resultado) => {
 
-    if (!resultado.isConfirmed) {
-      return;
-    }
+      if (!resultado.isConfirmed) {
+        return;
+      }
 
-    this.http
-      .delete(`${this.apiUrl}/elementos_paciente/${elemento.id_elemento}/`)
-      .subscribe({
+      this.http
+        .delete(`${this.apiUrl}/elementos_paciente/${elemento.id_elemento}/`)
+        .subscribe({
 
-        next: () => {
-          alertaExito('Elemento eliminado');
-          this.cargarElementosPaciente();
-        },
+          next: () => {
+            alertaExito('Elemento eliminado');
+            this.cargarElementosPaciente();
+          },
 
-        error: (error) => {
-          this.mostrarErrorApi(error, 'No fue posible eliminar el elemento.');
-        }
-      });
-  });
-}
+          error: (error) => {
+            this.mostrarErrorApi(error, 'No fue posible eliminar el elemento.');
+          }
+        });
+    });
+  }
 
   // ============================================================
   // CARGAR CUIDADOS DE ENFERMERÍA
@@ -3767,122 +3770,171 @@ private guardarSiguienteInsumo(): void {
   // ============================================================
 
   abrirFormularioCuidados(): void {
-  this.cuidadosOriginal = this.cuidados.id_cuidado > 0 ? { ...this.cuidados } : null;
-  this.mostrarFormularioCuidados = true;
-  this.cdr.detectChanges();
-}
+    this.cuidadosOriginal = this.cuidados.id_cuidado > 0 ? { ...this.cuidados } : null;
+    this.mostrarFormularioCuidados = true;
+    this.cdr.detectChanges();
+  }
 
   // ============================================================
   // GUARDAR CUIDADOS DE ENFERMERÍA
   // ============================================================
 
-guardarCuidados(): void {
+  guardarCuidados(): void {
 
-  if (!this.idPaciente || this.idPaciente <= 0) {
+    if (!this.idPaciente || this.idPaciente <= 0) {
 
-    alertaAdvertencia(
-      'Paciente no identificado',
-      'No fue posible identificar el paciente.'
+      alertaAdvertencia(
+        'Paciente no identificado',
+        'No fue posible identificar el paciente.'
+      );
+
+      return;
+    }
+
+    if (
+      this.cuidados.id_cuidado > 0 &&
+      this.cuidadosOriginal &&
+      !this.huboCambios(
+        this.cuidadosOriginal,
+        this.cuidados,
+        [
+          'bano_paciente',
+          'peso_talla',
+          'control_glucemia',
+          'curaciones',
+          'liquidos_administrados_eliminados',
+          'control_deposicion',
+          'administracion_medicamentos'
+        ]
+      )
+    ) {
+
+      alertaAdvertencia(
+        'Sin cambios',
+        'No modificaste ningún campo de los cuidados de enfermería.'
+      );
+
+      return;
+    }
+
+    const datos = {
+
+      bano_paciente:
+        this.limpiarValor(
+          this.cuidados.bano_paciente
+        ),
+
+      peso_talla:
+        this.limpiarValor(
+          this.cuidados.peso_talla
+        ),
+
+      control_glucemia:
+        this.limpiarValor(
+          this.cuidados.control_glucemia
+        ),
+
+      curaciones:
+        this.limpiarValor(
+          this.cuidados.curaciones
+        ),
+
+      liquidos_administrados_eliminados:
+        this.limpiarValor(
+          this.cuidados.liquidos_administrados_eliminados
+        ),
+
+      control_deposicion:
+        this.limpiarValor(
+          this.cuidados.control_deposicion
+        ),
+
+      administracion_medicamentos:
+        this.limpiarValor(
+          this.cuidados.administracion_medicamentos
+        ),
+
+      id_paciente:
+        this.idPaciente
+
+    };
+
+    console.log(
+      '======================================'
     );
 
-    return;
-  }
-
-  if (
-    this.cuidados.id_cuidado > 0 &&
-    this.cuidadosOriginal &&
-    !this.huboCambios(
-      this.cuidadosOriginal,
-      this.cuidados,
-      [
-        'bano_paciente',
-        'peso_talla',
-        'control_glucemia',
-        'curaciones',
-        'liquidos_administrados_eliminados',
-        'control_deposicion',
-        'administracion_medicamentos'
-      ]
-    )
-  ) {
-
-    alertaAdvertencia(
-      'Sin cambios',
-      'No modificaste ningún campo de los cuidados de enfermería.'
+    console.log(
+      'GUARDANDO CUIDADOS DE ENFERMERÍA'
     );
 
-    return;
-  }
-
-  const datos = {
-
-    bano_paciente:
-      this.limpiarValor(
-        this.cuidados.bano_paciente
-      ),
-
-    peso_talla:
-      this.limpiarValor(
-        this.cuidados.peso_talla
-      ),
-
-    control_glucemia:
-      this.limpiarValor(
-        this.cuidados.control_glucemia
-      ),
-
-    curaciones:
-      this.limpiarValor(
-        this.cuidados.curaciones
-      ),
-
-    liquidos_administrados_eliminados:
-      this.limpiarValor(
-        this.cuidados.liquidos_administrados_eliminados
-      ),
-
-    control_deposicion:
-      this.limpiarValor(
-        this.cuidados.control_deposicion
-      ),
-
-    administracion_medicamentos:
-      this.limpiarValor(
-        this.cuidados.administracion_medicamentos
-      ),
-
-    id_paciente:
+    console.log(
+      'Paciente:',
       this.idPaciente
+    );
 
-  };
+    console.log(
+      'Datos enviados:',
+      datos
+    );
 
-  console.log(
-    '======================================'
-  );
+    console.log(
+      '======================================'
+    );
 
-  console.log(
-    'GUARDANDO CUIDADOS DE ENFERMERÍA'
-  );
+    if (this.cuidados.id_cuidado > 0) {
 
-  console.log(
-    'Paciente:',
-    this.idPaciente
-  );
+      this.http
+        .patch(
+          `${this.apiUrl}/cuidados_enfermeria/${this.cuidados.id_cuidado}/`,
+          datos
+        )
+        .subscribe({
 
-  console.log(
-    'Datos enviados:',
-    datos
-  );
+          next: (respuesta) => {
 
-  console.log(
-    '======================================'
-  );
+            console.log(
+              'Cuidados actualizados:',
+              respuesta
+            );
 
-  if (this.cuidados.id_cuidado > 0) {
+            alertaExito(
+              'Cuidados actualizados',
+              'Los cuidados de enfermería se actualizaron correctamente.'
+            );
+
+            this.mostrarFormularioCuidados = false;
+
+            this.cargarCuidados();
+
+          },
+
+          error: (error) => {
+
+            console.error(
+              'Error al actualizar cuidados:',
+              error
+            );
+
+            console.error(
+              'Respuesta del servidor:',
+              error?.error
+            );
+
+            this.mostrarErrorApi(
+              error,
+              'No fue posible actualizar los cuidados de enfermería.'
+            );
+
+          }
+
+        });
+
+      return;
+    }
 
     this.http
-      .patch(
-        `${this.apiUrl}/cuidados_enfermeria/${this.cuidados.id_cuidado}/`,
+      .post(
+        `${this.apiUrl}/cuidados_enfermeria/`,
         datos
       )
       .subscribe({
@@ -3890,13 +3942,13 @@ guardarCuidados(): void {
         next: (respuesta) => {
 
           console.log(
-            'Cuidados actualizados:',
+            'Cuidados registrados:',
             respuesta
           );
 
           alertaExito(
-            'Cuidados actualizados',
-            'Los cuidados de enfermería se actualizaron correctamente.'
+            'Cuidados registrados',
+            'Los cuidados de enfermería se registraron correctamente.'
           );
 
           this.mostrarFormularioCuidados = false;
@@ -3908,7 +3960,7 @@ guardarCuidados(): void {
         error: (error) => {
 
           console.error(
-            'Error al actualizar cuidados:',
+            'Error al registrar cuidados:',
             error
           );
 
@@ -3919,61 +3971,12 @@ guardarCuidados(): void {
 
           this.mostrarErrorApi(
             error,
-            'No fue posible actualizar los cuidados de enfermería.'
+            'No fue posible registrar los cuidados de enfermería.'
           );
 
         }
 
       });
-
-    return;
-  }
-
-  this.http
-    .post(
-      `${this.apiUrl}/cuidados_enfermeria/`,
-      datos
-    )
-    .subscribe({
-
-      next: (respuesta) => {
-
-        console.log(
-          'Cuidados registrados:',
-          respuesta
-        );
-
-        alertaExito(
-          'Cuidados registrados',
-          'Los cuidados de enfermería se registraron correctamente.'
-        );
-
-        this.mostrarFormularioCuidados = false;
-
-        this.cargarCuidados();
-
-      },
-
-      error: (error) => {
-
-        console.error(
-          'Error al registrar cuidados:',
-          error
-        );
-
-        console.error(
-          'Respuesta del servidor:',
-          error?.error
-        );
-
-        this.mostrarErrorApi(
-          error,
-          'No fue posible registrar los cuidados de enfermería.'
-        );
-
-      }
-
-    });
 
   }
 
@@ -4010,7 +4013,7 @@ guardarCuidados(): void {
 
     }
 
-     this.cuidadosOriginal = { ...this.cuidados }; 
+    this.cuidadosOriginal = { ...this.cuidados };
 
     this.mostrarFormularioCuidados =
       true;
@@ -4025,36 +4028,36 @@ guardarCuidados(): void {
 
   eliminarCuidados(): void {
 
-  if (!this.cuidados.id_cuidado) {
-    alertaAdvertencia('Sin cuidados', 'No existen cuidados de enfermería para eliminar.');
-    return;
-  }
-
-  const nombre = `${this.paciente.nombre} ${this.paciente.apellido}`.trim();
-
-  alertaEliminar(nombre, 'registro de cuidados de enfermería').then((resultado) => {
-
-    if (!resultado.isConfirmed) {
+    if (!this.cuidados.id_cuidado) {
+      alertaAdvertencia('Sin cuidados', 'No existen cuidados de enfermería para eliminar.');
       return;
     }
 
-    this.http
-      .delete(`${this.apiUrl}/cuidados_enfermeria/${this.cuidados.id_cuidado}/`)
-      .subscribe({
+    const nombre = `${this.paciente.nombre} ${this.paciente.apellido}`.trim();
 
-        next: () => {
-          alertaExito('Cuidados eliminados', 'Los cuidados fueron eliminados correctamente.');
-          this.cuidados = this.crearCuidadosVacios();
-          this.mostrarFormularioCuidados = false;
-          this.cdr.detectChanges();
-        },
+    alertaEliminar(nombre, 'registro de cuidados de enfermería').then((resultado) => {
 
-        error: (error) => {
-          this.mostrarErrorApi(error, 'No fue posible eliminar los cuidados de enfermería.');
-        }
-      });
-  });
-}
+      if (!resultado.isConfirmed) {
+        return;
+      }
+
+      this.http
+        .delete(`${this.apiUrl}/cuidados_enfermeria/${this.cuidados.id_cuidado}/`)
+        .subscribe({
+
+          next: () => {
+            alertaExito('Cuidados eliminados', 'Los cuidados fueron eliminados correctamente.');
+            this.cuidados = this.crearCuidadosVacios();
+            this.mostrarFormularioCuidados = false;
+            this.cdr.detectChanges();
+          },
+
+          error: (error) => {
+            this.mostrarErrorApi(error, 'No fue posible eliminar los cuidados de enfermería.');
+          }
+        });
+    });
+  }
 
   // ============================================================
   // CARGAR RECOMENDACIONES
@@ -4205,17 +4208,17 @@ guardarCuidados(): void {
   // ABRIR FORMULARIO DE RECOMENDACIONES
   // ============================================================
 
- abrirFormularioRecomendaciones(): void {
+  abrirFormularioRecomendaciones(): void {
 
-  if (!this.recomendaciones.id_recomendacion) {
-    this.recomendaciones = this.crearRecomendacionesVacias();
+    if (!this.recomendaciones.id_recomendacion) {
+      this.recomendaciones = this.crearRecomendacionesVacias();
+    }
+
+    this.recomendacionesOriginal = this.recomendaciones.id_recomendacion > 0 ? { ...this.recomendaciones } : null;
+
+    this.mostrarFormularioRecomendaciones = true;
+    this.cdr.detectChanges();
   }
-
-  this.recomendacionesOriginal = this.recomendaciones.id_recomendacion > 0 ? { ...this.recomendaciones } : null;
-
-  this.mostrarFormularioRecomendaciones = true;
-  this.cdr.detectChanges();
-}
 
   // ============================================================
   // GUARDAR RECOMENDACIONES
@@ -4224,40 +4227,40 @@ guardarCuidados(): void {
   guardarRecomendaciones(): void {
 
     if (
-  this.recomendaciones.id_recomendacion > 0 &&
-  this.recomendacionesOriginal &&
-  !this.huboCambios(this.recomendacionesOriginal, this.recomendaciones, 
-    [
-    'hidratar_piel', 'asistir_alimentacion', 'via_alimentacion', 'prevencion_caidas',
-    'terapias_fisicas', 'terapia_respiratoria', 'actividad_ocupacional',
-    'corte_unas', 'corte_cabello', 'higiene_oral'
-  ]
-)
-) {
-  alertaAdvertencia('Sin cambios', 'No modificaste ningún campo de las recomendaciones.');
-  return;
-}
+      this.recomendaciones.id_recomendacion > 0 &&
+      this.recomendacionesOriginal &&
+      !this.huboCambios(this.recomendacionesOriginal, this.recomendaciones,
+        [
+          'hidratar_piel', 'asistir_alimentacion', 'via_alimentacion', 'prevencion_caidas',
+          'terapias_fisicas', 'terapia_respiratoria', 'actividad_ocupacional',
+          'corte_unas', 'corte_cabello', 'higiene_oral'
+        ]
+      )
+    ) {
+      alertaAdvertencia('Sin cambios', 'No modificaste ningún campo de las recomendaciones.');
+      return;
+    }
 
-  if (this.recomendaciones.id_recomendacion === 0) {
+    if (this.recomendaciones.id_recomendacion === 0) {
 
-  const camposLlenos = [
-    this.recomendaciones.hidratar_piel,
-    this.recomendaciones.asistir_alimentacion,
-    this.recomendaciones.via_alimentacion,
-    this.recomendaciones.prevencion_caidas,
-    this.recomendaciones.terapias_fisicas,
-    this.recomendaciones.terapia_respiratoria,
-    this.recomendaciones.actividad_ocupacional,
-    this.recomendaciones.corte_unas,
-    this.recomendaciones.corte_cabello,
-    this.recomendaciones.higiene_oral
-  ].some(campo => !!campo?.trim());
+      const camposLlenos = [
+        this.recomendaciones.hidratar_piel,
+        this.recomendaciones.asistir_alimentacion,
+        this.recomendaciones.via_alimentacion,
+        this.recomendaciones.prevencion_caidas,
+        this.recomendaciones.terapias_fisicas,
+        this.recomendaciones.terapia_respiratoria,
+        this.recomendaciones.actividad_ocupacional,
+        this.recomendaciones.corte_unas,
+        this.recomendaciones.corte_cabello,
+        this.recomendaciones.higiene_oral
+      ].some(campo => !!campo?.trim());
 
-  if (!camposLlenos) {
-    alertaAdvertencia('Recomendaciones vacías', 'Completa al menos un campo antes de guardar.');
-    return;
-  }
-}
+      if (!camposLlenos) {
+        alertaAdvertencia('Recomendaciones vacías', 'Completa al menos un campo antes de guardar.');
+        return;
+      }
+    }
 
 
     const datos = {
@@ -4339,111 +4342,111 @@ guardarCuidados(): void {
       '======================================'
     );
 
-// ==========================================================
-// ACTUALIZAR
-// ==========================================================
+    // ==========================================================
+    // ACTUALIZAR
+    // ==========================================================
 
-if (this.recomendaciones.id_recomendacion > 0) {
+    if (this.recomendaciones.id_recomendacion > 0) {
 
-  this.http
-    .patch(
-      `${this.apiUrl}/recomendaciones/${this.recomendaciones.id_recomendacion}/`,
-      datos
-    )
-    .subscribe({
+      this.http
+        .patch(
+          `${this.apiUrl}/recomendaciones/${this.recomendaciones.id_recomendacion}/`,
+          datos
+        )
+        .subscribe({
 
-      next: (respuesta) => {
+          next: (respuesta) => {
 
-        console.log(
-          'Recomendaciones actualizadas:',
-          respuesta
-        );
+            console.log(
+              'Recomendaciones actualizadas:',
+              respuesta
+            );
 
-        alertaExito(
-          'Recomendaciones actualizadas',
-          'Las recomendaciones se actualizaron correctamente.'
-        );
+            alertaExito(
+              'Recomendaciones actualizadas',
+              'Las recomendaciones se actualizaron correctamente.'
+            );
 
-        this.mostrarFormularioRecomendaciones = false;
+            this.mostrarFormularioRecomendaciones = false;
 
-        this.cargarRecomendaciones();
+            this.cargarRecomendaciones();
 
-      },
+          },
 
-      error: (error) => {
+          error: (error) => {
 
-        console.error(
-          'Error al actualizar recomendaciones:',
-          error
-        );
+            console.error(
+              'Error al actualizar recomendaciones:',
+              error
+            );
 
-        console.error(
-          'Respuesta del servidor:',
-          error?.error
-        );
+            console.error(
+              'Respuesta del servidor:',
+              error?.error
+            );
 
-        this.mostrarErrorApi(
-          error,
-          'No fue posible actualizar las recomendaciones.'
-        );
+            this.mostrarErrorApi(
+              error,
+              'No fue posible actualizar las recomendaciones.'
+            );
 
-      }
+          }
 
-    });
+        });
 
-  return;
-}
-
-
-// ==========================================================
-// CREAR
-// ==========================================================
-
-this.http
-  .post(
-    `${this.apiUrl}/recomendaciones/`,
-    datos
-  )
-  .subscribe({
-
-    next: (respuesta) => {
-
-      console.log(
-        'Recomendaciones registradas:',
-        respuesta
-      );
-
-      alertaExito(
-        'Recomendaciones registradas',
-        'Las recomendaciones se registraron correctamente.'
-      );
-
-      this.mostrarFormularioRecomendaciones = false;
-
-      this.cargarRecomendaciones();
-
-    },
-
-    error: (error) => {
-
-      console.error(
-        'Error al registrar recomendaciones:',
-        error
-      );
-
-      console.error(
-        'Respuesta del servidor:',
-        error?.error
-      );
-
-      this.mostrarErrorApi(
-        error,
-        'No fue posible registrar las recomendaciones.'
-      );
-
+      return;
     }
 
-  });
+
+    // ==========================================================
+    // CREAR
+    // ==========================================================
+
+    this.http
+      .post(
+        `${this.apiUrl}/recomendaciones/`,
+        datos
+      )
+      .subscribe({
+
+        next: (respuesta) => {
+
+          console.log(
+            'Recomendaciones registradas:',
+            respuesta
+          );
+
+          alertaExito(
+            'Recomendaciones registradas',
+            'Las recomendaciones se registraron correctamente.'
+          );
+
+          this.mostrarFormularioRecomendaciones = false;
+
+          this.cargarRecomendaciones();
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Error al registrar recomendaciones:',
+            error
+          );
+
+          console.error(
+            'Respuesta del servidor:',
+            error?.error
+          );
+
+          this.mostrarErrorApi(
+            error,
+            'No fue posible registrar las recomendaciones.'
+          );
+
+        }
+
+      });
 
   }
 
@@ -4453,12 +4456,12 @@ this.http
 
   editarRecomendaciones(): void {
 
-      if (!this.recomendaciones.id_recomendacion || this.recomendaciones.id_recomendacion <= 0) {
-    alertaAdvertencia('Sin recomendaciones', 'Primero debe registrar las recomendaciones.');
-    return;
-  }
+    if (!this.recomendaciones.id_recomendacion || this.recomendaciones.id_recomendacion <= 0) {
+      alertaAdvertencia('Sin recomendaciones', 'Primero debe registrar las recomendaciones.');
+      return;
+    }
 
-  this.recomendacionesOriginal = { ...this.recomendaciones };
+    this.recomendacionesOriginal = { ...this.recomendaciones };
 
     this.mostrarFormularioRecomendaciones =
       true;
@@ -4471,38 +4474,38 @@ this.http
   // ELIMINAR RECOMENDACIONES
   // ============================================================
 
-eliminarRecomendaciones(): void {
+  eliminarRecomendaciones(): void {
 
-  if (!this.recomendaciones.id_recomendacion || this.recomendaciones.id_recomendacion <= 0) {
-    alertaAdvertencia('Sin recomendaciones', 'No existen recomendaciones para eliminar.');
-    return;
-  }
-
-  const nombre = `${this.paciente.nombre} ${this.paciente.apellido}`.trim();
-
-  alertaEliminar(nombre, 'registro de recomendaciones').then((resultado) => {
-
-    if (!resultado.isConfirmed) {
+    if (!this.recomendaciones.id_recomendacion || this.recomendaciones.id_recomendacion <= 0) {
+      alertaAdvertencia('Sin recomendaciones', 'No existen recomendaciones para eliminar.');
       return;
     }
 
-    this.http
-      .delete(`${this.apiUrl}/recomendaciones/${this.recomendaciones.id_recomendacion}/`)
-      .subscribe({
+    const nombre = `${this.paciente.nombre} ${this.paciente.apellido}`.trim();
 
-        next: () => {
-          alertaExito('Recomendaciones eliminadas', 'Las recomendaciones fueron eliminadas correctamente.');
-          this.recomendaciones = this.crearRecomendacionesVacias();
-          this.mostrarFormularioRecomendaciones = false;
-          this.cdr.detectChanges();
-        },
+    alertaEliminar(nombre, 'registro de recomendaciones').then((resultado) => {
 
-        error: (error) => {
-          this.mostrarErrorApi(error, 'No fue posible eliminar las recomendaciones.');
-        }
-      });
-  });
-}
+      if (!resultado.isConfirmed) {
+        return;
+      }
+
+      this.http
+        .delete(`${this.apiUrl}/recomendaciones/${this.recomendaciones.id_recomendacion}/`)
+        .subscribe({
+
+          next: () => {
+            alertaExito('Recomendaciones eliminadas', 'Las recomendaciones fueron eliminadas correctamente.');
+            this.recomendaciones = this.crearRecomendacionesVacias();
+            this.mostrarFormularioRecomendaciones = false;
+            this.cdr.detectChanges();
+          },
+
+          error: (error) => {
+            this.mostrarErrorApi(error, 'No fue posible eliminar las recomendaciones.');
+          }
+        });
+    });
+  }
 
   // ============================================================
   // CARGAR HISTORIA CLÍNICA
@@ -4660,88 +4663,88 @@ eliminarRecomendaciones(): void {
   // ============================================================
 
   abrirFormularioHistoria(): void {
-if (!this.historiaClinica) {
-    this.historiaClinica = this.crearHistoriaClinicaVacia();
+    if (!this.historiaClinica) {
+      this.historiaClinica = this.crearHistoriaClinicaVacia();
+    }
+
+    this.historiaClinica.id_paciente = this.idPaciente;
+
+    this.historiaOriginal = null;   // ← AGREGAR
+
+    this.mostrarFormularioHistoria = true;
+    this.cdr.detectChanges();
   }
-
-  this.historiaClinica.id_paciente = this.idPaciente;
-
-  this.historiaOriginal = null;   // ← AGREGAR
-
-  this.mostrarFormularioHistoria = true;
-  this.cdr.detectChanges();
-}
   // ============================================================
   // EDITAR HISTORIA CLÍNICA
   // ============================================================
 
   editarHistoriaClinica(): void {
 
-   if (!this.historiaClinica.id_historia_clinica || this.historiaClinica.id_historia_clinica <= 0) {
-    alertaAdvertencia('Sin historia clínica', 'Primero debe registrar la historia clínica.');
-    return;
+    if (!this.historiaClinica.id_historia_clinica || this.historiaClinica.id_historia_clinica <= 0) {
+      alertaAdvertencia('Sin historia clínica', 'Primero debe registrar la historia clínica.');
+      return;
+    }
+
+    this.historiaOriginal = { ...this.historiaClinica };   // ← AGREGAR
+
+    this.mostrarFormularioHistoria = true;
+    this.cdr.detectChanges();
   }
-
-  this.historiaOriginal = { ...this.historiaClinica };   // ← AGREGAR
-
-  this.mostrarFormularioHistoria = true;
-  this.cdr.detectChanges();
-}
   // ============================================================
   // GUARDAR HISTORIA CLÍNICA
   // ============================================================
 
- guardarHistoriaClinica(): void {
+  guardarHistoriaClinica(): void {
 
-  if (
-    this.historiaClinica.id_historia_clinica > 0 &&
-    this.historiaOriginal &&
-    !this.huboCambios(this.historiaOriginal, this.historiaClinica, [
-      'fecha_apertura', 'antecedentes', 'alergias', 'observaciones', 'estado'
-    ])
-  ) {
-    alertaAdvertencia(
-      'Sin cambios',
-      'No modificaste ningún campo de la historia clínica.'
-    );
-    return;
-  }
+    if (
+      this.historiaClinica.id_historia_clinica > 0 &&
+      this.historiaOriginal &&
+      !this.huboCambios(this.historiaOriginal, this.historiaClinica, [
+        'fecha_apertura', 'antecedentes', 'alergias', 'observaciones', 'estado'
+      ])
+    ) {
+      alertaAdvertencia(
+        'Sin cambios',
+        'No modificaste ningún campo de la historia clínica.'
+      );
+      return;
+    }
 
-const antecedentes =
-  this.historiaClinica.antecedentes?.trim() || '';
+    const antecedentes =
+      this.historiaClinica.antecedentes?.trim() || '';
 
-const alergias =
-  this.historiaClinica.alergias?.trim() || '';
+    const alergias =
+      this.historiaClinica.alergias?.trim() || '';
 
-const observaciones =
-  this.historiaClinica.observaciones?.trim() || '';
+    const observaciones =
+      this.historiaClinica.observaciones?.trim() || '';
 
-if (!antecedentes) {
-  alertaAdvertencia(
-    'Campo requerido',
-    'Debes registrar los antecedentes del paciente.'
-  );
-  return;
-}
+    if (!antecedentes) {
+      alertaAdvertencia(
+        'Campo requerido',
+        'Debes registrar los antecedentes del paciente.'
+      );
+      return;
+    }
 
-if (!alergias) {
-  alertaAdvertencia(
-    'Campo requerido',
-    'Debes registrar las alergias del paciente.'
-  );
-  return;
-}
+    if (!alergias) {
+      alertaAdvertencia(
+        'Campo requerido',
+        'Debes registrar las alergias del paciente.'
+      );
+      return;
+    }
 
-if (!observaciones) {
-  alertaAdvertencia(
-    'Campo requerido',
-    'Debes registrar las observaciones clínicas del paciente.'
-  );
-  return;
-}
+    if (!observaciones) {
+      alertaAdvertencia(
+        'Campo requerido',
+        'Debes registrar las observaciones clínicas del paciente.'
+      );
+      return;
+    }
 
-  const datos = {
-      
+    const datos = {
+
 
       fecha_apertura:
         this.historiaClinica.fecha_apertura ||
@@ -4754,7 +4757,7 @@ if (!observaciones) {
         alergias,
 
       observaciones:
-         observaciones,
+        observaciones,
 
       estado:
         this.historiaClinica.estado ?? true,
@@ -4859,7 +4862,7 @@ if (!observaciones) {
             respuesta
           );
 
-         alertaExito('Historia clínica registrada', 'La historia clínica se registró correctamente.');
+          alertaExito('Historia clínica registrada', 'La historia clínica se registró correctamente.');
 
           this.mostrarFormularioHistoria =
             false;
@@ -4897,36 +4900,36 @@ if (!observaciones) {
 
   eliminarHistoriaClinica(): void {
 
-  if (!this.historiaClinica.id_historia_clinica || this.historiaClinica.id_historia_clinica <= 0) {
-    alertaAdvertencia('Sin historia clínica', 'No existe una historia clínica para eliminar.');
-    return;
-  }
-
-  const nombre = `${this.paciente.nombre} ${this.paciente.apellido}`.trim();
-
-  alertaEliminar(nombre, 'historia clínica').then((resultado) => {
-
-    if (!resultado.isConfirmed) {
+    if (!this.historiaClinica.id_historia_clinica || this.historiaClinica.id_historia_clinica <= 0) {
+      alertaAdvertencia('Sin historia clínica', 'No existe una historia clínica para eliminar.');
       return;
     }
 
-    this.http
-      .delete(`${this.apiUrl}/historia_clinicas/${this.historiaClinica.id_historia_clinica}/`)
-      .subscribe({
+    const nombre = `${this.paciente.nombre} ${this.paciente.apellido}`.trim();
 
-        next: () => {
-          alertaExito('Historia clínica eliminada', 'La historia clínica fue eliminada correctamente.');
-          this.historiaClinica = this.crearHistoriaClinicaVacia();
-          this.mostrarFormularioHistoria = false;
-          this.cdr.detectChanges();
-        },
+    alertaEliminar(nombre, 'historia clínica').then((resultado) => {
 
-        error: (error) => {
-          this.mostrarErrorApi(error, 'No fue posible eliminar la historia clínica.');
-        }
-      });
-  });
-}
+      if (!resultado.isConfirmed) {
+        return;
+      }
+
+      this.http
+        .delete(`${this.apiUrl}/historia_clinicas/${this.historiaClinica.id_historia_clinica}/`)
+        .subscribe({
+
+          next: () => {
+            alertaExito('Historia clínica eliminada', 'La historia clínica fue eliminada correctamente.');
+            this.historiaClinica = this.crearHistoriaClinicaVacia();
+            this.mostrarFormularioHistoria = false;
+            this.cdr.detectChanges();
+          },
+
+          error: (error) => {
+            this.mostrarErrorApi(error, 'No fue posible eliminar la historia clínica.');
+          }
+        });
+    });
+  }
 
   // ============================================================
   // MÉTODOS COMPATIBLES CON EL HTML
@@ -5001,143 +5004,143 @@ if (!observaciones) {
 
   }
 
-// ============================================================
-// FINALIZAR REGISTRO
-// ============================================================
-
-finalizarRegistro(): void {
-
-  const faltantes: string[] = [];
-
   // ============================================================
-  // VALIDAR INFORMACIÓN BÁSICA DEL PACIENTE
+  // FINALIZAR REGISTRO
   // ============================================================
 
-  if (
-    !this.paciente ||
-    !this.paciente.id_paciente ||
-    this.paciente.id_paciente <= 0
-  ) {
+  finalizarRegistro(): void {
 
-    faltantes.push(
-      'Información básica del paciente'
-    );
+    const faltantes: string[] = [];
 
-  }
+    // ============================================================
+    // VALIDAR INFORMACIÓN BÁSICA DEL PACIENTE
+    // ============================================================
 
-  // ============================================================
-  // VALIDAR ELEMENTOS DEL PACIENTE
-  // ============================================================
+    if (
+      !this.paciente ||
+      !this.paciente.id_paciente ||
+      this.paciente.id_paciente <= 0
+    ) {
 
-  if (
-    !this.elementosPaciente ||
-    this.elementosPaciente.length === 0
-  ) {
+      faltantes.push(
+        'Información básica del paciente'
+      );
 
-    faltantes.push(
-      'Elementos del paciente'
-    );
+    }
 
-  }
+    // ============================================================
+    // VALIDAR ELEMENTOS DEL PACIENTE
+    // ============================================================
 
-  // ============================================================
-  // VALIDAR CUIDADOS DE ENFERMERÍA
-  // ============================================================
+    if (
+      !this.elementosPaciente ||
+      this.elementosPaciente.length === 0
+    ) {
 
-  if (
-    !this.cuidados ||
-    !this.cuidados.id_cuidado ||
-    this.cuidados.id_cuidado <= 0
-  ) {
+      faltantes.push(
+        'Elementos del paciente'
+      );
 
-    faltantes.push(
-      'Cuidados de enfermería'
-    );
+    }
 
-  }
+    // ============================================================
+    // VALIDAR CUIDADOS DE ENFERMERÍA
+    // ============================================================
 
-  // ============================================================
-  // VALIDAR RECOMENDACIONES
-  // ============================================================
+    if (
+      !this.cuidados ||
+      !this.cuidados.id_cuidado ||
+      this.cuidados.id_cuidado <= 0
+    ) {
 
-  if (
-    !this.recomendaciones ||
-    !this.recomendaciones.id_recomendacion ||
-    this.recomendaciones.id_recomendacion <= 0
-  ) {
+      faltantes.push(
+        'Cuidados de enfermería'
+      );
 
-    faltantes.push(
-      'Recomendaciones'
-    );
+    }
 
-  }
+    // ============================================================
+    // VALIDAR RECOMENDACIONES
+    // ============================================================
 
-  // ============================================================
-  // VALIDAR HISTORIA CLÍNICA
-  // ============================================================
+    if (
+      !this.recomendaciones ||
+      !this.recomendaciones.id_recomendacion ||
+      this.recomendaciones.id_recomendacion <= 0
+    ) {
 
-  if (
-    !this.historiaClinica ||
-    !this.historiaClinica.id_historia_clinica ||
-    this.historiaClinica.id_historia_clinica <= 0
-  ) {
+      faltantes.push(
+        'Recomendaciones'
+      );
 
-    faltantes.push(
-      'Historia clínica'
-    );
+    }
 
-  }
+    // ============================================================
+    // VALIDAR HISTORIA CLÍNICA
+    // ============================================================
 
-  // ============================================================
-  // MOSTRAR APARTADOS FALTANTES
-  // ============================================================
+    if (
+      !this.historiaClinica ||
+      !this.historiaClinica.id_historia_clinica ||
+      this.historiaClinica.id_historia_clinica <= 0
+    ) {
 
-  if (faltantes.length > 0) {
-  mostrarAlerta({
-    tono: 'ambar',
-    icono: 'warning',
-    iconoSvg: ICONOS.alerta,
-    titulo: 'Registro incompleto',
-    html: `
+      faltantes.push(
+        'Historia clínica'
+      );
+
+    }
+
+    // ============================================================
+    // MOSTRAR APARTADOS FALTANTES
+    // ============================================================
+
+    if (faltantes.length > 0) {
+      mostrarAlerta({
+        tono: 'ambar',
+        icono: 'warning',
+        iconoSvg: ICONOS.alerta,
+        titulo: 'Registro incompleto',
+        html: `
       <p class="m-0 text-[1.15rem] leading-snug text-slate-700">Aún faltan apartados por completar:</p>
       <ul class="mt-2 ml-5 list-disc text-[1.05rem] text-slate-700">
         ${faltantes.map(item => `<li>${item}</li>`).join('')}
       </ul>
     `,
-    confirmar: 'Entendido'
-  });
-  return;
-}
+        confirmar: 'Entendido'
+      });
+      return;
+    }
 
-  // ============================================================
-  // CONFIRMAR FINALIZACIÓN
-  // ============================================================
+    // ============================================================
+    // CONFIRMAR FINALIZACIÓN
+    // ============================================================
 
-  mostrarAlerta({
-  tono: 'azul',
-  icono: 'question',
-  iconoSvg: ICONOS.check,
-  titulo: '¿Finalizar registro?',
-  html: `<p class="m-0 text-[1.15rem] leading-snug text-slate-700">Toda la información del paciente está completa.</p>`,
-  confirmar: 'Sí, finalizar',
-  cancelar: 'Cancelar',
-  confirmarIzquierda: true
+    mostrarAlerta({
+      tono: 'azul',
+      icono: 'question',
+      iconoSvg: ICONOS.check,
+      titulo: '¿Finalizar registro?',
+      html: `<p class="m-0 text-[1.15rem] leading-snug text-slate-700">Toda la información del paciente está completa.</p>`,
+      confirmar: 'Sí, finalizar',
+      cancelar: 'Cancelar',
+      confirmarIzquierda: true
 
-}).then((resultado: any) => {
+    }).then((resultado: any) => {
 
-  if (!resultado.isConfirmed) {
-    return;
+      if (!resultado.isConfirmed) {
+        return;
+      }
+
+      alertaExito('¡Registro finalizado!', 'La información del paciente se registró correctamente.').then(() => {
+
+        this.mostrarBarraFinal = false;
+        this.cdr.detectChanges();
+
+      });
+
+    });
+
   }
-
-  alertaExito('¡Registro finalizado!', 'La información del paciente se registró correctamente.').then(() => {
-
-    this.mostrarBarraFinal = false;
-    this.cdr.detectChanges();
-
-  });
-
-});
-
- }
 
 }

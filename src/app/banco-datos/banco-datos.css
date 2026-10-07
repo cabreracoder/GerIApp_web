@@ -43,103 +43,129 @@
   font-size: 15px;
 }
 
-
-/* =====================================================
-   CONTENEDOR DE CATÁLOGOS
-===================================================== */
+/* =========================================================
+   SELECTOR DE CATÁLOGOS
+   ========================================================= */
 
 .contenedor-catalogos {
   width: 100%;
   margin-bottom: 24px;
+  padding: 18px 20px 20px;
   background: #FFFFFF;
   border: 1px solid #CED4DA;
   border-radius: 10px;
 }
 
+.etiqueta-catalogo {
+  display: block;
+  margin-bottom: 8px;
+  color: #212529;
+  font-size: 13px;
+  font-weight: 700;
+}
 
-/* =====================================================
-   BARRA HORIZONTAL
-===================================================== */
-
-.barra-catalogos {
+.selector-catalogo {
+  position: relative;
   width: 100%;
+  max-width: 520px;
+}
+
+/* BOTÓN PRINCIPAL DEL SELECTOR */
+
+.selector-catalogo-boton {
+  width: 100%;
+  min-height: 44px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 10px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 4px;
-  scrollbar-width: thin;
-}
-
-.barra-catalogos::-webkit-scrollbar {
-  height: 6px;
-}
-
-.barra-catalogos::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.barra-catalogos::-webkit-scrollbar-thumb {
-  background: #CED4DA;
-  border-radius: 10px;
-}
-
-.barra-catalogos::-webkit-scrollbar-thumb:hover {
-  background: #ADB5BD;
-}
-
-
-/* =====================================================
-   BOTONES DE CATÁLOGO
-===================================================== */
-
-.boton-catalogo {
-  flex: 0 0 auto;
-  min-width: 150px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  min-height: 42px;
-  padding: 0 16px;
-  border: 1px solid transparent;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 14px;
+  border: 1px solid #CED4DA;
   border-radius: 7px;
+  background: #FFFFFF;
+  color: #212529;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.selector-catalogo-boton:hover {
+  background: #F8FAFC;
+  border-color: #ADB5BD;
+}
+
+.selector-catalogo-boton.abierto {
+  border-color: #3B5BDB;
+  box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.12);
+}
+
+.selector-catalogo-boton .material-symbols-outlined {
+  flex: 0 0 auto;
+  color: #6C757D;
+  font-size: 21px;
+}
+
+/* OPCIONES */
+
+.selector-catalogo-opciones {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 100%;
+  padding: 5px;
+  background: #FFFFFF;
+  border: 1px solid #CED4DA;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+}
+
+/* OPCIÓN INDIVIDUAL */
+
+.opcion-catalogo {
+  width: 100%;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 6px;
   background: transparent;
   color: #212529;
   font-family: inherit;
   font-size: 14px;
-  font-weight: 700;
-  white-space: nowrap;
+  font-weight: 500;
+  text-align: left;
   cursor: pointer;
+
   transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
-.boton-catalogo .material-symbols-outlined {
-  font-size: 19px;
-  color: #212529;
-}
-
-.boton-catalogo:hover {
+.opcion-catalogo:hover {
   background: #F1F3F5;
-  color: #212529;
 }
 
-.boton-catalogo:hover .material-symbols-outlined {
-  color: #212529;
+.opcion-catalogo.seleccionado {
+  background: #EEF2FF;
+  color: #3B5BDB;
+  font-weight: 700;
 }
 
-.boton-catalogo.activo {
-  background: #3B5BDB;
-  color: #FFFFFF;
-  border-color: #3B5BDB;
-}
-
-.boton-catalogo.activo .material-symbols-outlined {
-  color: #FFFFFF;
+.icono-opcion {
+  width: 20px;
+  min-width: 20px;
+  font-size: 18px;
+  color: #3B5BDB;
 }
 
 
@@ -667,8 +693,12 @@ tbody tr:last-child td {
 
   .campo-completo {
     grid-column: auto;
+
   }
 
+  .selector-catalogo {
+    max-width: 100%;
+  }
 }
 
 
