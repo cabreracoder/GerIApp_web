@@ -781,9 +781,10 @@
 
         </div>
 
+        ```html
         <!-- =========================================================
-             MODAL CONSULTAR PACIENTE
-        ========================================================== -->
+     MODAL CONSULTAR PACIENTE
+========================================================== -->
 
         <div class="fondo-modal" [class.abierto]="viewModalOpen" (click)="closeViewModal()">
 
@@ -807,17 +808,21 @@
 
                 </div>
 
+                <!-- CUERPO -->
+
                 <div class="cuerpo-modal">
 
                     <!-- =================================================
-                         DATOS DEL PACIENTE
-                    ================================================== -->
+                 DATOS DEL PACIENTE
+            ================================================== -->
 
                     <div class="seccion-formulario">
                         Datos del paciente
                     </div>
 
                     <div class="rejilla-formulario">
+
+                        <!-- NOMBRES -->
 
                         <div class="campo-formulario">
 
@@ -829,6 +834,8 @@
 
                         </div>
 
+                        <!-- APELLIDOS -->
+
                         <div class="campo-formulario">
 
                             <label class="etiqueta-formulario">
@@ -838,6 +845,8 @@
                             <input class="campo-entrada" [value]="selectedPatient.apellido || 'No registrado'" readonly>
 
                         </div>
+
+                        <!-- TIPO IDENTIFICACIÓN -->
 
                         <div class="campo-formulario">
 
@@ -850,6 +859,8 @@
 
                         </div>
 
+                        <!-- DOCUMENTO -->
+
                         <div class="campo-formulario">
 
                             <label class="etiqueta-formulario">
@@ -860,6 +871,8 @@
                                 readonly>
 
                         </div>
+
+                        <!-- FECHA NACIMIENTO -->
 
                         <div class="campo-formulario">
 
@@ -872,6 +885,8 @@
 
                         </div>
 
+                        <!-- EDAD -->
+
                         <div class="campo-formulario">
 
                             <label class="etiqueta-formulario">
@@ -883,6 +898,8 @@
 
                         </div>
 
+                        <!-- GÉNERO -->
+
                         <div class="campo-formulario">
 
                             <label class="etiqueta-formulario">
@@ -892,6 +909,8 @@
                             <input class="campo-entrada" [value]="selectedPatient.genero || 'No registrado'" readonly>
 
                         </div>
+
+                        <!-- GRUPO SANGUÍNEO -->
 
                         <div class="campo-formulario">
 
@@ -904,6 +923,8 @@
 
                         </div>
 
+                        <!-- RH -->
+
                         <div class="campo-formulario">
 
                             <label class="etiqueta-formulario">
@@ -913,6 +934,8 @@
                             <input class="campo-entrada" [value]="selectedPatient.rh || 'No registrado'" readonly>
 
                         </div>
+
+                        <!-- EPS -->
 
                         <div class="campo-formulario">
 
@@ -924,6 +947,8 @@
 
                         </div>
 
+                        <!-- FECHA INGRESO -->
+
                         <div class="campo-formulario">
 
                             <label class="etiqueta-formulario">
@@ -931,10 +956,13 @@
                             </label>
 
                             <input class="campo-entrada" [value]="selectedPatient.fecha_ingreso
-                                    ? (selectedPatient.fecha_ingreso | date:'dd/MM/yyyy')
-                                    : 'No registrado'" readonly>
+                            ? (selectedPatient.fecha_ingreso | date:'dd/MM/yyyy')
+                            : 'No registrado'" readonly>
 
                         </div>
+
+                        <!-- FOTO -->
+
                         <div class="campo-formulario">
 
                             <label class="etiqueta-formulario">
@@ -948,186 +976,223 @@
                             </div>
 
                             <span *ngIf="!selectedPatient.foto" class="text-sm text-[#6C757D]">
+
                                 No registrada
+
                             </span>
 
                         </div>
 
-                        <!-- =================================================
-                         FAMILIAR RESPONSABLE
-                    ================================================== -->
+                    </div>
 
-                        <div class="seccion-formulario">
-                            Familiar responsable
-                        </div>
 
-                        <div class="rejilla-formulario">
+                    <!-- =================================================
+                 FAMILIAR RESPONSABLE
+            ================================================== -->
 
-                            <div class="campo-formulario">
+                    <div class="seccion-formulario">
+                        Familiar responsable
+                    </div>
 
-                                <label class="etiqueta-formulario">
-                                    Nombres
-                                </label>
+                    <div class="rejilla-formulario">
 
-                                <input class="campo-entrada"
-                                    [value]="selectedPatient.familiarNombres || 'No registrado'" readonly>
+                        <!-- NOMBRES -->
 
-                            </div>
+                        <div class="campo-formulario">
 
-                            <div class="campo-formulario">
+                            <label class="etiqueta-formulario">
+                                Nombres
+                            </label>
 
-                                <label class="etiqueta-formulario">
-                                    Apellidos
-                                </label>
-
-                                <input class="campo-entrada"
-                                    [value]="selectedPatient.familiarApellidos || 'No registrado'" readonly>
-
-                            </div>
-
-                            <div class="campo-formulario">
-
-                                <label class="etiqueta-formulario">
-                                    Parentesco
-                                </label>
-
-                                <input class="campo-entrada" [value]="selectedPatient.parentesco || 'No registrado'"
-                                    readonly>
-
-                            </div>
-
-                            <div class="campo-formulario">
-
-                                <label class="etiqueta-formulario">
-                                    Teléfono 1
-                                </label>
-
-                                <input class="campo-entrada" [value]="selectedPatient.telefono1 || 'No registrado'"
-                                    readonly>
-
-                            </div>
-
-                            <div class="campo-formulario">
-
-                                <label class="etiqueta-formulario">
-                                    Teléfono 2
-                                </label>
-
-                                <input class="campo-entrada" [value]="selectedPatient.telefono2 || 'No registrado'"
-                                    readonly>
-
-                            </div>
-
-                            <div class="campo-formulario">
-
-                                <label class="etiqueta-formulario">
-                                    Dirección
-                                </label>
-
-                                <input class="campo-entrada" [value]="selectedPatient.direccion || 'No registrado'"
-                                    readonly>
-
-                            </div>
-
-                            <div class="campo-formulario">
-
-                                <label class="etiqueta-formulario">
-                                    Correo electrónico
-                                </label>
-
-                                <input class="campo-entrada"
-                                    [value]="selectedPatient.correoElectronico || 'No registrado'" readonly>
-
-                            </div>
-
-                            <div class="campo-formulario">
-
-                                <label class="etiqueta-formulario">
-                                    Municipio
-                                </label>
-
-                                <input class="campo-entrada" [value]="selectedPatient.municipio || 'No registrado'"
-                                    readonly>
-
-                            </div>
+                            <input class="campo-entrada" [value]="selectedPatient.familiarNombres || 'No registrado'"
+                                readonly>
 
                         </div>
-                        <!-- =================================================
-     UBICACIÓN
-================================================== -->
 
-                        <div class="seccion-formulario">
-                            Ubicación
-                        </div>
+                        <!-- APELLIDOS -->
 
-                        <div class="rejilla-formulario">
+                        <div class="campo-formulario">
 
-                            <div class="campo-formulario">
-                                <label class="etiqueta-formulario">
-                                    Sede
-                                </label>
+                            <label class="etiqueta-formulario">
+                                Apellidos
+                            </label>
 
-                                <input class="campo-entrada" [value]="selectedPatient.sede || 'No registrado'" readonly>
-                            </div>
-
-                            <div class="campo-formulario">
-                                <label class="etiqueta-formulario">
-                                    Habitación
-                                </label>
-
-                                <input class="campo-entrada"
-                                    [value]="obtenerNombreHabitacion(selectedPatient.habitacion)" readonly>
-                            </div>
-
-                            <div class="campo-formulario">
-                                <label class="etiqueta-formulario">
-                                    Cama
-                                </label>
-
-                                <input class="campo-entrada" [value]="obtenerNombreCama(selectedPatient.cama)" readonly>
-                            </div>
+                            <input class="campo-entrada" [value]="selectedPatient.familiarApellidos || 'No registrado'"
+                                readonly>
 
                         </div>
-                        <!-- =================================================
-                         ESTADO
-                    ================================================== -->
 
-                        <div class="seccion-formulario">
-                            Estado
+                        <!-- PARENTESCO -->
+
+                        <div class="campo-formulario">
+
+                            <label class="etiqueta-formulario">
+                                Parentesco
+                            </label>
+
+                            <input class="campo-entrada" [value]="selectedPatient.parentesco || 'No registrado'"
+                                readonly>
+
                         </div>
 
-                        <div class="rejilla-formulario">
+                        <!-- TELÉFONO 1 -->
 
-                            <div class="campo-formulario">
+                        <div class="campo-formulario">
 
-                                <label class="etiqueta-formulario">
-                                    Estado
-                                </label>
+                            <label class="etiqueta-formulario">
+                                Teléfono 1
+                            </label>
 
-                                <input class="campo-entrada" [value]="selectedPatient.estado
-                                    ? 'Activo'
-                                    : 'Inactivo'" readonly>
+                            <input class="campo-entrada" [value]="selectedPatient.telefono1 || 'No registrado'"
+                                readonly>
 
-                            </div>
+                        </div>
+
+                        <!-- TELÉFONO 2 -->
+
+                        <div class="campo-formulario">
+
+                            <label class="etiqueta-formulario">
+                                Teléfono 2
+                            </label>
+
+                            <input class="campo-entrada" [value]="selectedPatient.telefono2 || 'No registrado'"
+                                readonly>
+
+                        </div>
+
+                        <!-- DIRECCIÓN -->
+
+                        <div class="campo-formulario">
+
+                            <label class="etiqueta-formulario">
+                                Dirección
+                            </label>
+
+                            <input class="campo-entrada" [value]="selectedPatient.direccion || 'No registrado'"
+                                readonly>
+
+                        </div>
+
+                        <!-- CORREO -->
+
+                        <div class="campo-formulario">
+
+                            <label class="etiqueta-formulario">
+                                Correo electrónico
+                            </label>
+
+                            <input class="campo-entrada" [value]="selectedPatient.correoElectronico || 'No registrado'"
+                                readonly>
+
+                        </div>
+
+                        <!-- MUNICIPIO -->
+
+                        <div class="campo-formulario">
+
+                            <label class="etiqueta-formulario">
+                                Municipio
+                            </label>
+
+                            <input class="campo-entrada" [value]="selectedPatient.municipio || 'No registrado'"
+                                readonly>
 
                         </div>
 
                     </div>
 
-                    <!-- PIE DEL MODAL -->
 
-                    <div class="pie-modal">
+                    <!-- =================================================
+                 UBICACIÓN
+            ================================================== -->
 
-                        <button class="boton-cancelar" type="button" (click)="closeViewModal()">
+                    <div class="seccion-formulario">
+                        Ubicación
+                    </div>
 
-                            Cerrar
+                    <div class="rejilla-formulario">
 
-                        </button>
+                        <!-- SEDE -->
+
+                        <div class="campo-formulario">
+
+                            <label class="etiqueta-formulario">
+                                Sede
+                            </label>
+
+                            <input class="campo-entrada" [value]="selectedPatient.sede || 'No registrado'" readonly>
+
+                        </div>
+
+                        <!-- HABITACIÓN -->
+
+                        <div class="campo-formulario">
+
+                            <label class="etiqueta-formulario">
+                                Habitación
+                            </label>
+
+                            <input class="campo-entrada" [value]="obtenerNombreHabitacion(selectedPatient.habitacion)"
+                                readonly>
+
+                        </div>
+
+                        <!-- CAMA -->
+
+                        <div class="campo-formulario">
+
+                            <label class="etiqueta-formulario">
+                                Cama
+                            </label>
+
+                            <input class="campo-entrada" [value]="obtenerNombreCama(selectedPatient.cama)" readonly>
+
+                        </div>
 
                     </div>
+
+
+                    <!-- =================================================
+                 ESTADO
+            ================================================== -->
+
+                    <div class="seccion-formulario">
+                        Estado
+                    </div>
+
+                    <div class="rejilla-formulario">
+
+                        <div class="campo-formulario">
+
+                            <label class="etiqueta-formulario">
+                                Estado
+                            </label>
+
+                            <input class="campo-entrada" [value]="selectedPatient.estado
+                            ? 'Activo'
+                            : 'Inactivo'" readonly>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PIE DEL MODAL -->
+
+                <div class="pie-modal">
+
+                    <button class="boton-cancelar" type="button" (click)="closeViewModal()">
+
+                        Cerrar
+
+                    </button>
 
                 </div>
 
             </div>
 
         </div>
+        ```
