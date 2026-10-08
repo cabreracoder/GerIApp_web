@@ -236,6 +236,7 @@ interface PatientForm {
   eps: string;
   fechaIngreso: string;
   foto: File | null;
+  fotoUrl: string | null;
   familiarNombres: string;
   familiarApellidos: string;
   parentesco: string;
@@ -337,6 +338,7 @@ export class Pacientes {
       eps: '',
       fechaIngreso: '',
       foto: null,
+      fotoUrl: null,
       familiarNombres: '',
       familiarApellidos: '',
       parentesco: '',
@@ -352,6 +354,7 @@ export class Pacientes {
     };
   }
 
+
   // =========================================================
   // LISTAR PACIENTES
   // =========================================================
@@ -361,23 +364,60 @@ export class Pacientes {
       `${this.apiUrl}/pacientes/`
     ).subscribe({
       next: (respuesta) => {
-        console.log('Pacientes recibidos:', respuesta);
+
         this.patients = [...respuesta].sort(
           (a, b) => (a.id_paciente ?? 0) - (b.id_paciente ?? 0)
         );
-        console.log('TOTAL PACIENTES:', this.patients.length);
-        console.log('PRIMER PACIENTE:', this.patients[0]);
-        this.actualizarPaginacion();
-        this.cdr.detectChanges();
+
+        this.http.get<any[]>(
+          `${this.apiUrl}/familiar_responsable/`
+        ).subscribe({
+          next: (familiares) => {
+
+            this.patients = this.patients.map(patient => {
+
+              const familiar = familiares.find(
+                item => item.id_paciente === patient.id_paciente
+              );
+
+              return {
+                ...patient,
+                correo: familiar?.correo || 'Sin correo registrado'
+              };
+
+            });
+
+            console.log(
+              'PACIENTES CON CORREO:',
+              this.patients
+            );
+
+            this.actualizarPaginacion();
+            this.cdr.detectChanges();
+          },
+
+          error: (error) => {
+            console.error(
+              'Error al obtener familiares:',
+              error
+            );
+
+            this.patients = this.patients.map(patient => ({
+              ...patient,
+              correo: 'Sin correo registrado'
+            }));
+
+            this.actualizarPaginacion();
+            this.cdr.detectChanges();
+          }
+        });
       },
 
       error: (error) => {
-
         console.error(
           'Error al obtener los pacientes:',
           error
         );
-
       }
     });
   }
@@ -604,8 +644,9 @@ export class Pacientes {
     }
 
     const archivo = input.files[0];
-
     this.form.foto = archivo;
+    this.form.fotoUrl = null;
+
 
     const lector = new FileReader();
 
@@ -661,6 +702,7 @@ export class Pacientes {
           ? patient.fecha_ingreso.substring(0, 10)
           : '',
       foto: null,
+      fotoUrl: patient.foto || null,
       familiarNombres: '',
       familiarApellidos: '',
       parentesco: '',
@@ -690,6 +732,7 @@ export class Pacientes {
           ? 'active'
           : 'inactive'
     };
+
     this.actualizarCamasPorHabitacion();
     this.fotoPreview = patient.foto || null;
     if (this.form.nacimiento) {
@@ -847,6 +890,9 @@ export class Pacientes {
     if (this.form.foto) {
       datosPaciente.append('foto', this.form.foto);
     }
+    console.log('TIPO DE FOTO:', typeof this.form.foto);
+    console.log('FOTO:', this.form.foto);
+    console.log('ES FILE:', this.form.foto instanceof File);
     this.http.post<any>(
       `${this.apiUrl}/pacientes/`,
       datosPaciente
@@ -1609,5 +1655,23 @@ export class Pacientes {
       ? 'Guardar cambios'
       : 'Guardar paciente';
   }
+  obtenerIniciales(nombre?: string): string {
 
+    if (!nombre) {
+      return 'PA';
+    }
+
+    const partes = nombre.trim().split(' ');
+
+    if (partes.length >= 2) {
+      return (
+        partes[0][0] +
+        partes[1][0]
+      ).toUpperCase();
+    }
+
+    return nombre
+      .substring(0, 2)
+      .toUpperCase();
+  }
 }

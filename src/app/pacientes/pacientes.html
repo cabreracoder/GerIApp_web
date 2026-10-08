@@ -124,11 +124,28 @@
                         ? 'bg-[#F4F7FF] text-gray-800'
                         : 'bg-white text-gray-800'">
 
-                    <!-- PACIENTE -->
-
                     <td class="px-5 py-4 rounded-l-lg">
-                        {{ patient.nombre }}
-                        {{ patient.apellido }}
+                        <div class="flex items-center gap-3">
+
+                            <div class="avatar-paciente">
+                                {{
+                                obtenerIniciales(
+                                patient.nombre + ' ' + patient.apellido
+                                )
+                                }}
+                            </div>
+
+                            <div class="flex flex-col">
+                                <strong class="text-[#212529]">
+                                    {{ patient.nombre }} {{ patient.apellido }}
+                                </strong>
+
+                                <span class="text-xs text-[#6C757D]">
+                                    {{ patient.correo }}
+                                </span>
+                            </div>
+
+                        </div>
                     </td>
 
                     <!-- DOCUMENTO -->
