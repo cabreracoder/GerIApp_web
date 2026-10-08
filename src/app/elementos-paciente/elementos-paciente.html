@@ -9,7 +9,15 @@
     <div class="paciente-info">
 
       <div class="paciente-avatar">
-        {{ obtenerIniciales() }}
+
+        <img *ngIf="paciente.foto; else mostrarIniciales" [src]="paciente.foto" alt="Foto de perfil del paciente">
+
+        <ng-template #mostrarIniciales>
+          <span>
+            {{ obtenerIniciales() }}
+          </span>
+        </ng-template>
+
       </div>
 
       <div class="paciente-datos">
@@ -20,9 +28,7 @@
             {{ paciente.nombre }} {{ paciente.apellido }}
           </h2>
 
-          <span
-            class="estado-paciente"
-            [class.inactivo]="!paciente.estado">
+          <span class="estado-paciente" [class.inactivo]="!paciente.estado">
 
             {{ paciente.estado ? 'Activo' : 'Inactivo' }}
 
@@ -50,10 +56,10 @@
             <strong>Responsable:</strong>
 
             {{
-              familiarResponsable
-                ? (familiarResponsable.nombres || '') + ' ' +
-                  (familiarResponsable.apellidos || '')
-                : 'No registrado'
+            familiarResponsable
+            ? (familiarResponsable.nombres || '') + ' ' +
+            (familiarResponsable.apellidos || '')
+            : 'No registrado'
             }}
 
           </span>
@@ -70,10 +76,7 @@
 
     <div class="acciones-paciente-header">
 
-      <button
-        type="button"
-        class="btn-primary btn-inventario"
-        (click)="mostrarInventario()">
+      <button type="button" class="btn-primary btn-inventario" (click)="mostrarInventario()">
 
         <span class="material-symbols-outlined">
           inventory_2
@@ -115,10 +118,7 @@
 
   <nav class="tabs">
 
-    <button
-      type="button"
-      class="tab"
-      [class.active]="seccionActiva === 'elementos'"
+    <button type="button" class="tab" [class.active]="seccionActiva === 'elementos'"
       (click)="cambiarSeccion('elementos')">
 
       <span>
@@ -128,10 +128,7 @@
     </button>
 
 
-    <button
-      type="button"
-      class="tab"
-      [class.active]="seccionActiva === 'cuidados'"
+    <button type="button" class="tab" [class.active]="seccionActiva === 'cuidados'"
       (click)="cambiarSeccion('cuidados')">
 
       <span>
@@ -141,10 +138,7 @@
     </button>
 
 
-    <button
-      type="button"
-      class="tab"
-      [class.active]="seccionActiva === 'recomendaciones'"
+    <button type="button" class="tab" [class.active]="seccionActiva === 'recomendaciones'"
       (click)="cambiarSeccion('recomendaciones')">
 
       <span>
@@ -154,10 +148,7 @@
     </button>
 
 
-    <button
-      type="button"
-      class="tab"
-      [class.active]="seccionActiva === 'historia'"
+    <button type="button" class="tab" [class.active]="seccionActiva === 'historia'"
       (click)="cambiarSeccion('historia')">
 
       <span>
@@ -171,10 +162,7 @@
          NUEVA PESTAÑA
          ========================================================= -->
 
-    <button
-      type="button"
-      class="tab"
-      [class.active]="seccionActiva === 'formulacion'"
+    <button type="button" class="tab" [class.active]="seccionActiva === 'formulacion'"
       (click)="cambiarSeccion('formulacion')">
 
       <span>
@@ -190,9 +178,7 @@
        ELEMENTOS DEL PACIENTE
        ========================================================= -->
 
-  <section
-    class="contenido-seccion"
-    *ngIf="seccionActiva === 'elementos'">
+  <section class="contenido-seccion" *ngIf="seccionActiva === 'elementos'">
 
     <div class="card">
 
@@ -217,19 +203,16 @@
             {{ elementosPaciente.length }}
 
             {{
-              elementosPaciente.length === 1
-                ? 'elemento'
-                : 'elementos'
+            elementosPaciente.length === 1
+            ? 'elemento'
+            : 'elementos'
             }}
 
           </span>
 
           <div class="dropdown-container">
 
-            <button
-              type="button"
-              class="btn-primary"
-              (click)="mostrarMenuElementos = !mostrarMenuElementos">
+            <button type="button" class="btn-primary" (click)="mostrarMenuElementos = !mostrarMenuElementos">
 
               <span class="icono">
                 +
@@ -243,16 +226,11 @@
 
             </button>
 
-            <div
-              class="dropdown-menu"
-              *ngIf="mostrarMenuElementos">
+            <div class="dropdown-menu" *ngIf="mostrarMenuElementos">
 
-              <button
-                type="button"
-                (click)="registrarMedicamento()">
+              <button type="button" (click)="registrarMedicamento()">
 
-                <span
-                  class="opcion-icono medicamento material-symbols-outlined">
+                <span class="opcion-icono medicamento material-symbols-outlined">
                   medication
                 </span>
 
@@ -262,12 +240,9 @@
 
               </button>
 
-              <button
-                type="button"
-                (click)="registrarInsumo()">
+              <button type="button" (click)="registrarInsumo()">
 
-                <span
-                  class="opcion-icono insumo material-symbols-outlined">
+                <span class="opcion-icono insumo material-symbols-outlined">
                   inventory_2
                 </span>
 
@@ -290,9 +265,7 @@
            FORMULARIO DE ELEMENTO
            ===================================================== -->
 
-      <div
-        class="formulario-registro"
-        *ngIf="mostrarFormularioElemento">
+      <div class="formulario-registro" *ngIf="mostrarFormularioElemento">
 
         <div class="formulario-titulo">
 
@@ -301,11 +274,11 @@
             <h3>
 
               {{
-                elementoEditando
-                  ? 'Editar elemento'
-                  : tipoElemento === 'medicamento'
-                    ? 'Registrar medicamentos'
-                    : 'Registrar insumo'
+              elementoEditando
+              ? 'Editar elemento'
+              : tipoElemento === 'medicamento'
+              ? 'Registrar medicamentos'
+              : 'Registrar insumo'
               }}
 
             </h3>
@@ -313,11 +286,11 @@
             <p>
 
               {{
-                elementoEditando
-                  ? 'Actualice la información del elemento asociado al paciente.'
-                  : tipoElemento === 'medicamento'
-                    ? 'Agregue uno o varios medicamentos antes de guardar el registro.'
-                    : 'Complete la información del insumo asociado al paciente.'
+              elementoEditando
+              ? 'Actualice la información del elemento asociado al paciente.'
+              : tipoElemento === 'medicamento'
+              ? 'Agregue uno o varios medicamentos antes de guardar el registro.'
+              : 'Complete la información del insumo asociado al paciente.'
               }}
 
             </p>
@@ -329,25 +302,19 @@
 
         <!-- MEDICAMENTO -->
 
-        <div
-          class="campo"
-          *ngIf="tipoElemento === 'medicamento'">
+        <div class="campo" *ngIf="tipoElemento === 'medicamento'">
 
           <label for="medicamento">
             Medicamento
           </label>
 
-          <select
-            id="medicamento"
-            [(ngModel)]="formularioElemento.id_medicamentos">
+          <select id="medicamento" [(ngModel)]="formularioElemento.id_medicamentos">
 
             <option [ngValue]="null">
               Seleccione un medicamento
             </option>
 
-            <option
-              *ngFor="let medicamento of medicamentos"
-              [ngValue]="medicamento.id_medicamentos">
+            <option *ngFor="let medicamento of medicamentos" [ngValue]="medicamento.id_medicamentos">
 
               {{ medicamento.nombre }}
 
@@ -360,26 +327,20 @@
 
         <!-- TIPO DE INSUMO -->
 
-        <div
-          class="campo"
-          *ngIf="tipoElemento === 'insumo'">
+        <div class="campo" *ngIf="tipoElemento === 'insumo'">
 
           <label for="tipoInsumo">
             Tipo de insumo
           </label>
 
-          <select
-            id="tipoInsumo"
-            [(ngModel)]="formularioElemento.id_tipo_insumo"
+          <select id="tipoInsumo" [(ngModel)]="formularioElemento.id_tipo_insumo"
             (ngModelChange)="filtrarInsumosPorTipo()">
 
             <option [ngValue]="null">
               Seleccione un tipo de insumo
             </option>
 
-            <option
-              *ngFor="let tipo of tiposInsumo"
-              [ngValue]="tipo.id_tipo_insumo">
+            <option *ngFor="let tipo of tiposInsumo" [ngValue]="tipo.id_tipo_insumo">
 
               {{ tipo.nombre }}
 
@@ -392,25 +353,19 @@
 
         <!-- INSUMO -->
 
-        <div
-          class="campo"
-          *ngIf="tipoElemento === 'insumo'">
+        <div class="campo" *ngIf="tipoElemento === 'insumo'">
 
           <label for="insumo">
             Insumo
           </label>
 
-          <select
-            id="insumo"
-            [(ngModel)]="formularioElemento.id_insumo">
+          <select id="insumo" [(ngModel)]="formularioElemento.id_insumo">
 
             <option [ngValue]="null">
               Seleccione un insumo
             </option>
 
-            <option
-              *ngFor="let insumo of insumosFiltrados"
-              [ngValue]="insumo.id_insumo">
+            <option *ngFor="let insumo of insumosFiltrados" [ngValue]="insumo.id_insumo">
 
               {{ insumo.nombre }}
 
@@ -429,11 +384,7 @@
             Cantidad
           </label>
 
-          <input
-            id="cantidad"
-            type="number"
-            min="1"
-            [(ngModel)]="formularioElemento.cantidad"
+          <input id="cantidad" type="number" min="1" [(ngModel)]="formularioElemento.cantidad"
             placeholder="Ingrese la cantidad">
 
         </div>
@@ -447,28 +398,20 @@
             Fecha de ingreso
           </label>
 
-          <input
-            id="fechaIngreso"
-            type="datetime-local"
-            [(ngModel)]="formularioElemento.fecha_ingreso">
+          <input id="fechaIngreso" type="datetime-local" [(ngModel)]="formularioElemento.fecha_ingreso">
 
         </div>
 
 
         <!-- FECHA VENCIMIENTO -->
 
-        <div
-          class="campo"
-          *ngIf="tipoElemento === 'medicamento'">
+        <div class="campo" *ngIf="tipoElemento === 'medicamento'">
 
           <label for="fechaVencimiento">
             Fecha de vencimiento
           </label>
 
-          <input
-            id="fechaVencimiento"
-            type="date"
-            [(ngModel)]="formularioElemento.fecha_vencimiento">
+          <input id="fechaVencimiento" type="date" [(ngModel)]="formularioElemento.fecha_vencimiento">
 
         </div>
 
@@ -481,10 +424,7 @@
             Observaciones
           </label>
 
-          <textarea
-            id="observaciones"
-            rows="4"
-            [(ngModel)]="formularioElemento.observaciones"
+          <textarea id="observaciones" rows="4" [(ngModel)]="formularioElemento.observaciones"
             placeholder="Ingrese observaciones sobre el elemento..."></textarea>
 
         </div>
@@ -496,9 +436,7 @@
 
           <label>
 
-            <input
-              type="checkbox"
-              [(ngModel)]="formularioElemento.estado">
+            <input type="checkbox" [(ngModel)]="formularioElemento.estado">
 
             Elemento activo
 
@@ -509,17 +447,12 @@
 
         <!-- BOTÓN AGREGAR MEDICAMENTO -->
 
-        <div
-          class="medicamento-agregar"
-          *ngIf="
+        <div class="medicamento-agregar" *ngIf="
             tipoElemento === 'medicamento' &&
             !elementoEditando
           ">
 
-          <button
-            type="button"
-            class="btn-secundario"
-            (click)="agregarMedicamentoPendiente()">
+          <button type="button" class="btn-secundario" (click)="agregarMedicamentoPendiente()">
 
             <span class="material-symbols-outlined">
               add
@@ -534,9 +467,7 @@
 
         <!-- MEDICAMENTOS PENDIENTES -->
 
-        <div
-          class="medicamentos-pendientes"
-          *ngIf="
+        <div class="medicamentos-pendientes" *ngIf="
             tipoElemento === 'medicamento' &&
             !elementoEditando &&
             medicamentosPendientes.length > 0
@@ -573,9 +504,9 @@
               {{ medicamentosPendientes.length }}
 
               {{
-                medicamentosPendientes.length === 1
-                  ? 'medicamento'
-                  : 'medicamentos'
+              medicamentosPendientes.length === 1
+              ? 'medicamento'
+              : 'medicamentos'
               }}
 
             </span>
@@ -585,9 +516,7 @@
 
           <div class="pendientes-lista">
 
-            <div
-              class="pendiente-item"
-              *ngFor="
+            <div class="pendiente-item" *ngFor="
                 let medicamento of medicamentosPendientes;
                 let i = index
               ">
@@ -607,9 +536,9 @@
                   <strong>
 
                     {{
-                      obtenerNombreMedicamentoPendiente(
-                        medicamento.id_medicamentos
-                      )
+                    obtenerNombreMedicamentoPendiente(
+                    medicamento.id_medicamentos
+                    )
                     }}
 
                   </strong>
@@ -638,14 +567,13 @@
                     <strong>Ingreso:</strong>
 
                     {{
-                      medicamento.fecha_ingreso
-                        | date:'dd/MM/yyyy HH:mm'
+                    medicamento.fecha_ingreso
+                    | date:'dd/MM/yyyy HH:mm'
                     }}
 
                   </span>
 
-                  <ng-container
-                    *ngIf="medicamento.fecha_vencimiento">
+                  <ng-container *ngIf="medicamento.fecha_vencimiento">
 
                     <span class="detalle-separador">
                       •
@@ -656,8 +584,8 @@
                       <strong>Vencimiento:</strong>
 
                       {{
-                        medicamento.fecha_vencimiento
-                          | date:'dd/MM/yyyy'
+                      medicamento.fecha_vencimiento
+                      | date:'dd/MM/yyyy'
                       }}
 
                     </span>
@@ -666,9 +594,7 @@
 
                 </div>
 
-                <div
-                  class="pendiente-observaciones"
-                  *ngIf="medicamento.observaciones">
+                <div class="pendiente-observaciones" *ngIf="medicamento.observaciones">
 
                   <span class="material-symbols-outlined">
                     notes
@@ -682,10 +608,7 @@
 
               </div>
 
-              <button
-                type="button"
-                class="boton-eliminar-pendiente"
-                title="Quitar medicamento"
+              <button type="button" class="boton-eliminar-pendiente" title="Quitar medicamento"
                 (click)="eliminarMedicamentoPendiente(i)">
 
                 <span class="material-symbols-outlined">
@@ -703,17 +626,12 @@
 
         <!-- BOTÓN AGREGAR INSUMO -->
 
-        <div
-          class="medicamento-agregar"
-          *ngIf="
+        <div class="medicamento-agregar" *ngIf="
             tipoElemento === 'insumo' &&
             !elementoEditando
           ">
 
-          <button
-            type="button"
-            class="btn-secundario"
-            (click)="agregarInsumoPendiente()">
+          <button type="button" class="btn-secundario" (click)="agregarInsumoPendiente()">
 
             <span class="material-symbols-outlined">
               add
@@ -728,9 +646,7 @@
 
         <!-- INSUMOS PENDIENTES -->
 
-        <div
-          class="medicamentos-pendientes"
-          *ngIf="
+        <div class="medicamentos-pendientes" *ngIf="
             tipoElemento === 'insumo' &&
             !elementoEditando &&
             insumosPendientes.length > 0
@@ -767,9 +683,9 @@
               {{ insumosPendientes.length }}
 
               {{
-                insumosPendientes.length === 1
-                  ? 'insumo'
-                  : 'insumos'
+              insumosPendientes.length === 1
+              ? 'insumo'
+              : 'insumos'
               }}
 
             </span>
@@ -779,9 +695,7 @@
 
           <div class="pendientes-lista">
 
-            <div
-              class="pendiente-item"
-              *ngFor="
+            <div class="pendiente-item" *ngFor="
                 let insumo of insumosPendientes;
                 let i = index
               ">
@@ -801,9 +715,9 @@
                   <strong>
 
                     {{
-                      obtenerNombreInsumoPendiente(
-                        insumo.id_insumo
-                      )
+                    obtenerNombreInsumoPendiente(
+                    insumo.id_insumo
+                    )
                     }}
 
                   </strong>
@@ -832,17 +746,15 @@
                     <strong>Ingreso:</strong>
 
                     {{
-                      insumo.fecha_ingreso
-                        | date:'dd/MM/yyyy HH:mm'
+                    insumo.fecha_ingreso
+                    | date:'dd/MM/yyyy HH:mm'
                     }}
 
                   </span>
 
                 </div>
 
-                <div
-                  class="pendiente-observaciones"
-                  *ngIf="insumo.observaciones">
+                <div class="pendiente-observaciones" *ngIf="insumo.observaciones">
 
                   <span class="material-symbols-outlined">
                     notes
@@ -856,10 +768,7 @@
 
               </div>
 
-              <button
-                type="button"
-                class="boton-eliminar-pendiente"
-                title="Quitar insumo"
+              <button type="button" class="boton-eliminar-pendiente" title="Quitar insumo"
                 (click)="eliminarInsumoPendiente(i)">
 
                 <span class="material-symbols-outlined">
@@ -879,37 +788,26 @@
 
         <div class="formulario-acciones">
 
-          <button
-            type="button"
-            class="btn-secundario"
-            (click)="cancelarElemento()">
+          <button type="button" class="btn-secundario" (click)="cancelarElemento()">
 
             Cancelar
 
           </button>
 
-          <button
-            type="button"
-            class="btn-primary"
-            (click)="guardarElemento()"
-            *ngIf="
+          <button type="button" class="btn-primary" (click)="guardarElemento()" *ngIf="
               tipoElemento === 'insumo' ||
               elementoEditando
             ">
 
             {{
-              elementoEditando
-                ? 'Actualizar elemento'
-                : 'Guardar insumo'
+            elementoEditando
+            ? 'Actualizar elemento'
+            : 'Guardar insumo'
             }}
 
           </button>
 
-          <button
-            type="button"
-            class="btn-primary"
-            (click)="guardarElemento()"
-            *ngIf="
+          <button type="button" class="btn-primary" (click)="guardarElemento()" *ngIf="
               tipoElemento === 'medicamento' &&
               !elementoEditando
             ">
@@ -949,17 +847,13 @@
 
           <tbody>
 
-            <tr
-              *ngFor="let elemento of elementosPaciente">
+            <tr *ngFor="let elemento of elementosPaciente">
 
               <td>
 
-                <span
-                  class="tipo-elemento"
-                  [class.medicamento]="
+                <span class="tipo-elemento" [class.medicamento]="
                     obtenerTipoElemento(elemento) === 'Medicamento'
-                  "
-                  [class.insumo]="
+                  " [class.insumo]="
                     obtenerTipoElemento(elemento) === 'Insumo'
                   ">
 
@@ -984,8 +878,8 @@
               <td>
 
                 {{
-                  elemento.fecha_ingreso
-                    | date:'dd/MM/yyyy HH:mm'
+                elemento.fecha_ingreso
+                | date:'dd/MM/yyyy HH:mm'
                 }}
 
               </td>
@@ -993,23 +887,21 @@
               <td>
 
                 {{
-                  elemento.fecha_vencimiento
-                    ? (elemento.fecha_vencimiento | date:'dd/MM/yyyy')
-                    : 'No aplica'
+                elemento.fecha_vencimiento
+                ? (elemento.fecha_vencimiento | date:'dd/MM/yyyy')
+                : 'No aplica'
                 }}
 
               </td>
 
               <td>
 
-                <span
-                  class="estado-elemento"
-                  [class.inactivo]="!elemento.estado">
+                <span class="estado-elemento" [class.inactivo]="!elemento.estado">
 
                   {{
-                    elemento.estado
-                      ? 'Activo'
-                      : 'Inactivo'
+                  elemento.estado
+                  ? 'Activo'
+                  : 'Inactivo'
                   }}
 
                 </span>
@@ -1020,11 +912,7 @@
 
                 <div class="contenedor-acciones">
 
-                  <button
-                    type="button"
-                    class="boton-accion"
-                    title="Editar elemento"
-                    (click)="editarElemento(elemento)">
+                  <button type="button" class="boton-accion" title="Editar elemento" (click)="editarElemento(elemento)">
 
                     <span class="material-symbols-outlined">
                       edit
@@ -1032,10 +920,7 @@
 
                   </button>
 
-                  <button
-                    type="button"
-                    class="boton-accion boton-peligro"
-                    title="Eliminar elemento"
+                  <button type="button" class="boton-accion boton-peligro" title="Eliminar elemento"
                     (click)="eliminarElemento(elemento)">
 
                     <span class="material-symbols-outlined">
@@ -1051,12 +936,9 @@
             </tr>
 
 
-            <tr
-              *ngIf="elementosPaciente.length === 0">
+            <tr *ngIf="elementosPaciente.length === 0">
 
-              <td
-                colspan="7"
-                class="estado-vacio">
+              <td colspan="7" class="estado-vacio">
 
                 <h4>
                   No hay elementos registrados
@@ -1085,9 +967,7 @@
        CUIDADOS DE ENFERMERÍA
        ========================================================= -->
 
-  <section
-    class="contenido-seccion"
-    *ngIf="seccionActiva === 'cuidados'">
+  <section class="contenido-seccion" *ngIf="seccionActiva === 'cuidados'">
 
     <div class="card">
 
@@ -1105,10 +985,7 @@
 
         </div>
 
-        <button
-          type="button"
-          class="btn-primary"
-          (click)="abrirFormularioCuidados()"
+        <button type="button" class="btn-primary" (click)="abrirFormularioCuidados()"
           *ngIf="!mostrarFormularioCuidados">
 
           <span class="material-symbols-outlined">
@@ -1124,9 +1001,7 @@
 
       <!-- FORMULARIO -->
 
-      <div
-        class="formulario-registro"
-        *ngIf="mostrarFormularioCuidados">
+      <div class="formulario-registro" *ngIf="mostrarFormularioCuidados">
 
         <div class="formulario-grid">
 
@@ -1136,9 +1011,7 @@
               Baño del paciente
             </label>
 
-            <select
-              id="banoPaciente"
-              [(ngModel)]="cuidados.bano_paciente">
+            <select id="banoPaciente" [(ngModel)]="cuidados.bano_paciente">
 
               <option value="">
                 Seleccione una opción
@@ -1171,9 +1044,7 @@
               Peso y talla
             </label>
 
-            <select
-              id="pesoTalla"
-              [(ngModel)]="cuidados.peso_talla">
+            <select id="pesoTalla" [(ngModel)]="cuidados.peso_talla">
 
               <option value="">
                 Seleccione una opción
@@ -1206,9 +1077,7 @@
               Control de glucemia
             </label>
 
-            <select
-              id="controlGlucemia"
-              [(ngModel)]="cuidados.control_glucemia">
+            <select id="controlGlucemia" [(ngModel)]="cuidados.control_glucemia">
 
               <option value="">
                 Seleccione una opción
@@ -1237,9 +1106,7 @@
               Curaciones
             </label>
 
-            <select
-              id="curaciones"
-              [(ngModel)]="cuidados.curaciones">
+            <select id="curaciones" [(ngModel)]="cuidados.curaciones">
 
               <option value="">
                 Seleccione una opción
@@ -1268,9 +1135,7 @@
               Líquidos administrados y eliminados
             </label>
 
-            <textarea
-              id="liquidosAdministradosEliminados"
-              [(ngModel)]="cuidados.liquidos_administrados_eliminados"
+            <textarea id="liquidosAdministradosEliminados" [(ngModel)]="cuidados.liquidos_administrados_eliminados"
               rows="3"
               placeholder="Registre los líquidos administrados, eliminados y las observaciones correspondientes..."></textarea>
 
@@ -1283,9 +1148,7 @@
               Control de deposición
             </label>
 
-            <select
-              id="controlDeposicion"
-              [(ngModel)]="cuidados.control_deposicion">
+            <select id="controlDeposicion" [(ngModel)]="cuidados.control_deposicion">
 
               <option value="">
                 Seleccione una opción
@@ -1318,9 +1181,7 @@
               Administración de medicamentos
             </label>
 
-            <select
-              id="administracionMedicamentos"
-              [(ngModel)]="cuidados.administracion_medicamentos">
+            <select id="administracionMedicamentos" [(ngModel)]="cuidados.administracion_medicamentos">
 
               <option value="">
                 Seleccione una opción
@@ -1351,24 +1212,18 @@
 
         <div class="formulario-acciones">
 
-          <button
-            type="button"
-            class="btn-secundario"
-            (click)="cancelarCuidados()">
+          <button type="button" class="btn-secundario" (click)="cancelarCuidados()">
 
             Cancelar
 
           </button>
 
-          <button
-            type="button"
-            class="btn-primary"
-            (click)="guardarCuidados()">
+          <button type="button" class="btn-primary" (click)="guardarCuidados()">
 
             {{
-              cuidados.id_cuidado > 0
-                ? 'Actualizar cuidados'
-                : 'Guardar cuidados'
+            cuidados.id_cuidado > 0
+            ? 'Actualizar cuidados'
+            : 'Guardar cuidados'
             }}
 
           </button>
@@ -1380,13 +1235,9 @@
 
       <!-- REGISTROS -->
 
-      <div
-        class="lista-registros"
-        *ngIf="!mostrarFormularioCuidados">
+      <div class="lista-registros" *ngIf="!mostrarFormularioCuidados">
 
-        <div
-          class="estado-vacio"
-          *ngIf="cargandoCuidados">
+        <div class="estado-vacio" *ngIf="cargandoCuidados">
 
           <h4>
             Cargando cuidados...
@@ -1399,9 +1250,7 @@
         </div>
 
 
-        <div
-          class="registro-item"
-          *ngIf="
+        <div class="registro-item" *ngIf="
             !cargandoCuidados &&
             cuidados.id_cuidado > 0
           ">
@@ -1414,9 +1263,7 @@
 
             <div class="detalle-cuidados">
 
-              <div
-                class="detalle-cuidado"
-                *ngIf="cuidados.bano_paciente">
+              <div class="detalle-cuidado" *ngIf="cuidados.bano_paciente">
 
                 <strong>
                   Baño del paciente
@@ -1428,9 +1275,7 @@
 
               </div>
 
-              <div
-                class="detalle-cuidado"
-                *ngIf="cuidados.peso_talla">
+              <div class="detalle-cuidado" *ngIf="cuidados.peso_talla">
 
                 <strong>
                   Peso y talla
@@ -1442,9 +1287,7 @@
 
               </div>
 
-              <div
-                class="detalle-cuidado"
-                *ngIf="cuidados.control_glucemia">
+              <div class="detalle-cuidado" *ngIf="cuidados.control_glucemia">
 
                 <strong>
                   Control de glucemia
@@ -1456,9 +1299,7 @@
 
               </div>
 
-              <div
-                class="detalle-cuidado"
-                *ngIf="cuidados.curaciones">
+              <div class="detalle-cuidado" *ngIf="cuidados.curaciones">
 
                 <strong>
                   Curaciones
@@ -1470,9 +1311,7 @@
 
               </div>
 
-              <div
-                class="detalle-cuidado"
-                *ngIf="cuidados.liquidos_administrados_eliminados">
+              <div class="detalle-cuidado" *ngIf="cuidados.liquidos_administrados_eliminados">
 
                 <strong>
                   Líquidos administrados y eliminados
@@ -1484,9 +1323,7 @@
 
               </div>
 
-              <div
-                class="detalle-cuidado"
-                *ngIf="cuidados.control_deposicion">
+              <div class="detalle-cuidado" *ngIf="cuidados.control_deposicion">
 
                 <strong>
                   Control de deposición
@@ -1498,9 +1335,7 @@
 
               </div>
 
-              <div
-                class="detalle-cuidado"
-                *ngIf="cuidados.administracion_medicamentos">
+              <div class="detalle-cuidado" *ngIf="cuidados.administracion_medicamentos">
 
                 <strong>
                   Administración de medicamentos
@@ -1519,11 +1354,7 @@
 
           <div class="registro-acciones">
 
-            <button
-              type="button"
-              class="boton-accion"
-              title="Editar cuidados"
-              (click)="editarCuidados()">
+            <button type="button" class="boton-accion" title="Editar cuidados" (click)="editarCuidados()">
 
               <span class="material-symbols-outlined">
                 edit
@@ -1531,10 +1362,7 @@
 
             </button>
 
-            <button
-              type="button"
-              class="boton-accion boton-peligro"
-              title="Eliminar cuidados"
+            <button type="button" class="boton-accion boton-peligro" title="Eliminar cuidados"
               (click)="eliminarCuidados()">
 
               <span class="material-symbols-outlined">
@@ -1548,9 +1376,7 @@
         </div>
 
 
-        <div
-          class="estado-vacio"
-          *ngIf="
+        <div class="estado-vacio" *ngIf="
             !cargandoCuidados &&
             cuidados.id_cuidado === 0
           ">
@@ -1576,9 +1402,7 @@
        RECOMENDACIONES
        ========================================================= -->
 
-  <section
-    class="contenido-seccion"
-    *ngIf="seccionActiva === 'recomendaciones'">
+  <section class="contenido-seccion" *ngIf="seccionActiva === 'recomendaciones'">
 
     <div class="card">
 
@@ -1597,10 +1421,7 @@
 
         </div>
 
-        <button
-          type="button"
-          class="btn-primary"
-          (click)="abrirFormularioRecomendaciones()"
+        <button type="button" class="btn-primary" (click)="abrirFormularioRecomendaciones()"
           *ngIf="!mostrarFormularioRecomendaciones">
 
           <span class="material-symbols-outlined">
@@ -1616,9 +1437,7 @@
 
       <!-- FORMULARIO -->
 
-      <div
-        class="formulario-registro"
-        *ngIf="mostrarFormularioRecomendaciones">
+      <div class="formulario-registro" *ngIf="mostrarFormularioRecomendaciones">
 
         <div class="formulario-grid">
 
@@ -1628,9 +1447,7 @@
               Hidratación de la piel
             </label>
 
-            <select
-              id="hidratarPiel"
-              [(ngModel)]="recomendaciones.hidratar_piel">
+            <select id="hidratarPiel" [(ngModel)]="recomendaciones.hidratar_piel">
 
               <option value="">
                 Seleccione una opción
@@ -1663,9 +1480,7 @@
               Asistencia en la alimentación
             </label>
 
-            <select
-              id="asistirAlimentacion"
-              [(ngModel)]="recomendaciones.asistir_alimentacion">
+            <select id="asistirAlimentacion" [(ngModel)]="recomendaciones.asistir_alimentacion">
 
               <option value="">
                 Seleccione una opción
@@ -1706,10 +1521,7 @@
               Vía de alimentación
             </label>
 
-            <textarea
-              id="viaAlimentacion"
-              [(ngModel)]="recomendaciones.via_alimentacion"
-              rows="3"
+            <textarea id="viaAlimentacion" [(ngModel)]="recomendaciones.via_alimentacion" rows="3"
               placeholder="Indique la vía de alimentación y las recomendaciones correspondientes..."></textarea>
 
           </div>
@@ -1721,10 +1533,7 @@
               Prevención de caídas
             </label>
 
-            <textarea
-              id="prevencionCaidas"
-              [(ngModel)]="recomendaciones.prevencion_caidas"
-              rows="3"
+            <textarea id="prevencionCaidas" [(ngModel)]="recomendaciones.prevencion_caidas" rows="3"
               placeholder="Registre las recomendaciones para prevenir caídas..."></textarea>
 
           </div>
@@ -1736,9 +1545,7 @@
               Terapias físicas
             </label>
 
-            <select
-              id="terapiasFisicas"
-              [(ngModel)]="recomendaciones.terapias_fisicas">
+            <select id="terapiasFisicas" [(ngModel)]="recomendaciones.terapias_fisicas">
 
               <option value="">
                 Seleccione una opción
@@ -1771,9 +1578,7 @@
               Terapia respiratoria
             </label>
 
-            <select
-              id="terapiaRespiratoria"
-              [(ngModel)]="recomendaciones.terapia_respiratoria">
+            <select id="terapiaRespiratoria" [(ngModel)]="recomendaciones.terapia_respiratoria">
 
               <option value="">
                 Seleccione una opción
@@ -1806,10 +1611,7 @@
               Actividad ocupacional
             </label>
 
-            <textarea
-              id="actividadOcupacional"
-              [(ngModel)]="recomendaciones.actividad_ocupacional"
-              rows="3"
+            <textarea id="actividadOcupacional" [(ngModel)]="recomendaciones.actividad_ocupacional" rows="3"
               placeholder="Registre las recomendaciones para actividades ocupacionales..."></textarea>
 
           </div>
@@ -1821,9 +1623,7 @@
               Corte de uñas
             </label>
 
-            <select
-              id="corteUnas"
-              [(ngModel)]="recomendaciones.corte_unas">
+            <select id="corteUnas" [(ngModel)]="recomendaciones.corte_unas">
 
               <option value="">
                 Seleccione una opción
@@ -1852,9 +1652,7 @@
               Corte de cabello
             </label>
 
-            <select
-              id="corteCabello"
-              [(ngModel)]="recomendaciones.corte_cabello">
+            <select id="corteCabello" [(ngModel)]="recomendaciones.corte_cabello">
 
               <option value="">
                 Seleccione una opción
@@ -1883,9 +1681,7 @@
               Higiene oral
             </label>
 
-            <select
-              id="higieneOral"
-              [(ngModel)]="recomendaciones.higiene_oral">
+            <select id="higieneOral" [(ngModel)]="recomendaciones.higiene_oral">
 
               <option value="">
                 Seleccione una opción
@@ -1912,28 +1708,22 @@
 
         <div class="formulario-acciones">
 
-          <button
-            type="button"
-            class="btn-secundario"
-            (click)="cancelarRecomendaciones()">
+          <button type="button" class="btn-secundario" (click)="cancelarRecomendaciones()">
 
             Cancelar
 
           </button>
 
-          <button
-            type="button"
-            class="btn-primary"
-            (click)="guardarRecomendaciones()">
+          <button type="button" class="btn-primary" (click)="guardarRecomendaciones()">
 
             <span class="material-symbols-outlined">
               save
             </span>
 
             {{
-              recomendaciones.id_recomendacion > 0
-                ? 'Actualizar recomendaciones'
-                : 'Guardar recomendaciones'
+            recomendaciones.id_recomendacion > 0
+            ? 'Actualizar recomendaciones'
+            : 'Guardar recomendaciones'
             }}
 
           </button>
@@ -1945,13 +1735,9 @@
 
       <!-- LISTADO -->
 
-      <div
-        class="lista-registros"
-        *ngIf="!mostrarFormularioRecomendaciones">
+      <div class="lista-registros" *ngIf="!mostrarFormularioRecomendaciones">
 
-        <div
-          class="estado-vacio"
-          *ngIf="cargandoRecomendaciones">
+        <div class="estado-vacio" *ngIf="cargandoRecomendaciones">
 
           <h4>
             Cargando recomendaciones...
@@ -1964,9 +1750,7 @@
         </div>
 
 
-        <div
-          class="registro-item"
-          *ngIf="
+        <div class="registro-item" *ngIf="
             !cargandoRecomendaciones &&
             recomendaciones.id_recomendacion > 0
           ">
@@ -1979,9 +1763,7 @@
 
             <div class="detalle-cuidados">
 
-              <div
-                class="detalle-cuidado"
-                *ngIf="recomendaciones.hidratar_piel">
+              <div class="detalle-cuidado" *ngIf="recomendaciones.hidratar_piel">
 
                 <strong>
                   Hidratación de la piel
@@ -1993,9 +1775,7 @@
 
               </div>
 
-              <div
-                class="detalle-cuidado"
-                *ngIf="recomendaciones.asistir_alimentacion">
+              <div class="detalle-cuidado" *ngIf="recomendaciones.asistir_alimentacion">
 
                 <strong>
                   Asistencia en la alimentación
@@ -2007,9 +1787,7 @@
 
               </div>
 
-              <div
-                class="detalle-cuidado"
-                *ngIf="recomendaciones.via_alimentacion">
+              <div class="detalle-cuidado" *ngIf="recomendaciones.via_alimentacion">
 
                 <strong>
                   Vía de alimentación
@@ -2021,9 +1799,7 @@
 
               </div>
 
-              <div
-                class="detalle-cuidado"
-                *ngIf="recomendaciones.prevencion_caidas">
+              <div class="detalle-cuidado" *ngIf="recomendaciones.prevencion_caidas">
 
                 <strong>
                   Prevención de caídas
@@ -2035,9 +1811,7 @@
 
               </div>
 
-              <div
-                class="detalle-cuidado"
-                *ngIf="recomendaciones.terapias_fisicas">
+              <div class="detalle-cuidado" *ngIf="recomendaciones.terapias_fisicas">
 
                 <strong>
                   Terapias físicas
@@ -2049,9 +1823,7 @@
 
               </div>
 
-              <div
-                class="detalle-cuidado"
-                *ngIf="recomendaciones.terapia_respiratoria">
+              <div class="detalle-cuidado" *ngIf="recomendaciones.terapia_respiratoria">
 
                 <strong>
                   Terapia respiratoria
@@ -2063,9 +1835,7 @@
 
               </div>
 
-              <div
-                class="detalle-cuidado"
-                *ngIf="recomendaciones.actividad_ocupacional">
+              <div class="detalle-cuidado" *ngIf="recomendaciones.actividad_ocupacional">
 
                 <strong>
                   Actividad ocupacional
@@ -2077,9 +1847,7 @@
 
               </div>
 
-              <div
-                class="detalle-cuidado"
-                *ngIf="recomendaciones.corte_unas">
+              <div class="detalle-cuidado" *ngIf="recomendaciones.corte_unas">
 
                 <strong>
                   Corte de uñas
@@ -2091,9 +1859,7 @@
 
               </div>
 
-              <div
-                class="detalle-cuidado"
-                *ngIf="recomendaciones.corte_cabello">
+              <div class="detalle-cuidado" *ngIf="recomendaciones.corte_cabello">
 
                 <strong>
                   Corte de cabello
@@ -2105,9 +1871,7 @@
 
               </div>
 
-              <div
-                class="detalle-cuidado"
-                *ngIf="recomendaciones.higiene_oral">
+              <div class="detalle-cuidado" *ngIf="recomendaciones.higiene_oral">
 
                 <strong>
                   Higiene oral
@@ -2126,11 +1890,7 @@
 
           <div class="registro-acciones">
 
-            <button
-              type="button"
-              class="boton-accion"
-              title="Editar recomendaciones"
-              (click)="editarRecomendaciones()">
+            <button type="button" class="boton-accion" title="Editar recomendaciones" (click)="editarRecomendaciones()">
 
               <span class="material-symbols-outlined">
                 edit
@@ -2138,10 +1898,7 @@
 
             </button>
 
-            <button
-              type="button"
-              class="boton-accion boton-peligro"
-              title="Eliminar recomendaciones"
+            <button type="button" class="boton-accion boton-peligro" title="Eliminar recomendaciones"
               (click)="eliminarRecomendaciones()">
 
               <span class="material-symbols-outlined">
@@ -2155,9 +1912,7 @@
         </div>
 
 
-        <div
-          class="estado-vacio"
-          *ngIf="
+        <div class="estado-vacio" *ngIf="
             !cargandoRecomendaciones &&
             recomendaciones.id_recomendacion === 0
           ">
@@ -2183,9 +1938,7 @@
        HISTORIA CLÍNICA
        ========================================================= -->
 
-  <section
-    class="contenido-seccion"
-    *ngIf="seccionActiva === 'historia'">
+  <section class="contenido-seccion" *ngIf="seccionActiva === 'historia'">
 
     <div class="card">
 
@@ -2203,11 +1956,7 @@
 
         </div>
 
-        <button
-          type="button"
-          class="btn-primary"
-          (click)="abrirFormularioHistoria()"
-          *ngIf="
+        <button type="button" class="btn-primary" (click)="abrirFormularioHistoria()" *ngIf="
             !cargandoHistoria &&
             historiaClinica.id_historia_clinica === 0 &&
             !mostrarFormularioHistoria
@@ -2226,9 +1975,7 @@
 
       <!-- CARGANDO -->
 
-      <div
-        class="estado-carga"
-        *ngIf="cargandoHistoria">
+      <div class="estado-carga" *ngIf="cargandoHistoria">
 
         <p>
           Cargando historia clínica...
@@ -2239,9 +1986,7 @@
 
       <!-- HISTORIA REGISTRADA -->
 
-      <div
-        class="historia-contenido"
-        *ngIf="
+      <div class="historia-contenido" *ngIf="
           !cargandoHistoria &&
           historiaClinica.id_historia_clinica > 0 &&
           !mostrarFormularioHistoria
@@ -2263,10 +2008,7 @@
 
           <div class="contenedor-acciones">
 
-            <button
-              type="button"
-              class="boton-accion"
-              title="Editar historia clínica"
+            <button type="button" class="boton-accion" title="Editar historia clínica"
               (click)="editarHistoriaClinica()">
 
               <span class="material-symbols-outlined">
@@ -2275,10 +2017,7 @@
 
             </button>
 
-            <button
-              type="button"
-              class="boton-accion boton-peligro"
-              title="Eliminar historia clínica"
+            <button type="button" class="boton-accion boton-peligro" title="Eliminar historia clínica"
               (click)="eliminarHistoriaClinica()">
 
               <span class="material-symbols-outlined">
@@ -2303,9 +2042,9 @@
             <strong>
 
               {{
-                historiaClinica.fecha_apertura
-                  ? (historiaClinica.fecha_apertura | date:'dd/MM/yyyy')
-                  : 'No registrada'
+              historiaClinica.fecha_apertura
+              ? (historiaClinica.fecha_apertura | date:'dd/MM/yyyy')
+              : 'No registrada'
               }}
 
             </strong>
@@ -2323,8 +2062,7 @@
 
           <div class="texto-historia">
 
-            <p
-              *ngIf="historiaClinica.antecedentes; else sinAntecedentes">
+            <p *ngIf="historiaClinica.antecedentes; else sinAntecedentes">
 
               {{ historiaClinica.antecedentes }}
 
@@ -2351,8 +2089,7 @@
 
           <div class="texto-historia">
 
-            <p
-              *ngIf="historiaClinica.alergias; else sinAlergias">
+            <p *ngIf="historiaClinica.alergias; else sinAlergias">
 
               {{ historiaClinica.alergias }}
 
@@ -2379,8 +2116,7 @@
 
           <div class="texto-historia">
 
-            <p
-              *ngIf="
+            <p *ngIf="
                 historiaClinica.observaciones;
                 else sinObservaciones
               ">
@@ -2404,14 +2140,12 @@
 
         <div class="historia-estado">
 
-          <span
-            class="estado-elemento"
-            [class.inactivo]="!historiaClinica.estado">
+          <span class="estado-elemento" [class.inactivo]="!historiaClinica.estado">
 
             {{
-              historiaClinica.estado
-                ? 'Historia clínica activa'
-                : 'Historia clínica inactiva'
+            historiaClinica.estado
+            ? 'Historia clínica activa'
+            : 'Historia clínica inactiva'
             }}
 
           </span>
@@ -2423,9 +2157,7 @@
 
       <!-- FORMULARIO HISTORIA -->
 
-      <div
-        class="historia-formulario"
-        *ngIf="
+      <div class="historia-formulario" *ngIf="
           !cargandoHistoria &&
           mostrarFormularioHistoria
         ">
@@ -2436,10 +2168,7 @@
             Fecha de apertura
           </label>
 
-          <input
-            type="date"
-            id="fecha_apertura"
-            [(ngModel)]="historiaClinica.fecha_apertura">
+          <input type="date" id="fecha_apertura" [(ngModel)]="historiaClinica.fecha_apertura">
 
         </div>
 
@@ -2450,10 +2179,7 @@
             Antecedentes
           </label>
 
-          <textarea
-            id="antecedentes"
-            [(ngModel)]="historiaClinica.antecedentes"
-            rows="5"
+          <textarea id="antecedentes" [(ngModel)]="historiaClinica.antecedentes" rows="5"
             placeholder="Registre los antecedentes relevantes del paciente..."></textarea>
 
         </div>
@@ -2465,10 +2191,7 @@
             Alergias
           </label>
 
-          <textarea
-            id="alergias"
-            [(ngModel)]="historiaClinica.alergias"
-            rows="4"
+          <textarea id="alergias" [(ngModel)]="historiaClinica.alergias" rows="4"
             placeholder="Registre las alergias conocidas del paciente..."></textarea>
 
         </div>
@@ -2480,10 +2203,7 @@
             Observaciones clínicas
           </label>
 
-          <textarea
-            id="observacionesHistoria"
-            [(ngModel)]="historiaClinica.observaciones"
-            rows="5"
+          <textarea id="observacionesHistoria" [(ngModel)]="historiaClinica.observaciones" rows="5"
             placeholder="Registre las observaciones clínicas del paciente..."></textarea>
 
         </div>
@@ -2493,9 +2213,7 @@
 
           <label>
 
-            <input
-              type="checkbox"
-              [(ngModel)]="historiaClinica.estado">
+            <input type="checkbox" [(ngModel)]="historiaClinica.estado">
 
             Historia clínica activa
 
@@ -2506,27 +2224,21 @@
 
         <div class="formulario-acciones">
 
-          <button
-            type="button"
-            class="btn-primary"
-            (click)="guardarHistoriaClinica()">
+          <button type="button" class="btn-primary" (click)="guardarHistoriaClinica()">
 
             <span class="material-symbols-outlined">
               save
             </span>
 
             {{
-              historiaClinica.id_historia_clinica > 0
-                ? 'Actualizar historia clínica'
-                : 'Guardar historia clínica'
+            historiaClinica.id_historia_clinica > 0
+            ? 'Actualizar historia clínica'
+            : 'Guardar historia clínica'
             }}
 
           </button>
 
-          <button
-            type="button"
-            class="btn-secundario"
-            (click)="cancelarHistoria()">
+          <button type="button" class="btn-secundario" (click)="cancelarHistoria()">
 
             <span class="material-symbols-outlined">
               close
@@ -2543,9 +2255,7 @@
 
       <!-- SIN HISTORIA -->
 
-      <div
-        class="estado-vacio"
-        *ngIf="
+      <div class="estado-vacio" *ngIf="
           !cargandoHistoria &&
           historiaClinica.id_historia_clinica === 0 &&
           !mostrarFormularioHistoria
@@ -2570,9 +2280,7 @@
        FORMULACIÓN DE MEDICAMENTOS
        ========================================================= -->
 
-  <section
-    class="contenido-seccion"
-    *ngIf="seccionActiva === 'formulacion'">
+  <section class="contenido-seccion" *ngIf="seccionActiva === 'formulacion'">
 
     <div class="card">
 
@@ -2595,10 +2303,7 @@
 
         </div>
 
-        <button
-          type="button"
-          class="btn-primary"
-          (click)="mostrarFormularioFormulacion = true"
+        <button type="button" class="btn-primary" (click)="mostrarFormularioFormulacion = true"
           *ngIf="!mostrarFormularioFormulacion">
 
           <span class="material-symbols-outlined">
@@ -2616,9 +2321,7 @@
            FORMULARIO DE FORMULACIÓN
            ===================================================== -->
 
-      <div
-        class="formulario-registro"
-        *ngIf="mostrarFormularioFormulacion">
+      <div class="formulario-registro" *ngIf="mostrarFormularioFormulacion">
 
         <div class="formulario-titulo">
 
@@ -2627,9 +2330,9 @@
             <h3>
 
               {{
-                formulacionEditando
-                  ? 'Editar formulación'
-                  : 'Registrar formulación'
+              formulacionEditando
+              ? 'Editar formulación'
+              : 'Registrar formulación'
               }}
 
             </h3>
@@ -2657,10 +2360,7 @@
               Fecha
             </label>
 
-            <input
-              id="fechaFormulacion"
-              type="date"
-              [(ngModel)]="formularioFormulacion.fecha">
+            <input id="fechaFormulacion" type="date" [(ngModel)]="formularioFormulacion.fecha">
 
           </div>
 
@@ -2675,17 +2375,13 @@
               Medicamento
             </label>
 
-            <select
-              id="medicamentoFormulacion"
-              [(ngModel)]="formularioFormulacion.id_medicamentos">
+            <select id="medicamentoFormulacion" [(ngModel)]="formularioFormulacion.id_medicamentos">
 
               <option [ngValue]="null">
                 Seleccione un medicamento
               </option>
 
-              <option
-                *ngFor="let medicamento of medicamentos"
-                [ngValue]="medicamento.id_medicamentos">
+              <option *ngFor="let medicamento of medicamentos" [ngValue]="medicamento.id_medicamentos">
 
                 {{ medicamento.nombre }}
 
@@ -2706,10 +2402,7 @@
               Dosis
             </label>
 
-            <input
-              id="dosisFormulacion"
-              type="text"
-              [(ngModel)]="formularioFormulacion.dosis"
+            <input id="dosisFormulacion" type="text" [(ngModel)]="formularioFormulacion.dosis"
               placeholder="Ejemplo: 500 mg">
 
           </div>
@@ -2725,9 +2418,7 @@
               Vía de administración
             </label>
 
-            <select
-              id="viaFormulacion"
-              [(ngModel)]="formularioFormulacion.via">
+            <select id="viaFormulacion" [(ngModel)]="formularioFormulacion.via">
 
               <option value="">
                 Seleccione una vía
@@ -2784,17 +2475,13 @@
               Grupo de medicación
             </label>
 
-            <select
-              id="grupoMedicacion"
-              [(ngModel)]="formularioFormulacion.id_grupo">
+            <select id="grupoMedicacion" [(ngModel)]="formularioFormulacion.id_grupo">
 
               <option [ngValue]="null">
                 Seleccione un grupo
               </option>
 
-              <option
-                *ngFor="let grupo of gruposMedicacion"
-                [ngValue]="grupo.id_grupo">
+              <option *ngFor="let grupo of gruposMedicacion" [ngValue]="grupo.id_grupo">
 
                 {{ grupo.nombre }}
 
@@ -2815,10 +2502,7 @@
               Hora de administración
             </label>
 
-            <input
-              id="horaAdministrada"
-              type="time"
-              [(ngModel)]="formularioFormulacion.hora_administrada">
+            <input id="horaAdministrada" type="time" [(ngModel)]="formularioFormulacion.hora_administrada">
 
           </div>
 
@@ -2833,10 +2517,7 @@
               Presentación
             </label>
 
-            <input
-              id="presentacionFormulacion"
-              type="text"
-              [(ngModel)]="formularioFormulacion.presentacion"
+            <input id="presentacionFormulacion" type="text" [(ngModel)]="formularioFormulacion.presentacion"
               placeholder="Ejemplo: Tableta, cápsula, jarabe">
 
           </div>
@@ -2850,9 +2531,7 @@
 
             <label>
 
-              <input
-                type="checkbox"
-                [(ngModel)]="formularioFormulacion.actual_administrado">
+              <input type="checkbox" [(ngModel)]="formularioFormulacion.actual_administrado">
 
               Administración activa
 
@@ -2865,18 +2544,13 @@
                FECHA SUSPENSIÓN
                ================================================= -->
 
-          <div
-            class="campo"
-            *ngIf="!formularioFormulacion.actual_administrado">
+          <div class="campo" *ngIf="!formularioFormulacion.actual_administrado">
 
             <label for="suspendidoFecha">
               Fecha de suspensión
             </label>
 
-            <input
-              id="suspendidoFecha"
-              type="date"
-              [(ngModel)]="formularioFormulacion.suspendido_fecha">
+            <input id="suspendidoFecha" type="date" [(ngModel)]="formularioFormulacion.suspendido_fecha">
 
           </div>
 
@@ -2889,10 +2563,7 @@
 
         <div class="formulario-acciones">
 
-          <button
-            type="button"
-            class="btn-secundario"
-            (click)="cancelarFormulacion()">
+          <button type="button" class="btn-secundario" (click)="cancelarFormulacion()">
 
             <span class="material-symbols-outlined">
               close
@@ -2902,19 +2573,16 @@
 
           </button>
 
-          <button
-            type="button"
-            class="btn-primary"
-            (click)="guardarFormulacion()">
+          <button type="button" class="btn-primary" (click)="guardarFormulacion()">
 
             <span class="material-symbols-outlined">
               save
             </span>
 
             {{
-              formulacionEditando
-                ? 'Actualizar formulación'
-                : 'Guardar formulación'
+            formulacionEditando
+            ? 'Actualizar formulación'
+            : 'Guardar formulación'
             }}
 
           </button>
@@ -2928,9 +2596,7 @@
            CARGANDO FORMULACIONES
            ===================================================== -->
 
-      <div
-        class="estado-carga"
-        *ngIf="
+      <div class="estado-carga" *ngIf="
           cargandoFormulaciones &&
           !mostrarFormularioFormulacion
         ">
@@ -2946,9 +2612,7 @@
            TABLA DE FORMULACIONES
            ===================================================== -->
 
-      <div
-        class="tabla-container"
-        *ngIf="
+      <div class="tabla-container" *ngIf="
           !cargandoFormulaciones &&
           !mostrarFormularioFormulacion
         ">
@@ -2988,17 +2652,16 @@
                  FORMULACIONES REGISTRADAS
                  ================================================= -->
 
-            <tr
-              *ngFor="
+            <tr *ngFor="
                 let formulacion of formulacionesMedicamentos
               ">
 
               <td>
 
                 {{
-                  formulacion.fecha
-                    ? (formulacion.fecha | date:'dd/MM/yyyy')
-                    : 'No registrada'
+                formulacion.fecha
+                ? (formulacion.fecha | date:'dd/MM/yyyy')
+                : 'No registrada'
                 }}
 
               </td>
@@ -3044,14 +2707,12 @@
 
               <td>
 
-                <span
-                  class="estado-elemento"
-                  [class.inactivo]="!formulacion.actual_administrado">
+                <span class="estado-elemento" [class.inactivo]="!formulacion.actual_administrado">
 
                   {{
-                    formulacion.actual_administrado
-                      ? 'Activa'
-                      : 'Suspendida'
+                  formulacion.actual_administrado
+                  ? 'Activa'
+                  : 'Suspendida'
                   }}
 
                 </span>
@@ -3065,10 +2726,7 @@
 
                 <div class="contenedor-acciones">
 
-                  <button
-                    type="button"
-                    class="boton-accion"
-                    title="Editar formulación"
+                  <button type="button" class="boton-accion" title="Editar formulación"
                     (click)="editarFormulacion(formulacion)">
 
                     <span class="material-symbols-outlined">
@@ -3078,10 +2736,7 @@
                   </button>
 
 
-                  <button
-                    type="button"
-                    class="boton-accion boton-peligro"
-                    title="Eliminar formulación"
+                  <button type="button" class="boton-accion boton-peligro" title="Eliminar formulación"
                     (click)="eliminarFormulacion(formulacion)">
 
                     <span class="material-symbols-outlined">
@@ -3101,14 +2756,11 @@
                  ESTADO VACÍO
                  ================================================= -->
 
-            <tr
-              *ngIf="
+            <tr *ngIf="
                 formulacionesMedicamentos.length === 0
               ">
 
-              <td
-                colspan="10"
-                class="estado-vacio">
+              <td colspan="10" class="estado-vacio">
 
                 <h4>
                   No hay formulaciones registradas
@@ -3138,9 +2790,7 @@
        BARRA FINAL
        ========================================================= -->
 
-  <section
-    class="barra-final"
-    *ngIf="mostrarBarraFinal">
+  <section class="barra-final" *ngIf="mostrarBarraFinal">
 
     <div class="estado-final">
 
@@ -3154,10 +2804,7 @@
 
     <div class="acciones-finales">
 
-      <button
-        type="button"
-        class="btn-primary btn-finalizar"
-        (click)="finalizarRegistro()">
+      <button type="button" class="btn-primary btn-finalizar" (click)="finalizarRegistro()">
 
         ✓ Finalizar registro
 
@@ -3172,10 +2819,7 @@
        DRAWER DE INVENTARIO DEL PACIENTE
        ========================================================= -->
 
-  <app-inventario-paciente
-    [idPaciente]="idPaciente"
-    [paciente]="paciente"
-    [estaAbierto]="mostrarDrawerInventario"
+  <app-inventario-paciente [idPaciente]="idPaciente" [paciente]="paciente" [estaAbierto]="mostrarDrawerInventario"
     (cerrar)="cerrarInventario()">
 
   </app-inventario-paciente>

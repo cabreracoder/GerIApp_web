@@ -416,7 +416,16 @@ export class BancoDatos implements OnInit {
   ];
 
   catalogoSeleccionado = 'Medicamentos';
+  catalogoSelectorAbierto = false;
 
+  toggleCatalogoSelector(): void {
+    this.catalogoSelectorAbierto = !this.catalogoSelectorAbierto;
+  }
+
+  seleccionarCatalogoDesdeSelector(nombre: string): void {
+    this.seleccionarCatalogo(nombre);
+    this.catalogoSelectorAbierto = false;
+  }
   // =========================================================
   // ESTADOS GENERALES
   // =========================================================

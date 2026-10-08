@@ -23,14 +23,40 @@
   ====================================================== -->
   <div class="contenedor-catalogos">
 
-    <nav class="barra-catalogos">
+    <label class="etiqueta-catalogo">
+      Catálogo
+    </label>
 
-      <button type="button" class="boton-catalogo" *ngFor="let catalogo of catalogos"
-        [class.activo]="catalogoSeleccionado === catalogo.nombre" (click)="seleccionarCatalogo(catalogo.nombre)">
-        {{ catalogo.nombre }}
+    <div class="selector-catalogo">
+
+      <button type="button" class="selector-catalogo-boton" [class.abierto]="catalogoSelectorAbierto"
+        (click)="toggleCatalogoSelector()">
+
+        <span>{{ catalogoSeleccionado }}</span>
+
+        <span class="material-symbols-outlined">
+          {{ catalogoSelectorAbierto ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}
+        </span>
+
       </button>
 
-    </nav>
+      <div class="selector-catalogo-opciones" *ngIf="catalogoSelectorAbierto">
+
+        <button type="button" class="opcion-catalogo" *ngFor="let catalogo of catalogos"
+          [class.seleccionado]="catalogoSeleccionado === catalogo.nombre"
+          (click)="seleccionarCatalogoDesdeSelector(catalogo.nombre)">
+
+          <span class="material-symbols-outlined icono-opcion">
+            {{ catalogoSeleccionado === catalogo.nombre ? 'check' : '' }}
+          </span>
+
+          <span>{{ catalogo.nombre }}</span>
+
+        </button>
+
+      </div>
+
+    </div>
 
   </div>
 
@@ -1606,7 +1632,7 @@
 
         </table>
 
-         </div>
+      </div>
 
     </section>
 
@@ -1628,10 +1654,7 @@
 
         </div>
 
-        <button
-          type="button"
-          class="boton-nuevo"
-          *ngIf="!mostrandoFormularioGrupoMedicacion"
+        <button type="button" class="boton-nuevo" *ngIf="!mostrandoFormularioGrupoMedicacion"
           (click)="abrirNuevoGrupoMedicacion()">
 
           <span class="material-symbols-outlined">
@@ -1649,9 +1672,7 @@
            FORMULARIO GRUPO DE MEDICACIÓN
       ================================================== -->
 
-      <div
-        class="modal-overlay"
-        *ngIf="mostrandoFormularioGrupoMedicacion">
+      <div class="modal-overlay" *ngIf="mostrandoFormularioGrupoMedicacion">
 
         <div class="formulario-catalogo modal-contenido">
 
@@ -1678,10 +1699,7 @@
             </div>
 
 
-            <button
-              type="button"
-              class="boton-cerrar"
-              (click)="cerrarFormularioGrupoMedicacion()">
+            <button type="button" class="boton-cerrar" (click)="cerrarFormularioGrupoMedicacion()">
 
               <span class="material-symbols-outlined">
                 close
@@ -1692,9 +1710,7 @@
           </div>
 
 
-          <form
-            (ngSubmit)="guardarGrupoMedicacion()"
-            #formGrupoMedicacion="ngForm">
+          <form (ngSubmit)="guardarGrupoMedicacion()" #formGrupoMedicacion="ngForm">
 
             <div class="formulario-grid">
 
@@ -1706,13 +1722,8 @@
                   Nombre
                 </label>
 
-                <input
-                  id="nombreGrupoMedicacion"
-                  type="text"
-                  [(ngModel)]="grupoMedicacionActual.nombre"
-                  name="nombreGrupoMedicacion"
-                  placeholder="Ej. Mañana"
-                  required>
+                <input id="nombreGrupoMedicacion" type="text" [(ngModel)]="grupoMedicacionActual.nombre"
+                  name="nombreGrupoMedicacion" placeholder="Ej. Mañana" required>
 
               </div>
 
@@ -1725,12 +1736,8 @@
                   Hora inicial
                 </label>
 
-                <input
-                  id="horaRangoInicial"
-                  type="time"
-                  [(ngModel)]="grupoMedicacionActual.hora_rango_inicial"
-                  name="horaRangoInicial"
-                  required>
+                <input id="horaRangoInicial" type="time" [(ngModel)]="grupoMedicacionActual.hora_rango_inicial"
+                  name="horaRangoInicial" required>
 
               </div>
 
@@ -1743,12 +1750,8 @@
                   Hora final
                 </label>
 
-                <input
-                  id="horaRangoFinal"
-                  type="time"
-                  [(ngModel)]="grupoMedicacionActual.hora_rango_final"
-                  name="horaRangoFinal"
-                  required>
+                <input id="horaRangoFinal" type="time" [(ngModel)]="grupoMedicacionActual.hora_rango_final"
+                  name="horaRangoFinal" required>
 
               </div>
 
@@ -1761,9 +1764,7 @@
                   Estado
                 </label>
 
-                <select
-                  id="estadoGrupoMedicacion"
-                  [(ngModel)]="grupoMedicacionActual.estado"
+                <select id="estadoGrupoMedicacion" [(ngModel)]="grupoMedicacionActual.estado"
                   name="estadoGrupoMedicacion">
 
                   <option [ngValue]="true">
@@ -1787,11 +1788,8 @@
                   Descripción
                 </label>
 
-                <textarea
-                  id="descripcionGrupoMedicacion"
-                  [(ngModel)]="grupoMedicacionActual.descripcion"
-                  name="descripcionGrupoMedicacion"
-                  placeholder="Ingrese una descripción del grupo de medicación..."
+                <textarea id="descripcionGrupoMedicacion" [(ngModel)]="grupoMedicacionActual.descripcion"
+                  name="descripcionGrupoMedicacion" placeholder="Ingrese una descripción del grupo de medicación..."
                   rows="3"></textarea>
 
               </div>
@@ -1803,20 +1801,14 @@
 
             <div class="acciones-formulario">
 
-              <button
-                type="button"
-                class="boton-secundario"
-                (click)="cerrarFormularioGrupoMedicacion()">
+              <button type="button" class="boton-secundario" (click)="cerrarFormularioGrupoMedicacion()">
 
                 Cancelar
 
               </button>
 
 
-              <button
-                type="submit"
-                class="boton-guardar"
-                [disabled]="formGrupoMedicacion.invalid">
+              <button type="submit" class="boton-guardar" [disabled]="formGrupoMedicacion.invalid">
 
                 <span class="material-symbols-outlined">
                   save
@@ -1845,9 +1837,7 @@
 
       <div class="tabla-contenedor">
 
-        <div
-          class="estado-cargando"
-          *ngIf="cargandoGruposMedicacion">
+        <div class="estado-cargando" *ngIf="cargandoGruposMedicacion">
 
           <span class="material-symbols-outlined">
             progress_activity
@@ -1902,10 +1892,7 @@
 
               <td>
 
-                <span
-                  class="estado"
-                  [class.estado-activo]="grupo.estado"
-                  [class.estado-inactivo]="!grupo.estado">
+                <span class="estado" [class.estado-activo]="grupo.estado" [class.estado-inactivo]="!grupo.estado">
 
                   {{
                   grupo.estado
@@ -1924,10 +1911,7 @@
 
                   <!-- EDITAR -->
 
-                  <button
-                    type="button"
-                    class="boton-accion boton-editar"
-                    title="Editar grupo de medicación"
+                  <button type="button" class="boton-accion boton-editar" title="Editar grupo de medicación"
                     (click)="editarGrupoMedicacion(grupo)">
 
                     <span class="material-symbols-outlined">
@@ -1939,10 +1923,7 @@
 
                   <!-- ELIMINAR -->
 
-                  <button
-                    type="button"
-                    class="boton-accion boton-eliminar"
-                    title="Eliminar grupo de medicación"
+                  <button type="button" class="boton-accion boton-eliminar" title="Eliminar grupo de medicación"
                     (click)="eliminarGrupoMedicacion(grupo)">
 
                     <span class="material-symbols-outlined">
@@ -1962,9 +1943,7 @@
 
             <tr *ngIf="gruposMedicacion.length === 0">
 
-              <td
-                colspan="6"
-                class="sin-registros">
+              <td colspan="6" class="sin-registros">
 
                 No hay grupos de medicación registrados.
 

@@ -16,9 +16,7 @@
             </p>
         </div>
 
-        <button
-            type="button"
-            (click)="openModal('new')"
+        <button type="button" (click)="openModal('new')"
             class="px-5 py-3 rounded-lg border border-[#3B5BDB] bg-[#3B5BDB] text-white hover:bg-[#324EC7] transition">
             + Nuevo Paciente
         </button>
@@ -35,10 +33,7 @@
             search
         </span>
 
-        <input
-            type="text"
-            [(ngModel)]="searchText"
-            (ngModelChange)="actualizarPaginacion()"
+        <input type="text" [(ngModel)]="searchText" (ngModelChange)="actualizarPaginacion()"
             placeholder="Buscar por nombre o documento">
 
         <span class="contador-resultados">
@@ -115,9 +110,7 @@
 
                 <tr *ngIf="filteredPatients.length === 0">
 
-                    <td
-                        colspan="7"
-                        class="px-5 py-12 text-center text-[#6C757D]">
+                    <td colspan="7" class="px-5 py-12 text-center text-[#6C757D]">
                         No se encontraron pacientes.
                     </td>
 
@@ -127,9 +120,7 @@
                      PACIENTES
                 ====================================================== -->
 
-                <tr
-                    *ngFor="let patient of patientsPaginaActual; let i = index"
-                    [class]="i % 2 === 0
+                <tr *ngFor="let patient of patientsPaginaActual; let i = index" [class]="i % 2 === 0
                         ? 'bg-[#F4F7FF] text-gray-800'
                         : 'bg-white text-gray-800'">
 
@@ -163,9 +154,9 @@
 
                     <td class="px-5 py-4 text-sm text-[#495057]">
                         {{
-                            patient.fecha_ingreso
-                                ? (patient.fecha_ingreso | date:'dd/MM/yyyy')
-                                : 'No registrado'
+                        patient.fecha_ingreso
+                        ? (patient.fecha_ingreso | date:'dd/MM/yyyy')
+                        : 'No registrado'
                         }}
                     </td>
 
@@ -177,9 +168,9 @@
                             class="inline-flex items-center px-3 py-1 bg-white border border-[#D9E0F2] rounded-lg text-sm text-[#495057]">
 
                             {{
-                                patient.estado
-                                    ? 'Activo'
-                                    : 'Inactivo'
+                            patient.estado
+                            ? 'Activo'
+                            : 'Inactivo'
                             }}
 
                         </span>
@@ -196,10 +187,7 @@
 
                             <!-- VER PACIENTE -->
 
-                            <button
-                                type="button"
-                                (click)="viewPatient(patient.id_paciente)"
-                                title="Ver paciente"
+                            <button type="button" (click)="viewPatient(patient.id_paciente)" title="Ver paciente"
                                 class="boton-accion">
 
                                 <span class="material-symbols-outlined">
@@ -210,11 +198,8 @@
 
                             <!-- EDITAR PACIENTE -->
 
-                            <button
-                                type="button"
-                                (click)="openModal('edit', patient.id_paciente)"
-                                title="Editar paciente"
-                                class="boton-accion">
+                            <button type="button" (click)="openModal('edit', patient.id_paciente)"
+                                title="Editar paciente" class="boton-accion">
 
                                 <span class="material-symbols-outlined">
                                     edit
@@ -224,16 +209,11 @@
 
                             <!-- CAMBIAR ESTADO -->
 
-                            <button
-                                type="button"
-                                (click)="cambiarEstado(patient)"
-                                [title]="patient.estado
+                            <button type="button" (click)="cambiarEstado(patient)" [title]="patient.estado
                                     ? 'Desactivar paciente'
-                                    : 'Activar paciente'"
-                                [attr.aria-label]="patient.estado
+                                    : 'Activar paciente'" [attr.aria-label]="patient.estado
                                     ? 'Desactivar paciente'
-                                    : 'Activar paciente'"
-                                class="boton-accion">
+                                    : 'Activar paciente'" class="boton-accion">
 
                                 <span class="material-symbols-outlined">
                                     toggle_on
@@ -243,11 +223,8 @@
 
                             <!-- ELEMENTOS DEL PACIENTE -->
 
-                            <button
-                                type="button"
-                                [routerLink]="['/elementos-paciente', patient.id_paciente]"
-                                title="Elementos del paciente"
-                                class="boton-accion">
+                            <button type="button" [routerLink]="['/elementos-paciente', patient.id_paciente]"
+                                title="Elementos del paciente" class="boton-accion">
 
                                 <span class="material-symbols-outlined">
                                     inventory_2
@@ -269,16 +246,11 @@
              PAGINACIÓN
         ========================================================== -->
 
-        <div
-            class="flex justify-center items-center gap-3 mt-6"
-            *ngIf="totalPaginas > 1">
+        <div class="flex justify-center items-center gap-3 mt-6" *ngIf="totalPaginas > 1">
 
             <!-- ANTERIOR -->
 
-            <button
-                type="button"
-                (click)="cambiarPagina(paginaActual - 1)"
-                [disabled]="paginaActual === 1"
+            <button type="button" (click)="cambiarPagina(paginaActual - 1)" [disabled]="paginaActual === 1"
                 class="w-9 h-9 rounded-lg text-[#212529] disabled:opacity-40">
 
                 &lt;
@@ -287,11 +259,7 @@
 
             <!-- NÚMEROS -->
 
-            <button
-                type="button"
-                *ngFor="let pagina of paginas"
-                (click)="cambiarPagina(pagina)"
-                [ngClass]="
+            <button type="button" *ngFor="let pagina of paginas" (click)="cambiarPagina(pagina)" [ngClass]="
                     paginaActual === pagina
                         ? 'bg-[#3B5BDB] text-white w-9 h-9 rounded-lg font-semibold'
                         : 'text-[#212529] w-9 h-9 rounded-lg hover:bg-[#F4F7FF]'
@@ -303,10 +271,7 @@
 
             <!-- SIGUIENTE -->
 
-            <button
-                type="button"
-                (click)="cambiarPagina(paginaActual + 1)"
-                [disabled]="paginaActual === totalPaginas"
+            <button type="button" (click)="cambiarPagina(paginaActual + 1)" [disabled]="paginaActual === totalPaginas"
                 class="w-9 h-9 rounded-lg text-[#212529] disabled:opacity-40">
 
                 &gt;
@@ -319,14 +284,9 @@
              MODAL NUEVO / EDITAR PACIENTE
         ========================================================== -->
 
-        <div
-            class="fondo-modal"
-            [class.abierto]="modalOpen"
-            (click)="closeOnBackdrop($event)">
+        <div class="fondo-modal" [class.abierto]="modalOpen" (click)="closeOnBackdrop($event)">
 
-            <div
-                class="ventana-modal"
-                (click)="$event.stopPropagation()">
+            <div class="ventana-modal" (click)="$event.stopPropagation()">
 
                 <div class="encabezado-modal">
 
@@ -334,10 +294,7 @@
                         {{ modalTitle }}
                     </h3>
 
-                    <button
-                        class="boton-cerrar"
-                        type="button"
-                        (click)="closeModal()">
+                    <button class="boton-cerrar" type="button" (click)="closeModal()">
 
                         <span class="material-symbols-outlined">
                             close
@@ -374,11 +331,7 @@
                                 <span class="text-red-500 text-xs">*</span>
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                type="text"
-                                [(ngModel)]="form.nombre"
-                                placeholder="Nombres">
+                            <input class="campo-entrada" type="text" [(ngModel)]="form.nombre" placeholder="Nombres">
 
                         </div>
 
@@ -391,10 +344,7 @@
                                 <span class="text-red-500 text-xs">*</span>
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                type="text"
-                                [(ngModel)]="form.apellidos"
+                            <input class="campo-entrada" type="text" [(ngModel)]="form.apellidos"
                                 placeholder="Apellidos">
 
                         </div>
@@ -408,9 +358,7 @@
                                 <span class="text-red-500 text-xs">*</span>
                             </label>
 
-                            <select
-                                class="campo-entrada"
-                                [(ngModel)]="form.tipoIdentificacion">
+                            <select class="campo-entrada" [(ngModel)]="form.tipoIdentificacion">
 
                                 <option value="">
                                     Seleccione
@@ -441,10 +389,7 @@
                                 <span class="text-red-500 text-xs">*</span>
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                type="text"
-                                [(ngModel)]="form.documento"
+                            <input class="campo-entrada" type="text" [(ngModel)]="form.documento"
                                 placeholder="Número de documento">
 
                         </div>
@@ -458,10 +403,7 @@
                                 <span class="text-red-500 text-xs">*</span>
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                type="date"
-                                [(ngModel)]="form.nacimiento"
+                            <input class="campo-entrada" type="date" [(ngModel)]="form.nacimiento"
                                 (change)="calcularEdad()">
 
                         </div>
@@ -474,11 +416,7 @@
                                 Edad
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                type="number"
-                                [(ngModel)]="form.edad"
-                                readonly>
+                            <input class="campo-entrada" type="number" [(ngModel)]="form.edad" readonly>
 
                         </div>
 
@@ -491,9 +429,7 @@
                                 <span class="text-red-500 text-xs">*</span>
                             </label>
 
-                            <select
-                                class="campo-entrada"
-                                [(ngModel)]="form.genero">
+                            <select class="campo-entrada" [(ngModel)]="form.genero">
 
                                 <option value="">
                                     Seleccione
@@ -524,9 +460,7 @@
                                 <span class="text-red-500 text-xs">*</span>
                             </label>
 
-                            <select
-                                class="campo-entrada"
-                                [(ngModel)]="form.grupoSanguineo">
+                            <select class="campo-entrada" [(ngModel)]="form.grupoSanguineo">
 
                                 <option value="">
                                     Seleccione
@@ -561,9 +495,7 @@
                                 <span class="text-red-500 text-xs">*</span>
                             </label>
 
-                            <select
-                                class="campo-entrada"
-                                [(ngModel)]="form.rh">
+                            <select class="campo-entrada" [(ngModel)]="form.rh">
 
                                 <option value="">
                                     Seleccione
@@ -590,11 +522,7 @@
                                 <span class="text-red-500 text-xs">*</span>
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                type="text"
-                                [(ngModel)]="form.eps"
-                                placeholder="EPS">
+                            <input class="campo-entrada" type="text" [(ngModel)]="form.eps" placeholder="EPS">
 
                         </div>
 
@@ -607,13 +535,19 @@
                                 <span class="text-red-500 text-xs">*</span>
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                type="date"
-                                [(ngModel)]="form.fechaIngreso">
+                            <input class="campo-entrada" type="date" [(ngModel)]="form.fechaIngreso">
 
                         </div>
+                        <div class="campo-formulario">
+                            <label class="etiqueta-formulario">Foto de perfil</label>
 
+                            <input type="file" class="campo-entrada" accept="image/*"
+                                (change)="seleccionarFoto($event)" />
+
+                            <div class="vista-previa-foto" *ngIf="fotoPreview">
+                                <img [src]="fotoPreview" alt="Foto de perfil del paciente">
+                            </div>
+                        </div>
                     </div>
 
                     <!-- =================================================
@@ -633,10 +567,7 @@
                                 <span class="text-red-500 text-xs">*</span>
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                type="text"
-                                [(ngModel)]="form.familiarNombres"
+                            <input class="campo-entrada" type="text" [(ngModel)]="form.familiarNombres"
                                 placeholder="Nombres">
 
                         </div>
@@ -648,10 +579,7 @@
                                 <span class="text-red-500 text-xs">*</span>
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                type="text"
-                                [(ngModel)]="form.familiarApellidos"
+                            <input class="campo-entrada" type="text" [(ngModel)]="form.familiarApellidos"
                                 placeholder="Apellidos">
 
                         </div>
@@ -663,10 +591,7 @@
                                 <span class="text-red-500 text-xs">*</span>
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                type="text"
-                                [(ngModel)]="form.parentesco"
+                            <input class="campo-entrada" type="text" [(ngModel)]="form.parentesco"
                                 placeholder="Parentesco">
 
                         </div>
@@ -678,11 +603,7 @@
                                 <span class="text-red-500 text-xs">*</span>
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                type="tel"
-                                [(ngModel)]="form.telefono1"
-                                placeholder="Teléfono">
+                            <input class="campo-entrada" type="tel" [(ngModel)]="form.telefono1" placeholder="Teléfono">
 
                         </div>
 
@@ -692,11 +613,7 @@
                                 Teléfono 2
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                type="tel"
-                                [(ngModel)]="form.telefono2"
-                                placeholder="Teléfono">
+                            <input class="campo-entrada" type="tel" [(ngModel)]="form.telefono2" placeholder="Teléfono">
 
                         </div>
 
@@ -707,10 +624,7 @@
                                 <span class="text-red-500 text-xs">*</span>
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                type="text"
-                                [(ngModel)]="form.direccion"
+                            <input class="campo-entrada" type="text" [(ngModel)]="form.direccion"
                                 placeholder="Dirección">
 
                         </div>
@@ -722,10 +636,7 @@
                                 <span class="text-red-500 text-xs">*</span>
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                type="email"
-                                [(ngModel)]="form.correoElectronico"
+                            <input class="campo-entrada" type="email" [(ngModel)]="form.correoElectronico"
                                 placeholder="correo@ejemplo.com">
 
                         </div>
@@ -737,10 +648,7 @@
                                 <span class="text-red-500 text-xs">*</span>
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                type="text"
-                                [(ngModel)]="form.municipio"
+                            <input class="campo-entrada" type="text" [(ngModel)]="form.municipio"
                                 placeholder="Municipio">
 
                         </div>
@@ -763,40 +671,56 @@
                                 Sede
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                type="text"
-                                [(ngModel)]="form.sede"
-                                placeholder="Sede">
+                            <input class="campo-entrada" type="text" [(ngModel)]="form.sede" placeholder="Sede">
 
                         </div>
 
                         <div class="campo-formulario">
-
                             <label class="etiqueta-formulario">
                                 Habitación
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                type="text"
-                                [(ngModel)]="form.habitacion"
-                                placeholder="Habitación">
+                            <select class="campo-entrada" [(ngModel)]="form.habitacion"
+                                (ngModelChange)="actualizarCamasPorHabitacion()">
 
+                                <option value="">
+                                    Seleccione
+                                </option>
+
+                                <option *ngFor="let habitacion of habitacionesActivas"
+                                    [value]="habitacion.id_habitacion">
+
+                                    {{ habitacion.nombre }} - {{ habitacion.numero }}
+
+                                </option>
+
+                            </select>
                         </div>
 
                         <div class="campo-formulario">
-
                             <label class="etiqueta-formulario">
                                 Cama
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                type="text"
-                                [(ngModel)]="form.cama"
-                                placeholder="Cama">
+                            <select class="campo-entrada" [(ngModel)]="form.cama" [disabled]="!form.habitacion">
 
+                                <option value="">
+                                    {{
+                                    !form.habitacion
+                                    ? 'Seleccione primero una habitación'
+                                    : camasActivas.length === 0
+                                    ? 'No hay camas activas'
+                                    : 'Seleccione'
+                                    }}
+                                </option>
+
+                                <option *ngFor="let cama of camasActivas" [value]="cama.id_cama">
+
+                                    {{ cama.nombre }} - {{ cama.numero }}
+
+                                </option>
+
+                            </select>
                         </div>
 
                     </div>
@@ -817,9 +741,7 @@
                                 Estado
                             </label>
 
-                            <select
-                                class="campo-entrada"
-                                [(ngModel)]="form.estado">
+                            <select class="campo-entrada" [(ngModel)]="form.estado">
 
                                 <option value="active">
                                     Activo
@@ -841,19 +763,13 @@
 
                 <div class="pie-modal">
 
-                    <button
-                        class="boton-cancelar"
-                        type="button"
-                        (click)="closeModal()">
+                    <button class="boton-cancelar" type="button" (click)="closeModal()">
 
                         Cancelar
 
                     </button>
 
-                    <button
-                        class="boton-guardar"
-                        type="button"
-                        (click)="savePatient()">
+                    <button class="boton-guardar" type="button" (click)="savePatient()">
 
                         {{ saveButtonText }}
 
@@ -866,18 +782,12 @@
         </div>
 
         <!-- =========================================================
-             MODAL CONSULTAR PACIENTE
-        ========================================================== -->
+     MODAL CONSULTAR PACIENTE
+    ========================================================== -->
 
-        <div
-            class="fondo-modal"
-            [class.abierto]="viewModalOpen"
-            (click)="closeViewModal()">
+        <div class="fondo-modal" [class.abierto]="viewModalOpen" (click)="closeViewModal()">
 
-            <div
-                class="ventana-modal"
-                (click)="$event.stopPropagation()"
-                *ngIf="selectedPatient">
+            <div class="ventana-modal" (click)="$event.stopPropagation()" *ngIf="selectedPatient">
 
                 <!-- ENCABEZADO -->
 
@@ -887,10 +797,7 @@
                         Datos del paciente
                     </h3>
 
-                    <button
-                        class="boton-cerrar"
-                        type="button"
-                        (click)="closeViewModal()">
+                    <button class="boton-cerrar" type="button" (click)="closeViewModal()">
 
                         <span class="material-symbols-outlined">
                             close
@@ -900,11 +807,13 @@
 
                 </div>
 
+                <!-- CUERPO -->
+
                 <div class="cuerpo-modal">
 
                     <!-- =================================================
-                         DATOS DEL PACIENTE
-                    ================================================== -->
+                 DATOS DEL PACIENTE
+            ================================================== -->
 
                     <div class="seccion-formulario">
                         Datos del paciente
@@ -912,18 +821,19 @@
 
                     <div class="rejilla-formulario">
 
+                        <!-- NOMBRES -->
+
                         <div class="campo-formulario">
 
                             <label class="etiqueta-formulario">
                                 Nombres
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="selectedPatient.nombre || 'No registrado'"
-                                readonly>
+                            <input class="campo-entrada" [value]="selectedPatient.nombre || 'No registrado'" readonly>
 
                         </div>
+
+                        <!-- APELLIDOS -->
 
                         <div class="campo-formulario">
 
@@ -931,12 +841,11 @@
                                 Apellidos
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="selectedPatient.apellido || 'No registrado'"
-                                readonly>
+                            <input class="campo-entrada" [value]="selectedPatient.apellido || 'No registrado'" readonly>
 
                         </div>
+
+                        <!-- TIPO IDENTIFICACIÓN -->
 
                         <div class="campo-formulario">
 
@@ -944,12 +853,12 @@
                                 Tipo de identificación
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="selectedPatient.tipo_documento || 'No registrado'"
+                            <input class="campo-entrada" [value]="selectedPatient.tipo_documento || 'No registrado'"
                                 readonly>
 
                         </div>
+
+                        <!-- DOCUMENTO -->
 
                         <div class="campo-formulario">
 
@@ -957,12 +866,12 @@
                                 Número de documento
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="selectedPatient.numero_documento || 'No registrado'"
+                            <input class="campo-entrada" [value]="selectedPatient.numero_documento || 'No registrado'"
                                 readonly>
 
                         </div>
+
+                        <!-- FECHA NACIMIENTO -->
 
                         <div class="campo-formulario">
 
@@ -970,12 +879,12 @@
                                 Fecha de nacimiento
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="selectedPatient.fecha_nacimiento || 'No registrado'"
+                            <input class="campo-entrada" [value]="selectedPatient.fecha_nacimiento || 'No registrado'"
                                 readonly>
 
                         </div>
+
+                        <!-- EDAD -->
 
                         <div class="campo-formulario">
 
@@ -983,12 +892,12 @@
                                 Edad
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="calcularEdadPaciente(selectedPatient.fecha_nacimiento) + ' años'"
-                                readonly>
+                            <input class="campo-entrada"
+                                [value]="calcularEdadPaciente(selectedPatient.fecha_nacimiento) + ' años'" readonly>
 
                         </div>
+
+                        <!-- GÉNERO -->
 
                         <div class="campo-formulario">
 
@@ -996,12 +905,11 @@
                                 Género
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="selectedPatient.genero || 'No registrado'"
-                                readonly>
+                            <input class="campo-entrada" [value]="selectedPatient.genero || 'No registrado'" readonly>
 
                         </div>
+
+                        <!-- GRUPO SANGUÍNEO -->
 
                         <div class="campo-formulario">
 
@@ -1009,12 +917,12 @@
                                 Grupo sanguíneo
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="selectedPatient.grupo_sanguineo || 'No registrado'"
+                            <input class="campo-entrada" [value]="selectedPatient.grupo_sanguineo || 'No registrado'"
                                 readonly>
 
                         </div>
+
+                        <!-- RH -->
 
                         <div class="campo-formulario">
 
@@ -1022,12 +930,11 @@
                                 RH
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="selectedPatient.rh || 'No registrado'"
-                                readonly>
+                            <input class="campo-entrada" [value]="selectedPatient.rh || 'No registrado'" readonly>
 
                         </div>
+
+                        <!-- EPS -->
 
                         <div class="campo-formulario">
 
@@ -1035,12 +942,11 @@
                                 EPS
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="selectedPatient.eps || 'No registrado'"
-                                readonly>
+                            <input class="campo-entrada" [value]="selectedPatient.eps || 'No registrado'" readonly>
 
                         </div>
+
+                        <!-- FECHA INGRESO -->
 
                         <div class="campo-formulario">
 
@@ -1048,20 +954,40 @@
                                 Fecha de ingreso
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="selectedPatient.fecha_ingreso
-                                    ? (selectedPatient.fecha_ingreso | date:'dd/MM/yyyy')
-                                    : 'No registrado'"
-                                readonly>
+                            <input class="campo-entrada" [value]="selectedPatient.fecha_ingreso
+                            ? (selectedPatient.fecha_ingreso | date:'dd/MM/yyyy')
+                            : 'No registrado'" readonly>
+
+                        </div>
+
+                        <!-- FOTO -->
+
+                        <div class="campo-formulario">
+
+                            <label class="etiqueta-formulario">
+                                Foto de perfil
+                            </label>
+
+                            <div class="vista-previa-foto" *ngIf="selectedPatient.foto">
+
+                                <img [src]="selectedPatient.foto" alt="Foto de perfil del paciente">
+
+                            </div>
+
+                            <span *ngIf="!selectedPatient.foto" class="text-sm text-[#6C757D]">
+
+                                No registrada
+
+                            </span>
 
                         </div>
 
                     </div>
 
+
                     <!-- =================================================
-                         FAMILIAR RESPONSABLE
-                    ================================================== -->
+                 FAMILIAR RESPONSABLE
+            ================================================== -->
 
                     <div class="seccion-formulario">
                         Familiar responsable
@@ -1069,18 +995,20 @@
 
                     <div class="rejilla-formulario">
 
+                        <!-- NOMBRES -->
+
                         <div class="campo-formulario">
 
                             <label class="etiqueta-formulario">
                                 Nombres
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="selectedPatient.familiarNombres || 'No registrado'"
+                            <input class="campo-entrada" [value]="selectedPatient.familiarNombres || 'No registrado'"
                                 readonly>
 
                         </div>
+
+                        <!-- APELLIDOS -->
 
                         <div class="campo-formulario">
 
@@ -1088,12 +1016,12 @@
                                 Apellidos
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="selectedPatient.familiarApellidos || 'No registrado'"
+                            <input class="campo-entrada" [value]="selectedPatient.familiarApellidos || 'No registrado'"
                                 readonly>
 
                         </div>
+
+                        <!-- PARENTESCO -->
 
                         <div class="campo-formulario">
 
@@ -1101,12 +1029,12 @@
                                 Parentesco
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="selectedPatient.parentesco || 'No registrado'"
+                            <input class="campo-entrada" [value]="selectedPatient.parentesco || 'No registrado'"
                                 readonly>
 
                         </div>
+
+                        <!-- TELÉFONO 1 -->
 
                         <div class="campo-formulario">
 
@@ -1114,12 +1042,12 @@
                                 Teléfono 1
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="selectedPatient.telefono1 || 'No registrado'"
+                            <input class="campo-entrada" [value]="selectedPatient.telefono1 || 'No registrado'"
                                 readonly>
 
                         </div>
+
+                        <!-- TELÉFONO 2 -->
 
                         <div class="campo-formulario">
 
@@ -1127,12 +1055,12 @@
                                 Teléfono 2
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="selectedPatient.telefono2 || 'No registrado'"
+                            <input class="campo-entrada" [value]="selectedPatient.telefono2 || 'No registrado'"
                                 readonly>
 
                         </div>
+
+                        <!-- DIRECCIÓN -->
 
                         <div class="campo-formulario">
 
@@ -1140,12 +1068,12 @@
                                 Dirección
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="selectedPatient.direccion || 'No registrado'"
+                            <input class="campo-entrada" [value]="selectedPatient.direccion || 'No registrado'"
                                 readonly>
 
                         </div>
+
+                        <!-- CORREO -->
 
                         <div class="campo-formulario">
 
@@ -1153,12 +1081,12 @@
                                 Correo electrónico
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="selectedPatient.correoElectronico || 'No registrado'"
+                            <input class="campo-entrada" [value]="selectedPatient.correoElectronico || 'No registrado'"
                                 readonly>
 
                         </div>
+
+                        <!-- MUNICIPIO -->
 
                         <div class="campo-formulario">
 
@@ -1166,18 +1094,17 @@
                                 Municipio
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="selectedPatient.municipio || 'No registrado'"
+                            <input class="campo-entrada" [value]="selectedPatient.municipio || 'No registrado'"
                                 readonly>
 
                         </div>
 
                     </div>
 
+
                     <!-- =================================================
-                         UBICACIÓN
-                    ================================================== -->
+                 UBICACIÓN
+            ================================================== -->
 
                     <div class="seccion-formulario">
                         Ubicación
@@ -1185,18 +1112,19 @@
 
                     <div class="rejilla-formulario">
 
+                        <!-- SEDE -->
+
                         <div class="campo-formulario">
 
                             <label class="etiqueta-formulario">
                                 Sede
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="selectedPatient.sede || 'No registrado'"
-                                readonly>
+                            <input class="campo-entrada" [value]="selectedPatient.sede || 'No registrado'" readonly>
 
                         </div>
+
+                        <!-- HABITACIÓN -->
 
                         <div class="campo-formulario">
 
@@ -1204,12 +1132,12 @@
                                 Habitación
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="selectedPatient.habitacion ?? 'No registrado'"
+                            <input class="campo-entrada" [value]="obtenerNombreHabitacion(selectedPatient.habitacion)"
                                 readonly>
 
                         </div>
+
+                        <!-- CAMA -->
 
                         <div class="campo-formulario">
 
@@ -1217,18 +1145,16 @@
                                 Cama
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="selectedPatient.cama ?? 'No registrado'"
-                                readonly>
+                            <input class="campo-entrada" [value]="obtenerNombreCama(selectedPatient.cama)" readonly>
 
                         </div>
 
                     </div>
 
+
                     <!-- =================================================
-                         ESTADO
-                    ================================================== -->
+                 ESTADO
+            ================================================== -->
 
                     <div class="seccion-formulario">
                         Estado
@@ -1242,12 +1168,9 @@
                                 Estado
                             </label>
 
-                            <input
-                                class="campo-entrada"
-                                [value]="selectedPatient.estado
-                                    ? 'Activo'
-                                    : 'Inactivo'"
-                                readonly>
+                            <input class="campo-entrada" [value]="selectedPatient.estado
+                            ? 'Activo'
+                            : 'Inactivo'" readonly>
 
                         </div>
 
@@ -1255,14 +1178,12 @@
 
                 </div>
 
+
                 <!-- PIE DEL MODAL -->
 
                 <div class="pie-modal">
 
-                    <button
-                        class="boton-cancelar"
-                        type="button"
-                        (click)="closeViewModal()">
+                    <button class="boton-cancelar" type="button" (click)="closeViewModal()">
 
                         Cerrar
 
@@ -1273,5 +1194,3 @@
             </div>
 
         </div>
-
-    </div>
