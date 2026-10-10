@@ -124,11 +124,38 @@
                         ? 'bg-[#F4F7FF] text-gray-800'
                         : 'bg-white text-gray-800'">
 
-                    <!-- PACIENTE -->
-
                     <td class="px-5 py-4 rounded-l-lg">
-                        {{ patient.nombre }}
-                        {{ patient.apellido }}
+                        <div class="flex items-center gap-3">
+
+                            <div class="avatar-paciente">
+
+                                <!-- Si tiene foto, mostrar la foto -->
+                                <img *ngIf="patient.foto; else inicialesPaciente" [src]="patient.foto"
+                                    [alt]="patient.nombre + ' ' + patient.apellido"
+                                    class="w-full h-full object-cover" />
+
+                                <!-- Si NO tiene foto, mostrar iniciales -->
+                                <ng-template #inicialesPaciente>
+                                    {{
+                                    obtenerIniciales(
+                                    patient.nombre + ' ' + patient.apellido
+                                    )
+                                    }}
+                                </ng-template>
+
+                            </div>
+
+                            <div class="flex flex-col">
+                                <strong class="text-[#212529]">
+                                    {{ patient.nombre }} {{ patient.apellido }}
+                                </strong>
+
+                                <span class="text-xs text-[#6C757D]">
+                                    {{ patient.correo }}
+                                </span>
+                            </div>
+
+                        </div>
                     </td>
 
                     <!-- DOCUMENTO -->
@@ -538,16 +565,54 @@
                             <input class="campo-entrada" type="date" [(ngModel)]="form.fechaIngreso">
 
                         </div>
+
+                        <!-- FOTO DE PERFIL -->
                         <div class="campo-formulario">
-                            <label class="etiqueta-formulario">Foto de perfil</label>
 
-                            <input type="file" class="campo-entrada" accept="image/*"
-                                (change)="seleccionarFoto($event)" />
+                            <label class="etiqueta-formulario">
+                                Foto de perfil
+                            </label>
 
-                            <div class="vista-previa-foto" *ngIf="fotoPreview">
+                            <!-- Input oculto -->
+                            <input #inputFoto type="file" accept="image/*" hidden (change)="seleccionarFoto($event)">
+
+                            <!-- Nombre del archivo y botón -->
+                            <div class="flex items-center justify-between gap-3
+           border border-gray-300 rounded-lg
+           px-4 py-3 bg-white">
+
+                                <div class="flex items-center gap-2 min-w-0">
+
+                                    <span class="material-symbols-outlined text-[#3B5BDB]">
+                                        image
+                                    </span>
+
+                                    <span class="text-sm text-[#495057] truncate">
+                                        {{ nombreFoto || 'Ninguna foto seleccionada' }}
+                                    </span>
+
+                                </div>
+
+                                <button type="button" (click)="inputFoto.click()" class="shrink-0 px-4 py-2 bg-[#3B5BDB]
+             text-white text-sm rounded-lg
+             hover:bg-[#324EC7] transition">
+                                    {{ fotoPreview ? 'Cambiar foto' : 'Elegir foto' }}
+                                </button>
+
+                            </div>
+
+                            <!-- Vista previa de la fotografía -->
+                            <div *ngIf="fotoPreview" class="vista-previa-foto mt-4">
                                 <img [src]="fotoPreview" alt="Foto de perfil del paciente">
                             </div>
+
+                            <!-- Mensaje cuando no hay foto -->
+                            <span *ngIf="!fotoPreview" class="block mt-2 text-sm text-[#6C757D]">
+                                Selecciona una foto para el perfil del paciente.
+                            </span>
+
                         </div>
+
                     </div>
 
                     <!-- =================================================
