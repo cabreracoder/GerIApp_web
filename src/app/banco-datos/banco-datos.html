@@ -1446,11 +1446,14 @@
                     Seleccione una habitación
                   </option>
 
-                  <option *ngFor="let habitacion of habitaciones" [ngValue]="habitacion.id_habitacion">
+
+                  <option *ngFor="let habitacion of habitaciones" [ngValue]="habitacion.id_habitacion"
+                    [hidden]="!habitacion.estado" [disabled]="!habitacion.estado">
 
                     {{ habitacion.nombre }} - {{ habitacion.numero }}
 
                   </option>
+
 
                 </select>
 

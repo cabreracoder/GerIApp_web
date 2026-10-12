@@ -24,21 +24,16 @@
 
 
   <!-- BUSCADOR -->
-  <div class="flex items-center gap-3 w-full min-h-[52px] mb-5 px-4 bg-white border border-gray-200 rounded-full shadow-sm">
+  <div
+    class="flex items-center gap-3 w-full min-h-[52px] mb-5 px-4 bg-white border border-gray-200 rounded-full shadow-sm">
 
     <span class="material-symbols-outlined flex-shrink-0" style="font-size: 22px; line-height: 1; color: #6C757D;">
       search
     </span>
 
-    <input
-      type="search"
-      placeholder="Buscar por documento o nombre..."
-      aria-label="Buscar cuidador"
-      autocomplete="off"
-      [(ngModel)]="textoBusqueda"
-      (input)="filtrarCuidadores()"
-      class="flex-1 h-12 bg-transparent outline-none text-sm text-[#212529] placeholder-gray-400"
-    >
+    <input type="search" placeholder="Buscar por documento o nombre..." aria-label="Buscar cuidador" autocomplete="off"
+      [(ngModel)]="textoBusqueda" (input)="filtrarCuidadores()"
+      class="flex-1 h-12 bg-transparent outline-none text-sm text-[#212529] placeholder-gray-400">
 
   </div>
 
@@ -130,13 +125,21 @@
             <div class="flex items-center gap-3">
 
               <div class="avatar-cuidador">
-                {{
-                obtenerIniciales(
-                caregiver.nombreCompleto || caregiver.nombre
-                )
-                }}
+                <img *ngIf="caregiver.foto; else inicialesCuidador" [src]="caregiver.foto"
+                  [alt]="'Foto de ' + (caregiver.nombreCompleto || caregiver.nombre)" class="imagen-avatar">
 
+                <ng-template #inicialesCuidador>
+                  <span>
+                    {{
+                    obtenerIniciales(
+                    caregiver.nombreCompleto || caregiver.nombre
+                    )
+                    }}
+                  </span>
+                </ng-template>
               </div>
+
+
 
 
               <div class="flex flex-col">
@@ -478,8 +481,55 @@
 
             </div>
 
-          </div>
 
+            <!-- FOTO DE PERFIL -->
+            <div class="campo-formulario">
+
+              <label class="etiqueta-formulario">
+                Foto de perfil
+              </label>
+
+              <!-- Selector de archivo oculto -->
+              <input #inputFoto type="file" accept="image/*" hidden (change)="seleccionarFoto($event)">
+
+              <!-- Nombre del archivo y botón -->
+              <div class="flex items-center justify-between gap-3
+           border border-gray-300 rounded-lg
+           px-4 py-3 bg-white">
+
+                <div class="flex items-center gap-2 min-w-0">
+
+                  <span class="material-symbols-outlined text-[#3B5BDB]">
+                    image
+                  </span>
+
+                  <span class="text-sm text-[#495057] truncate">
+                    {{ nombreFoto || 'Ninguna foto seleccionada' }}
+                  </span>
+
+                </div>
+
+                <button type="button" (click)="inputFoto.click()" class="shrink-0 px-4 py-2 bg-[#3B5BDB]
+             text-white text-sm rounded-lg
+             hover:bg-[#324EC7] transition">
+                  {{ fotoPreview ? 'Cambiar foto' : 'Elegir foto' }}
+                </button>
+
+              </div>
+
+              <!-- Vista previa -->
+              <div *ngIf="fotoPreview" class="vista-previa-foto mt-4">
+                <img [src]="fotoPreview" alt="Foto de perfil del cuidador">
+              </div>
+
+              <!-- Mensaje sin fotografía -->
+              <span *ngIf="!fotoPreview" class="block mt-2 text-sm text-[#6C757D]">
+                Selecciona una foto para el perfil del cuidador.
+              </span>
+
+            </div>
+
+          </div>
 
           <!-- ============================= -->
           <!-- INFORMACIÓN PROFESIONAL -->
@@ -835,16 +885,20 @@
           <div class="flex items-center gap-4 mb-6">
 
             <div class="avatar-detalle">
+              <img *ngIf="cuidadorSeleccionado.foto; else inicialesDetalleCuidador" [src]="cuidadorSeleccionado.foto"
+                [alt]="'Foto de ' + cuidadorSeleccionado.nombre" class="imagen-avatar-detalle">
 
-              {{
-              obtenerIniciales(
-              cuidadorSeleccionado.nombreCompleto ||
-              cuidadorSeleccionado.nombre
-              )
-              }}
-
+              <ng-template #inicialesDetalleCuidador>
+                <span>
+                  {{
+                  obtenerIniciales(
+                  cuidadorSeleccionado.nombreCompleto ||
+                  cuidadorSeleccionado.nombre
+                  )
+                  }}
+                </span>
+              </ng-template>
             </div>
-
 
             <div>
 

@@ -20,6 +20,9 @@ export interface ICuidador {
   apellidos?: string;
   nombreCompleto?: string;
 
+  foto?: string | null;
+  fotoFile?: File | null;
+
   correo?: string;
 
   tipoDocumento?: string;
@@ -381,6 +384,9 @@ export class Cuidadores implements OnInit {
   formulario: ICuidador =
     this.formularioInicial();
 
+  fotoPreview: string | null = null;
+  nombreFoto: string | null = null;
+
   errores: ErroresFormulario = {};
 
   diasSeleccionados: string[] = [];
@@ -427,6 +433,7 @@ export class Cuidadores implements OnInit {
     this.http.get<ICuidador[]>(this.apiUrl).subscribe({
 
       next: (usuarios) => {
+        console.log('Usuarios recibidos de la API:', usuarios);
 
         const cuidadores = usuarios.filter(
           usuario => usuario.id_rol === 5
@@ -461,6 +468,9 @@ export class Cuidadores implements OnInit {
                         const nombreCompleto =
                           c.nombreCompleto ||
                           `${nombre} ${apellido}`.trim();
+
+                        const foto =
+                          c.foto || null;
 
                         const numeroDocumento =
                           c.numero_documento ||
@@ -498,6 +508,8 @@ export class Cuidadores implements OnInit {
                           apellido,
 
                           nombreCompleto,
+
+                          foto,
 
                           tipoDocumento,
 
@@ -583,7 +595,7 @@ export class Cuidadores implements OnInit {
                 error
               );
 
-             alertaError('Error', 'No se pudieron cargar los perfiles profesionales.');
+              alertaError('Error', 'No se pudieron cargar los perfiles profesionales.');
 
             }
 
@@ -598,7 +610,7 @@ export class Cuidadores implements OnInit {
           error
         );
 
-       alertaError('Error', 'No se pudieron cargar los cuidadores.');
+        alertaError('Error', 'No se pudieron cargar los cuidadores.');
 
       }
 
@@ -793,8 +805,9 @@ export class Cuidadores implements OnInit {
 
     this.idEditando = null;
 
-    this.formulario =
-      this.formularioInicial();
+    this.formulario = this.formularioInicial();
+    this.fotoPreview = null;
+    this.nombreFoto = null;
 
     this.diasSeleccionados = [];
 
@@ -811,21 +824,21 @@ export class Cuidadores implements OnInit {
 
   confirmarEdicion(cuidador: ICuidador): void {
 
-  if (!cuidador.id) {
-    return;
-  }
-
-  const nombre = cuidador.nombreCompleto || `${cuidador.nombre || ''} ${cuidador.apellido || ''}`.trim();
-
-  alertaEditar(nombre, 'cuidador').then(resultado => {
-
-    if (resultado.isConfirmed) {
-      this.abrirFormulario('editar', cuidador.id);
+    if (!cuidador.id) {
+      return;
     }
 
-  });
+    const nombre = cuidador.nombreCompleto || `${cuidador.nombre || ''} ${cuidador.apellido || ''}`.trim();
 
-}
+    alertaEditar(nombre, 'cuidador').then(resultado => {
+
+      if (resultado.isConfirmed) {
+        this.abrirFormulario('editar', cuidador.id);
+      }
+
+    });
+
+  }
 
 
   // =========================================================
@@ -868,7 +881,11 @@ export class Cuidadores implements OnInit {
       }
 
     };
-
+    this.formulario.foto = cuidador.foto || null;
+    this.formulario.fotoFile = null;
+    this.fotoPreview = this.formulario.foto;
+    // Mostrar el nombre de la foto que ya está guardada.
+    this.nombreFoto = this.obtenerNombreFoto(this.formulario.foto);
     this.diasSeleccionados =
       cuidador.diasDisponibles
         ? [...cuidador.diasDisponibles]
@@ -936,6 +953,20 @@ export class Cuidadores implements OnInit {
       estado: this.formulario.estado === 'activo',
       id_rol: 5
     };
+    const datosCuidador = new FormData();
+
+    Object.entries(cuidador).forEach(([clave, valor]) => {
+      if (valor !== undefined && valor !== null) {
+        datosCuidador.append(clave, String(valor));
+      }
+    });
+
+    if (this.formulario.fotoFile) {
+      datosCuidador.append(
+        'foto',
+        this.formulario.fotoFile
+      );
+    }
 
     // ============================
     // EDITAR
@@ -949,7 +980,7 @@ export class Cuidadores implements OnInit {
       // API USUARIOS
       this.http.patch<any>(
         `${this.apiUrl}${idUsuario}/`,
-        cuidador
+        datosCuidador
       ).subscribe({
         next: () => {
 
@@ -1030,7 +1061,7 @@ export class Cuidadores implements OnInit {
     // API USUARIOS
     this.http.post<any>(
       this.apiUrl,
-      cuidador
+      datosCuidador
     ).subscribe({
       next: (respuestaUsuario) => {
 
@@ -1184,85 +1215,85 @@ export class Cuidadores implements OnInit {
   // CAMBIAR ESTADO
   // =========================================================
 
-cambiarEstado(cuidador: ICuidador): void {
+  cambiarEstado(cuidador: ICuidador): void {
 
-  if (!cuidador.id) {
-    return;
-  }
-
-  const nuevoEstado = cuidador.estado !== 'activo';
-  const nombre = cuidador.nombreCompleto || `${cuidador.nombre || ''} ${cuidador.apellido || ''}`.trim();
-
-  const pregunta = nuevoEstado
-    ? alertaActivar(nombre, 'cuidador')
-    : alertaDesactivar(nombre, 'cuidador');
-
-  pregunta.then(resultado => {
-
-    if (!resultado.isConfirmed) {
+    if (!cuidador.id) {
       return;
     }
 
-    this.http.patch(`${this.apiUrl}${cuidador.id}/`, { estado: nuevoEstado }).subscribe({
+    const nuevoEstado = cuidador.estado !== 'activo';
+    const nombre = cuidador.nombreCompleto || `${cuidador.nombre || ''} ${cuidador.apellido || ''}`.trim();
 
-      next: () => {
-        cuidador.estado = nuevoEstado ? 'activo' : 'inactivo';
-        cuidador.disponible = nuevoEstado;
+    const pregunta = nuevoEstado
+      ? alertaActivar(nombre, 'cuidador')
+      : alertaDesactivar(nombre, 'cuidador');
 
-        this.actualizarMetricas();
-        this.filtrarCuidadores();
-        this.cdr.detectChanges();
+    pregunta.then(resultado => {
 
-        alertaExito(nuevoEstado ? 'Cuidador activado' : 'Cuidador desactivado');
-      },
-
-      error: error => {
-        console.error('Error cambiando estado:', error);
-        alertaError('Error al actualizar estado', 'No se pudo cambiar el estado del cuidador.');
+      if (!resultado.isConfirmed) {
+        return;
       }
+
+      this.http.patch(`${this.apiUrl}${cuidador.id}/`, { estado: nuevoEstado }).subscribe({
+
+        next: () => {
+          cuidador.estado = nuevoEstado ? 'activo' : 'inactivo';
+          cuidador.disponible = nuevoEstado;
+
+          this.actualizarMetricas();
+          this.filtrarCuidadores();
+          this.cdr.detectChanges();
+
+          alertaExito(nuevoEstado ? 'Cuidador activado' : 'Cuidador desactivado');
+        },
+
+        error: error => {
+          console.error('Error cambiando estado:', error);
+          alertaError('Error al actualizar estado', 'No se pudo cambiar el estado del cuidador.');
+        }
+
+      });
 
     });
 
-  });
-
-}
+  }
 
 
   // =========================================================
   // ELIMINAR
   // =========================================================
 
-solicitarEliminacion(cuidador: ICuidador): void {
+  solicitarEliminacion(cuidador: ICuidador): void {
 
-  if (!cuidador.id) {
-    return;
-  }
-
-  const nombre = cuidador.nombreCompleto || `${cuidador.nombre || ''} ${cuidador.apellido || ''}`.trim();
-
-  alertaEliminar(nombre, 'cuidador').then((resultado) => {
-
-    if (!resultado.isConfirmed) {
+    if (!cuidador.id) {
       return;
     }
 
-    this.http.delete(`${this.apiUrl}${cuidador.id}/`).subscribe({
+    const nombre = cuidador.nombreCompleto || `${cuidador.nombre || ''} ${cuidador.apellido || ''}`.trim();
 
-      next: () => {
-        alertaExito('Cuidador eliminado');
-        this.listar();
-      },
+    alertaEliminar(nombre, 'cuidador').then((resultado) => {
 
-      error: error => {
-        console.error('Error eliminando cuidador:', error);
-        alertaError('Error al eliminar', 'No se pudo eliminar el cuidador.');
+      if (!resultado.isConfirmed) {
+        return;
       }
+
+      this.http.delete(`${this.apiUrl}${cuidador.id}/`).subscribe({
+
+        next: () => {
+          alertaExito('Cuidador eliminado');
+          this.listar();
+        },
+
+        error: error => {
+          console.error('Error eliminando cuidador:', error);
+          alertaError('Error al eliminar', 'No se pudo eliminar el cuidador.');
+        }
+
+      });
 
     });
 
-  });
-
-}
+  }
 
   // =========================================================
   // VER DETALLE
@@ -1319,6 +1350,10 @@ solicitarEliminacion(cuidador: ICuidador): void {
 
     this.formulario =
       this.formularioInicial();
+
+    this.fotoPreview = null;
+    this.nombreFoto = null;
+    this.idEditando = null;
 
     this.idEditando = null;
 
@@ -1500,7 +1535,52 @@ solicitarEliminacion(cuidador: ICuidador): void {
 
   }
 
+  obtenerNombreFoto(url: string | null | undefined): string | null {
+    if (!url) {
+      return null;
+    }
 
+    try {
+      const ruta = new URL(url, window.location.origin);
+      const nombre = ruta.pathname.split('/').pop();
+
+      return nombre ? decodeURIComponent(nombre) : 'Foto de perfil';
+    } catch {
+      return 'Foto de perfil';
+    }
+  }
+  // =========================================================
+  // FOTO DE PERFIL
+  // =========================================================
+
+  seleccionarFoto(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const archivo = input.files?.[0];
+
+    if (!archivo) {
+      return;
+    }
+
+    if (!archivo.type.startsWith('image/')) {
+      alertaAdvertencia(
+        'Archivo no válido',
+        'Selecciona un archivo de imagen.'
+      );
+      input.value = '';
+      return;
+    }
+
+    this.formulario.fotoFile = archivo;
+    this.nombreFoto = archivo.name;
+    const lector = new FileReader();
+
+    lector.onload = () => {
+      this.fotoPreview = lector.result as string;
+      this.cdr.detectChanges();
+    };
+
+    lector.readAsDataURL(archivo);
+  }
   // =========================================================
   // ARCHIVOS
   // =========================================================
@@ -1589,6 +1669,8 @@ solicitarEliminacion(cuidador: ICuidador): void {
 
       nombre: '',
       apellido: '',
+      foto: null,
+      fotoFile: null,
       tipoDocumento: 'CC',
       numeroDocumento: '',
       documento: '',

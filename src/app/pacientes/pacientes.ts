@@ -4,13 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { ChangeDetectorRef, Component } from '@angular/core';
 import Swal from 'sweetalert2';
 import { RouterLink } from '@angular/router';
-
 // =====================================================
 // ALERTAS
 // =====================================================
-
 type Tono = 'rojo' | 'ambar' | 'azul' | 'verde';
-
 const TONOS: Record<Tono, { panel: string; boton: string }> = {
   rojo: {
     panel: 'bg-linear-to-b from-red-500 to-red-700',
@@ -29,36 +26,28 @@ const TONOS: Record<Tono, { panel: string; boton: string }> = {
     boton: 'bg-emerald-600 hover:bg-emerald-700'
   }
 };
-
 const svgIcono = (trazos: string): string =>
   `<svg class="h-11 w-11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${trazos}</svg>`;
-
 const ICONOS = {
   papelera: svgIcono(
     '<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/>'
   ),
-
   prohibido: svgIcono(
     '<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/>'
   ),
-
   lapiz: svgIcono(
     '<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>'
   ),
-
   check: svgIcono(
     '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>'
   ),
-
   equis: svgIcono(
     '<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>'
   ),
-
   alerta: svgIcono(
     '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>'
   )
 };
-
 function escaparHtml(texto: string): string {
   return String(texto ?? '')
     .replace(/&/g, '&amp;')
@@ -66,24 +55,19 @@ function escaparHtml(texto: string): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 }
-
 function inicialesAlerta(nombre: string): string {
   const partes = nombre.trim().split(/\s+/).filter(Boolean);
-
   if (partes.length === 0) {
     return '?';
   }
-
   if (partes.length === 1) {
     return partes[0].slice(0, 2).toUpperCase();
   }
-
   return (
     partes[0][0] +
     partes[partes.length - 1][0]
   ).toUpperCase();
 }
-
 interface ConfigAlerta {
   tono: Tono;
   icono: 'warning' | 'question' | 'success' | 'error';
@@ -96,61 +80,44 @@ interface ConfigAlerta {
   enfocarCancelar?: boolean;
   autoCerrar?: boolean;
 }
-
 function mostrarAlerta(c: ConfigAlerta) {
-
   const tono = TONOS[c.tono];
-
   const conBotones = !c.autoCerrar;
   const conCancelar = !!c.cancelar;
   const botonSolo = conBotones && !conCancelar;
   const tituloSinPie = !conBotones && !c.html;
-
   return Swal.fire({
     icon: c.icono,
     iconHtml: c.iconoSvg,
     title: escaparHtml(c.titulo),
     html: c.html,
-
     showConfirmButton: conBotones,
     showCancelButton: conCancelar,
     confirmButtonText: c.confirmar,
     cancelButtonText: c.cancelar,
-
     reverseButtons: !c.confirmarIzquierda,
     focusCancel: !!c.enfocarCancelar,
-
     timer: c.autoCerrar ? 1800 : undefined,
-
     buttonsStyling: false,
-
     backdrop: 'rgba(15, 23, 42, 0.65)',
-
     customClass: {
       popup:
         '!grid-cols-[26%_1fr] !w-[34rem] !max-w-[92vw] !p-0 !rounded-[2.2rem] !overflow-hidden !bg-white',
-
       icon:
         `col-start-1 row-start-1 row-span-3 !m-0 !flex !h-auto !w-auto !items-center !justify-center !rounded-none !border-0 !animate-none ${tono.panel}`,
-
       title:
         `col-start-2 row-start-1 !m-0 !px-7 !pt-8 ${tituloSinPie ? '!pb-8' : '!pb-0'} !text-left !text-[1.6rem] !leading-tight !font-extrabold !text-slate-900`,
-
       htmlContainer:
         `col-start-2 row-start-2 !m-0 !px-7 !pt-0 ${conBotones ? '!pb-0' : '!pb-8'} !justify-start !overflow-visible !text-left !text-base !font-normal`,
-
       actions:
         `col-start-2 row-start-3 !m-0 !w-auto !flex-nowrap !gap-3 !px-7 !pt-6 !pb-8 ${botonSolo ? '!justify-end' : '!justify-stretch'}`,
-
       confirmButton:
         `${botonSolo ? 'w-[calc(50%-0.375rem)]' : 'flex-1'} cursor-pointer rounded-2xl px-4 py-3 text-[1.1rem] font-bold text-white transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-slate-300 ${tono.boton}`,
-
       cancelButton:
         'flex-1 cursor-pointer rounded-2xl bg-slate-100 px-4 py-3 text-[1.1rem] font-bold text-slate-600 transition-colors hover:bg-slate-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-slate-300'
     }
   });
 }
-
 function alertaConfirmar(c: {
   tono: Tono;
   icono: 'warning' | 'question';
@@ -163,28 +130,22 @@ function alertaConfirmar(c: {
   confirmarIzquierda?: boolean;
   enfocarCancelar?: boolean;
 }) {
-
   const html = `
     <p class="m-0 text-[1.1rem] leading-snug text-slate-400">
       ${escaparHtml(c.subtitulo)}
     </p>
-
     <div class="mt-4 flex items-center gap-3.5">
-
       <span class="flex h-[2.4rem] w-[2.4rem] shrink-0 items-center justify-center rounded-xl bg-slate-100 text-sm font-bold text-slate-600">
         ${escaparHtml(inicialesAlerta(c.nombre))}
       </span>
-
       <p class="m-0 text-[1.15rem] leading-snug text-slate-700">
         ¿${c.verbo} a
         <strong class="font-bold">
           ${escaparHtml(c.nombre)}
         </strong>?
       </p>
-
     </div>
   `;
-
   return mostrarAlerta({
     tono: c.tono,
     icono: c.icono,
@@ -197,7 +158,6 @@ function alertaConfirmar(c: {
     enfocarCancelar: c.enfocarCancelar
   });
 }
-
 function alertaEliminar(
   nombre: string,
   entidad = 'paciente'
@@ -214,7 +174,6 @@ function alertaEliminar(
     enfocarCancelar: true
   });
 }
-
 function alertaDesactivar(
   nombre: string,
   entidad = 'paciente'
@@ -230,7 +189,6 @@ function alertaDesactivar(
     confirmar: 'Sí, desactivar'
   });
 }
-
 function alertaEditar(
   nombre: string,
   entidad = 'paciente'
@@ -247,7 +205,6 @@ function alertaEditar(
     confirmarIzquierda: true
   });
 }
-
 function alertaActivar(
   nombre: string,
   entidad = 'paciente'
@@ -264,16 +221,13 @@ function alertaActivar(
     confirmarIzquierda: true
   });
 }
-
 function htmlMensaje(
   mensaje?: string
 ): string | undefined {
-
   return mensaje
     ? `<p class="m-0 text-[1.15rem] leading-snug text-slate-700">${escaparHtml(mensaje)}</p>`
     : undefined;
 }
-
 function alertaExito(
   titulo: string,
   mensaje?: string
@@ -288,7 +242,6 @@ function alertaExito(
     autoCerrar: true
   });
 }
-
 function alertaError(
   titulo: string,
   mensaje?: string
@@ -302,7 +255,6 @@ function alertaError(
     confirmar: 'Aceptar'
   });
 }
-
 function alertaAdvertencia(
   titulo: string,
   mensaje?: string
@@ -316,11 +268,9 @@ function alertaAdvertencia(
     confirmar: 'Aceptar'
   });
 }
-
 // =====================================================
 // INTERFACES
 // =====================================================
-
 interface Habitacion {
   id_habitacion: number;
   nombre: string;
@@ -328,7 +278,6 @@ interface Habitacion {
   descripcion?: string | null;
   estado: boolean;
 }
-
 interface Cama {
   id_cama: number;
   nombre: string;
@@ -336,7 +285,6 @@ interface Cama {
   estado: boolean;
   id_habitacion: number | null;
 }
-
 interface PatientForm {
   nombre: string;
   apellidos: string;
@@ -350,7 +298,7 @@ interface PatientForm {
   eps: string;
   fechaIngreso: string;
   foto: File | null;
-
+  fotoUrl: string | null;
   familiarNombres: string;
   familiarApellidos: string;
   parentesco: string;
@@ -359,118 +307,79 @@ interface PatientForm {
   direccion: string;
   correoElectronico: string;
   municipio: string;
-
   sede: string;
   habitacion: string;
   cama: string;
   estado: string;
 }
-
 // =====================================================
 // COMPONENTE
 // =====================================================
-
 @Component({
   selector: 'app-pacientes',
-
   standalone: true,
-
   imports: [
     CommonModule,
     FormsModule,
     RouterLink
   ],
-
   templateUrl: './pacientes.html',
   styleUrl: './pacientes.css'
 })
 export class Pacientes {
-
   // =====================================================
   // API
   // =====================================================
-
   private readonly apiUrl =
-    'https://geriapp-backend.onrender.com/api';
-
+    'https\://geriapp-backend.onrender.com/api';
   // =====================================================
   // PACIENTES
   // =====================================================
-
   patients: any[] = [];
-
   patientsPaginaActual: any[] = [];
-
   patientsPorPagina = 10;
-
   paginaActual = 1;
-
   totalPaginas = 1;
-
   paginas: number[] = [];
-
   searchText = '';
-
   // =====================================================
   // HABITACIONES Y CAMAS
   // =====================================================
-
   habitaciones: Habitacion[] = [];
-
   camas: Cama[] = [];
-
   habitacionesActivas: Habitacion[] = [];
-
   camasActivas: Cama[] = [];
-
   // =====================================================
   // MODALES
   // =====================================================
-
   modalOpen = false;
-
   viewModalOpen = false;
-
   editingId: number | null = null;
-
   selectedPatient: any = null;
-
   // =====================================================
   // FORMULARIO
   // =====================================================
-
   form: PatientForm = this.formularioVacio();
-
   fotoPreview: string | null = null;
-
+  nombreFoto: string | null = null;
   // =====================================================
   // CONSTRUCTOR
-  // =====================================================
-
   constructor(
     private http: HttpClient,
     private cdr: ChangeDetectorRef
-  ) {}
-
+  ) { }
   // =====================================================
   // INICIO
   // =====================================================
-
   ngOnInit(): void {
-
     this.listar();
-
     this.cargarHabitaciones();
-
     this.cargarCamas();
   }
-
   // =====================================================
   // FORMULARIO VACÍO
   // =====================================================
-
   formularioVacio(): PatientForm {
-
     return {
       nombre: '',
       apellidos: '',
@@ -484,7 +393,7 @@ export class Pacientes {
       eps: '',
       fechaIngreso: '',
       foto: null,
-
+      fotoUrl: null,
       familiarNombres: '',
       familiarApellidos: '',
       parentesco: '',
@@ -493,79 +402,97 @@ export class Pacientes {
       direccion: '',
       correoElectronico: '',
       municipio: '',
-
       sede: '',
       habitacion: '',
       cama: '',
-
       estado: 'active'
     };
   }
-
   // =====================================================
   // LISTAR PACIENTES
   // =====================================================
-
-  listar(): void {
-
-    this.http
-      .get<any[]>(`${this.apiUrl}/pacientes/`)
-      .subscribe({
-
-        next: (respuesta) => {
-
-          this.patients = [...respuesta].sort(
-            (a, b) =>
-              (a.id_paciente ?? 0) -
-              (b.id_paciente ?? 0)
-          );
-
-          this.actualizarPaginacion();
-
-          this.cdr.detectChanges();
-        },
-
-        error: (error) => {
-
-          console.error(
-            'Error al obtener los pacientes:',
-            error
-          );
-
-          this.patients = [];
-
-          this.actualizarPaginacion();
+  listar() {
+    this.http.get<any[]>(
+      `${this.apiUrl}/pacientes/`
+    ).subscribe({
+      next: (respuesta) => {
+        this.patients = [...respuesta].sort(
+          (a, b) => (a.id_paciente ?? 0) - (b.id_paciente ?? 0)
+        );
+        // =====================================================
+        // ACTUALIZAR CAMAS DISPONIBLES
+        // =====================================================
+        // Si el formulario está abierto, actualizar el listado
+        // de camas según las asignaciones actuales.
+        if (
+          this.modalOpen &&
+          this.form.habitacion &&
+          this.habitacionesActivas.length > 0
+        ) {
+          this.actualizarCamasPorHabitacion();
         }
-      });
+        this.http.get<any[]>(
+          `${this.apiUrl}/familiar_responsable/`
+        ).subscribe({
+          next: (familiares) => {
+            this.patients = this.patients.map(patient => {
+              const familiar = familiares.find(
+                item => item.id_paciente === patient.id_paciente
+              );
+              return {
+                ...patient,
+                correo: familiar?.correo || 'Sin correo registrado'
+              };
+            });
+            console.log(
+              'PACIENTES CON CORREO:',
+              this.patients
+            );
+            this.actualizarPaginacion();
+            this.cdr.detectChanges();
+          },
+          error: (error) => {
+            console.error(
+              'Error al obtener familiares:',
+              error
+            );
+            this.patients = this.patients.map(patient => ({
+              ...patient,
+              correo: 'Sin correo registrado'
+            }));
+            this.actualizarPaginacion();
+            this.cdr.detectChanges();
+          }
+        });
+      },
+      error: (error) => {
+        console.error(
+          'Error al obtener los pacientes:',
+          error
+        );
+      }
+    });
   }
-
   // =====================================================
   // FILTRAR PACIENTES
   // =====================================================
-
   get filteredPatients(): any[] {
-
     const texto =
       this.searchText
         .trim()
         .toLowerCase();
-
     if (!texto) {
       return this.patients;
     }
-
     return this.patients.filter(
       (patient) => {
-
         const nombreCompleto =
           `${patient.nombre || ''} ${patient.apellido || ''}`
             .toLowerCase();
-
         const documento =
           (patient.numero_documento || '')
             .toString()
             .toLowerCase();
-
         return (
           nombreCompleto.includes(texto) ||
           documento.includes(texto)
@@ -573,25 +500,20 @@ export class Pacientes {
       }
     );
   }
-
   // =====================================================
   // PAGINACIÓN
   // =====================================================
-
   actualizarPaginacion(): void {
-
     this.totalPaginas = Math.ceil(
       this.filteredPatients.length /
       this.patientsPorPagina
     );
-
     this.paginas = Array.from(
       {
         length: this.totalPaginas
       },
       (_, i) => i + 1
     );
-
     if (
       this.paginaActual >
       this.totalPaginas
@@ -599,64 +521,49 @@ export class Pacientes {
       this.paginaActual =
         this.totalPaginas || 1;
     }
-
     const inicio =
       (this.paginaActual - 1) *
       this.patientsPorPagina;
-
     const fin =
       inicio +
       this.patientsPorPagina;
-
     this.patientsPaginaActual =
       this.filteredPatients.slice(
         inicio,
         fin
       );
   }
-
   cambiarPagina(
     pagina: number
   ): void {
-
     if (
       pagina < 1 ||
       pagina > this.totalPaginas
     ) {
       return;
     }
-
     this.paginaActual = pagina;
-
     this.actualizarPaginacion();
   }
-
   // =====================================================
   // EDAD
   // =====================================================
-
   calcularEdadPaciente(
     fechaNacimiento: string
   ): number {
-
     if (!fechaNacimiento) {
       return 0;
     }
-
     const nacimiento =
       new Date(fechaNacimiento);
-
     const hoy =
       new Date();
-
     let edad =
       hoy.getFullYear() -
       nacimiento.getFullYear();
-
     const mes =
       hoy.getMonth() -
       nacimiento.getMonth();
-
     if (
       mes < 0 ||
       (
@@ -667,35 +574,26 @@ export class Pacientes {
     ) {
       edad--;
     }
-
     return edad;
   }
-
   calcularEdad(): void {
-
     if (!this.form.nacimiento) {
 
       this.form.edad = null;
-
       return;
     }
-
     const nacimiento =
       new Date(
         this.form.nacimiento
       );
-
     const hoy =
       new Date();
-
     let edad =
       hoy.getFullYear() -
       nacimiento.getFullYear();
-
     const mes =
       hoy.getMonth() -
       nacimiento.getMonth();
-
     if (
       mes < 0 ||
       (
@@ -706,264 +604,195 @@ export class Pacientes {
     ) {
       edad--;
     }
-
     this.form.edad = edad;
   }
-
   // =====================================================
   // HABITACIONES
   // =====================================================
-
   cargarHabitaciones(): void {
-
     this.http
       .get<Habitacion[]>(
         `${this.apiUrl}/habitaciones/`
       )
       .subscribe({
-
         next: (respuesta) => {
-
           this.habitaciones =
             respuesta || [];
-
           this.habitacionesActivas =
             this.habitaciones.filter(
               habitacion =>
                 habitacion.estado === true
             );
-
           this.cdr.detectChanges();
         },
-
         error: (error) => {
-
           console.error(
             'Error al cargar habitaciones:',
             error
           );
-
           this.habitaciones = [];
-
           this.habitacionesActivas = [];
         }
       });
   }
-
   // =====================================================
   // CAMAS
   // =====================================================
-
   cargarCamas(): void {
-
-    this.http
-      .get<Cama[]>(
-        `${this.apiUrl}/camas/`
-      )
-      .subscribe({
-
-        next: (respuesta) => {
-
-          this.camas =
-            respuesta || [];
-
-          this.camasActivas = [];
-
-          /*
-           * Si estamos editando y ya existe
-           * una habitación seleccionada,
-           * cargamos nuevamente sus camas.
-           */
-          if (this.form.habitacion) {
-            this.actualizarCamasPorHabitacion();
-          }
-
-          this.cdr.detectChanges();
-        },
-
-        error: (error) => {
-
-          console.error(
-            'Error al cargar camas:',
-            error
-          );
-
-          this.camas = [];
-
+    this.http.get<Cama[]>(`${this.apiUrl}/camas/`).subscribe({
+      next: (respuesta) => {
+        // Guardar todas las camas recibidas del backend.
+        this.camas = respuesta || [];
+        // Si el formulario está abierto y tiene
+        // una habitación seleccionada, recalcular
+        // cuáles camas están realmente disponibles.
+        if (this.modalOpen && this.form.habitacion) {
+          this.actualizarCamasPorHabitacion();
+        } else {
+          // Sin una habitación seleccionada,
+          // no mostrar camas disponibles.
           this.camasActivas = [];
         }
-      });
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error al cargar camas:', error);
+        this.camas = [];
+        this.camasActivas = [];
+      }
+    });
   }
-
-  // =====================================================
-  // FILTRAR CAMAS POR HABITACIÓN
-  // =====================================================
-
   actualizarCamasPorHabitacion(): void {
-
-    const idHabitacion =
-      Number(this.form.habitacion);
-
-    // No hay habitación seleccionada
+    const idHabitacion = Number(this.form.habitacion);
+    // Si no se seleccionó una habitación, limpiar las camas.
     if (!idHabitacion) {
-
       this.camasActivas = [];
-
       this.form.cama = '';
-
       return;
     }
-
-    /*
-     * Filtramos:
-     * 1. La cama debe estar activa.
-     * 2. Debe pertenecer a la habitación seleccionada.
-     */
-    this.camasActivas =
-      this.camas.filter(
-        cama =>
-          cama.estado === true &&
-          Number(cama.id_habitacion) ===
-          idHabitacion
-      );
-
-    /*
-     * Verificamos que la cama seleccionada
-     * todavía pertenezca a esta habitación.
-     */
-    const camaDisponible =
-      this.camasActivas.some(
-        cama =>
-          cama.id_cama ===
-          Number(this.form.cama)
-      );
-
+    // Comprobar que la habitación esté activa.
+    const habitacionDisponible = this.habitacionesActivas.some(
+      habitacion =>
+        habitacion.id_habitacion === idHabitacion
+    );
+    if (!habitacionDisponible) {
+      this.camasActivas = [];
+      this.form.cama = '';
+      return;
+    }
+    // Obtener las camas que ya están asignadas
+    // a otros pacientes.
+    const camasOcupadas = new Set(
+      this.patients
+        .filter(patient =>
+          Number(patient.cama) > 0 &&
+          Number(patient.id_paciente) !== this.editingId
+        )
+        .map(patient => Number(patient.cama))
+    );
+    // Mostrar únicamente camas activas,
+    // de la habitación seleccionada y desocupadas.
+    this.camasActivas = this.camas.filter(cama =>
+      cama.estado === true &&
+      Number(cama.id_habitacion) === idHabitacion &&
+      !camasOcupadas.has(Number(cama.id_cama))
+    );
+    // Si la cama seleccionada ya no está disponible,
+    // limpiar la selección.
+    const camaDisponible = this.camasActivas.some(
+      cama =>
+        Number(cama.id_cama) === Number(this.form.cama)
+    );
     if (!camaDisponible) {
       this.form.cama = '';
     }
-
     this.cdr.detectChanges();
   }
 
   // =====================================================
   // NUEVO PACIENTE
   // =====================================================
-
   nuevo(): void {
-
-    this.form =
-      this.formularioVacio();
-
+    this.form = this.formularioVacio();
     this.fotoPreview = null;
-
+    this.nombreFoto = null;
     this.editingId = null;
-
     this.camasActivas = [];
-
     this.modalOpen = true;
   }
 
   // =====================================================
   // SELECCIONAR FOTO
   // =====================================================
-
-  seleccionarFoto(
-    event: Event
-  ): void {
-
-    const input =
-      event.target as HTMLInputElement;
-
-    if (
-      !input.files ||
-      input.files.length === 0
-    ) {
-
-      this.form.foto = null;
-
+  seleccionarFoto(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const archivo = input.files?.[0];
+    if (!archivo) return;
+    if (!archivo.type.startsWith('image/')) {
+      alertaAdvertencia('Archivo no válido', 'Selecciona un archivo de imagen.');
+      input.value = '';
       return;
     }
-
-    const archivo =
-      input.files[0];
-
-    this.form.foto =
-      archivo;
-
-    const lector =
-      new FileReader();
-
+    this.form.foto = archivo;
+    this.form.fotoUrl = null;
+    this.nombreFoto = archivo.name;
+    const lector = new FileReader();
     lector.onload = () => {
-
-      this.fotoPreview =
-        lector.result as string;
-
+      this.fotoPreview = lector.result as string;
       this.cdr.detectChanges();
     };
-
     lector.onerror = () => {
-
-      console.error(
-        'No fue posible leer la imagen.'
-      );
-
+      console.error('No fue posible leer la imagen.');
       this.fotoPreview = null;
     };
+    lector.readAsDataURL(archivo);
+  }
 
-    lector.readAsDataURL(
-      archivo
-    );
+  obtenerNombreFoto(url: string | null | undefined): string | null {
+    if (!url) return null;
+    try {
+      const ruta = new URL(url, window.location.origin);
+      const nombre = ruta.pathname.split('/').pop();
+      return nombre ? decodeURIComponent(nombre) : 'Foto de perfil';
+    } catch {
+      return 'Foto de perfil';
+    }
   }
 
   // =====================================================
   // EDITAR PACIENTE
   // =====================================================
-
   editarPaciente(
     patient: any
   ): void {
-
     this.editingId =
       patient.id_paciente;
-
     this.form = {
-
       nombre:
         patient.nombre || '',
-
       apellidos:
         patient.apellido || '',
-
       tipoIdentificacion:
         patient.tipo_documento || '',
-
       documento:
         patient.numero_documento || '',
-
       nacimiento:
         patient.fecha_nacimiento || '',
-
       edad: null,
-
       genero:
         patient.genero || '',
-
       grupoSanguineo:
         patient.grupo_sanguineo || '',
-
       rh:
         patient.rh || '',
-
       eps:
         patient.eps || '',
-
       fechaIngreso:
         patient.fecha_ingreso
           ? patient.fecha_ingreso.substring(0, 10)
           : '',
-
       foto: null,
-
+      fotoUrl: patient.foto || null,
       familiarNombres: '',
       familiarApellidos: '',
       parentesco: '',
@@ -972,185 +801,133 @@ export class Pacientes {
       direccion: '',
       correoElectronico: '',
       municipio: '',
-
       sede:
         patient.sede || '',
-
       habitacion:
         patient.habitacion !== null &&
-        patient.habitacion !== undefined
+          patient.habitacion !== undefined
           ? String(patient.habitacion)
           : '',
-
       cama:
         patient.cama !== null &&
-        patient.cama !== undefined
+          patient.cama !== undefined
           ? String(patient.cama)
           : '',
-
       estado:
         patient.estado
           ? 'active'
           : 'inactive'
     };
-
     // Mostrar camas de la habitación
     // seleccionada.
     this.actualizarCamasPorHabitacion();
-
-    // Mostrar foto actual.
-    this.fotoPreview =
-      patient.foto || null;
-
+    this.nombreFoto = this.obtenerNombreFoto(patient.foto);
+    this.fotoPreview = patient.foto || null;
     if (this.form.nacimiento) {
       this.calcularEdad();
     }
-
     // ===================================================
     // CARGAR FAMILIAR
     // ===================================================
-
     this.http
       .get<any[]>(
         `${this.apiUrl}/familiar_responsable/`
       )
       .subscribe({
-
         next: (familiares) => {
-
           const familiar =
             familiares.find(
               item =>
                 item.id_paciente ===
                 patient.id_paciente
             );
-
           if (familiar) {
-
             this.form.familiarNombres =
               familiar.nombres || '';
-
             this.form.familiarApellidos =
               familiar.apellidos || '';
-
             this.form.parentesco =
               familiar.parentesco || '';
-
             this.form.telefono1 =
               familiar.telefono_uno || '';
-
             this.form.telefono2 =
               familiar.telefono_dos || '';
-
             this.form.direccion =
               familiar.direccion || '';
-
             this.form.correoElectronico =
               familiar.correo || '';
-
             this.form.municipio =
               familiar.municipio || '';
           }
-
           this.modalOpen = true;
-
           this.cdr.detectChanges();
         },
-
         error: (error) => {
-
           console.error(
             'Error al obtener el familiar responsable:',
             error
           );
-
           this.modalOpen = true;
-
           this.cdr.detectChanges();
         }
       });
   }
-
   // =====================================================
   // GUARDAR
   // =====================================================
-
   guardar(): void {
-
     if (this.editar) {
       this.actualizar();
     } else {
       this.crear();
     }
   }
-
   // =====================================================
   // CREAR
   // =====================================================
-
   crear(): void {
-
     const paciente = {
-
       nombre:
         this.form.nombre,
-
       apellido:
         this.form.apellidos,
-
       eps:
         this.form.eps,
-
       sede:
         this.form.sede,
-
       fecha_ingreso:
         this.form.fechaIngreso,
-
       habitacion:
         Number(this.form.habitacion),
-
       id_usuario:
         null,
-
       tipo_documento:
         this.form.tipoIdentificacion,
-
       numero_documento:
         this.form.documento,
-
       fecha_nacimiento:
         this.form.nacimiento,
-
       genero:
         this.form.genero,
-
       grupo_sanguineo:
         this.form.grupoSanguineo || null,
-
       rh:
         this.form.rh || null,
-
       cama:
         Number(this.form.cama),
-
       estado:
         this.form.estado === 'active'
     };
-
     const datosPaciente =
       new FormData();
-
     Object.entries(
       paciente
     ).forEach(
       ([campo, valor]) => {
-
         if (
           valor !== null &&
           valor !== undefined
         ) {
-
           datosPaciente.append(
             campo,
             String(valor)
@@ -1158,107 +935,78 @@ export class Pacientes {
         }
       }
     );
-
     if (this.form.foto) {
-
       datosPaciente.append(
         'foto',
         this.form.foto
       );
     }
-
     this.http
       .post<any>(
         `${this.apiUrl}/pacientes/`,
         datosPaciente
       )
       .subscribe({
-
         next: (respuesta) => {
-
           const idPaciente =
             respuesta.id_paciente;
-
           const familiar = {
-
             nombres:
               this.form.familiarNombres,
-
             apellidos:
               this.form.familiarApellidos,
-
             parentesco:
               this.form.parentesco,
-
             telefono_uno:
               this.form.telefono1,
-
             telefono_dos:
               this.form.telefono2 || null,
-
             direccion:
               this.form.direccion || null,
-
             correo:
               this.form.correoElectronico || null,
-
             municipio:
               this.form.municipio || null,
-
             id_paciente:
               idPaciente
           };
-
           this.http
             .post(
               `${this.apiUrl}/familiar_responsable/`,
               familiar
             )
             .subscribe({
-
               next: () => {
-
                 alertaExito(
                   'Paciente registrado correctamente'
                 );
-
                 this.listar();
-
                 this.closeModal();
               },
-
               error: (error) => {
-
                 console.error(
                   'Error al crear familiar:',
                   error
                 );
-
                 alertaAdvertencia(
                   'Paciente creado, pero hubo un problema',
                   'No se pudo guardar el familiar responsable.'
                 );
-
                 this.listar();
               }
             });
         },
-
         error: (error) => {
-
           console.error(
             'Error al crear paciente:',
             error
           );
-
           let detalle =
             'No se pudo guardar el paciente.';
-
           if (
             error.error &&
             typeof error.error === 'object'
           ) {
-
             const mensajes =
               Object.entries(
                 error.error
@@ -1268,7 +1016,6 @@ export class Pacientes {
                     ? `${campo}: ${valor.join(', ')}`
                     : `${campo}: ${valor}`
               );
-
             if (
               mensajes.length > 0
             ) {
@@ -1279,11 +1026,9 @@ export class Pacientes {
           else if (
             typeof error.error === 'string'
           ) {
-
             detalle =
               error.error;
           }
-
           alertaError(
             'Error al registrar el paciente',
             detalle
@@ -1291,80 +1036,57 @@ export class Pacientes {
         }
       });
   }
-
   // =====================================================
   // ACTUALIZAR
   // =====================================================
-
   actualizar(): void {
-
     if (
       this.editingId === null
     ) {
       return;
     }
-
     const paciente = {
-
       nombre:
         this.form.nombre,
-
       apellido:
         this.form.apellidos,
-
       eps:
         this.form.eps,
-
       sede:
         this.form.sede,
-
       fecha_ingreso:
         this.form.fechaIngreso,
-
       habitacion:
         Number(this.form.habitacion),
-
       id_usuario:
         null,
-
       tipo_documento:
         this.form.tipoIdentificacion,
-
       numero_documento:
         this.form.documento,
-
       fecha_nacimiento:
         this.form.nacimiento,
-
       genero:
         this.form.genero,
-
       grupo_sanguineo:
         this.form.grupoSanguineo || null,
-
       rh:
         this.form.rh || null,
-
       cama:
         Number(this.form.cama),
-
       estado:
         this.form.estado === 'active'
     };
-
     const datosPaciente =
       new FormData();
-
     Object.entries(
       paciente
     ).forEach(
       ([campo, valor]) => {
-
         if (
           valor !== null &&
           valor !== undefined
         ) {
-
           datosPaciente.append(
             campo,
             String(valor)
@@ -1372,263 +1094,194 @@ export class Pacientes {
         }
       }
     );
-
     if (this.form.foto) {
-
       datosPaciente.append(
         'foto',
         this.form.foto
       );
     }
-
     this.http
       .put(
         `${this.apiUrl}/pacientes/${this.editingId}/`,
         datosPaciente
       )
       .subscribe({
-
         next: () => {
-
           this.http
             .get<any[]>(
               `${this.apiUrl}/familiar_responsable/`
             )
             .subscribe({
-
               next: (familiares) => {
-
                 const familiar =
                   familiares.find(
                     item =>
                       item.id_paciente ===
                       this.editingId
                   );
-
                 if (familiar) {
-
                   const familiarActualizado = {
-
                     nombres:
                       this.form.familiarNombres,
-
                     apellidos:
                       this.form.familiarApellidos,
-
                     parentesco:
                       this.form.parentesco,
-
                     telefono_uno:
                       this.form.telefono1,
-
                     telefono_dos:
                       this.form.telefono2 || null,
-
                     direccion:
                       this.form.direccion || null,
-
                     correo:
                       this.form.correoElectronico || null,
-
                     municipio:
                       this.form.municipio || null,
-
                     id_paciente:
                       this.editingId
                   };
-
                   this.http
                     .put(
                       `${this.apiUrl}/familiar_responsable/${familiar.id_familiar_responsable}/`,
                       familiarActualizado
                     )
                     .subscribe({
-
                       next: () => {
-
                         alertaExito(
                           'Paciente actualizado correctamente'
                         );
-
                         this.listar();
-
                         this.closeModal();
                       },
-
                       error: (error) => {
-
                         console.error(
                           'Error al actualizar familiar:',
                           error
                         );
-
                         alertaAdvertencia(
                           'Paciente actualizado',
                           'El paciente se actualizó, pero hubo un problema con el familiar responsable.'
                         );
-
                         this.listar();
                       }
                     });
-
                 } else {
-
                   const nuevoFamiliar = {
-
                     nombres:
                       this.form.familiarNombres,
-
                     apellidos:
                       this.form.familiarApellidos,
-
                     parentesco:
                       this.form.parentesco,
-
                     telefono_uno:
                       this.form.telefono1,
-
                     telefono_dos:
                       this.form.telefono2 || null,
-
                     direccion:
                       this.form.direccion || null,
-
                     correo:
                       this.form.correoElectronico || null,
-
                     municipio:
                       this.form.municipio || null,
-
                     id_paciente:
                       this.editingId
                   };
-
                   this.http
                     .post(
                       `${this.apiUrl}/familiar_responsable/`,
                       nuevoFamiliar
                     )
                     .subscribe({
-
                       next: () => {
-
                         alertaExito(
                           'Paciente actualizado correctamente'
                         );
-
                         this.listar();
-
                         this.closeModal();
                       },
-
                       error: (errorFamiliar) => {
-
                         console.error(
                           'Error al crear familiar:',
                           errorFamiliar
                         );
-
                         alertaAdvertencia(
                           'Paciente actualizado',
                           'El paciente se actualizó, pero no se pudo guardar el familiar responsable.'
                         );
-
                         this.listar();
-
                         this.closeModal();
                       }
                     });
                 }
               },
-
               error: (error) => {
-
                 console.error(
                   'Error al obtener familiares:',
                   error
                 );
-
                 alertaAdvertencia(
                   'Paciente actualizado',
                   'El paciente se actualizó, pero no se pudo consultar el familiar responsable.'
                 );
-
                 this.listar();
               }
             });
         },
-
         error: (error) => {
-
           console.error(
             'Error al actualizar paciente:',
             error
           );
-
           console.error(
             'Detalle:',
             error.error
           );
-
           alertaError(
             'Error al actualizar el paciente'
           );
         }
       });
   }
-
   // =====================================================
   // CAMBIAR ESTADO
   // =====================================================
-
   cambiarEstado(
     patient: any
   ): void {
-
     const nuevoEstado =
       !patient.estado;
-
     const nombre =
       `${patient.nombre} ${patient.apellido}`
         .trim();
-
     const pregunta =
       nuevoEstado
         ? alertaActivar(
-            nombre,
-            'paciente'
-          )
+          nombre,
+          'paciente'
+        )
         : alertaDesactivar(
-            nombre,
-            'paciente'
-          );
-
+          nombre,
+          'paciente'
+        );
     pregunta.then(
       (resultado) => {
-
         if (!resultado.isConfirmed) {
           return;
         }
-
         const pacienteActualizado = {
           ...patient,
           estado: nuevoEstado
         };
-
         this.http
           .put(
             `${this.apiUrl}/pacientes/${patient.id_paciente}/`,
             pacienteActualizado
           )
           .subscribe({
-
             next: () => {
-
               patient.estado =
                 nuevoEstado;
-
               this.cdr.detectChanges();
-
               alertaExito(
                 'Estado actualizado',
                 nuevoEstado
@@ -1636,14 +1289,11 @@ export class Pacientes {
                   : 'El paciente ha sido desactivado.'
               );
             },
-
             error: (error) => {
-
               console.error(
                 'Error al cambiar estado:',
                 error
               );
-
               alertaError(
                 'Error',
                 'No fue posible cambiar el estado del paciente.'
@@ -1653,285 +1303,221 @@ export class Pacientes {
       }
     );
   }
-
   // =====================================================
   // EDITANDO
   // =====================================================
-
   get editar(): boolean {
     return this.editingId !== null;
   }
-
   // =====================================================
   // ABRIR MODAL
   // =====================================================
-
   openModal(
     mode: 'new' | 'edit',
     patientId?: number
   ): void {
-
     if (mode === 'new') {
-
       this.nuevo();
-
       return;
     }
-
     if (
       patientId !== undefined
     ) {
-
       const patient =
         this.patients.find(
           item =>
             item.id_paciente ===
             patientId
         );
-
       if (patient) {
-
         this.editarPaciente(
           patient
         );
       }
     }
   }
-
   // =====================================================
   // CERRAR MODAL
   // =====================================================
-
   closeModal(): void {
-
     this.modalOpen = false;
-
     this.editingId = null;
-
-    this.form =
-      this.formularioVacio();
-
+    this.form = this.formularioVacio();
     this.fotoPreview = null;
-
+    this.nombreFoto = null;
     this.camasActivas = [];
   }
 
   // =====================================================
   // CERRAR CON FONDO
   // =====================================================
-
   closeOnBackdrop(
     event: MouseEvent
   ): void {
-
     if (
       event.target ===
       event.currentTarget
     ) {
-
       this.closeModal();
     }
   }
-
   // =====================================================
   // GUARDAR DESDE HTML
   // =====================================================
-
   savePatient(): void {
-
     this.guardar();
   }
-
   // =====================================================
   // VER PACIENTE
   // =====================================================
-
   viewPatient(
     id: number
   ): void {
-
     const patient =
       this.patients.find(
         item =>
           item.id_paciente === id
       );
-
     if (!patient) {
       return;
     }
-
     this.selectedPatient = {
-
       ...patient,
-
       familiarNombres:
         'No registrado',
-
       familiarApellidos:
         'No registrado',
-
       parentesco:
         'No registrado',
-
       telefono1:
         'No registrado',
-
       telefono2:
         'No registrado',
-
       direccion:
         'No registrado',
-
       correoElectronico:
         'No registrado',
-
       municipio:
         'No registrado'
     };
-
     this.http
       .get<any[]>(
         `${this.apiUrl}/familiar_responsable/`
       )
       .subscribe({
-
         next: (familiares) => {
-
           const familiar =
             familiares.find(
               item =>
                 item.id_paciente === id
             );
-
           if (familiar) {
-
             this.selectedPatient.familiarNombres =
               familiar.nombres ||
               'No registrado';
-
             this.selectedPatient.familiarApellidos =
               familiar.apellidos ||
               'No registrado';
-
             this.selectedPatient.parentesco =
               familiar.parentesco ||
               'No registrado';
-
             this.selectedPatient.telefono1 =
               familiar.telefono_uno ||
               'No registrado';
-
             this.selectedPatient.telefono2 =
               familiar.telefono_dos ||
               'No registrado';
-
             this.selectedPatient.direccion =
               familiar.direccion ||
               'No registrado';
-
             this.selectedPatient.correoElectronico =
               familiar.correo ||
               'No registrado';
-
             this.selectedPatient.municipio =
               familiar.municipio ||
               'No registrado';
           }
-
           this.viewModalOpen = true;
-
           this.cdr.detectChanges();
         },
-
         error: (error) => {
-
           console.error(
             'Error al obtener familiar:',
             error
           );
-
           this.viewModalOpen = true;
-
           this.cdr.detectChanges();
         }
       });
   }
-
   // =====================================================
   // NOMBRE HABITACIÓN
   // =====================================================
-
   obtenerNombreHabitacion(
     id: any
   ): string {
-
     const habitacion =
       this.habitaciones.find(
         h =>
           h.id_habitacion ===
           Number(id)
       );
-
     if (!habitacion) {
       return 'No registrado';
     }
-
     return `${habitacion.nombre} - ${habitacion.numero}`;
   }
-
   // =====================================================
   // NOMBRE CAMA
   // =====================================================
-
   obtenerNombreCama(
     id: any
   ): string {
-
     const cama =
       this.camas.find(
         c =>
           c.id_cama ===
           Number(id)
       );
-
     if (!cama) {
       return 'No registrado';
     }
-
     return `${cama.nombre} - ${cama.numero}`;
   }
-
   // =====================================================
   // CERRAR MODAL VER
   // =====================================================
-
   closeViewModal(): void {
-
     this.viewModalOpen = false;
-
     this.selectedPatient = null;
   }
-
   // =====================================================
   // TÍTULO MODAL
   // =====================================================
-
   get modalTitle(): string {
-
     return this.editar
       ? 'Editar paciente'
       : 'Nuevo paciente';
   }
-
   // =====================================================
   // TEXTO BOTÓN
   // =====================================================
-
   get saveButtonText(): string {
-
     return this.editar
       ? 'Guardar cambios'
       : 'Guardar paciente';
   }
+  obtenerIniciales(nombre?: string): string {
+    if (!nombre) {
+      return 'PA';
+    }
+    const partes = nombre.trim().split(' ');
+    if (partes.length >= 2) {
+      return (
+        partes[0][0] +
+        partes[1][0]
+      ).toUpperCase();
+    }
+    return nombre.substring(0, 2).toUpperCase();
+  }
 }
-

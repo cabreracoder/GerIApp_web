@@ -3023,6 +3023,16 @@ export class BancoDatos implements OnInit {
   ): string {
 
     if (!error) {
+
+      // Mostrar directamente el mensaje de error del backend,
+      // sin agregar el prefijo "error:".
+      if (
+        typeof error.error === 'object' &&
+        typeof error.error.error === 'string'
+      ) {
+        return error.error.error;
+      }
+
       return mensajePorDefecto;
     }
 

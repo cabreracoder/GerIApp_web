@@ -549,21 +549,17 @@ tbody tr:hover {
 }
 
 .avatar-paciente {
-  width: 42px;
-  height: 42px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  flex-shrink: 0;
-
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  overflow: hidden;
   border-radius: var(--radius-full);
-
-  background: var(--color-accent-beige);
-  color: #7d5a4f;
-
-  font-size: var(--font-size-sm);
+  background: var(--bg-neutral-light);
+  color: var(--color-primary);
+  font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
 }
 
