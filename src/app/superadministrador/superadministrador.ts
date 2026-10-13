@@ -45,7 +45,7 @@ type VistaSuperadministrador =
   styleUrl: './superadministrador.css',
 })
 export class Superadministrador implements OnInit {
-  private readonly apiUrl = 'http://127.0.0.1:8000/api';
+  private readonly apiUrl = 'https://geriapp-backend.onrender.com/api';
 
   vistaActiva: VistaSuperadministrador = 'resumen';
 
