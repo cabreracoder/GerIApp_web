@@ -1,13 +1,9 @@
-
 <section class="superadmin-container">
-
   <!-- Encabezado del módulo -->
   <header class="superadmin-header">
     <div>
       <p class="superadmin-eyebrow">Administración general</p>
-
       <h2>Panel del Superadministrador</h2>
-
       <p class="superadmin-description">
         Administra las sedes y consulta las cuentas de los
         administradores de la institución.
@@ -62,7 +58,6 @@
   <!-- ====================================== -->
   <!-- VISTA 1: RESUMEN DEL SUPERADMINISTRADOR -->
   <!-- ====================================== -->
-
   <section
     *ngIf="vistaActiva === 'resumen'"
     class="superadmin-section"
@@ -78,10 +73,8 @@
     </div>
 
     <div class="superadmin-content">
-
       <!-- Tarjetas de resumen -->
       <div class="summary-grid">
-
         <!-- Total de sedes -->
         <article class="summary-card">
           <div class="summary-card-icon">
@@ -150,7 +143,6 @@
             </span>
           </div>
         </article>
-
       </div>
 
       <!-- Acciones rápidas -->
@@ -161,7 +153,6 @@
         </div>
 
         <div class="quick-actions-list">
-
           <button
             type="button"
             class="quick-action"
@@ -233,19 +224,15 @@
               chevron_right
             </span>
           </button>
-
         </div>
       </div>
 
-      <!-- Avisos de carga de datos -->
+      <!-- Avisos de carga -->
       <div
         *ngIf="errorSedes || errorAdministradores"
         class="information-note"
       >
-        <span
-          class="material-symbols-outlined"
-          aria-hidden="true"
-        >
+        <span class="material-symbols-outlined" aria-hidden="true">
           info
         </span>
 
@@ -255,14 +242,12 @@
           la consulta.
         </p>
       </div>
-
     </div>
   </section>
 
   <!-- ====================================== -->
   <!-- VISTA 2: GESTIÓN DE SEDES              -->
   <!-- ====================================== -->
-
   <section
     *ngIf="vistaActiva === 'sedes'"
     class="superadmin-section"
@@ -288,7 +273,6 @@
     </div>
 
     <div class="superadmin-content">
-
       <!-- Cargando -->
       <div *ngIf="cargandoSedes" class="state-container">
         <span class="material-symbols-outlined state-icon" aria-hidden="true">
@@ -299,7 +283,10 @@
       </div>
 
       <!-- Error -->
-      <div *ngIf="!cargandoSedes && errorSedes" class="state-container">
+      <div
+        *ngIf="!cargandoSedes && errorSedes"
+        class="state-container"
+      >
         <span
           class="material-symbols-outlined state-icon state-icon-error"
           aria-hidden="true"
@@ -375,11 +362,8 @@
           <tbody>
             <tr *ngFor="let sede of sedes">
               <td class="cell-id">{{ sede.id_sede }}</td>
-
               <td class="cell-name">{{ sede.nombre }}</td>
-
               <td>{{ sede.direccion || 'No registrada' }}</td>
-
               <td>{{ sede.telefono || 'No registrado' }}</td>
 
               <td>
@@ -391,7 +375,6 @@
                       : 'status-inactive'
                   "
                 >
-                  <span class="status-dot"></span>
                   {{ esActivo(sede.estado) ? 'Activa' : 'Inactiva' }}
                 </span>
               </td>
@@ -399,7 +382,7 @@
               <td>
                 <button
                   type="button"
-                  class="btn-secondary"
+                  class="btn-secondary btn-small"
                   (click)="editarSede(sede)"
                   [attr.aria-label]="'Editar sede ' + sede.nombre"
                 >
@@ -412,33 +395,24 @@
             </tr>
           </tbody>
         </table>
-
-        <div class="table-footer">
-          <span>
-            Total de sedes: <strong>{{ sedes.length }}</strong>
-          </span>
-
-          <button
-            type="button"
-            class="btn-text"
-            (click)="listarSedes()"
-            [disabled]="cargandoSedes"
-          >
-            <span class="material-symbols-outlined" aria-hidden="true">
-              refresh
-            </span>
-            Actualizar lista
-          </button>
-        </div>
       </div>
 
+      <!-- Nota sobre la asignación de sedes -->
+      <div class="information-note">
+        <span class="material-symbols-outlined" aria-hidden="true">
+          info
+        </span>
+        <p>
+          La asignación de administradores a sedes queda pendiente de
+          verificar la relación existente en la base de datos.
+        </p>
+      </div>
     </div>
   </section>
 
   <!-- ====================================== -->
   <!-- VISTA 3: GESTIÓN DE ADMINISTRADORES    -->
   <!-- ====================================== -->
-
   <section
     *ngIf="vistaActiva === 'administradores'"
     class="superadmin-section"
@@ -447,25 +421,49 @@
       <div>
         <h3>Gestión de administradores</h3>
         <p>
-          Consulta las cuentas que tienen un rol de administrador.
+          Consulta y administra las cuentas con rol de administrador.
         </p>
       </div>
 
-      <button
-        type="button"
-        class="btn-secondary"
-        (click)="listarAdministradores()"
-        [disabled]="cargandoAdministradores"
-      >
-        <span class="material-symbols-outlined" aria-hidden="true">
-          refresh
-        </span>
-        Actualizar
-      </button>
+      <div class="admin-actions">
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="crearAdministrador()"
+        >
+          <span class="material-symbols-outlined" aria-hidden="true">
+            person_add
+          </span>
+          Nuevo administrador
+        </button>
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="asignarAdministrador()"
+          [disabled]="cargandoAdministradores"
+        >
+          <span class="material-symbols-outlined" aria-hidden="true">
+            manage_accounts
+          </span>
+          Asignar usuario existente
+        </button>
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="listarAdministradores()"
+          [disabled]="cargandoAdministradores"
+        >
+          <span class="material-symbols-outlined" aria-hidden="true">
+            refresh
+          </span>
+          Actualizar
+        </button>
+      </div>
     </div>
 
     <div class="superadmin-content">
-
       <!-- Cargando -->
       <div
         *ngIf="cargandoAdministradores"
@@ -474,8 +472,7 @@
         <span class="material-symbols-outlined state-icon" aria-hidden="true">
           progress_activity
         </span>
-
-        <h4>Consultando administradores</h4>
+        <h4>Cargando administradores</h4>
         <p>Estamos consultando los usuarios y sus roles.</p>
       </div>
 
@@ -496,7 +493,7 @@
 
         <h4>No fue posible cargar los administradores</h4>
         <p>
-          Comprueba que los endpoints de usuarios y roles estén disponibles.
+          Verifica que el backend esté disponible e inténtalo nuevamente.
         </p>
 
         <button
@@ -508,7 +505,7 @@
         </button>
       </div>
 
-      <!-- Sin resultados -->
+      <!-- Lista vacía -->
       <div
         *ngIf="
           !cargandoAdministradores &&
@@ -521,11 +518,36 @@
           manage_accounts
         </span>
 
-        <h4>No se encontraron administradores</h4>
+        <h4>No hay administradores registrados</h4>
         <p>
-          No se encontraron usuarios con un rol identificado como
-          administrador. Verifica los roles registrados en el sistema.
+          No se encontraron cuentas con el rol de Administrador.
+          Puedes registrar una cuenta nueva o asignar el rol a un usuario
+          existente.
         </p>
+
+        <div class="admin-actions">
+          <button
+            type="button"
+            class="btn-primary"
+            (click)="crearAdministrador()"
+          >
+            <span class="material-symbols-outlined" aria-hidden="true">
+              person_add
+            </span>
+            Nuevo administrador
+          </button>
+
+          <button
+            type="button"
+            class="btn-secondary"
+            (click)="asignarAdministrador()"
+          >
+            <span class="material-symbols-outlined" aria-hidden="true">
+              manage_accounts
+            </span>
+            Asignar usuario existente
+          </button>
+        </div>
       </div>
 
       <!-- Tabla de administradores -->
@@ -556,23 +578,16 @@
               </td>
 
               <td class="cell-name">
-                {{ administrador.nombres }}
-                {{ administrador.apellidos }}
+                {{ administrador.nombres }} {{ administrador.apellidos }}
               </td>
 
-              <td class="cell-email">
-                {{ administrador.correo || 'No registrado' }}
-              </td>
+              <td>{{ administrador.correo }}</td>
 
               <td>
                 {{ administrador.telefono || 'No registrado' }}
               </td>
 
-              <td>
-                <span class="role-badge">
-                  {{ nombreRol(administrador) }}
-                </span>
-              </td>
+              <td>{{ nombreRol(administrador) }}</td>
 
               <td>
                 <span
@@ -583,7 +598,6 @@
                       : 'status-inactive'
                   "
                 >
-                  <span class="status-dot"></span>
                   {{
                     esActivo(administrador.estado)
                       ? 'Activo'
@@ -594,28 +608,19 @@
             </tr>
           </tbody>
         </table>
-
-        <div class="table-footer">
-          <span>
-            Administradores encontrados:
-            <strong>{{ administradores.length }}</strong>
-          </span>
-        </div>
       </div>
 
+      <!-- Información complementaria -->
       <div class="information-note">
         <span class="material-symbols-outlined" aria-hidden="true">
           info
         </span>
-
         <p>
-          Esta sección consulta las cuentas y sus roles. La asignación
-          de administradores a sedes requiere confirmar la relación
-          correspondiente en la base de datos.
+          La lista identifica las cuentas por su rol actual. La asignación
+          de administradores a sedes se implementará únicamente después
+          de confirmar la relación correspondiente en la base de datos.
         </p>
       </div>
-
     </div>
   </section>
-
 </section>

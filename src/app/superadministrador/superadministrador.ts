@@ -30,6 +30,8 @@ interface Usuario {
   correo: string;
   telefono?: string;
   estado: boolean | number | string;
+  tipo_documento?: string;
+  numero_documento?: string;
 }
 
 type VistaSuperadministrador =
@@ -51,6 +53,7 @@ export class Superadministrador implements OnInit {
 
   sedes: Sede[] = [];
   administradores: Usuario[] = [];
+  usuariosDisponibles: Usuario[] = [];
   roles: Rol[] = [];
 
   cargandoSedes = false;
@@ -305,6 +308,7 @@ export class Superadministrador implements OnInit {
     }).subscribe({
       next: ({ usuarios, roles }) => {
         const listaUsuarios = this.normalizarLista<Usuario>(usuarios);
+        this.usuariosDisponibles = listaUsuarios;
         this.roles = this.normalizarLista<Rol>(roles);
 
         this.administradores = listaUsuarios
@@ -329,6 +333,140 @@ export class Superadministrador implements OnInit {
         this.errorAdministradores = true;
         this.cdr.detectChanges();
       },
+    });
+  }
+
+   // ==========================================
+  // ASIGNAR ROL ADMINISTRADOR
+  // ==========================================
+
+  asignarAdministrador(): void {
+    const rolAdministrador = this.obtenerRolAdministrador();
+
+    if (!rolAdministrador) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Rol no encontrado',
+        text: 'No se encontró el rol Administrador en el sistema.',
+        confirmButtonColor: '#3B5BDB',
+      });
+      return;
+    }
+
+    // Buscar usuarios que todavía no sean administradores
+    // ni superadministradores.
+    const usuariosElegibles = this.usuariosDisponibles
+      .filter(
+        (usuario) =>
+          !this.esRolAdministrador(usuario) &&
+          !this.esRolSuperadministrador(usuario)
+      )
+      .sort((a, b) =>
+        `${a.nombres} ${a.apellidos}`.localeCompare(
+          `${b.nombres} ${b.apellidos}`
+        )
+      );
+
+    if (usuariosElegibles.length === 0) {
+      Swal.fire({
+        icon: 'info',
+        title: 'No hay usuarios disponibles',
+        text: 'No se encontraron usuarios a los que se pueda asignar este rol.',
+        confirmButtonColor: '#3B5BDB',
+      });
+      return;
+    }
+
+    // Construir las opciones del selector.
+    const opciones: Record<string, string> = {};
+
+    usuariosElegibles.forEach((usuario) => {
+      opciones[String(usuario.id_usuario)] =
+        `${usuario.nombres} ${usuario.apellidos} — ${usuario.correo}`;
+    });
+
+    // Seleccionar el usuario existente.
+    Swal.fire({
+      title: 'Asignar administrador',
+      text: 'Selecciona el usuario que recibirá este rol.',
+      input: 'select',
+      inputOptions: opciones,
+      inputPlaceholder: 'Selecciona un usuario',
+      showCancelButton: true,
+      confirmButtonText: 'Continuar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#3B5BDB',
+      inputValidator: (valor) => {
+        if (!valor) {
+          return 'Debes seleccionar un usuario.';
+        }
+
+        return null;
+      },
+    }).then((resultado) => {
+      if (!resultado.isConfirmed || !resultado.value) {
+        return;
+      }
+
+      const idUsuario = Number(resultado.value);
+
+      const usuarioSeleccionado = usuariosElegibles.find(
+        (usuario) => usuario.id_usuario === idUsuario
+      );
+
+      if (!usuarioSeleccionado) {
+        return;
+      }
+
+      // Confirmar antes de cambiar el rol.
+      Swal.fire({
+        icon: 'question',
+        title: '¿Confirmar asignación?',
+        text:
+          `Se asignará el rol Administrador a ` +
+          `${usuarioSeleccionado.nombres} ${usuarioSeleccionado.apellidos}.`,
+        showCancelButton: true,
+        confirmButtonText: 'Sí, asignar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#3B5BDB',
+      }).then((confirmacion) => {
+        if (!confirmacion.isConfirmed) {
+          return;
+        }
+
+        // Actualizar únicamente el rol del usuario seleccionado.
+        this.http
+          .patch(
+            `${this.apiUrl}/usuarios/${idUsuario}/`,
+            { id_rol: rolAdministrador.id_rol }
+          )
+          .subscribe({
+            next: () => {
+              Swal.fire({
+                icon: 'success',
+                title: 'Rol asignado',
+                text: 'El usuario ahora tiene el rol Administrador.',
+                confirmButtonColor: '#3B5BDB',
+              });
+
+              // Actualizar la lista de administradores.
+              this.listarAdministradores();
+            },
+            error: (error) => {
+              console.error(
+                'Error al asignar el rol Administrador:',
+                error
+              );
+
+              Swal.fire({
+                icon: 'error',
+                title: 'No se pudo asignar el rol',
+                text: this.obtenerMensajeError(error),
+                confirmButtonColor: '#3B5BDB',
+              });
+            },
+          });
+      });
     });
   }
 
@@ -362,6 +500,22 @@ export class Superadministrador implements OnInit {
       nombre.includes('administrador') &&
       !nombre.includes('superadministrador')
     );
+  }
+
+  private esRolSuperadministrador(usuario: Usuario): boolean {
+    return this.normalizarTexto(this.nombreRol(usuario))
+      .includes('superadministrador');
+  }
+
+  private obtenerRolAdministrador(): Rol | undefined {
+    return this.roles.find((rol) => {
+      const nombre = this.normalizarTexto(rol.nombre);
+
+      return (
+        nombre.includes('administrador') &&
+        !nombre.includes('superadministrador')
+      );
+    });
   }
 
   // ==========================================
