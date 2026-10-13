@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -7,6 +8,7 @@ import {
   Router
 } from '@angular/router';
 import { SocialAuthService } from '@abacritt/angularx-social-login';
+
 
 interface OpcionMenu {
   nombre: string;
@@ -24,6 +26,10 @@ interface UsuarioActualizado {
   rol?: string;
   foto?: string | null;
   [key: string]: any;
+}
+
+interface ConfiguracionInstitucion {
+  nombre_institucion: string;
 }
 
 @Component({
@@ -70,10 +76,13 @@ export class Layout implements OnDestroy {
   constructor(
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private socialAuthService: SocialAuthService
+    private socialAuthService: SocialAuthService,
+    private http: HttpClient
   ) {
 
     this.cargarUsuario();
+
+    this.cargarNombreInstitucion();
 
     // ===================================================
     // ESCUCHAR CAMBIOS DE CONFIGURACIÓN
@@ -90,6 +99,28 @@ export class Layout implements OnDestroy {
   // =====================================================
 
   nombreAplicacion = 'GerIApp';
+
+  cargarNombreInstitucion(): void {
+    this.http
+      .get<ConfiguracionInstitucion>(
+        'https://geriapp-backend.onrender.com/api/configuracion/institucion/'
+      )
+      .subscribe({
+        next: (respuesta) => {
+          const nombre = respuesta.nombre_institucion?.trim();
+
+          if (nombre) {
+            this.nombreAplicacion = nombre;
+          }
+        },
+        error: (error) => {
+          console.error(
+            'Error al cargar el nombre de la institución:',
+            error
+          );
+        }
+      });
+  }
 
   textoNuevoRegistro = 'Nuevo Registro';
 
