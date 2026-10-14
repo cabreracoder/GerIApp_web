@@ -1730,8 +1730,22 @@
 
               </div>
 
+              <!-- DESCRIPCIÓN -->
 
-              <!-- HORA INICIAL -->
+              <div class="campo-formulario campo-completo">
+
+                <label for="descripcionGrupoMedicacion">
+                  Descripción
+                </label>
+
+                <textarea id="descripcionGrupoMedicacion" [(ngModel)]="grupoMedicacionActual.descripcion"
+                  name="descripcionGrupoMedicacion" placeholder="Ingrese una descripción del grupo de medicación..."
+                  rows="3"></textarea>
+
+              </div>
+
+
+              <!-- HORA DE ADMINISTRACION -->
 
               <div class="campo-formulario">
 
@@ -1743,21 +1757,6 @@
                   name="horaRangoInicial" required>
 
               </div>
-
-
-              <!-- HORA FINAL -->
-
-              <div class="campo-formulario">
-
-                <label for="horaRangoFinal">
-                  Hora final
-                </label>
-
-                <input id="horaRangoFinal" type="time" [(ngModel)]="grupoMedicacionActual.hora_rango_final"
-                  name="horaRangoFinal" required>
-
-              </div>
-
 
               <!-- ESTADO -->
 
@@ -1779,21 +1778,6 @@
                   </option>
 
                 </select>
-
-              </div>
-
-
-              <!-- DESCRIPCIÓN -->
-
-              <div class="campo-formulario campo-completo">
-
-                <label for="descripcionGrupoMedicacion">
-                  Descripción
-                </label>
-
-                <textarea id="descripcionGrupoMedicacion" [(ngModel)]="grupoMedicacionActual.descripcion"
-                  name="descripcionGrupoMedicacion" placeholder="Ingrese una descripción del grupo de medicación..."
-                  rows="3"></textarea>
 
               </div>
 
