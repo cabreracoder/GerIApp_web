@@ -336,6 +336,317 @@ export class Superadministrador implements OnInit {
     });
   }
 
+  crearAdministrador(): void {
+  const rolAdministrador = this.obtenerRolAdministrador();
+
+  if (!rolAdministrador) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Rol no encontrado',
+      text: 'No se encontró el rol Administrador en el sistema.',
+      confirmButtonColor: '#3B5BDB'
+    });
+    return;
+  }
+
+  Swal.fire({
+    title: 'Registrar administrador',
+    html: `
+      <input id="nombres" class="swal2-input"
+        placeholder="Nombres" maxlength="100">
+
+      <input id="apellidos" class="swal2-input"
+        placeholder="Apellidos" maxlength="100">
+
+      <input id="correo" type="email" class="swal2-input"
+        placeholder="Correo electrónico">
+
+      <select id="tipo_documento" class="swal2-select">
+        <option value="">Tipo de documento</option>
+        <option value="CC">Cédula de ciudadanía</option>
+        <option value="CE">Cédula de extranjería</option>
+        <option value="TI">Tarjeta de identidad</option>
+        <option value="Pasaporte">Pasaporte</option>
+      </select>
+
+      <input id="numero_documento" class="swal2-input"
+        placeholder="Número de documento">
+
+      <input id="telefono" class="swal2-input"
+        placeholder="Teléfono">
+
+      <input id="contrasena" type="password" class="swal2-input"
+        placeholder="Contraseña (mínimo 8 caracteres)">
+    `,
+    showCancelButton: true,
+    confirmButtonText: 'Crear administrador',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#3B5BDB',
+    focusConfirm: false,
+
+    preConfirm: () => {
+      const popup = Swal.getPopup();
+
+      const nombres = (
+        popup?.querySelector('#nombres') as HTMLInputElement
+      ).value.trim();
+
+      const apellidos = (
+        popup?.querySelector('#apellidos') as HTMLInputElement
+      ).value.trim();
+
+      const correo = (
+        popup?.querySelector('#correo') as HTMLInputElement
+      ).value.trim();
+
+      const tipo_documento = (
+        popup?.querySelector('#tipo_documento') as HTMLSelectElement
+      ).value;
+
+      const numero_documento = (
+        popup?.querySelector('#numero_documento') as HTMLInputElement
+      ).value.trim();
+
+      const telefono = (
+        popup?.querySelector('#telefono') as HTMLInputElement
+      ).value.trim();
+
+      const contrasena = (
+        popup?.querySelector('#contrasena') as HTMLInputElement
+      ).value;
+
+      if (
+        !nombres ||
+        !apellidos ||
+        !correo ||
+        !tipo_documento ||
+        !numero_documento ||
+        !contrasena
+      ) {
+        Swal.showValidationMessage(
+          'Completa todos los campos obligatorios.'
+        );
+        return;
+      }
+
+      const formatoCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!formatoCorreo.test(correo)) {
+        Swal.showValidationMessage(
+          'Ingresa un correo electrónico válido.'
+        );
+        return;
+      }
+
+      if (contrasena.length < 8) {
+        Swal.showValidationMessage(
+          'La contraseña debe tener al menos 8 caracteres.'
+        );
+        return;
+      }
+
+      return {
+        nombres,
+        apellidos,
+        correo,
+        tipo_documento,
+        numero_documento,
+        telefono: telefono || null,
+        contrasena
+      };
+    }
+  }).then(resultado => {
+    if (!resultado.isConfirmed || !resultado.value) {
+      return;
+    }
+
+    // Ruta corregida según core/urls.py.
+    this.http.post<any>(
+      `${this.apiUrl}/usuarios/registro/`,
+      resultado.value
+    ).subscribe({
+      next: respuesta => {
+        const idUsuario = respuesta?.usuario?.id_usuario;
+
+        if (!idUsuario) {
+          console.error(
+            'El registro respondió sin id_usuario:',
+            respuesta
+          );
+
+          Swal.fire({
+            icon: 'warning',
+            title: 'Usuario registrado',
+            text:
+              'El servidor respondió sin el identificador del usuario. ' +
+              'Verifica el registro antes de volver a intentarlo.',
+            confirmButtonColor: '#3B5BDB'
+          });
+
+          this.listarAdministradores();
+          return;
+        }
+
+        // Asigna el rol Administrador al usuario recién creado.
+        this.http.patch(
+          `${this.apiUrl}/usuarios/${idUsuario}/`,
+          {
+            id_rol: rolAdministrador.id_rol
+          }
+        ).subscribe({
+          next: () => {
+            Swal.fire({
+              icon: 'success',
+              title: 'Administrador registrado',
+              text:
+                `${resultado.value.nombres} ` +
+                `${resultado.value.apellidos} fue registrado correctamente.`,
+              confirmButtonColor: '#3B5BDB'
+            });
+
+            this.listarAdministradores();
+          },
+
+          error: error => {
+            console.error(
+              'El usuario se creó, pero no se pudo asignar el rol:',
+              error
+            );
+
+            Swal.fire({
+              icon: 'warning',
+              title: 'Asignación de rol pendiente',
+              text:
+                'El usuario fue creado, pero no se pudo confirmar ' +
+                'la asignación del rol Administrador. No vuelvas a ' +
+                'registrarlo; verifica el usuario y su rol en el backend.',
+              confirmButtonColor: '#3B5BDB'
+            });
+
+            this.listarAdministradores();
+          }
+        });
+      },
+
+      error: error => {
+        console.error(
+          'Error al registrar el administrador:',
+          error
+        );
+
+        Swal.fire({
+          icon: 'error',
+          title: 'No se pudo registrar el administrador',
+          text: this.obtenerMensajeError(error),
+          confirmButtonColor: '#3B5BDB'
+        });
+      }
+    });
+  });
+}
+
+editarAdministrador(usuario: Usuario): void {
+  Swal.fire({
+    title: 'Editar administrador',
+    html: `
+      <input id="nombres" class="swal2-input"
+        placeholder="Nombres"
+        value="${this.escaparHtml(usuario.nombres ?? '')}">
+
+      <input id="apellidos" class="swal2-input"
+        placeholder="Apellidos"
+        value="${this.escaparHtml(usuario.apellidos ?? '')}">
+
+      <input id="correo" type="email" class="swal2-input"
+        placeholder="Correo electrónico"
+        value="${this.escaparHtml(usuario.correo ?? '')}">
+
+      <input id="telefono" class="swal2-input"
+        placeholder="Teléfono"
+        value="${this.escaparHtml(usuario.telefono ?? '')}">
+    `,
+    showCancelButton: true,
+    confirmButtonText: 'Guardar cambios',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#3B5BDB',
+    focusConfirm: false,
+
+    preConfirm: () => {
+      const popup = Swal.getPopup();
+
+      const nombres = (
+        popup?.querySelector('#nombres') as HTMLInputElement
+      ).value.trim();
+
+      const apellidos = (
+        popup?.querySelector('#apellidos') as HTMLInputElement
+      ).value.trim();
+
+      const correo = (
+        popup?.querySelector('#correo') as HTMLInputElement
+      ).value.trim();
+
+      const telefono = (
+        popup?.querySelector('#telefono') as HTMLInputElement
+      ).value.trim();
+
+      if (!nombres || !apellidos || !correo) {
+        Swal.showValidationMessage(
+          'Nombres, apellidos y correo son obligatorios.'
+        );
+        return;
+      }
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+        Swal.showValidationMessage(
+          'Ingresa un correo electrónico válido.'
+        );
+        return;
+      }
+
+      return {
+        nombres,
+        apellidos,
+        correo,
+        telefono: telefono || null
+      };
+    }
+  }).then(resultado => {
+    if (!resultado.isConfirmed || !resultado.value) {
+      return;
+    }
+
+    this.http.patch(
+      `${this.apiUrl}/usuarios/${usuario.id_usuario}/`,
+      resultado.value
+    ).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Administrador actualizado',
+          text: 'Los cambios se guardaron correctamente.',
+          confirmButtonColor: '#3B5BDB'
+        });
+
+        this.listarAdministradores();
+      },
+      error: error => {
+        console.error(
+          'Error al editar el administrador:',
+          error
+        );
+
+        Swal.fire({
+          icon: 'error',
+          title: 'No se pudieron guardar los cambios',
+          text: this.obtenerMensajeError(error),
+          confirmButtonColor: '#3B5BDB'
+        });
+      }
+    });
+  });
+}
+
    // ==========================================
   // ASIGNAR ROL ADMINISTRADOR
   // ==========================================
