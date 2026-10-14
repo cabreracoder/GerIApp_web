@@ -68,7 +68,17 @@ interface GrupoMedicacion {
   hora_rango_final: string;
   estado: boolean;
 }
-
+// Interfaz para el catálogo de cámaras
+interface Camara {
+  id_camara?: number;
+  nombre: string;
+  ubicacion: string;
+  direccion_stream: string;
+  tipo: string | null;
+  estado: boolean | null;
+  fecha_registro?: string | null;
+  id_habitacion: number | null;
+}
 // =====================================================
 // ALERTAS (SweetAlert2 + Tailwind)
 // =====================================================
@@ -412,6 +422,9 @@ export class BancoDatos implements OnInit {
     },
     {
       nombre: 'Grupos de medicación'
+    },
+    {
+  nombre: 'Cámaras'
     }
   ];
 
@@ -558,6 +571,38 @@ export class BancoDatos implements OnInit {
     estado: true,
     id_habitacion: null
   };
+ 
+  // =========================================================
+  // CÁMARAS
+  // =========================================================
+
+  camaras: Camara[] = [];
+
+  cargandoCamaras = false;
+
+  mostrandoFormularioCamara = false;
+  modoEdicionCamara = false;
+
+  camaraEditando: number | null = null;
+  private camaraOriginal: Camara | null = null;
+
+  camaraForm: Camara = {
+    nombre: '',
+    ubicacion: '',
+    direccion_stream: '',
+    tipo: '',
+    estado: true,
+    fecha_registro: null,
+    id_habitacion: null
+  };
+
+  get camaraActual(): Camara {
+    return this.camaraForm;
+  }
+
+  set camaraActual(valor: Camara) {
+    this.camaraForm = valor;
+  }
 
   // =========================================================
   // GRUPOS DE MEDICACIÓN
@@ -698,6 +743,11 @@ export class BancoDatos implements OnInit {
       case 'Grupos de medicación':
         this.cargarGruposMedicacion();
         break;
+      
+        case 'Cámaras':
+  this.cargarHabitaciones();
+  this.cargarCamaras();
+  break;
     }
   }
 
@@ -713,6 +763,7 @@ export class BancoDatos implements OnInit {
     this.mostrandoFormularioTurno = false;
     this.mostrandoFormularioHabitacion = false;
     this.mostrandoFormularioCama = false;
+    this.mostrandoFormularioCamara = false;
     this.mostrandoFormularioGrupoMedicacion = false;
 
     this.modoEdicion = false;
@@ -3000,6 +3051,409 @@ export class BancoDatos implements OnInit {
       hora_rango_inicial: '',
       hora_rango_final: '',
       estado: true
+    };
+  }
+  
+  // =========================================================
+  // CÁMARAS - ABRIR NUEVA
+  // =========================================================
+
+  abrirNuevaCamara(): void {
+    this.limpiarFormularioCamara();
+    this.limpiarMensajes();
+    this.modoEdicionCamara = false;
+    this.mostrandoFormularioCamara = true;
+
+    // Actualizar las habitaciones disponibles.
+    this.cargarHabitaciones();
+  }
+
+  // =========================================================
+  // CÁMARAS - CERRAR FORMULARIO
+  // =========================================================
+
+  cerrarFormularioCamara(): void {
+    this.limpiarFormularioCamara();
+    this.mostrandoFormularioCamara = false;
+    this.modoEdicionCamara = false;
+    this.limpiarMensajes();
+  }
+
+  cancelarEdicionCamara(): void {
+    this.cerrarFormularioCamara();
+  }
+
+  // =========================================================
+  // CÁMARAS - LISTAR
+  // =========================================================
+
+  cargarCamaras(): void {
+    this.cargando = true;
+    this.cargandoCamaras = true;
+
+    this.http.get<Camara[]>(
+      `${this.apiUrl}/camaras/`
+    ).subscribe({
+      next: (respuesta) => {
+        console.log('CÁMARAS RECIBIDAS:', respuesta);
+
+        this.camaras = (respuesta || []).map(camara => ({
+          ...camara,
+          id_habitacion:
+            camara.id_habitacion === null ||
+            camara.id_habitacion === undefined
+              ? null
+              : Number(camara.id_habitacion)
+        }));
+
+        this.cargando = false;
+        this.cargandoCamaras = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('ERROR AL CARGAR CÁMARAS:', error);
+
+        this.cargando = false;
+        this.cargandoCamaras = false;
+
+        this.mensajeError = this.obtenerMensajeError(
+          error,
+          'No se pudieron cargar las cámaras.'
+        );
+
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  // =========================================================
+  // CÁMARAS - VALIDAR FORMULARIO
+  // =========================================================
+
+  validarCamara(): boolean {
+    if (!this.camaraForm.nombre.trim()) {
+      alertaAdvertencia(
+        'Campo obligatorio',
+        'El nombre de la cámara es obligatorio.'
+      );
+      return false;
+    }
+
+    if (!this.camaraForm.ubicacion.trim()) {
+      alertaAdvertencia(
+        'Campo obligatorio',
+        'La ubicación de la cámara es obligatoria.'
+      );
+      return false;
+    }
+
+    if (!this.camaraForm.direccion_stream.trim()) {
+      alertaAdvertencia(
+        'Campo obligatorio',
+        'La dirección del stream es obligatoria.'
+      );
+      return false;
+    }
+
+    return true;
+  }
+
+  // =========================================================
+  // CÁMARAS - GUARDAR
+  // =========================================================
+
+  guardarCamara(): void {
+    this.limpiarMensajes();
+
+    if (!this.validarCamara()) {
+      return;
+    }
+
+    if (
+      this.camaraEditando !== null &&
+      this.camaraOriginal &&
+      !this.huboCambios(
+        this.camaraOriginal,
+        this.camaraForm,
+        [
+          'nombre',
+          'ubicacion',
+          'direccion_stream',
+          'tipo',
+          'estado',
+          'id_habitacion'
+        ]
+      )
+    ) {
+      alertaAdvertencia(
+        'Sin cambios',
+        'No modificaste ningún campo de la cámara.'
+      );
+      return;
+    }
+
+    // No enviamos id_camara ni fecha_registro:
+    // el identificador se genera en la base de datos y
+    // la fecha debe gestionarse desde el backend.
+    const datosCamara = {
+      nombre: this.camaraForm.nombre.trim(),
+      ubicacion: this.camaraForm.ubicacion.trim(),
+      direccion_stream: this.camaraForm.direccion_stream.trim(),
+      tipo: this.camaraForm.tipo?.trim() || null,
+      estado: this.camaraForm.estado,
+      id_habitacion:
+        this.camaraForm.id_habitacion === null ||
+        this.camaraForm.id_habitacion === undefined ||
+        this.camaraForm.id_habitacion === ('' as any)
+          ? null
+          : Number(this.camaraForm.id_habitacion)
+    };
+
+    this.cargando = true;
+
+    const esEdicion = this.camaraEditando !== null;
+
+    const peticion = esEdicion
+      ? this.http.patch(
+          `${this.apiUrl}/camaras/${this.camaraEditando}/`,
+          datosCamara
+        )
+      : this.http.post(
+          `${this.apiUrl}/camaras/`,
+          datosCamara
+        );
+
+    peticion.subscribe({
+      next: () => {
+        this.cargando = false;
+
+        alertaExito(
+          esEdicion ? 'Cámara actualizada' : 'Cámara registrada',
+          esEdicion
+            ? 'La cámara se actualizó correctamente.'
+            : 'La cámara se registró correctamente.'
+        );
+
+        this.limpiarFormularioCamara();
+        this.mostrandoFormularioCamara = false;
+        this.modoEdicionCamara = false;
+
+        this.cargarCamaras();
+      },
+      error: (error) => {
+        this.cargando = false;
+
+        console.error(
+          esEdicion
+            ? 'ERROR AL ACTUALIZAR CÁMARA:'
+            : 'ERROR AL REGISTRAR CÁMARA:',
+          error
+        );
+
+        console.error('RESPUESTA DEL SERVIDOR:', error.error);
+
+        alertaError(
+          esEdicion ? 'Error al actualizar' : 'Error al registrar',
+          this.obtenerMensajeError(
+            error,
+            esEdicion
+              ? 'No se pudo actualizar la cámara.'
+              : 'No se pudo registrar la cámara.'
+          )
+        );
+      }
+    });
+  }
+
+  // =========================================================
+  // CÁMARAS - EDITAR
+  // =========================================================
+
+  editarCamara(camara: Camara): void {
+    if (camara.id_camara === undefined) {
+      alertaError(
+        'No se puede editar',
+        'La cámara no tiene un identificador válido.'
+      );
+      return;
+    }
+
+    this.camaraEditando = camara.id_camara;
+
+    this.camaraForm = {
+      id_camara: camara.id_camara,
+      nombre: camara.nombre || '',
+      ubicacion: camara.ubicacion || '',
+      direccion_stream: camara.direccion_stream || '',
+      tipo: camara.tipo ?? '',
+      estado: camara.estado ?? true,
+      fecha_registro: camara.fecha_registro ?? null,
+      id_habitacion:
+        camara.id_habitacion === null ||
+        camara.id_habitacion === undefined
+          ? null
+          : Number(camara.id_habitacion)
+    };
+
+    this.camaraOriginal = { ...this.camaraForm };
+
+    this.limpiarMensajes();
+    this.modoEdicionCamara = true;
+    this.mostrandoFormularioCamara = true;
+
+    this.cargarHabitaciones();
+  }
+
+  // =========================================================
+  // CÁMARAS - ELIMINAR
+  // =========================================================
+
+  eliminarCamara(camara: Camara): void {
+    const id = camara.id_camara;
+
+    if (id === undefined || id === null) {
+      alertaError(
+        'No se puede eliminar',
+        'La cámara no tiene un identificador válido.'
+      );
+      return;
+    }
+
+    alertaEliminar(camara.nombre, 'cámara').then(resultado => {
+      if (!resultado.isConfirmed) {
+        return;
+      }
+
+      this.cargando = true;
+
+      this.http.delete(
+        `${this.apiUrl}/camaras/${id}/`
+      ).subscribe({
+        next: () => {
+          this.cargando = false;
+
+          alertaExito(
+            'Cámara eliminada',
+            'La cámara se eliminó correctamente.'
+          );
+
+          this.cargarCamaras();
+        },
+        error: (error) => {
+          this.cargando = false;
+
+          console.error('ERROR AL ELIMINAR CÁMARA:', error);
+
+          alertaError(
+            'Error al eliminar',
+            this.obtenerMensajeError(
+              error,
+              'No se pudo eliminar la cámara.'
+            )
+          );
+        }
+      });
+    });
+  }
+
+  // =========================================================
+  // CÁMARAS - ACTIVAR / DESACTIVAR
+  // =========================================================
+
+  cambiarEstadoCamara(camara: Camara): void {
+    const id = camara.id_camara;
+
+    if (id === undefined || id === null) {
+      alertaError(
+        'No se puede cambiar el estado',
+        'La cámara no tiene un identificador válido.'
+      );
+      return;
+    }
+
+    const activar = camara.estado !== true;
+
+    const confirmacion = activar
+      ? alertaActivar(camara.nombre, 'cámara')
+      : alertaDesactivar(camara.nombre, 'cámara');
+
+    confirmacion.then(resultado => {
+      if (!resultado.isConfirmed) {
+        return;
+      }
+
+      this.cargando = true;
+
+      this.http.patch(
+        `${this.apiUrl}/camaras/${id}/`,
+        { estado: activar }
+      ).subscribe({
+        next: () => {
+          this.cargando = false;
+
+          alertaExito(
+            activar ? 'Cámara activada' : 'Cámara desactivada',
+            activar
+              ? 'La cámara está activa.'
+              : 'La cámara está inactiva.'
+          );
+
+          this.cargarCamaras();
+        },
+        error: (error) => {
+          this.cargando = false;
+
+          console.error('ERROR AL CAMBIAR ESTADO DE CÁMARA:', error);
+
+          alertaError(
+            'No se pudo cambiar el estado',
+            this.obtenerMensajeError(
+              error,
+              'No se pudo actualizar el estado de la cámara.'
+            )
+          );
+        }
+      });
+    });
+  }
+
+  // =========================================================
+  // CÁMARAS - NOMBRE DE HABITACIÓN
+  // =========================================================
+
+  obtenerNombreHabitacionCamara(
+    idHabitacion: number | null
+  ): string {
+    if (idHabitacion === null || idHabitacion === undefined) {
+      return 'Sin habitación asignada';
+    }
+
+    const habitacion = this.habitaciones.find(
+      item => Number(item.id_habitacion) === Number(idHabitacion)
+    );
+
+    return habitacion
+      ? `${habitacion.nombre} (${habitacion.numero})`
+      : `Habitación ${idHabitacion}`;
+  }
+
+  // =========================================================
+  // CÁMARAS - LIMPIAR FORMULARIO
+  // =========================================================
+
+  limpiarFormularioCamara(): void {
+    this.camaraEditando = null;
+    this.camaraOriginal = null;
+    this.modoEdicionCamara = false;
+
+    this.camaraForm = {
+      nombre: '',
+      ubicacion: '',
+      direccion_stream: '',
+      tipo: '',
+      estado: true,
+      fecha_registro: null,
+      id_habitacion: null
     };
   }
 
