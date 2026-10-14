@@ -355,8 +355,14 @@ export class Login {
           'Has iniciado sesión correctamente.';
 
         alertaExito('¡Bienvenido!', this.mensaje).then(() => {
-        this.router.navigate(['/dashboard']);
-          });
+          const idRol = Number(respuesta.usuario?.id_rol);
+
+          if (idRol === 4) {
+            this.router.navigate(['/superadministrador']);
+          } else {
+            this.router.navigate(['/dashboard']);
+          }
+        });
 
       },
 
@@ -635,11 +641,13 @@ export class Login {
 
           alertaExito('¡Bienvenido!', 'Inicio de sesión con Google exitoso.')
             .then(() => {
+              const idRol = Number(respuesta.usuario?.id_rol);
 
-              this.router.navigate([
-                '/dashboard'
-              ]);
-
+              if (idRol === 4) {
+                this.router.navigate(['/superadministrador']);
+              } else {
+                this.router.navigate(['/dashboard']);
+              }
             });
 
 

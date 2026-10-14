@@ -13,6 +13,7 @@ import { Usuarios } from './usuarios/usuarios';
 import { ElementosPaciente } from './elementos-paciente/elementos-paciente';
 import { BancoDatos } from './banco-datos/banco-datos';
 import { authGuard } from './guards/auth-guard';
+import { Superadministrador } from './superadministrador/superadministrador';
 
 export const routes: Routes = [
 
@@ -45,7 +46,10 @@ export const routes: Routes = [
         redirectTo: 'dashboard',
         pathMatch: 'full'
       },
-
+      {
+        path: 'superadministrador',
+        component: Superadministrador
+      },
       {
         path: 'dashboard',
         component: DashboardComponent
