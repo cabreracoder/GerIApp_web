@@ -312,6 +312,15 @@ export class Layout implements OnDestroy {
     ]);
   }
 
+  esSuperadministrador(): boolean {
+    return this.rolUsuario
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim()
+      .toLowerCase()
+      .includes('superadministrador');
+  }
+
   // =====================================================
   // CERRAR SESIÓN
   // =====================================================

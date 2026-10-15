@@ -564,6 +564,22 @@ editarAdministrador(usuario: Usuario): void {
       <input id="telefono" class="swal2-input"
         placeholder="Teléfono"
         value="${this.escaparHtml(usuario.telefono ?? '')}">
+
+      <label for="estado">Estado</label>
+      <select id="estado" class="swal2-select">
+        <option
+          value="true"
+          ${this.esActivo(usuario.estado) ? 'selected' : ''}
+        >
+          Activo
+        </option>
+        <option
+          value="false"
+          ${!this.esActivo(usuario.estado) ? 'selected' : ''}
+        >
+          Inactivo
+        </option>
+      </select>
     `,
     showCancelButton: true,
     confirmButtonText: 'Guardar cambios',
@@ -590,6 +606,10 @@ editarAdministrador(usuario: Usuario): void {
         popup?.querySelector('#telefono') as HTMLInputElement
       ).value.trim();
 
+      const estado = (
+        popup?.querySelector('#estado') as HTMLSelectElement
+      ).value;
+
       if (!nombres || !apellidos || !correo) {
         Swal.showValidationMessage(
           'Nombres, apellidos y correo son obligatorios.'
@@ -608,7 +628,8 @@ editarAdministrador(usuario: Usuario): void {
         nombres,
         apellidos,
         correo,
-        telefono: telefono || null
+        telefono: telefono || null,
+        estado: estado === 'true'
       };
     }
   }).then(resultado => {
