@@ -568,6 +568,7 @@
               <th scope="col">Teléfono</th>
               <th scope="col">Rol</th>
               <th scope="col">Estado</th>
+              <th scope="col">Acciones</th>
             </tr>
           </thead>
 
@@ -604,6 +605,24 @@
                       : 'Inactivo'
                   }}
                 </span>
+              </td>
+               <td>
+                <div class="admin-actions">
+                  <button
+                    type="button"
+                    class="btn-secondary btn-small"
+                    (click)="editarAdministrador(administrador)"
+                    [attr.aria-label]="'Editar administrador ' + administrador.nombres"
+                  >
+                    <span
+                      class="material-symbols-outlined"
+                      aria-hidden="true"
+                    >
+                      edit
+                    </span>
+                    Editar
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>

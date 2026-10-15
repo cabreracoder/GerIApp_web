@@ -56,6 +56,23 @@
     <!-- MENÚ INFERIOR -->
     <div class="layout-sidebar-footer">
 
+    <!-- VOLVER AL SÚPER ADMINISTRADOR -->
+    <a
+      *ngIf="esSuperadministrador()"
+      routerLink="/superadministrador"
+      class="layout-menu-button"
+      title="Volver al Súper Administrador"
+      aria-label="Volver al Súper Administrador"
+    >
+      <span class="material-symbols-outlined">
+        admin_panel_settings
+      </span>
+
+      <span class="layout-menu-tooltip">
+        Volver al Súper Administrador
+      </span>
+    </a>
+
       <!-- CERRAR SESIÓN -->
       <button
         type="button"
