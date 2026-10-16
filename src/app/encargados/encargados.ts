@@ -418,7 +418,7 @@ export class Encargados implements OnInit {
       next: (respuesta: any[]) => {
 
         this.encargados = respuesta
-          .filter((usuario: any) => usuario.id_rol === 6)
+          .filter((usuario: any) => usuario.id_rol === 2)
           .map((usuario: any): Encargado => ({
             id: usuario.id_usuario,
             tipoDocumento: usuario.tipo_documento,
@@ -640,7 +640,7 @@ export class Encargados implements OnInit {
       }
     });
   }
-  
+
   // =====================================================
   // CERRAR MODAL
   // =====================================================
@@ -859,7 +859,7 @@ export class Encargados implements OnInit {
       valido = false;
     }
 
-     if (!this.formulario.apellidos.trim()) {
+    if (!this.formulario.apellidos.trim()) {
 
       this.errores.apellidos = true;
 
@@ -942,19 +942,19 @@ export class Encargados implements OnInit {
        * Cuando me pases tu servicio/endpoints, esta parte
        * se conecta directamente con POST, PUT/PATCH.
        */
-     alertaAdvertencia('Revisa el formulario', mensaje);
+      alertaAdvertencia('Revisa el formulario', mensaje);
       return;
     }
 
     if (this.DocumentoDuplicado(this.formulario.documento)) {
       this.errores.documento = true;
-    alertaAdvertencia('Documento duplicado', 'El número de documento ya se encuentra registrado.');
+      alertaAdvertencia('Documento duplicado', 'El número de documento ya se encuentra registrado.');
       return;
     }
 
     if (this.emailDuplicado(this.formulario.email)) {
       this.errores.email = true;
-alertaAdvertencia('Correo duplicado', 'El correo electrónico ya se encuentra registrado.');
+      alertaAdvertencia('Correo duplicado', 'El correo electrónico ya se encuentra registrado.');
       return;
     }
 
@@ -970,7 +970,7 @@ alertaAdvertencia('Correo duplicado', 'El correo electrónico ya se encuentra re
       telefono: this.formulario.telefono,
       fecha_ingreso: this.formulario.fechaIngreso,
       estado: this.formulario.estado === 'Activo',
-      id_rol: 6,
+      id_rol: 2,
     };
 
     if (this.modoEdicion && this.idEditando) {
@@ -1044,7 +1044,7 @@ alertaAdvertencia('Correo duplicado', 'El correo electrónico ya se encuentra re
 
           next: () => {
 
-          alertaExito(nuevoEstadoTexto === 'Activo' ? 'Encargado activado' : 'Encargado desactivado');
+            alertaExito(nuevoEstadoTexto === 'Activo' ? 'Encargado activado' : 'Encargado desactivado');
 
             this.cargarEncargados();
           },
@@ -1053,7 +1053,7 @@ alertaAdvertencia('Correo duplicado', 'El correo electrónico ya se encuentra re
 
             console.error(err);
 
-          alertaError('Error al actualizar estado', 'No se pudo actualizar el estado del encargado.'); 
+            alertaError('Error al actualizar estado', 'No se pudo actualizar el estado del encargado.');
           },
         });
     });
@@ -1273,7 +1273,7 @@ alertaAdvertencia('Correo duplicado', 'El correo electrónico ya se encuentra re
     const mes = String(fechaObj.getMonth() + 1).padStart(2, '0');
 
     const anio = fechaObj.getFullYear();
-  
+
 
     return `${dia}/${mes}/${anio}`;
   }
