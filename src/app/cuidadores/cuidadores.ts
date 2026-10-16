@@ -436,7 +436,7 @@ export class Cuidadores implements OnInit {
         console.log('Usuarios recibidos de la API:', usuarios);
 
         const cuidadores = usuarios.filter(
-          usuario => usuario.id_rol === 5
+          usuario => usuario.id_rol === 3
         );
 
         this.http.get<IPerfilProfesional[]>(this.perfilUrl)
@@ -951,7 +951,7 @@ export class Cuidadores implements OnInit {
       telefono: this.formulario.telefono,
       fecha_ingreso: this.formulario.fechaIngreso,
       estado: this.formulario.estado === 'activo',
-      id_rol: 5
+      id_rol: 3
     };
     const datosCuidador = new FormData();
 
