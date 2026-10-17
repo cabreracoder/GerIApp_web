@@ -24,6 +24,7 @@ interface Rol {
 
 interface Usuario {
   id_usuario: number;
+  id_sede?: number | null;
   id_rol: number | { id_rol?: number; nombre?: string };
   nombres: string;
   apellidos: string;
@@ -673,90 +674,154 @@ editarAdministrador(usuario: Usuario): void {
   // ==========================================
 
   asignarAdministrador(): void {
-    const rolAdministrador = this.obtenerRolAdministrador();
+  const rolAdministrador = this.obtenerRolAdministrador();
 
-    if (!rolAdministrador) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Rol no encontrado',
-        text: 'No se encontró el rol Administrador en el sistema.',
-        confirmButtonColor: '#3B5BDB',
-      });
-      return;
-    }
+  if (!rolAdministrador) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Rol no encontrado',
+      text: 'No se encontró el rol Administrador en el sistema.',
+      confirmButtonColor: '#3B5BDB',
+    });
+    return;
+  }
 
-    // Buscar usuarios que todavía no sean administradores
-    // ni superadministradores.
-    const usuariosElegibles = this.usuariosDisponibles
-      .filter(
-        (usuario) =>
-          !this.esRolAdministrador(usuario) &&
-          !this.esRolSuperadministrador(usuario)
+  // Obtener usuarios que todavía no sean administradores.
+  const usuariosElegibles = this.usuariosDisponibles
+    .filter(
+      (usuario) =>
+        !this.esRolAdministrador(usuario) &&
+        !this.esRolSuperadministrador(usuario)
+    )
+    .sort((a, b) =>
+      `${a.nombres} ${a.apellidos}`.localeCompare(
+        `${b.nombres} ${b.apellidos}`
       )
-      .sort((a, b) =>
-        `${a.nombres} ${a.apellidos}`.localeCompare(
-          `${b.nombres} ${b.apellidos}`
-        )
-      );
+    );
 
-    if (usuariosElegibles.length === 0) {
-      Swal.fire({
-        icon: 'info',
-        title: 'No hay usuarios disponibles',
-        text: 'No se encontraron usuarios a los que se pueda asignar este rol.',
-        confirmButtonColor: '#3B5BDB',
-      });
+  if (usuariosElegibles.length === 0) {
+    Swal.fire({
+      icon: 'info',
+      title: 'No hay usuarios disponibles',
+      text:
+        'No se encontraron usuarios a los que se pueda asignar este rol.',
+      confirmButtonColor: '#3B5BDB',
+    });
+    return;
+  }
+
+  // Obtener únicamente las sedes activas.
+  const sedesActivas = this.sedes.filter(
+    (sede) => this.esActivo(sede.estado)
+  );
+
+  if (sedesActivas.length === 0) {
+    Swal.fire({
+      icon: 'info',
+      title: 'No hay sedes activas',
+      text:
+        'Registra o activa una sede antes de asignar un administrador.',
+      confirmButtonColor: '#3B5BDB',
+    });
+    return;
+  }
+
+  // Preparar las opciones de usuarios.
+  const opcionesUsuarios: Record<string, string> = {};
+
+  usuariosElegibles.forEach((usuario) => {
+    opcionesUsuarios[String(usuario.id_usuario)] =
+      `${usuario.nombres} ${usuario.apellidos} — ${usuario.correo}`;
+  });
+
+  // Primer paso: seleccionar el usuario.
+  Swal.fire({
+    title: 'Asignar administrador',
+    text: 'Selecciona el usuario que recibirá este rol.',
+    input: 'select',
+    inputOptions: opcionesUsuarios,
+    inputPlaceholder: 'Selecciona un usuario',
+    showCancelButton: true,
+    confirmButtonText: 'Continuar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#3B5BDB',
+    inputValidator: (valor) => {
+      if (!valor) {
+        return 'Debes seleccionar un usuario.';
+      }
+
+      return null;
+    },
+  }).then((resultadoUsuario) => {
+    if (!resultadoUsuario.isConfirmed || !resultadoUsuario.value) {
       return;
     }
 
-    // Construir las opciones del selector.
-    const opciones: Record<string, string> = {};
+    const idUsuario = Number(resultadoUsuario.value);
 
-    usuariosElegibles.forEach((usuario) => {
-      opciones[String(usuario.id_usuario)] =
-        `${usuario.nombres} ${usuario.apellidos} — ${usuario.correo}`;
+    const usuarioSeleccionado = usuariosElegibles.find(
+      (usuario) => usuario.id_usuario === idUsuario
+    );
+
+    if (!usuarioSeleccionado) {
+      return;
+    }
+
+    // Segundo paso: seleccionar la sede.
+    const opcionesSedes: Record<string, string> = {};
+
+    sedesActivas.forEach((sede) => {
+      opcionesSedes[String(sede.id_sede)] = sede.nombre;
     });
 
-    // Seleccionar el usuario existente.
     Swal.fire({
-      title: 'Asignar administrador',
-      text: 'Selecciona el usuario que recibirá este rol.',
+      title: 'Seleccionar sede',
+      text:
+        `Selecciona la sede que administrará ` +
+        `${usuarioSeleccionado.nombres} ${usuarioSeleccionado.apellidos}.`,
       input: 'select',
-      inputOptions: opciones,
-      inputPlaceholder: 'Selecciona un usuario',
+      inputOptions: opcionesSedes,
+      inputPlaceholder: 'Selecciona una sede activa',
       showCancelButton: true,
       confirmButtonText: 'Continuar',
       cancelButtonText: 'Cancelar',
       confirmButtonColor: '#3B5BDB',
       inputValidator: (valor) => {
         if (!valor) {
-          return 'Debes seleccionar un usuario.';
+          return 'Debes seleccionar una sede.';
         }
 
         return null;
       },
-    }).then((resultado) => {
-      if (!resultado.isConfirmed || !resultado.value) {
+    }).then((resultadoSede) => {
+      if (!resultadoSede.isConfirmed || !resultadoSede.value) {
         return;
       }
 
-      const idUsuario = Number(resultado.value);
+      const idSede = Number(resultadoSede.value);
 
-      const usuarioSeleccionado = usuariosElegibles.find(
-        (usuario) => usuario.id_usuario === idUsuario
+      const sedeSeleccionada = sedesActivas.find(
+        (sede) => sede.id_sede === idSede
       );
 
-      if (!usuarioSeleccionado) {
+      if (!sedeSeleccionada) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Sede no válida',
+          text: 'No se encontró la sede seleccionada entre las sedes activas.',
+          confirmButtonColor: '#3B5BDB',
+        });
         return;
       }
 
-      // Confirmar antes de cambiar el rol.
+      // Tercer paso: confirmar usuario, rol y sede.
       Swal.fire({
         icon: 'question',
         title: '¿Confirmar asignación?',
         text:
           `Se asignará el rol Administrador a ` +
-          `${usuarioSeleccionado.nombres} ${usuarioSeleccionado.apellidos}.`,
+          `${usuarioSeleccionado.nombres} ${usuarioSeleccionado.apellidos} ` +
+          `para la sede ${sedeSeleccionada.nombre}.`,
         showCancelButton: true,
         confirmButtonText: 'Sí, asignar',
         cancelButtonText: 'Cancelar',
@@ -766,33 +831,39 @@ editarAdministrador(usuario: Usuario): void {
           return;
         }
 
-        // Actualizar únicamente el rol del usuario seleccionado.
+        // Cuarto paso: actualizar el rol y la sede en un solo PATCH.
         this.http
           .patch(
             `${this.apiUrl}/usuarios/${idUsuario}/`,
-            { id_rol: rolAdministrador.id_rol }
+            {
+              id_rol: rolAdministrador.id_rol,
+              id_sede: idSede,
+            }
           )
           .subscribe({
             next: () => {
               Swal.fire({
                 icon: 'success',
-                title: 'Rol asignado',
-                text: 'El usuario ahora tiene el rol Administrador.',
+                title: 'Administrador asignado',
+                text:
+                  `${usuarioSeleccionado.nombres} ` +
+                  `${usuarioSeleccionado.apellidos} ahora tiene el rol ` +
+                  `Administrador en la sede ${sedeSeleccionada.nombre}.`,
                 confirmButtonColor: '#3B5BDB',
               });
 
-              // Actualizar la lista de administradores.
               this.listarAdministradores();
+              this.listarSedes();
             },
             error: (error) => {
               console.error(
-                'Error al asignar el rol Administrador:',
+                'Error al asignar el rol y la sede:',
                 error
               );
 
               Swal.fire({
                 icon: 'error',
-                title: 'No se pudo asignar el rol',
+                title: 'No se pudo completar la asignación',
                 text: this.obtenerMensajeError(error),
                 confirmButtonColor: '#3B5BDB',
               });
@@ -800,7 +871,83 @@ editarAdministrador(usuario: Usuario): void {
           });
       });
     });
+  });
+}
+
+async asignarSedeAdministrador(usuario: Usuario): Promise<void> {
+  const sedesActivas = this.sedes.filter(
+    (sede) => this.esActivo(sede.estado)
+  );
+
+  if (sedesActivas.length === 0) {
+    await Swal.fire({
+      icon: 'warning',
+      title: 'Sin sedes disponibles',
+      text: 'No hay sedes activas para asignar.',
+      confirmButtonColor: '#3B5BDB',
+    });
+    return;
   }
+
+  const opcionesSedes: Record<string, string> = {};
+
+  sedesActivas.forEach((sede) => {
+    opcionesSedes[String(sede.id_sede)] = sede.nombre;
+  });
+
+  const resultado = await Swal.fire({
+    title: 'Asignar sede',
+    text: `Selecciona la sede para ${usuario.nombres} ${usuario.apellidos}.`,
+    input: 'select',
+    inputOptions: opcionesSedes,
+    inputValue: usuario.id_sede
+      ? String(usuario.id_sede)
+      : '',
+    inputPlaceholder: 'Selecciona una sede',
+    showCancelButton: true,
+    confirmButtonText: 'Guardar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#3B5BDB',
+    inputValidator: (valor) => {
+      if (!valor) {
+        return 'Debes seleccionar una sede.';
+      }
+      return null;
+    },
+  });
+
+  if (!resultado.isConfirmed || !resultado.value) {
+    return;
+  }
+
+  const idSede = Number(resultado.value);
+
+  this.http
+    .patch(
+      `${this.apiUrl}/usuarios/${usuario.id_usuario}/`,
+      { id_sede: idSede }
+    )
+    .subscribe({
+      next: async () => {
+        await Swal.fire({
+          icon: 'success',
+          title: 'Sede actualizada',
+          text: 'La sede del administrador se actualizó correctamente.',
+          confirmButtonColor: '#3B5BDB',
+        });
+
+        this.listarAdministradores();
+      },
+      error: (error) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'No se pudo actualizar',
+          text: this.obtenerMensajeError(error),
+          confirmButtonColor: '#3B5BDB',
+        });
+      },
+    });
+}
 
   nombreRol(usuario: Usuario): string {
     if (
@@ -826,11 +973,8 @@ editarAdministrador(usuario: Usuario): void {
   }
 
   private esRolAdministrador(usuario: Usuario): boolean {
-    const nombre = this.normalizarTexto(this.nombreRol(usuario));
-
     return (
-      nombre.includes('administrador') &&
-      !nombre.includes('superadministrador')
+      this.normalizarTexto(this.nombreRol(usuario)) === 'administrador'
     );
   }
 
@@ -840,14 +984,9 @@ editarAdministrador(usuario: Usuario): void {
   }
 
   private obtenerRolAdministrador(): Rol | undefined {
-    return this.roles.find((rol) => {
-      const nombre = this.normalizarTexto(rol.nombre);
-
-      return (
-        nombre.includes('administrador') &&
-        !nombre.includes('superadministrador')
-      );
-    });
+    return this.roles.find(
+      (rol) => this.normalizarTexto(rol.nombre) === 'administrador'
+    );
   }
 
   // ==========================================
