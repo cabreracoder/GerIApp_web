@@ -399,13 +399,6 @@
 
       <!-- Nota sobre la asignación de sedes -->
       <div class="information-note">
-        <span class="material-symbols-outlined" aria-hidden="true">
-          info
-        </span>
-        <p>
-          La asignación de administradores a sedes queda pendiente de
-          verificar la relación existente en la base de datos.
-        </p>
       </div>
     </div>
   </section>
@@ -622,6 +615,20 @@
                     </span>
                     Editar
                   </button>
+                  <button
+                    type="button"
+                    class="btn-secondary btn-small"
+                    (click)="asignarSedeAdministrador(administrador)"
+                    [attr.aria-label]="'Asignar sede al administrador ' + administrador.nombres"
+                  >
+                    <span
+                      class="material-symbols-outlined"
+                      aria-hidden="true"
+                    >
+                      apartment
+                    </span>
+                    Sede
+                  </button>
                 </div>
               </td>
             </tr>
@@ -631,14 +638,6 @@
 
       <!-- Información complementaria -->
       <div class="information-note">
-        <span class="material-symbols-outlined" aria-hidden="true">
-          info
-        </span>
-        <p>
-          La lista identifica las cuentas por su rol actual. La asignación
-          de administradores a sedes se implementará únicamente después
-          de confirmar la relación correspondiente en la base de datos.
-        </p>
       </div>
     </div>
   </section>
