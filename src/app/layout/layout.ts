@@ -8,6 +8,16 @@ import {
   Router
 } from '@angular/router';
 import { SocialAuthService } from '@abacritt/angularx-social-login';
+import { Store } from '@ngrx/store';
+import { AppState, selectUsuario } from '../store/reducer';
+import {
+  cerrarSesion,
+  iniciarSesion,
+  actualizarUsuario,
+  UsuarioSesion
+} from '../store/action';
+
+
 
 
 interface OpcionMenu {
@@ -23,7 +33,7 @@ interface UsuarioActualizado {
   apellidos: string;
   correo?: string;
   telefono?: string | null;
-  rol?: string;
+  rol?: string | null;
   foto?: string | null;
   [key: string]: any;
 }
@@ -68,22 +78,39 @@ export class Layout implements OnDestroy {
         usuario
       );
 
-      this.actualizarDatosUsuario(usuario);
+      // Sincronizar los datos con NgRx.
+      this.store.dispatch(
+        actualizarUsuario({
+          usuario: usuario as UsuarioSesion
+        })
+      );
 
       this.cdr.detectChanges();
     };
+
+    
+  private suscripcionUsuario?: import('rxjs').Subscription;
+
 
   constructor(
     private router: Router,
     private cdr: ChangeDetectorRef,
     private socialAuthService: SocialAuthService,
-    private http: HttpClient
+    private http: HttpClient,
+    private store: Store<AppState>
   ) {
 
     this.cargarUsuario();
 
-    this.cargarNombreInstitucion();
+    this.suscripcionUsuario = this.store
+      .select(selectUsuario)
+      .subscribe((usuario) => {
+        if (usuario) {
+          this.actualizarDatosUsuario(usuario);
+        }
+      });
 
+    this.cargarNombreInstitucion();
     // ===================================================
     // ESCUCHAR CAMBIOS DE CONFIGURACIÓN
     // ===================================================
@@ -333,13 +360,12 @@ export class Layout implements OnDestroy {
 
     this.socialAuthService.signOut();
 
-    localStorage.removeItem(
-      'usuario'
-    );
+    localStorage.removeItem('usuario');
+    localStorage.removeItem('token');
 
-    this.router.navigate([
-      '/login'
-    ]);
+    this.store.dispatch(cerrarSesion());
+
+    this.router.navigate(['/login']);
   }
 
   // =====================================================
@@ -352,6 +378,7 @@ export class Layout implements OnDestroy {
       'usuarioActualizado',
       this.usuarioActualizadoListener
     );
+    this.suscripcionUsuario?.unsubscribe();
   }
 }
 

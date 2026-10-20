@@ -6,6 +6,8 @@ import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef } from '@angular/core';
 import Swal from 'sweetalert2';
 import { SocialAuthService, GoogleLoginProvider, SocialUser, GoogleSigninButtonDirective } from '@abacritt/angularx-social-login';
+import { Store } from '@ngrx/store';
+import { iniciarSesion, UsuarioSesion } from '../store/action';
 
 // =====================================================
 // ALERTAS (SweetAlert2 + Tailwind)
@@ -277,7 +279,8 @@ export class Login {
     private http: HttpClient,
     private router: Router,
     private cd: ChangeDetectorRef,
-    private socialAuthService: SocialAuthService
+    private socialAuthService: SocialAuthService,
+    private store: Store
 
   ) {
 
@@ -342,12 +345,21 @@ export class Login {
           respuesta
         );
 
-        if (respuesta.usuario) {
-
+       if (respuesta.usuario) {
           localStorage.setItem(
             'usuario',
             JSON.stringify(respuesta.usuario)
           );
+
+          this.store.dispatch(
+            iniciarSesion({
+              usuario: respuesta.usuario as UsuarioSesion
+            })
+          );
+        }
+
+        if (respuesta.token) {
+          localStorage.setItem('token', respuesta.token);
         }
 
         this.mensaje =
@@ -630,12 +642,20 @@ export class Login {
 
 
           if (respuesta.usuario) {
-
             localStorage.setItem(
               'usuario',
               JSON.stringify(respuesta.usuario)
             );
 
+            this.store.dispatch(
+              iniciarSesion({
+                usuario: respuesta.usuario as UsuarioSesion
+              })
+            );
+          }
+
+          if (respuesta.token) {
+            localStorage.setItem('token', respuesta.token);
           }
 
 
