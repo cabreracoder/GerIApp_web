@@ -1117,6 +1117,27 @@
 
             <div class="formulario-grid">
 
+              <!-- SEDE DE LA HABITACIÓN -->
+              <div class="campo-formulario campo-completo">
+
+                <label for="sedeHabitacion">
+                  Sede
+                </label>
+
+                <select id="sedeHabitacion" [(ngModel)]="habitacionActual.id_sede" name="sedeHabitacion" required>
+
+                  <option [ngValue]="null" disabled>
+                    Seleccione una sede
+                  </option>
+
+                  <option *ngFor="let sede of sedesActivas" [ngValue]="sede.id_sede">
+                    {{ sede.nombre }}
+                  </option>
+
+                </select>
+
+              </div>
+
               <div class="campo-formulario">
 
                 <label for="nombreHabitacion">
@@ -1218,6 +1239,7 @@
           <thead>
 
             <tr>
+              <th>Sede</th>
               <th>Nombre</th>
               <th>Número</th>
               <th>Descripción</th>
@@ -1233,7 +1255,9 @@
 
             <tr *ngFor="let habitacion of habitaciones">
 
-
+              <td>
+                {{ obtenerNombreSedeHabitacion(habitacion.id_sede) }}
+              </td>
               <td>
                 {{ habitacion.nombre }}
               </td>
@@ -1314,7 +1338,7 @@
 
             <tr *ngIf="habitaciones.length === 0">
 
-              <td colspan="5" class="sin-registros">
+              <td colspan="6" class="sin-registros">
 
                 No hay habitaciones registradas.
 
@@ -1818,7 +1842,7 @@
       </div>
 
 
-           <!-- =================================================
+      <!-- =================================================
            TABLA GRUPOS DE MEDICACIÓN
       ================================================== -->
       <div class="tabla-contenedor">
@@ -1843,21 +1867,17 @@
               <td>{{ grupo.descripcion || 'Sin descripción' }}</td>
               <td>{{ grupo.hora_administracion }}</td>
               <td>
-                <span class="estado"
-                  [class.estado-activo]="grupo.estado"
-                  [class.estado-inactivo]="!grupo.estado">
+                <span class="estado" [class.estado-activo]="grupo.estado" [class.estado-inactivo]="!grupo.estado">
                   {{ grupo.estado ? 'Activo' : 'Inactivo' }}
                 </span>
               </td>
               <td>
                 <div class="acciones-tabla">
-                  <button type="button" class="boton-accion boton-editar"
-                    title="Editar grupo de medicación"
+                  <button type="button" class="boton-accion boton-editar" title="Editar grupo de medicación"
                     (click)="editarGrupoMedicacion(grupo)">
                     <span class="material-symbols-outlined">edit</span>
                   </button>
-                  <button type="button" class="boton-accion boton-eliminar"
-                    title="Eliminar grupo de medicación"
+                  <button type="button" class="boton-accion boton-eliminar" title="Eliminar grupo de medicación"
                     (click)="eliminarGrupoMedicacion(grupo)">
                     <span class="material-symbols-outlined">delete</span>
                   </button>
@@ -1884,9 +1904,7 @@
           <p>Administre las cámaras utilizadas para la vigilancia de las habitaciones.</p>
         </div>
 
-        <button type="button" class="boton-nuevo"
-          *ngIf="!mostrandoFormularioCamara"
-          (click)="abrirNuevaCamara()">
+        <button type="button" class="boton-nuevo" *ngIf="!mostrandoFormularioCamara" (click)="abrirNuevaCamara()">
           <span class="material-symbols-outlined">add</span>
           Nueva cámara
         </button>
@@ -1902,15 +1920,14 @@
               </h3>
               <p>
                 {{
-                  modoEdicionCamara
-                    ? 'Modifique la información de la cámara.'
-                    : 'Ingrese la información de la nueva cámara.'
+                modoEdicionCamara
+                ? 'Modifique la información de la cámara.'
+                : 'Ingrese la información de la nueva cámara.'
                 }}
               </p>
             </div>
 
-            <button type="button" class="boton-cerrar"
-              (click)="cerrarFormularioCamara()">
+            <button type="button" class="boton-cerrar" (click)="cerrarFormularioCamara()">
               <span class="material-symbols-outlined">close</span>
             </button>
           </div>
@@ -1919,27 +1936,19 @@
             <div class="formulario-grid">
               <div class="campo-formulario">
                 <label for="nombreCamara">Nombre</label>
-                <input id="nombreCamara" type="text"
-                  [(ngModel)]="camaraActual.nombre"
-                  name="nombreCamara"
-                  placeholder="Ej. Cámara habitación 1"
-                  required>
+                <input id="nombreCamara" type="text" [(ngModel)]="camaraActual.nombre" name="nombreCamara"
+                  placeholder="Ej. Cámara habitación 1" required>
               </div>
 
               <div class="campo-formulario">
                 <label for="ubicacionCamara">Ubicación</label>
-                <input id="ubicacionCamara" type="text"
-                  [(ngModel)]="camaraActual.ubicacion"
-                  name="ubicacionCamara"
-                  placeholder="Ej. Esquina superior derecha"
-                  required>
+                <input id="ubicacionCamara" type="text" [(ngModel)]="camaraActual.ubicacion" name="ubicacionCamara"
+                  placeholder="Ej. Esquina superior derecha" required>
               </div>
 
               <div class="campo-formulario">
                 <label for="tipoCamara">Tipo de cámara</label>
-                <select id="tipoCamara"
-                  [(ngModel)]="camaraActual.tipo"
-                  name="tipoCamara">
+                <select id="tipoCamara" [(ngModel)]="camaraActual.tipo" name="tipoCamara">
                   <option [ngValue]="null">Sin especificar</option>
                   <option value="IP">IP</option>
                   <option value="USB">USB</option>
@@ -1951,15 +1960,11 @@
 
               <div class="campo-formulario">
                 <label for="habitacionCamara">Habitación</label>
-                <select id="habitacionCamara"
-                  [(ngModel)]="camaraActual.id_habitacion"
-                  name="habitacionCamara"
-                  required>
+                <select id="habitacionCamara" [(ngModel)]="camaraActual.id_habitacion" name="habitacionCamara" required>
                   <option [ngValue]="null" disabled>
                     Seleccione una habitación
                   </option>
-                  <option *ngFor="let habitacion of habitaciones"
-                    [ngValue]="habitacion.id_habitacion"
+                  <option *ngFor="let habitacion of habitaciones" [ngValue]="habitacion.id_habitacion"
                     [disabled]="!habitacion.estado">
                     {{ habitacion.nombre }} - {{ habitacion.numero }}
                   </option>
@@ -1968,19 +1973,14 @@
 
               <div class="campo-formulario campo-completo">
                 <label for="direccionStreamCamara">Dirección del stream</label>
-                <textarea id="direccionStreamCamara"
-                [(ngModel)]="camaraActual.direccion_stream"
-                name="direccionStreamCamara"
-                placeholder="Ingrese la URL del stream o la dirección de la cámara"
-                rows="3"
-                required></textarea>
+                <textarea id="direccionStreamCamara" [(ngModel)]="camaraActual.direccion_stream"
+                  name="direccionStreamCamara" placeholder="Ingrese la URL del stream o la dirección de la cámara"
+                  rows="3" required></textarea>
               </div>
 
               <div class="campo-formulario">
                 <label for="estadoCamara">Estado</label>
-                <select id="estadoCamara"
-                  [(ngModel)]="camaraActual.estado"
-                  name="estadoCamara">
+                <select id="estadoCamara" [(ngModel)]="camaraActual.estado" name="estadoCamara">
                   <option [ngValue]="true">Activa</option>
                   <option [ngValue]="false">Inactiva</option>
                 </select>
@@ -1988,13 +1988,11 @@
             </div>
 
             <div class="acciones-formulario">
-              <button type="button" class="boton-secundario"
-                (click)="cerrarFormularioCamara()">
+              <button type="button" class="boton-secundario" (click)="cerrarFormularioCamara()">
                 Cancelar
               </button>
 
-              <button type="submit" class="boton-guardar"
-                [disabled]="formCamara.invalid">
+              <button type="submit" class="boton-guardar" [disabled]="formCamara.invalid">
                 <span class="material-symbols-outlined">save</span>
                 {{ modoEdicionCamara ? 'Actualizar cámara' : 'Guardar cámara' }}
               </button>
@@ -2029,22 +2027,18 @@
               <td>{{ camara.tipo }}</td>
               <td>{{ obtenerNombreHabitacionCamara(camara.id_habitacion) }}</td>
               <td>
-                <span class="estado"
-                  [class.estado-activo]="camara.estado"
-                  [class.estado-inactivo]="!camara.estado">
+                <span class="estado" [class.estado-activo]="camara.estado" [class.estado-inactivo]="!camara.estado">
                   {{ camara.estado ? 'Activa' : 'Inactiva' }}
                 </span>
               </td>
               <td>
                 <div class="acciones-tabla">
-                  <button type="button" class="boton-accion boton-editar"
-                    title="Editar cámara"
+                  <button type="button" class="boton-accion boton-editar" title="Editar cámara"
                     (click)="editarCamara(camara)">
                     <span class="material-symbols-outlined">edit</span>
                   </button>
 
-                  <button type="button" class="boton-accion boton-eliminar"
-                    title="Eliminar cámara"
+                  <button type="button" class="boton-accion boton-eliminar" title="Eliminar cámara"
                     (click)="eliminarCamara(camara)">
                     <span class="material-symbols-outlined">delete</span>
                   </button>

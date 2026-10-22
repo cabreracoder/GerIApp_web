@@ -1286,9 +1286,29 @@ export class Cuidadores implements OnInit {
 
         error: error => {
           console.error('Error eliminando cuidador:', error);
-          alertaError('Error al eliminar', 'No se pudo eliminar el cuidador.');
-        }
 
+          const mensajeBackend = JSON.stringify(error.error ?? {})
+            .toLowerCase();
+
+          const tieneAsignaciones =
+            mensajeBackend.includes('asignacion') ||
+            mensajeBackend.includes('asignación') ||
+            mensajeBackend.includes('paciente') ||
+            mensajeBackend.includes('foreign key') ||
+            mensajeBackend.includes('protected');
+
+          if (tieneAsignaciones) {
+            alertaAdvertencia(
+              'No se puede eliminar',
+              'No se puede eliminar el cuidador porque tiene asignaciones registradas.'
+            );
+          } else {
+            alertaError(
+              'Error al eliminar',
+              'No se pudo eliminar el cuidador. Inténtalo nuevamente más tarde.'
+            );
+          }
+        }
       });
 
     });

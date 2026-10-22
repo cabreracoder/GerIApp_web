@@ -724,30 +724,101 @@ tbody tr:hover {
 }
 
 /* =========================================================
-   FOTO DE PERFIL DEL CUIDADOR
+   FOTO DE PERFIL
 ========================================================= */
 
-.vista-previa-foto {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: var(--spacing-xs);
+.campo-foto-perfil {
+  min-width: 0;
+  width: 100%;
 }
 
-.vista-previa-foto img {
+.control-foto-perfil {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+
+  padding: 4px 6px 4px 11px;
+
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+
+  background: var(--bg-surface);
+
+  transition: border-color 0.2s ease;
+}
+
+.control-foto-perfil:focus-within {
+  border-color: var(--color-secondary);
+}
+
+.nombre-archivo-foto {
+  flex: 1;
+  min-width: 0;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  color: var(--text-secondary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+}
+
+.boton-foto-perfil {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  flex-shrink: 0;
+  min-height: 30px;
+  padding: 0 9px;
+
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+
+  background: var(--bg-neutral-light);
+  color: var(--text-secondary);
+
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+
+  white-space: nowrap;
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.boton-foto-perfil:hover {
+  background: var(--bg-surface);
+  border-color: var(--color-secondary);
+  color: var(--color-primary);
+}
+
+.boton-foto-perfil .material-symbols-outlined {
+  font-size: 18px;
+}
+
+.campo-foto-perfil .vista-previa-foto {
+  margin-top: var(--spacing-sm);
+  display: flex;
+  justify-content: center;
+}
+
+.campo-foto-perfil .vista-previa-foto img {
   width: 70px;
   height: 70px;
+
   object-fit: cover;
   border-radius: var(--radius-full);
   border: 1px solid var(--border-color);
-  display: block;
-}
-
-/* Imagen de perfil en el detalle del cuidador */
-.imagen-avatar-detalle {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: var(--radius-full);
-  display: block;
 }

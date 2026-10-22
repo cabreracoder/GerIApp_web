@@ -8,6 +8,12 @@ interface Catalogo {
   nombre: string;
 }
 
+interface Sede {
+  id_sede: number;
+  nombre: string;
+  estado: boolean;
+}
+
 interface Medicamento {
   id_medicamentos?: number;
   nombre: string;
@@ -46,6 +52,7 @@ interface Turno {
 
 interface Habitacion {
   id_habitacion?: number;
+  id_sede: number | null;
   nombre: string;
   numero: string;
   descripcion: string | null;
@@ -397,6 +404,12 @@ export class BancoDatos implements OnInit {
 
   habitaciones: Habitacion[] = [];
 
+  sedes: Sede[] = [];
+
+  get sedesActivas(): Sede[] {
+    return this.sedes.filter(sede => sede.estado === true);
+  }
+
   // =========================================================
   // CATÁLOGOS
   // =========================================================
@@ -424,7 +437,7 @@ export class BancoDatos implements OnInit {
       nombre: 'Grupos de medicación'
     },
     {
-  nombre: 'Cámaras'
+      nombre: 'Cámaras'
     }
   ];
 
@@ -547,6 +560,7 @@ export class BancoDatos implements OnInit {
   private habitacionOriginal: Habitacion | null = null;
 
   habitacionForm: Habitacion = {
+    id_sede: null,
     nombre: '',
     numero: '',
     descripcion: '',
@@ -571,7 +585,7 @@ export class BancoDatos implements OnInit {
     estado: true,
     id_habitacion: null
   };
- 
+
   // =========================================================
   // CÁMARAS
   // =========================================================
@@ -731,9 +745,12 @@ export class BancoDatos implements OnInit {
         this.cargarTurnos();
         break;
 
+
       case 'Habitaciones':
+        this.cargarSedes();
         this.cargarHabitaciones();
         break;
+
 
       case 'Camas':
         this.cargarHabitaciones();
@@ -743,11 +760,11 @@ export class BancoDatos implements OnInit {
       case 'Grupos de medicación':
         this.cargarGruposMedicacion();
         break;
-      
-        case 'Cámaras':
-  this.cargarHabitaciones();
-  this.cargarCamaras();
-  break;
+
+      case 'Cámaras':
+        this.cargarHabitaciones();
+        this.cargarCamaras();
+        break;
     }
   }
 
@@ -2063,6 +2080,15 @@ export class BancoDatos implements OnInit {
       return;
     }
 
+    if (this.habitacionForm.id_sede === null) {
+      alertaAdvertencia(
+        'Campo obligatorio',
+        'Debe seleccionar una sede para la habitación.'
+      );
+
+      return;
+    }
+
     if (
       this.habitacionEditando !== null &&
       this.habitacionOriginal &&
@@ -2073,7 +2099,8 @@ export class BancoDatos implements OnInit {
           'nombre',
           'numero',
           'descripcion',
-          'estado'
+          'estado',
+          'id_sede'
         ]
       )
     ) {
@@ -2092,7 +2119,8 @@ export class BancoDatos implements OnInit {
       nombre: this.habitacionForm.nombre,
       numero: this.habitacionForm.numero,
       descripcion: this.habitacionForm.descripcion,
-      estado: this.habitacionForm.estado
+      estado: this.habitacionForm.estado,
+      id_sede: Number(this.habitacionForm.id_sede)
     };
 
     if (this.habitacionEditando !== null) {
@@ -2345,6 +2373,30 @@ export class BancoDatos implements OnInit {
   // HABITACIONES - LISTAR
   // =========================================================
 
+  cargarSedes(): void {
+    this.http.get<Sede[]>(`${this.apiUrl}/sedes/`).subscribe({
+      next: (respuesta) => {
+        this.sedes = (respuesta || []).map(sede => ({
+          ...sede,
+          id_sede: Number(sede.id_sede)
+        }));
+
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('ERROR AL CARGAR SEDES:', error);
+
+        alertaError(
+          'Error al cargar sedes',
+          this.obtenerMensajeError(
+            error,
+            'No se pudieron cargar las sedes.'
+          )
+        );
+      }
+    });
+  }
+
   cargarHabitaciones(): void {
 
     this.cargando = true;
@@ -2442,6 +2494,8 @@ export class BancoDatos implements OnInit {
 
       id_habitacion:
         habitacion.id_habitacion,
+
+      id_sede: habitacion.id_sede ?? null,
 
       nombre:
         habitacion.nombre,
@@ -2651,6 +2705,7 @@ export class BancoDatos implements OnInit {
     this.habitacionOriginal = null;
 
     this.habitacionForm = {
+      id_sede: null,
       nombre: '',
       numero: '',
       descripcion: '',
@@ -2670,6 +2725,22 @@ export class BancoDatos implements OnInit {
     this.camaEditando = null;
     this.camaOriginal = null;
   }
+
+
+  obtenerNombreSedeHabitacion(
+    idSede: number | null | undefined
+  ): string {
+    if (idSede === null || idSede === undefined) {
+      return 'Sin sede asignada';
+    }
+
+    const sede = this.sedes.find(
+      item => Number(item.id_sede) === Number(idSede)
+    );
+
+    return sede?.nombre ?? `Sede ${idSede}`;
+  }
+
 
   // =========================================================
   // GRUPOS DE MEDICACIÓN - ABRIR NUEVO
@@ -3053,7 +3124,7 @@ export class BancoDatos implements OnInit {
       estado: true
     };
   }
-  
+
   // =========================================================
   // CÁMARAS - ABRIR NUEVA
   // =========================================================
@@ -3101,7 +3172,7 @@ export class BancoDatos implements OnInit {
           ...camara,
           id_habitacion:
             camara.id_habitacion === null ||
-            camara.id_habitacion === undefined
+              camara.id_habitacion === undefined
               ? null
               : Number(camara.id_habitacion)
         }));
@@ -3203,8 +3274,8 @@ export class BancoDatos implements OnInit {
       estado: this.camaraForm.estado,
       id_habitacion:
         this.camaraForm.id_habitacion === null ||
-        this.camaraForm.id_habitacion === undefined ||
-        this.camaraForm.id_habitacion === ('' as any)
+          this.camaraForm.id_habitacion === undefined ||
+          this.camaraForm.id_habitacion === ('' as any)
           ? null
           : Number(this.camaraForm.id_habitacion)
     };
@@ -3215,13 +3286,13 @@ export class BancoDatos implements OnInit {
 
     const peticion = esEdicion
       ? this.http.patch(
-          `${this.apiUrl}/camaras/${this.camaraEditando}/`,
-          datosCamara
-        )
+        `${this.apiUrl}/camaras/${this.camaraEditando}/`,
+        datosCamara
+      )
       : this.http.post(
-          `${this.apiUrl}/camaras/`,
-          datosCamara
-        );
+        `${this.apiUrl}/camaras/`,
+        datosCamara
+      );
 
     peticion.subscribe({
       next: () => {
@@ -3290,7 +3361,7 @@ export class BancoDatos implements OnInit {
       fecha_registro: camara.fecha_registro ?? null,
       id_habitacion:
         camara.id_habitacion === null ||
-        camara.id_habitacion === undefined
+          camara.id_habitacion === undefined
           ? null
           : Number(camara.id_habitacion)
     };
