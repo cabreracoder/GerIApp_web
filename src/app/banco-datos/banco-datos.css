@@ -793,3 +793,27 @@ tbody tr:last-child td {
 
   margin: 0 !important;
 }
+
+/* Selector de sede en el formulario de habitaciones */
+#sedeHabitacion {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #1f2937;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#sedeHabitacion:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+#sedeHabitacion:disabled {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+}

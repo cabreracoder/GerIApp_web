@@ -2,23 +2,14 @@
      FONDO DEL PANEL
      ========================================================= -->
 
-<div
-  class="med-drawer-backdrop"
-  [class.active]="estaAbierto"
-  (click)="cerrarPanel()"
-></div>
+<div class="med-drawer-backdrop" [class.active]="estaAbierto" (click)="cerrarPanel()"></div>
 
 <!-- =========================================================
      PANEL LATERAL
      ========================================================= -->
 
-<aside
-  class="med-drawer"
-  [class.open]="estaAbierto"
-  role="dialog"
-  aria-modal="true"
-  aria-label="Inventario de medicamentos del paciente"
->
+<aside class="med-drawer" [class.open]="estaAbierto" role="dialog" aria-modal="true"
+  aria-label="Inventario de medicamentos del paciente">
 
   <!-- =========================================================
        ENCABEZADO
@@ -83,13 +74,8 @@
          BOTÓN CERRAR
          ======================================================= -->
 
-    <button
-      type="button"
-      class="close-btn"
-      title="Cerrar inventario"
-      aria-label="Cerrar inventario"
-      (click)="cerrarPanel()"
-    >
+    <button type="button" class="close-btn" title="Cerrar inventario" aria-label="Cerrar inventario"
+      (click)="cerrarPanel()">
 
       <span class="material-symbols-outlined">
         close
@@ -115,14 +101,8 @@
         search
       </span>
 
-      <input
-        type="text"
-        class="search-input"
-        [value]="textoBusqueda"
-        placeholder="Buscar medicamento..."
-        aria-label="Buscar medicamento"
-        (input)="cambiarBusqueda($event)"
-      />
+      <input type="text" class="search-input" [value]="textoBusqueda" placeholder="Buscar medicamento..."
+        aria-label="Buscar medicamento" (input)="cambiarBusqueda($event)" />
 
     </div>
 
@@ -133,26 +113,21 @@
     <div class="category-chips">
 
       @for (
-        categoria of categorias;
-        track categoria.id
+      categoria of categorias;
+      track categoria.id
       ) {
 
-        <button
-          type="button"
-          class="chip-btn"
-          [class.active]="
+      <button type="button" class="chip-btn" [class.active]="
             categoriaSeleccionada === categoria.id
-          "
-          (click)="
+          " (click)="
             seleccionarCategoria(
               categoria.id
             )
-          "
-        >
+          ">
 
-          {{ categoria.nombre }}
+        {{ categoria.nombre }}
 
-        </button>
+      </button>
 
       }
 
@@ -166,17 +141,17 @@
 
   @if (cargando) {
 
-    <div class="loading-state">
+  <div class="loading-state">
 
-      <span class="material-symbols-outlined loading-icon">
-        progress_activity
-      </span>
+    <span class="material-symbols-outlined loading-icon">
+      progress_activity
+    </span>
 
-      <span>
-        Cargando inventario...
-      </span>
+    <span>
+      Cargando inventario...
+    </span>
 
-    </div>
+  </div>
 
   }
 
@@ -185,254 +160,236 @@
        ========================================================= -->
 
   @if (
-    !cargando &&
-    medicamentosFiltrados.length > 0
+  !cargando &&
+  medicamentosFiltrados.length > 0
   ) {
 
-    <section class="med-list-container">
+  <section class="med-list-container">
 
-      @for (
-        medicamento of medicamentosFiltrados;
-        track medicamento.idMedicamento
-      ) {
+    @for (
+    medicamento of medicamentosFiltrados;
+    track medicamento.idMedicamento
+    ) {
 
-        <!-- ===================================================
+    <!-- ===================================================
              TARJETA DEL MEDICAMENTO
              =================================================== -->
 
-        <article
-          class="med-card"
-          [class.card-critical]="
+    <article class="med-card" [class.card-critical]="
             medicamento.stockBajo
-          "
-        >
+          ">
 
-          <!-- =================================================
+      <!-- =================================================
                ENCABEZADO DEL MEDICAMENTO
                ================================================= -->
 
-          <div class="med-card-header">
+      <div class="med-card-header">
 
-            <div class="med-main-info">
+        <div class="med-main-info">
 
-              <div class="med-title-row">
+          <div class="med-title-row">
 
-                <h3 class="med-name">
-                  {{ medicamento.nombre }}
-                </h3>
+            <h3 class="med-name">
+              {{ medicamento.nombre }}
+            </h3>
 
-                <span class="tag-type">
-                  Medicamento
-                </span>
-
-              </div>
-
-              <p class="med-category-subtitle">
-
-                {{ medicamento.principioActivo }}
-
-                @if (
-                  medicamento.concentracion
-                ) {
-
-                  ·
-                  {{ medicamento.concentracion }}
-
-                }
-
-              </p>
-
-            </div>
-
-            <!-- =================================================
-                 ESTADO DEL STOCK
-                 ================================================= -->
-
-            <span
-              class="stock-badge"
-              [class.stock-bajo]="
-                medicamento.stockBajo
-              "
-              [class.stock-normal]="
-                !medicamento.stockBajo
-              "
-            >
-
-              {{
-                medicamento.stockBajo
-                  ? 'Stock bajo'
-                  : 'Stock normal'
-              }}
-
+            <span class="tag-type">
+              Medicamento
             </span>
 
           </div>
 
-          <!-- =================================================
+          <p class="med-category-subtitle">
+
+            {{ medicamento.principioActivo }}
+
+            @if (
+            medicamento.concentracion
+            ) {
+
+            ·
+            {{ medicamento.concentracion }}
+
+            }
+
+          </p>
+
+        </div>
+
+        <!-- =================================================
+                 ESTADO DEL STOCK
+                 ================================================= -->
+
+        <span class="stock-badge" [class.stock-bajo]="
+                medicamento.stockBajo
+              " [class.stock-normal]="
+                !medicamento.stockBajo
+              ">
+
+          {{
+          medicamento.stockBajo
+          ? 'Stock bajo'
+          : 'Stock normal'
+          }}
+
+        </span>
+
+      </div>
+
+      <!-- =================================================
                INFORMACIÓN DEL STOCK
                ================================================= -->
 
-          <div class="stock-info-grid">
+      <div class="stock-info-grid">
 
-            <!-- CANTIDAD TOTAL -->
+        <!-- CANTIDAD TOTAL -->
 
-            <div class="stock-data">
+        <div class="stock-data">
 
-              <span class="info-label">
-                Cantidad total
-              </span>
+          <span class="info-label">
+            Cantidad total
+          </span>
 
-              <span class="info-value strong">
+          <span class="info-value strong">
 
-                {{ medicamento.cantidad }}
-                {{ medicamento.unidadMedida }}
+            {{ medicamento.cantidad }}
+            {{ medicamento.unidadMedida }}
 
-              </span>
+          </span>
 
-            </div>
+        </div>
 
-            <!-- PRESENTACIÓN -->
+        <!-- PRESENTACIÓN -->
 
-            <div class="stock-data">
+        <div class="stock-data">
 
-              <span class="info-label">
-                Presentación
-              </span>
+          <span class="info-label">
+            Presentación
+          </span>
 
-              <span class="info-value strong">
+          <span class="info-value strong">
 
-                {{ medicamento.presentacion }}
+            {{ medicamento.presentacion }}
 
-              </span>
+          </span>
 
-            </div>
+        </div>
 
-            <!-- ESTADO -->
+        <!-- ESTADO -->
 
-            <div class="stock-data">
+        <div class="stock-data">
 
-              <span class="info-label">
-                Estado
-              </span>
+          <span class="info-label">
+            Estado
+          </span>
 
-              <span
-                class="estado-texto"
-                [class.estado-inactivo]="
+          <span class="estado-texto" [class.estado-inactivo]="
                   !medicamento.estado
-                "
-              >
+                ">
 
-                {{
-                  medicamento.estado
-                    ? 'Activo'
-                    : 'Inactivo'
-                }}
+            {{
+            medicamento.estado
+            ? 'Activo'
+            : 'Inactivo'
+            }}
 
-              </span>
+          </span>
 
-            </div>
+        </div>
 
-            <!-- CONCENTRACIÓN -->
+        <!-- CONCENTRACIÓN -->
 
-            <div class="stock-data">
+        <div class="stock-data">
 
-              <span class="info-label">
-                Concentración
-              </span>
+          <span class="info-label">
+            Concentración
+          </span>
 
-              <span class="info-value strong">
+          <span class="info-value strong">
 
-                {{
-                  medicamento.concentracion ||
-                  'No registrada'
-                }}
+            {{
+            medicamento.concentracion ||
+            'No registrada'
+            }}
 
-              </span>
+          </span>
 
-            </div>
+        </div>
 
-          </div>
+      </div>
 
-          <!-- =================================================
+      <!-- =================================================
                OBSERVACIONES
                ================================================= -->
 
-          @if (
-            medicamento.observaciones
-          ) {
+      @if (
+      medicamento.observaciones
+      ) {
 
-            <div class="med-observations">
+      <div class="med-observations">
 
-              <span class="material-symbols-outlined">
-                notes
-              </span>
+        <span class="material-symbols-outlined">
+          notes
+        </span>
 
-              <span>
-                {{ medicamento.observaciones }}
-              </span>
+        <span>
+          {{ medicamento.observaciones }}
+        </span>
 
-            </div>
-
-          }
-
-          <!-- =================================================
-               PIE DE TARJETA
-               ================================================= -->
-
-          <div class="med-card-footer">
-
-            <div class="med-instruction">
-
-              <span class="material-symbols-outlined">
-                medication
-              </span>
-
-              <span>
-
-                {{ medicamento.cantidad }}
-                {{ medicamento.unidadMedida }}
-
-              </span>
-
-            </div>
-
-            <div class="med-actions">
-
-              @if (
-                medicamento.stockBajo
-              ) {
-
-                <button
-                  type="button"
-                  class="btn-reorder"
-                  (click)="verDetalles(medicamento)"
-                >
-
-                  Revisar
-
-                </button>
-
-              }
-
-              <button
-                type="button"
-                class="btn-details"
-                (click)="verDetalles(medicamento)"
-              >
-
-                Ver detalles
-
-              </button>
-
-            </div>
-
-          </div>
-
-        </article>
+      </div>
 
       }
 
-    </section>
+      <!-- =================================================
+               PIE DE TARJETA
+               ================================================= -->
+
+      <div class="med-card-footer">
+
+        <div class="med-instruction">
+
+          <span class="material-symbols-outlined">
+            medication
+          </span>
+
+          <span>
+
+            {{ medicamento.cantidad }}
+            {{ medicamento.unidadMedida }}
+
+          </span>
+
+        </div>
+
+        <div class="med-actions">
+
+          @if (
+          medicamento.stockBajo
+          ) {
+
+          <button type="button" class="btn-reorder" (click)="verDetalles(medicamento)">
+
+            Revisar
+
+          </button>
+
+          }
+
+          <button type="button" class="btn-details" (click)="verDetalles(medicamento)">
+
+            Ver detalles
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </article>
+
+    }
+
+  </section>
 
   }
 
@@ -441,45 +398,42 @@
        ========================================================= -->
 
   @if (
-    !cargando &&
-    medicamentosFiltrados.length === 0
+  !cargando &&
+  medicamentosFiltrados.length === 0
   ) {
 
-    <section class="med-list-container">
+  <section class="med-list-container">
 
-      <div class="empty-state">
+    <div class="empty-state">
 
-        <span class="material-symbols-outlined empty-icon">
-          inventory_2
-        </span>
+      <span class="material-symbols-outlined empty-icon">
+        inventory_2
+      </span>
 
-        <h3>
-          No hay medicamentos
-        </h3>
+      <h3>
+        No hay medicamentos
+      </h3>
 
-        <p>
+      <p>
+        @if (
+        textoBusqueda ||
+        categoriaSeleccionada !== 'todos'
+        ) {
+        No se encontraron medicamentos
+        con los filtros seleccionados.
+        } @else if (inventario.length > 0) {
+        No hay medicamentos disponibles en el inventario.
+        } @else {
+        Este paciente no tiene
+        medicamentos registrados
+        en su inventario.
+        }
 
-          @if (
-            textoBusqueda ||
-            categoriaSeleccionada !== 'todos'
-          ) {
+      </p>
 
-            No se encontraron medicamentos
-            con los filtros seleccionados.
+    </div>
 
-          } @else {
-
-            Este paciente no tiene
-            medicamentos registrados
-            en su inventario.
-
-          }
-
-        </p>
-
-      </div>
-
-    </section>
+  </section>
 
   }
 
@@ -489,11 +443,7 @@
 
   <footer class="drawer-footer">
 
-    <button
-      type="button"
-      class="btn-primary-action"
-      (click)="cerrarPanel()"
-    >
+    <button type="button" class="btn-primary-action" (click)="cerrarPanel()">
 
       <span class="material-symbols-outlined">
         close
@@ -506,4 +456,3 @@
   </footer>
 
 </aside>
-

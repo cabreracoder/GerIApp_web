@@ -188,21 +188,16 @@
                     </td>
 
                     <!-- ESTADO -->
-
                     <td class="px-5 py-4">
+                        <span class="badge-estado" [class.estado-activo]="patient.estado"
+                            [class.estado-inactivo]="!patient.estado">
 
-                        <span
-                            class="inline-flex items-center px-3 py-1 bg-white border border-[#D9E0F2] rounded-lg text-sm text-[#495057]">
+                            <span class="punto-estado"></span>
 
-                            {{
-                            patient.estado
-                            ? 'Activo'
-                            : 'Inactivo'
-                            }}
-
+                            {{ patient.estado ? 'Activo' : 'Inactivo' }}
                         </span>
-
                     </td>
+
 
                     <!-- =================================================
                          ACCIONES
@@ -566,52 +561,43 @@
 
                         </div>
 
+
                         <!-- FOTO DE PERFIL -->
-                        <div class="campo-formulario">
+                        <div class="campo-formulario campo-foto-perfil">
 
                             <label class="etiqueta-formulario">
                                 Foto de perfil
                             </label>
 
-                            <!-- Input oculto -->
+                            <!-- Selector de archivo existente -->
                             <input #inputFoto type="file" accept="image/*" hidden (change)="seleccionarFoto($event)">
 
-                            <!-- Nombre del archivo y botón -->
-                            <div class="flex items-center justify-between gap-3
-           border border-gray-300 rounded-lg
-           px-4 py-3 bg-white">
+                            <!-- Campo compacto y botón discreto -->
+                            <div class="control-foto-perfil">
 
-                                <div class="flex items-center gap-2 min-w-0">
+                                <span class="nombre-archivo-foto" [title]="nombreFoto || 'Ninguna foto seleccionada'">
+                                    {{ nombreFoto || 'Ninguna foto seleccionada' }}
+                                </span>
 
-                                    <span class="material-symbols-outlined text-[#3B5BDB]">
+                                <button type="button" class="boton-foto-perfil" (click)="inputFoto.click()">
+                                    <span class="material-symbols-outlined">
                                         image
                                     </span>
 
-                                    <span class="text-sm text-[#495057] truncate">
-                                        {{ nombreFoto || 'Ninguna foto seleccionada' }}
+                                    <span>
+                                        {{ fotoPreview ? 'Cambiar foto' : 'Elegir foto' }}
                                     </span>
-
-                                </div>
-
-                                <button type="button" (click)="inputFoto.click()" class="shrink-0 px-4 py-2 bg-[#3B5BDB]
-             text-white text-sm rounded-lg
-             hover:bg-[#324EC7] transition">
-                                    {{ fotoPreview ? 'Cambiar foto' : 'Elegir foto' }}
                                 </button>
 
                             </div>
 
-                            <!-- Vista previa de la fotografía -->
-                            <div *ngIf="fotoPreview" class="vista-previa-foto mt-4">
+                            <!-- Vista previa circular: se conserva la función existente -->
+                            <div *ngIf="fotoPreview" class="vista-previa-foto">
                                 <img [src]="fotoPreview" alt="Foto de perfil del paciente">
                             </div>
 
-                            <!-- Mensaje cuando no hay foto -->
-                            <span *ngIf="!fotoPreview" class="block mt-2 text-sm text-[#6C757D]">
-                                Selecciona una foto para el perfil del paciente.
-                            </span>
-
                         </div>
+
 
                     </div>
 
@@ -730,13 +716,26 @@
 
                     <div class="rejilla-formulario">
 
+                        <!-- SEDE -->
                         <div class="campo-formulario">
 
                             <label class="etiqueta-formulario">
                                 Sede
                             </label>
 
-                            <input class="campo-entrada" type="text" [(ngModel)]="form.sede" placeholder="Sede">
+                            <select class="campo-entrada" [(ngModel)]="form.idSede" (ngModelChange)="cambiarSede()">
+
+                                <option value="">
+                                    Seleccione una sede
+                                </option>
+
+                                <option *ngFor="let sede of sedesActivas" [value]="sede.id_sede">
+
+                                    {{ sede.nombre }}
+
+                                </option>
+
+                            </select>
 
                         </div>
 
@@ -746,10 +745,16 @@
                             </label>
 
                             <select class="campo-entrada" [(ngModel)]="form.habitacion"
-                                (ngModelChange)="actualizarCamasPorHabitacion()">
+                                (ngModelChange)="actualizarCamasPorHabitacion()" [disabled]="!form.idSede">
 
                                 <option value="">
-                                    Seleccione
+                                    {{
+                                    !form.idSede
+                                    ? 'Seleccione primero una sede'
+                                    : habitacionesActivas.length === 0
+                                    ? 'No hay habitaciones activas disponibles'
+                                    : 'Seleccione una habitación'
+                                    }}
                                 </option>
 
                                 <option *ngFor="let habitacion of habitacionesActivas"

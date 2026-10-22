@@ -271,12 +271,18 @@ function alertaAdvertencia(
 // =====================================================
 // INTERFACES
 // =====================================================
+interface Sede {
+  id_sede: number;
+  nombre: string;
+  estado: boolean;
+}
 interface Habitacion {
   id_habitacion: number;
   nombre: string;
   numero: string;
   descripcion?: string | null;
   estado: boolean;
+  id_sede: number | null;
 }
 interface Cama {
   id_cama: number;
@@ -308,6 +314,7 @@ interface PatientForm {
   correoElectronico: string;
   municipio: string;
   sede: string;
+  idSede: string;
   habitacion: string;
   cama: string;
   estado: string;
@@ -345,6 +352,8 @@ export class Pacientes {
   // =====================================================
   // HABITACIONES Y CAMAS
   // =====================================================
+  sedes: Sede[] = [];
+  sedesActivas: Sede[] = [];
   habitaciones: Habitacion[] = [];
   camas: Cama[] = [];
   habitacionesActivas: Habitacion[] = [];
@@ -373,8 +382,40 @@ export class Pacientes {
   // =====================================================
   ngOnInit(): void {
     this.listar();
+    this.cargarSedes();
     this.cargarHabitaciones();
     this.cargarCamas();
+  }
+  // =====================================================
+  // CARGAR SEDES ACTIVAS
+  // =====================================================
+  cargarSedes(): void {
+    this.http.get<Sede[]>(`${this.apiUrl}/sedes/`)
+      .subscribe({
+        next: (respuesta) => {
+
+          this.sedes = respuesta || [];
+
+          this.sedesActivas = this.sedes.filter(
+            sede => sede.estado === true
+          );
+
+          this.actualizarHabitacionesPorSede();
+
+          this.cdr.detectChanges();
+        },
+
+        error: (error) => {
+          console.error('Error al cargar sedes:', error);
+
+          this.sedes = [];
+          this.sedesActivas = [];
+          this.habitacionesActivas = [];
+          this.camasActivas = [];
+
+          this.cdr.detectChanges();
+        }
+      });
   }
   // =====================================================
   // FORMULARIO VACÍO
@@ -403,6 +444,7 @@ export class Pacientes {
       correoElectronico: '',
       municipio: '',
       sede: '',
+      idSede: '',
       habitacion: '',
       cama: '',
       estado: 'active'
@@ -609,31 +651,84 @@ export class Pacientes {
   // =====================================================
   // HABITACIONES
   // =====================================================
+  // =====================================================
+  // CARGAR HABITACIONES
+  // =====================================================
   cargarHabitaciones(): void {
-    this.http
-      .get<Habitacion[]>(
-        `${this.apiUrl}/habitaciones/`
-      )
+    this.http.get<Habitacion[]>(`${this.apiUrl}/habitaciones/`)
       .subscribe({
         next: (respuesta) => {
-          this.habitaciones =
-            respuesta || [];
-          this.habitacionesActivas =
-            this.habitaciones.filter(
-              habitacion =>
-                habitacion.estado === true
-            );
+
+          this.habitaciones = respuesta || [];
+
+          this.actualizarHabitacionesPorSede();
+
           this.cdr.detectChanges();
         },
+
         error: (error) => {
-          console.error(
-            'Error al cargar habitaciones:',
-            error
-          );
+          console.error('Error al cargar habitaciones:', error);
+
           this.habitaciones = [];
           this.habitacionesActivas = [];
+          this.camasActivas = [];
+          this.cdr.detectChanges();
         }
       });
+  }
+
+
+  // =====================================================
+  // FILTRAR HABITACIONES POR SEDE
+  // =====================================================
+  actualizarHabitacionesPorSede(): void {
+
+    const idSede = Number(this.form.idSede);
+
+    this.habitacionesActivas = this.habitaciones.filter(
+      habitacion =>
+        habitacion.estado === true &&
+        Number(habitacion.id_sede) === idSede &&
+        this.sedesActivas.some(
+          sede => sede.id_sede === idSede
+        )
+    );
+
+    const habitacionValida = this.habitacionesActivas.some(
+      habitacion =>
+        habitacion.id_habitacion === Number(this.form.habitacion)
+    );
+
+    if (!habitacionValida) {
+      this.form.habitacion = '';
+      this.form.cama = '';
+      this.camasActivas = [];
+    } else {
+      this.actualizarCamasPorHabitacion();
+    }
+
+    this.cdr.detectChanges();
+  }
+
+
+  // =====================================================
+  // CUANDO EL USUARIO CAMBIA LA SEDE
+  // =====================================================
+  cambiarSede(): void {
+
+    this.form.habitacion = '';
+    this.form.cama = '';
+
+    this.habitacionesActivas = [];
+    this.camasActivas = [];
+
+    const sedeSeleccionada = this.sedesActivas.find(
+      sede => sede.id_sede === Number(this.form.idSede)
+    );
+
+    this.form.sede = sedeSeleccionada?.nombre || '';
+
+    this.actualizarHabitacionesPorSede();
   }
   // =====================================================
   // CAMAS
@@ -717,6 +812,7 @@ export class Pacientes {
     this.fotoPreview = null;
     this.nombreFoto = null;
     this.editingId = null;
+    this.habitacionesActivas = [];
     this.camasActivas = [];
     this.modalOpen = true;
   }
@@ -767,7 +863,26 @@ export class Pacientes {
   ): void {
     this.editingId =
       patient.id_paciente;
+
+    const habitacionActual = this.habitaciones.find(
+      habitacion =>
+        Number(habitacion.id_habitacion) === Number(patient.habitacion)
+    );
+
+    const sedeActual = this.sedes.find(
+      sede =>
+        sede.nombre.trim().toLowerCase() ===
+        String(patient.sede || '').trim().toLowerCase()
+    );
+
+    const idSedeActual =
+      patient.id_sede ??
+      habitacionActual?.id_sede ??
+      sedeActual?.id_sede ??
+      '';
+
     this.form = {
+
       nombre:
         patient.nombre || '',
       apellidos:
@@ -803,6 +918,10 @@ export class Pacientes {
       municipio: '',
       sede:
         patient.sede || '',
+      idSede:
+        idSedeActual !== '' && idSedeActual != null
+          ? String(idSedeActual)
+          : '',
       habitacion:
         patient.habitacion !== null &&
           patient.habitacion !== undefined
@@ -818,9 +937,9 @@ export class Pacientes {
           ? 'active'
           : 'inactive'
     };
-    // Mostrar camas de la habitación
-    // seleccionada.
-    this.actualizarCamasPorHabitacion();
+    // Mostrar las habitaciones de la sede asignada
+    // y las camas disponibles de la habitación actual.
+    this.actualizarHabitacionesPorSede();
     this.nombreFoto = this.obtenerNombreFoto(patient.foto);
     this.fotoPreview = patient.foto || null;
     if (this.form.nacimiento) {
@@ -876,6 +995,23 @@ export class Pacientes {
   // GUARDAR
   // =====================================================
   guardar(): void {
+
+    if (!this.form.idSede) {
+      alertaAdvertencia(
+        'Sede requerida',
+        'Debes seleccionar una sede para el paciente.'
+      );
+      return;
+    }
+
+    if (!this.form.habitacion || !this.form.cama) {
+      alertaAdvertencia(
+        'Ubicación incompleta',
+        'Debes seleccionar una habitación y una cama.'
+      );
+      return;
+    }
+
     if (this.editar) {
       this.actualizar();
     } else {
@@ -895,6 +1031,8 @@ export class Pacientes {
         this.form.eps,
       sede:
         this.form.sede,
+      id_sede:
+        Number(this.form.idSede),
       fecha_ingreso:
         this.form.fechaIngreso,
       habitacion:
@@ -1054,6 +1192,8 @@ export class Pacientes {
         this.form.eps,
       sede:
         this.form.sede,
+      id_sede:
+        Number(this.form.idSede),
       fecha_ingreso:
         this.form.fechaIngreso,
       habitacion:

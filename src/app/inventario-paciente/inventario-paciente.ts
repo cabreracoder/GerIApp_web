@@ -265,23 +265,23 @@ interface RegistroInventario {
   id_inventario?: number;
 
   id_paciente?:
-    | number
-    | string
-    | {
-        id_paciente?: number;
-        id?: number;
-      }
-    | null;
+  | number
+  | string
+  | {
+    id_paciente?: number;
+    id?: number;
+  }
+  | null;
 
   id_medicamentos?:
-    | number
-    | string
-    | {
-        id_medicamentos?: number;
-        id_medicamento?: number;
-        id?: number;
-      }
-    | null;
+  | number
+  | string
+  | {
+    id_medicamentos?: number;
+    id_medicamento?: number;
+    id?: number;
+  }
+  | null;
 
   cantidad_actual?: number | string;
   cantidad_minima?: number | string;
@@ -381,7 +381,7 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
   constructor(
     private http: HttpClient,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   // ============================================================
   // CAMBIOS DE LOS INPUTS
@@ -438,99 +438,99 @@ export class InventarioPaciente implements OnChanges, OnDestroy {
     );
   }
 
- 
-// ============================================================
-// CARGAR INVENTARIO DEL PACIENTE
-// ============================================================
 
-cargarInventario(): void {
+  // ============================================================
+  // CARGAR INVENTARIO DEL PACIENTE
+  // ============================================================
 
-  // ==========================================================
-  // VALIDAR QUE EXISTA EL ID DEL PACIENTE
-  // ==========================================================
+  cargarInventario(): void {
 
-  if (!this.idPaciente) {
+    // ==========================================================
+    // VALIDAR QUE EXISTA EL ID DEL PACIENTE
+    // ==========================================================
 
-    console.warn(
-      'No se puede cargar el inventario porque no existe idPaciente'
-    );
+    if (!this.idPaciente) {
 
-    this.inventario = [];
-    this.medicamentosInventario = [];
-    this.medicamentosFiltrados = [];
-
-    return;
-  }
-
-  // ==========================================================
-  // ACTIVAR ESTADO DE CARGA
-  // ==========================================================
-
-  this.cargando = true;
-
-  // ==========================================================
-  // CONSULTAR INVENTARIO DEL PACIENTE
-  // ==========================================================
-
-  const url = `${this.apiUrl}/inventario/?id_paciente=${this.idPaciente}`;
-
-  console.log('Consultando inventario:', url);
-
-  this.http.get<
-    RespuestaPaginada<RegistroInventario> |
-    RegistroInventario[]
-  >(url).subscribe({
-
-    // ========================================================
-    // RESPUESTA EXITOSA
-    // ========================================================
-
-    next: (respuesta) => {
-
-      console.log(
-        'Inventario recibido del paciente:',
-        respuesta
-      );
-
-      // ======================================================
-      // EXTRAER LOS REGISTROS
-      // ======================================================
-
-      this.inventario = this.extraerResultados(respuesta);
-
-      console.log(
-        'Registros de inventario:',
-        this.inventario
-      );
-
-      // ======================================================
-      // CARGAR CATÁLOGO DE MEDICAMENTOS
-      // ======================================================
-
-      this.cargarMedicamentos();
-    },
-
-    // ========================================================
-    // ERROR
-    // ========================================================
-
-    error: (error) => {
-
-      console.error(
-        'Error al cargar el inventario:',
-        error
+      console.warn(
+        'No se puede cargar el inventario porque no existe idPaciente'
       );
 
       this.inventario = [];
       this.medicamentosInventario = [];
       this.medicamentosFiltrados = [];
 
-      this.cargando = false;
-
-      this.cdr.detectChanges();
+      return;
     }
-  });
-}
+
+    // ==========================================================
+    // ACTIVAR ESTADO DE CARGA
+    // ==========================================================
+
+    this.cargando = true;
+
+    // ==========================================================
+    // CONSULTAR INVENTARIO DEL PACIENTE
+    // ==========================================================
+
+    const url = `${this.apiUrl}/inventario/?id_paciente=${this.idPaciente}`;
+
+    console.log('Consultando inventario:', url);
+
+    this.http.get<
+      RespuestaPaginada<RegistroInventario> |
+      RegistroInventario[]
+    >(url).subscribe({
+
+      // ========================================================
+      // RESPUESTA EXITOSA
+      // ========================================================
+
+      next: (respuesta) => {
+
+        console.log(
+          'Inventario recibido del paciente:',
+          respuesta
+        );
+
+        // ======================================================
+        // EXTRAER LOS REGISTROS
+        // ======================================================
+
+        this.inventario = this.extraerResultados(respuesta);
+
+        console.log(
+          'Registros de inventario:',
+          this.inventario
+        );
+
+        // ======================================================
+        // CARGAR CATÁLOGO DE MEDICAMENTOS
+        // ======================================================
+
+        this.cargarMedicamentos();
+      },
+
+      // ========================================================
+      // ERROR
+      // ========================================================
+
+      error: (error) => {
+
+        console.error(
+          'Error al cargar el inventario:',
+          error
+        );
+
+        this.inventario = [];
+        this.medicamentosInventario = [];
+        this.medicamentosFiltrados = [];
+
+        this.cargando = false;
+
+        this.cdr.detectChanges();
+      }
+    });
+  }
 
   // ============================================================
   // CARGAR MEDICAMENTOS
@@ -843,8 +843,8 @@ cargarInventario(): void {
           medicamento?.estado !== undefined
             ? medicamento.estado
             : this.convertirEstado(
-                registroPrincipal.estado
-              );
+              registroPrincipal.estado
+            );
 
         // ======================================================
         // CREAR OBJETO PARA LA TARJETA
@@ -906,13 +906,15 @@ cargarInventario(): void {
     // ==========================================================
     // ORDENAR
     // ==========================================================
+
     this.medicamentosInventario =
-      inventarioAgrupado.sort(
-        (a, b) =>
-          a.nombre.localeCompare(
-            b.nombre
-          )
-      );
+      inventarioAgrupado
+        .filter(medicamento => medicamento.cantidad > 0)
+        .sort(
+          (a, b) =>
+            a.nombre.localeCompare(b.nombre)
+        );
+
 
     console.log(
       'Inventario final para mostrar:',
@@ -1361,19 +1363,19 @@ cargarInventario(): void {
   // ============================================================
   verDetalles(medicamento: MedicamentoInventario): void {
 
-  const cantidadRegistros = medicamento.cantidadRegistros;
+    const cantidadRegistros = medicamento.cantidadRegistros;
 
-  const textoRegistros =
-    cantidadRegistros === 1
-      ? '1 registro'
-      : `${cantidadRegistros} registros`;
+    const textoRegistros =
+      cantidadRegistros === 1
+        ? '1 registro'
+        : `${cantidadRegistros} registros`;
 
-  mostrarAlerta({
-    tono: 'azul',
-    icono: 'question',
-    iconoSvg: svgIcono('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>'),
-    titulo: medicamento.nombre,
-    html: `
+    mostrarAlerta({
+      tono: 'azul',
+      icono: 'question',
+      iconoSvg: svgIcono('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>'),
+      titulo: medicamento.nombre,
+      html: `
       <div class="text-left text-[1.05rem] leading-relaxed text-slate-700 space-y-1.5">
         <p><strong class="font-bold">Principio activo:</strong> ${escaparHtml(medicamento.principioActivo)}</p>
         <p><strong class="font-bold">Concentración:</strong> ${escaparHtml(medicamento.concentracion)}</p>
@@ -1383,9 +1385,9 @@ cargarInventario(): void {
         <p><strong class="font-bold">Estado:</strong> ${medicamento.estado ? 'Activo' : 'Inactivo'}</p>
       </div>
     `,
-    confirmar: 'Cerrar'
-  });
-}
+      confirmar: 'Cerrar'
+    });
+  }
 
   // ============================================================
   // EXTRAER RESULTADOS
@@ -1434,10 +1436,10 @@ cargarInventario(): void {
 
       return (
         estado.toLowerCase() ===
-          'activo' ||
+        'activo' ||
 
         estado.toLowerCase() ===
-          'true' ||
+        'true' ||
 
         estado === '1'
       );
