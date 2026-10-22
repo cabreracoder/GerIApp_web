@@ -863,7 +863,26 @@ export class Pacientes {
   ): void {
     this.editingId =
       patient.id_paciente;
+
+    const habitacionActual = this.habitaciones.find(
+      habitacion =>
+        Number(habitacion.id_habitacion) === Number(patient.habitacion)
+    );
+
+    const sedeActual = this.sedes.find(
+      sede =>
+        sede.nombre.trim().toLowerCase() ===
+        String(patient.sede || '').trim().toLowerCase()
+    );
+
+    const idSedeActual =
+      patient.id_sede ??
+      habitacionActual?.id_sede ??
+      sedeActual?.id_sede ??
+      '';
+
     this.form = {
+
       nombre:
         patient.nombre || '',
       apellidos:
@@ -900,8 +919,8 @@ export class Pacientes {
       sede:
         patient.sede || '',
       idSede:
-        patient.id_sede != null
-          ? String(patient.id_sede)
+        idSedeActual !== '' && idSedeActual != null
+          ? String(idSedeActual)
           : '',
       habitacion:
         patient.habitacion !== null &&
@@ -995,6 +1014,7 @@ export class Pacientes {
 
     if (this.editar) {
       this.actualizar();
+    } else {
       this.crear();
     }
   }
