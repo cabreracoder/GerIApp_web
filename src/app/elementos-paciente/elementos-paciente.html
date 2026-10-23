@@ -2527,14 +2527,22 @@
                ================================================= -->
 
               <div class="campo">
-
                 <label for="presentacionFormulacion">
                   Presentación
                 </label>
 
-                <input id="presentacionFormulacion" type="text" [(ngModel)]="formularioFormulacion.presentacion"
-                  placeholder="Ejemplo: Tableta, cápsula, jarabe">
+                <select id="presentacionFormulacion" [(ngModel)]="formularioFormulacion.presentacion">
 
+                  <option value="" disabled>
+                    Seleccione una presentación
+                  </option>
+
+                  <option value="Tableta">Tableta</option>
+                  <option value="Cápsula">Cápsula</option>
+                  <option value="Jarabe">Jarabe</option>
+                  <option value="Ampolleta">Ampolleta</option>
+
+                </select>
               </div>
 
 
