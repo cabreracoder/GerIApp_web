@@ -1991,24 +1991,54 @@
                 </select>
               </div>
 
-              <!-- IDENTIFICADOR DEL DISPOSITIVO FÍSICO -->
+             
+              <!-- DETECTAR Y SELECCIONAR CÁMARA FÍSICA -->
               <div class="campo-formulario campo-completo">
                 <label for="identificadorDispositivo">
-                  Identificador del dispositivo físico
+                  Cámara física del equipo
                 </label>
 
-                <input
+                <button
+                  type="button"
+                  (click)="detectarCamaras()"
+                  [disabled]="cargandoDeteccionCamaras"
+                >
+                  {{ cargandoDeteccionCamaras
+                    ? 'Detectando cámaras...'
+                    : 'Detectar cámaras' }}
+                </button>
+
+                <select
                   id="identificadorDispositivo"
-                  type="text"
                   [(ngModel)]="camaraActual.identificador_dispositivo"
                   name="identificadorDispositivo"
-                  placeholder="Ingrese el identificador físico de la cámara"
                 >
+                  <option [ngValue]="null">
+                    Seleccione una cámara detectada
+                  </option>
 
-                <small>
-                  Identifica la cámara física conectada al equipo que ejecuta YOLO.
+                  <option
+                    *ngFor="let camara of camarasDetectadas; let i = index"
+                    [ngValue]="camara.identificador_dispositivo"
+                  >
+                    {{ camara.nombre }} — Dispositivo {{ i + 1 }}
+                  </option>
+                </select>
+
+                <small *ngIf="camarasDetectadas.length > 0">
+                  Cámaras disponibles: {{ camarasDetectadas.length }}.
+                  Selecciona la cámara física que corresponde a esta habitación.
+                </small>
+
+                <small *ngIf="cargandoDeteccionCamaras">
+                  Buscando dispositivos conectados al equipo...
+                </small>
+
+                <small *ngIf="errorDeteccionCamaras">
+                  {{ errorDeteccionCamaras }}
                 </small>
               </div>
+
 
               <!-- HABITACIÓN -->
               <div class="campo-formulario">

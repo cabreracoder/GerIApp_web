@@ -87,6 +87,12 @@ interface Camara {
   fecha_registro?: string | null;
   id_habitacion: number | null;
 }
+
+interface CamaraDetectada {
+  nombre: string;
+  identificador_dispositivo: string;
+  estado: string;
+}
 // =====================================================
 // ALERTAS (SweetAlert2 + Tailwind)
 // =====================================================
@@ -593,13 +599,18 @@ export class BancoDatos implements OnInit {
 
   camaras: Camara[] = [];
 
-  cargandoCamaras = false;
+cargandoCamaras = false;
 
-  mostrandoFormularioCamara = false;
-  modoEdicionCamara = false;
+mostrandoFormularioCamara = false;
+modoEdicionCamara = false;
 
-  camaraEditando: number | null = null;
-  private camaraOriginal: Camara | null = null;
+// Cámaras físicas detectadas por el servicio local
+camarasDetectadas: CamaraDetectada[] = [];
+cargandoDeteccionCamaras = false;
+errorDeteccionCamaras = '';
+
+camaraEditando: number | null = null;
+private camaraOriginal: Camara | null = null;
 
   camaraForm: Camara = {
     nombre: '',
@@ -3197,6 +3208,43 @@ export class BancoDatos implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  // =========================================================
+  // CÁMARAS - DETECTAR DISPOSITIVOS FÍSICOS
+  // =========================================================
+
+  detectarCamaras(): void {
+    this.cargandoDeteccionCamaras = true;
+    this.errorDeteccionCamaras = '';
+    this.camarasDetectadas = [];
+
+    this.http
+      .get<{ camaras: CamaraDetectada[] }>(
+        'http://127.0.0.1:8765/camaras'
+      )
+      .subscribe({
+        next: (respuesta) => {
+          this.camarasDetectadas = respuesta.camaras || [];
+          this.cargandoDeteccionCamaras = false;
+
+          if (this.camarasDetectadas.length === 0) {
+            this.errorDeteccionCamaras =
+              'No se encontraron cámaras disponibles.';
+          }
+
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Error al detectar cámaras:', error);
+
+          this.errorDeteccionCamaras =
+            'No fue posible detectar las cámaras. Verifica que el servicio local esté funcionando.';
+
+          this.cargandoDeteccionCamaras = false;
+          this.cdr.detectChanges();
+        }
+      });
   }
 
   // =========================================================
