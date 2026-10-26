@@ -1946,17 +1946,42 @@
                   placeholder="Ej. Esquina superior derecha" required>
               </div>
 
-              <div class="campo-formulario">
-                <label for="tipoCamara">Tipo de cámara</label>
-                <select id="tipoCamara" [(ngModel)]="camaraActual.tipo" name="tipoCamara">
-                  <option [ngValue]="null">Sin especificar</option>
-                  <option value="IP">IP</option>
-                  <option value="USB">USB</option>
-                  <option value="Webcam">Webcam</option>
-                  <option value="RTSP">RTSP</option>
-                  <option value="Otro">Otro</option>
-                </select>
-              </div>
+              
+                  <div class="campo-formulario">
+                    <label for="tipoCamara">Tipo de cámara</label>
+                    <select
+                      id="tipoCamara"
+                      [(ngModel)]="camaraActual.tipo"
+                      name="tipoCamara"
+                    >
+                      <option [ngValue]="null">Sin especificar</option>
+                      <option value="IP">IP</option>
+                      <option value="USB">USB</option>
+                      <option value="Webcam">Webcam</option>
+                      <option value="RTSP">RTSP</option>
+                      <option value="Otro">Otro</option>
+                    </select>
+                  </div>
+
+                  <!-- Identificador del dispositivo físico -->
+                  <div class="campo-formulario campo-completo">
+                    <label for="identificadorDispositivo">
+                      Identificador del dispositivo físico
+                    </label>
+
+                    <input
+                      id="identificadorDispositivo"
+                      type="text"
+                      [(ngModel)]="camaraActual.identificador_dispositivo"
+                      name="identificadorDispositivo"
+                      placeholder="Ingrese el identificador físico de la cámara"
+                    />
+
+                    <small>
+                      Identifica la cámara física conectada al equipo que ejecuta YOLO.
+                    </small>
+                  </div>
+
 
               
               <div class="campo-formulario campo-completo">
