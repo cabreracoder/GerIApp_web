@@ -1983,26 +1983,6 @@
                   </div>
 
 
-              
-              <div class="campo-formulario campo-completo">
-                <label for="identificadorDispositivo">
-                  Identificador del dispositivo físico
-                </label>
-
-                <input
-                  id="identificadorDispositivo"
-                  type="text"
-                  [(ngModel)]="camaraActual.identificador_dispositivo"
-                  name="identificadorDispositivo"
-                  placeholder="Ingrese el identificador físico de la cámara"
-                >
-
-                <small>
-                  Identifica la cámara física conectada al equipo que ejecuta YOLO.
-                </small>
-              </div>
-
-
               <div class="campo-formulario">
                 <label for="habitacionCamara">Habitación</label>
                 <select id="habitacionCamara" [(ngModel)]="camaraActual.id_habitacion" name="habitacionCamara" required>
@@ -2060,6 +2040,7 @@
               <th>Ubicación</th>
               <th>Tipo</th>
               <th>Habitación</th>
+              <th>Identificador del dispositivo</th>
               <th>Estado</th>
               <th>Acciones</th>
             </tr>
@@ -2070,6 +2051,7 @@
               <td>{{ camara.nombre }}</td>
               <td>{{ camara.ubicacion }}</td>
               <td>{{ camara.tipo }}</td>
+              <td>{{ camara.identificador_dispositivo || 'Sin identificar' }}</td>
               <td>{{ obtenerNombreHabitacionCamara(camara.id_habitacion) }}</td>
               <td>
                 <span class="estado" [class.estado-activo]="camara.estado" [class.estado-inactivo]="!camara.estado">
@@ -2092,7 +2074,7 @@
             </tr>
 
             <tr *ngIf="camaras.length === 0">
-              <td colspan="6" class="sin-registros">
+              <td colspan="7" class="sin-registros">
                 No hay cámaras registradas.
               </td>
             </tr>
