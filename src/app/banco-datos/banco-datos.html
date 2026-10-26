@@ -1958,6 +1958,26 @@
                 </select>
               </div>
 
+              
+              <div class="campo-formulario campo-completo">
+                <label for="identificadorDispositivo">
+                  Identificador del dispositivo físico
+                </label>
+
+                <input
+                  id="identificadorDispositivo"
+                  type="text"
+                  [(ngModel)]="camaraActual.identificador_dispositivo"
+                  name="identificadorDispositivo"
+                  placeholder="Ingrese el identificador físico de la cámara"
+                >
+
+                <small>
+                  Identifica la cámara física conectada al equipo que ejecuta YOLO.
+                </small>
+              </div>
+
+
               <div class="campo-formulario">
                 <label for="habitacionCamara">Habitación</label>
                 <select id="habitacionCamara" [(ngModel)]="camaraActual.id_habitacion" name="habitacionCamara" required>
