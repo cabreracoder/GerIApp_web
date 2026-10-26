@@ -81,6 +81,7 @@ interface Camara {
   nombre: string;
   ubicacion: string;
   direccion_stream: string;
+  identificador_dispositivo: string | null;
   tipo: string | null;
   estado: boolean | null;
   fecha_registro?: string | null;
@@ -604,6 +605,7 @@ export class BancoDatos implements OnInit {
     nombre: '',
     ubicacion: '',
     direccion_stream: '',
+    identificador_dispositivo: null,
     tipo: '',
     estado: true,
     fecha_registro: null,
@@ -3250,6 +3252,7 @@ export class BancoDatos implements OnInit {
           'nombre',
           'ubicacion',
           'direccion_stream',
+          'identificador_dispositivo',
           'tipo',
           'estado',
           'id_habitacion'
@@ -3270,6 +3273,7 @@ export class BancoDatos implements OnInit {
       nombre: this.camaraForm.nombre.trim(),
       ubicacion: this.camaraForm.ubicacion.trim(),
       direccion_stream: this.camaraForm.direccion_stream.trim(),
+      identificador_dispositivo: this.camaraForm.identificador_dispositivo?.trim() || null,
       tipo: this.camaraForm.tipo?.trim() || null,
       estado: this.camaraForm.estado,
       id_habitacion:
@@ -3356,6 +3360,7 @@ export class BancoDatos implements OnInit {
       nombre: camara.nombre || '',
       ubicacion: camara.ubicacion || '',
       direccion_stream: camara.direccion_stream || '',
+      identificador_dispositivo: camara.identificador_dispositivo || '',
       tipo: camara.tipo ?? '',
       estado: camara.estado ?? true,
       fecha_registro: camara.fecha_registro ?? null,
@@ -3521,6 +3526,7 @@ export class BancoDatos implements OnInit {
       nombre: '',
       ubicacion: '',
       direccion_stream: '',
+      identificador_dispositivo: '',
       tipo: '',
       estado: true,
       fecha_registro: null,
