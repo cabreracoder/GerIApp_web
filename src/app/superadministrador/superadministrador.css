@@ -1,669 +1,849 @@
 
-:host {
-  display: block;
-  width: 100%;
-  min-width: 0;
-}
+/* =====================================================
+   GERIAPP — DASHBOARD DEL SUPERADMINISTRADOR
+   Identidad institucional azul
+   Banner con imagen curva y borde degradado
+   ===================================================== */
 
 .superadmin-container {
+  --sa-primary: #3B5BDB;
+  --sa-primary-dark: #243F9E;
+  --sa-primary-light: #EDF2FF;
+  --sa-accent: #70B7FF;
+
+  --sa-text: #24324B;
+  --sa-muted: #66758C;
+  --sa-border: #E1E7F0;
+  --sa-surface: #FFFFFF;
+  --sa-background: #F5F8FD;
+
+  --sa-success: #16845B;
+  --sa-success-bg: #E5F6EE;
+
   box-sizing: border-box;
+  display: block;
   width: 100%;
-  min-height: 100%;
-  padding: 24px;
-  background: #F8FAFC;
-  color: #212529;
+  max-width: 100%;
+  min-width: 0;
+  padding: 28px 30px 36px;
+
+  color: var(--sa-text);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
-/* Encabezado */
-
-.superadmin-header {
-  margin-bottom: 24px;
+.superadmin-container *,
+.superadmin-container *::before,
+.superadmin-container *::after {
+  box-sizing: border-box;
 }
 
-.superadmin-eyebrow {
-  margin: 0 0 8px;
-  color: #3B5BDB;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
+/* =====================================================
+   ENCABEZADO
+   ===================================================== */
+
+.superadmin-container .superadmin-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
-.superadmin-header h2 {
-  margin: 0;
-  color: #212529;
-  font-size: 26px;
+.superadmin-container .superadmin-eyebrow {
+  margin: 0 0 5px;
+  color: var(--sa-primary) !important;
+  font-size: 12px;
   font-weight: 700;
-  line-height: 1.35;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
 }
 
-.superadmin-description {
-  max-width: 680px;
-  margin: 10px 0 0;
-  color: #6C757D;
+.superadmin-container .superadmin-header h2 {
+  margin: 0;
+  color: var(--sa-text) !important;
+  font-size: clamp(23px, 2vw, 30px);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.035em;
+}
+
+.superadmin-container .superadmin-description {
+  max-width: 720px;
+  margin: 8px 0 0;
+  color: var(--sa-muted) !important;
   font-size: 14px;
   line-height: 1.6;
 }
 
-/* Navegación */
+/* =====================================================
+   NAVEGACIÓN INTERNA
+   ===================================================== */
 
-.superadmin-navigation {
+.superadmin-container .superadmin-navigation {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin: 24px 0;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
 }
 
-.superadmin-navigation button {
+.superadmin-container .superadmin-navigation button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+
   min-height: 42px;
-  padding: 10px 15px;
-  border: 1px solid #E9ECEF;
+  padding: 9px 15px;
+
+  border: 1px solid var(--sa-border) !important;
   border-radius: 9px;
-  background: #FFFFFF;
-  color: #495057;
+
+  background: #FFFFFF !important;
+  color: #45536B !important;
+
   font-family: inherit;
   font-size: 13px;
   font-weight: 500;
+
   cursor: pointer;
-  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease;
 }
 
-.superadmin-navigation button .material-symbols-outlined {
-  font-size: 20px;
-}
-
-.superadmin-navigation button:hover {
-  border-color: #C8D2FA;
-  background: #F4F7FF;
-  color: #3B5BDB;
-}
-
-.superadmin-navigation button.active {
-  border-color: #3B5BDB;
-  background: #F4F7FF;
-  color: #3B5BDB;
-  font-weight: 600;
-}
-
-/* Paneles */
-
-.superadmin-section {
-  min-width: 0;
-  overflow: hidden;
-  border: 1px solid #E9ECEF;
-  border-radius: 12px;
-  background: #FFFFFF;
-}
-
-.section-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 22px 24px;
-  border-bottom: 1px solid #E9ECEF;
-}
-
-.section-heading > div {
-  min-width: 0;
-}
-
-.section-heading h3 {
-  margin: 0;
-  color: #212529;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.section-heading p {
-  margin: 7px 0 0;
-  color: #6C757D;
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-.superadmin-content {
-  min-width: 0;
-  padding: 24px;
-}
-
-/* Botones */
-
-.btn-primary,
-.btn-secondary,
-.btn-text {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  min-height: 38px;
-  padding: 9px 14px;
-  border-radius: 8px;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.4;
-  cursor: pointer;
-  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
-}
-
-.btn-primary {
-  flex-shrink: 0;
-  border: 1px solid #3B5BDB;
-  background: #3B5BDB;
-  color: #FFFFFF;
-}
-
-.btn-primary:hover {
-  border-color: #324EC7;
-  background: #324EC7;
-}
-
-.btn-secondary {
-  border: 1px solid #D7DDF5;
-  background: #FFFFFF;
-  color: #3B5BDB;
-}
-
-.btn-secondary:hover {
-  border-color: #3B5BDB;
-  background: #F4F7FF;
-}
-
-.btn-text {
-  min-height: auto;
-  padding: 6px 8px;
-  border: none;
-  background: transparent;
-  color: #3B5BDB;
-}
-
-.btn-text:hover {
-  background: #F4F7FF;
-}
-
-.btn-primary .material-symbols-outlined,
-.btn-secondary .material-symbols-outlined,
-.btn-text .material-symbols-outlined {
+.superadmin-container .superadmin-navigation button
+.material-symbols-outlined {
+  color: inherit;
   font-size: 19px;
 }
 
-.btn-primary:disabled,
-.btn-secondary:disabled,
-.btn-text:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
+.superadmin-container .superadmin-navigation button:hover {
+  color: var(--sa-primary) !important;
+  background: var(--sa-primary-light) !important;
+  border-color: #B9C9FF !important;
 }
 
-.superadmin-navigation button:focus-visible,
-.btn-primary:focus-visible,
-.btn-secondary:focus-visible,
-.btn-text:focus-visible,
-.quick-action:focus-visible {
-  outline: 3px solid #C8D2FA;
-  outline-offset: 2px;
-}
-
-/* Resumen: tarjetas */
-
-.summary-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-}
-
-.summary-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  min-width: 0;
-  padding: 22px;
-  border: 1px solid #E9ECEF;
-  border-radius: 10px;
-  background: #FFFFFF;
-}
-
-.summary-card-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  flex: 0 0 44px;
-  border-radius: 10px;
-  background: #F4F7FF;
-  color: #3B5BDB;
-}
-
-.summary-card-icon .material-symbols-outlined {
-  font-size: 25px;
-}
-
-.summary-card-info {
-  min-width: 0;
-}
-
-.summary-card-info > p {
-  margin: 0 0 8px;
-  color: #6C757D;
-  font-size: 13px;
-}
-
-.summary-card-info h4 {
-  margin: 0;
-  color: #212529;
-  font-size: 30px;
-  font-weight: 700;
-  line-height: 1.2;
-  font-variant-numeric: tabular-nums;
-}
-
-.summary-caption {
-  display: block;
-  margin-top: 8px;
-  color: #6C757D;
-  font-size: 11px;
-  line-height: 1.5;
-}
-
-.summary-status {
-  display: block;
-  margin-top: 8px;
-  color: #6C757D;
-  font-size: 13px;
-}
-
-.error-text {
-  color: #B02A37;
-}
-
-/* Resumen: acciones rápidas */
-
-.quick-actions {
-  margin-top: 30px;
-}
-
-.quick-actions-heading {
-  margin-bottom: 12px;
-}
-
-.quick-actions-heading h3 {
-  margin: 0;
-  color: #212529;
-  font-size: 16px;
+.superadmin-container .superadmin-navigation button.active {
+  color: var(--sa-primary) !important;
+  background: var(--sa-primary-light) !important;
+  border-color: var(--sa-primary) !important;
   font-weight: 600;
 }
 
-.quick-actions-heading p {
-  margin: 6px 0 0;
-  color: #6C757D;
-  font-size: 13px;
-  line-height: 1.5;
+.superadmin-container button:focus-visible {
+  outline: 3px solid #A9C4FF;
+  outline-offset: 3px;
 }
 
-.quick-actions-list {
-  overflow: hidden;
-  border: 1px solid #E9ECEF;
-  border-radius: 10px;
-  background: #FFFFFF;
-}
+/* =====================================================
+   CONTENIDO GENERAL
+   ===================================================== */
 
-.quick-action {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+.superadmin-container .dashboard-overview,
+.superadmin-container .superadmin-section {
   width: 100%;
   min-width: 0;
-  padding: 16px;
-  border: none;
-  border-bottom: 1px solid #E9ECEF;
-  background: #FFFFFF;
-  color: #212529;
-  font-family: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  background: transparent;
 }
 
-.quick-action:last-child {
-  border-bottom: none;
-}
-
-.quick-action:hover {
-  background: #F4F7FF;
-}
-
-.quick-action-icon {
+.superadmin-container .dashboard-overview {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  flex: 0 0 40px;
-  border-radius: 9px;
-  background: #F4F7FF;
-  color: #3B5BDB;
-}
-
-.quick-action-icon .material-symbols-outlined {
-  font-size: 22px;
-}
-
-.quick-action-text {
-  display: flex;
-  flex: 1;
   flex-direction: column;
-  gap: 5px;
+  gap: 20px;
+}
+
+/* =====================================================
+   BANNER INSTITUCIONAL DE BIENVENIDA
+   El degradado azul ocupa todo el banner.
+   ===================================================== */
+
+.superadmin-container .welcome-banner {
+  position: relative;
+  isolation: isolate;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+
+  width: 100%;
   min-width: 0;
+  min-height: 270px;
+
+  overflow: hidden;
+
+  border: 1px solid #D6E3FF !important;
+  border-radius: 18px;
+
+  background: linear-gradient(
+    120deg,
+    #17366B 0%,
+    #1D447F 42%,
+    #2455A4 100%
+  ) !important;
 }
 
-.quick-action-text strong {
-  color: #212529;
-  font-size: 13px;
-  font-weight: 600;
+/* =====================================================
+   ZONA DE LA IMAGEN
+   ===================================================== */
+
+.superadmin-container .welcome-illustration {
+  position: relative;
+  z-index: 1;
+
+  min-width: 0;
+  min-height: 270px;
+
+  /*
+   * Se permite que la capa del borde se extienda
+   * ligeramente más allá del límite de la fotografía.
+   */
+  overflow: visible;
+
+  background: transparent !important;
 }
 
-.quick-action-text > span {
-  color: #6C757D;
-  font-size: 12px;
-  line-height: 1.5;
+/* CONTORNO AZUL CLARO DETRÁS DE LA FOTOGRAFÍA */
+
+.superadmin-container .welcome-illustration::before {
+  content: "";
+
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+
+  width: calc(100% + 8px);
+
+  background: #DCEAFF;
+
+  clip-path: ellipse(
+    100% 110% at 0% 50%
+  );
+
+  pointer-events: none;
 }
 
-.quick-action-arrow {
-  flex: 0 0 auto;
-  color: #6C757D;
-  font-size: 22px;
-}
+/* FOTOGRAFÍA CON BORDE CURVO */
 
-/* Tablas */
+.superadmin-container .welcome-illustration-image {
+  position: relative;
+  z-index: 1;
 
-.table-container {
+  display: block;
+
   width: 100%;
-  overflow-x: auto;
-  border: 1px solid #E9ECEF;
-  border-radius: 9px;
+  height: 100%;
+  min-height: 270px;
+
+  object-fit: cover;
+  object-position: center;
+
+  clip-path: ellipse(
+    100% 110% at 0% 50%
+  );
 }
 
-.table-container table {
-  width: 100%;
-  border-collapse: collapse;
-  background: #FFFFFF;
-  text-align: left;
+/* =====================================================
+   PANEL AZUL Y CONTENIDO
+   Se mantiene rectangular y sin desplazamientos.
+   La curva pertenece exclusivamente a la fotografía.
+   ===================================================== */
+
+.superadmin-container .welcome-copy {
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+
+  min-width: 0;
+  padding: 34px clamp(24px, 3vw, 44px);
+
+  color: #FFFFFF !important;
+
+  background: transparent !important;
 }
 
-.table-container thead {
-  background: #F8FAFC;
-}
+/* NOMBRE DE LA FUNDACIÓN O ENTIDAD */
 
-.table-container th {
-  padding: 14px 16px;
-  border-bottom: 1px solid #E9ECEF;
-  color: #495057;
+.superadmin-container .welcome-copy .welcome-eyebrow {
+  margin: 0 0 12px;
+
+  color: #A9D6FF !important;
+
   font-size: 12px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.table-container td {
-  padding: 15px 16px;
-  border-bottom: 1px solid #E9ECEF;
-  color: #6C757D;
-  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   line-height: 1.5;
-  vertical-align: middle;
-}
 
-.table-container tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.table-container tbody tr:hover {
-  background: #F4F7FF;
-}
-
-.table-container .cell-id {
-  color: #6C757D;
-  font-variant-numeric: tabular-nums;
-}
-
-.table-container .cell-name {
-  min-width: 150px;
-  color: #212529;
-  font-weight: 600;
-}
-
-.table-container .cell-email {
-  min-width: 190px;
   overflow-wrap: anywhere;
 }
 
-/* Pie de tabla */
+/* TÍTULO PRINCIPAL */
 
-.table-footer {
+.superadmin-container .welcome-copy h1,
+.superadmin-container .welcome-copy h3 {
+  margin: 0 0 14px;
+
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF;
+
+  font-size: clamp(24px, 2.4vw, 36px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+}
+
+/* MARCA GERIAPP */
+
+.superadmin-container .welcome-copy .welcome-brand {
+  margin: 0 0 3px;
+
+  color: #FFFFFF !important;
+
+  font-size: 17px;
+  font-weight: 700;
+}
+
+/* MENSAJE DE BIENVENIDA */
+
+.superadmin-container .welcome-copy .welcome-subtitle {
+  margin: 0;
+
+  color: #EAF2FF !important;
+
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+/* LÍNEA DECORATIVA */
+
+.superadmin-container .welcome-copy .welcome-line {
+  display: block;
+
+  width: 68px;
+  height: 5px;
+  margin-top: 20px;
+
+  border-radius: 10px;
+
+  background: var(--sa-accent) !important;
+}
+
+/* =====================================================
+   TABLAS DEL RESUMEN
+   ===================================================== */
+
+.superadmin-container .overview-tables {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 18px;
+
+  width: 100%;
+  min-width: 0;
+}
+
+.superadmin-container .overview-table-card {
+  min-width: 0;
+  overflow: hidden;
+
+  border: 1px solid var(--sa-border) !important;
+  border-radius: 13px;
+
+  background: #FFFFFF !important;
+
+  box-shadow: 0 3px 12px rgb(36 50 75 / 3%);
+}
+
+.superadmin-container .overview-table-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 19px 20px;
+
+  border-bottom: 1px solid var(--sa-border);
+
+  background: #FFFFFF !important;
+}
+
+.superadmin-container .overview-table-heading h2,
+.superadmin-container .overview-table-heading h3 {
+  margin: 0;
+
+  color: var(--sa-text) !important;
+
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.superadmin-container .overview-table-heading p {
+  margin: 5px 0 0;
+
+  color: var(--sa-muted) !important;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* =====================================================
+   BOTONES DE TEXTO Y ENLACES
+   ===================================================== */
+
+.superadmin-container .overview-view-all,
+.superadmin-container .btn-text {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  padding: 6px 0;
+
+  border: 0;
+  border-radius: 5px;
+
+  background: transparent !important;
+  color: var(--sa-primary) !important;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.superadmin-container .overview-view-all:hover,
+.superadmin-container .btn-text:hover {
+  color: var(--sa-primary-dark) !important;
+  text-decoration: underline;
+}
+
+.superadmin-container .overview-view-all .material-symbols-outlined {
+  font-size: 19px;
+}
+
+/* =====================================================
+   TABLAS Y CONTENEDORES
+   ===================================================== */
+
+.superadmin-container .table-container,
+.superadmin-container .overview-table-container {
+  width: 100%;
+  min-width: 0;
+
+  overflow-x: auto;
+
+  background: #FFFFFF;
+}
+
+.superadmin-container table {
+  width: 100%;
+
+  border-collapse: collapse;
+  border-spacing: 0;
+
+  color: var(--sa-text);
+
+  font-size: 12px;
+  text-align: left;
+}
+
+.superadmin-container table thead th {
+  padding: 13px 15px;
+
+  border-bottom: 1px solid var(--sa-border);
+
+  background: #F1F5FC !important;
+  color: #334867 !important;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.superadmin-container table tbody td {
+  padding: 14px 15px;
+
+  border-bottom: 1px solid #E7ECF4;
+
+  color: var(--sa-muted);
+
+  vertical-align: middle;
+}
+
+.superadmin-container table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.superadmin-container table tbody tr {
+  transition: background-color 150ms ease;
+}
+
+.superadmin-container table tbody tr:hover {
+  background: #F7F9FF !important;
+}
+
+.superadmin-container table .cell-name {
+  color: var(--sa-text) !important;
+  font-weight: 600;
+}
+
+.superadmin-container table .cell-id {
+  color: var(--sa-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.superadmin-container table .cell-email {
+  overflow-wrap: anywhere;
+}
+
+/* =====================================================
+   ESTADOS DE SEDES Y ADMINISTRADORES
+   ===================================================== */
+
+.superadmin-container .status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 25px;
+  padding: 4px 10px;
+
+  border-radius: 999px;
+
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
+
+  white-space: nowrap;
+}
+
+.superadmin-container .status-active {
+  color: #16734D !important;
+  background: #E1F5EB !important;
+}
+
+.superadmin-container .status-inactive {
+  color: #59677D !important;
+  background: #E8ECF2 !important;
+}
+
+/* =====================================================
+   VISTAS DE GESTIÓN
+   ===================================================== */
+
+.superadmin-container .superadmin-section {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.superadmin-container .section-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 12px;
-  padding: 14px 16px;
-  border-top: 1px solid #E9ECEF;
-  background: #FFFFFF;
-  color: #6C757D;
+  gap: 16px;
+}
+
+.superadmin-container .section-heading h2,
+.superadmin-container .section-heading h3 {
+  margin: 0;
+
+  color: var(--sa-text) !important;
+
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.superadmin-container .section-heading p {
+  margin: 6px 0 0;
+
+  color: var(--sa-muted) !important;
+
   font-size: 13px;
 }
 
-.table-footer strong {
-  color: #212529;
+.superadmin-container .superadmin-content {
+  width: 100%;
+  min-width: 0;
+
+  overflow: hidden;
+
+  border: 1px solid var(--sa-border) !important;
+  border-radius: 13px;
+
+  background: #FFFFFF !important;
+
+  box-shadow: 0 3px 12px rgb(36 50 75 / 3%);
 }
 
-/* Estados de carga, error y lista vacía */
+/* =====================================================
+   BOTONES DE ACCIÓN
+   ===================================================== */
 
-.state-container {
+.superadmin-container .btn-primary,
+.superadmin-container .btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-height: 40px;
+  padding: 10px 15px;
+
+  border-radius: 8px;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+
+  cursor: pointer;
+
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+.superadmin-container .btn-primary {
+  border: 1px solid var(--sa-primary) !important;
+
+  background: var(--sa-primary) !important;
+  color: #FFFFFF !important;
+}
+
+.superadmin-container .btn-primary:hover {
+  border-color: var(--sa-primary-dark) !important;
+
+  background: var(--sa-primary-dark) !important;
+  color: #FFFFFF !important;
+}
+
+.superadmin-container .btn-secondary {
+  border: 1px solid #C9D6F5 !important;
+
+  background: #FFFFFF !important;
+  color: var(--sa-primary) !important;
+}
+
+.superadmin-container .btn-secondary:hover {
+  border-color: #AFC2F5 !important;
+
+  background: var(--sa-primary-light) !important;
+  color: var(--sa-primary-dark) !important;
+}
+
+.superadmin-container .btn-primary:disabled,
+.superadmin-container .btn-secondary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.superadmin-container .btn-small {
+  min-height: 32px;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.superadmin-container .btn-small .material-symbols-outlined,
+.superadmin-container .btn-primary .material-symbols-outlined,
+.superadmin-container .btn-secondary .material-symbols-outlined {
+  font-size: 17px;
+}
+
+.superadmin-container .admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+/* =====================================================
+   CARGA, ERRORES Y ESTADOS VACÍOS
+   ===================================================== */
+
+.superadmin-container .overview-table-state {
+  padding: 22px 18px;
+
+  color: var(--sa-muted);
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.superadmin-container .state-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 230px;
-  padding: 28px 16px;
+
+  min-height: 240px;
+  padding: 32px 22px;
+
   text-align: center;
 }
 
-.state-icon {
-  margin-bottom: 14px;
-  color: #3B5BDB;
-  font-size: 42px;
+.superadmin-container .state-icon {
+  margin-bottom: 12px;
+
+  color: var(--sa-primary) !important;
+
+  font-size: 38px;
 }
 
-.state-icon-error {
-  color: #DC3545;
-}
+.superadmin-container .state-container h3,
+.superadmin-container .state-container h4 {
+  margin: 0 0 7px;
 
-.state-container h4 {
-  margin: 0 0 8px;
-  color: #212529;
+  color: var(--sa-text) !important;
+
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
-.state-container p {
+.superadmin-container .state-container p {
   max-width: 440px;
   margin: 0 0 18px;
-  color: #6C757D;
+
+  color: var(--sa-muted);
+
   font-size: 13px;
-  line-height: 1.7;
+  line-height: 1.6;
 }
 
-/* Estado de sedes y administradores */
-
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 5px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  white-space: nowrap;
+.superadmin-container .state-icon-error,
+.superadmin-container .error-text {
+  color: #B42318 !important;
 }
 
-.status-dot {
-  width: 7px;
-  height: 7px;
-  flex: 0 0 7px;
-  border-radius: 50%;
-  background: currentColor;
-}
+/* =====================================================
+   TABLETAS
+   ===================================================== */
 
-.status-active {
-  background: #E8F7EE;
-  color: #198754;
-}
-
-.status-inactive {
-  background: #F1F3F5;
-  color: #6C757D;
-}
-
-.role-badge {
-  display: inline-block;
-  padding: 5px 10px;
-  border: 1px solid #D7DDF5;
-  border-radius: 7px;
-  background: #F4F7FF;
-  color: #3B5BDB;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-/* Aviso informativo */
-
-.information-note {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin-top: 20px;
-  padding: 14px 16px;
-  border: 1px solid #D7DDF5;
-  border-radius: 9px;
-  background: #F8FAFF;
-}
-
-.information-note > .material-symbols-outlined {
-  flex-shrink: 0;
-  color: #3B5BDB;
-  font-size: 21px;
-}
-
-.information-note p {
-  margin: 0;
-  color: #495057;
-  font-size: 12px;
-  line-height: 1.7;
-}
-
-/* Tabletas */
-
-@media (max-width: 900px) {
+@media (max-width: 1050px) {
   .superadmin-container {
-    padding: 20px;
+    padding: 24px 20px 30px;
   }
 
-  .superadmin-content {
-    padding: 20px;
+  .superadmin-container .overview-tables {
+    grid-template-columns: 1fr;
   }
 
-  .table-container table {
-    min-width: 700px;
+  .superadmin-container .welcome-banner {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  }
+
+  .superadmin-container .welcome-copy {
+    padding: 26px 24px;
   }
 }
 
-/* Móviles */
+/* =====================================================
+   MÓVILES
+   ===================================================== */
 
 @media (max-width: 640px) {
   .superadmin-container {
-    padding: 14px;
+    padding: 18px 12px 24px;
   }
 
-  .superadmin-header h2 {
-    font-size: 22px;
+  .superadmin-container .superadmin-header h2 {
+    font-size: 24px;
   }
 
-  .superadmin-description {
-    font-size: 13px;
+  .superadmin-container .superadmin-navigation {
+    gap: 6px;
   }
 
-  .superadmin-navigation {
-    gap: 8px;
-    margin: 20px 0;
-  }
-
-  .superadmin-navigation button {
+  .superadmin-container .superadmin-navigation button {
     flex: 1 1 auto;
-    justify-content: flex-start;
-    padding: 10px 12px;
+    padding: 9px 10px;
   }
 
-  .section-heading {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 14px;
-    padding: 18px;
-  }
-
-  .section-heading > .btn-primary,
-  .section-heading > .btn-secondary {
-    align-self: flex-start;
-  }
-
-  .superadmin-content {
-    padding: 14px;
-  }
-
-  .summary-grid {
+  .superadmin-container .welcome-banner {
     grid-template-columns: 1fr;
-    gap: 12px;
   }
 
-  .summary-card {
-    padding: 18px;
+  .superadmin-container .welcome-illustration {
+    min-height: 190px;
+    max-height: 230px;
+    overflow: hidden;
   }
 
-  .quick-actions {
-    margin-top: 24px;
+  .superadmin-container .welcome-illustration-image {
+    min-height: 190px;
+    max-height: 230px;
   }
 
-  .quick-action {
-    gap: 10px;
-    padding: 13px 11px;
+  /* En móvil, imagen rectangular y panel sin curva lateral */
+
+  .superadmin-container .welcome-illustration::before {
+    display: none;
   }
 
-  .quick-action-icon {
-    width: 36px;
-    height: 36px;
-    flex-basis: 36px;
+  .superadmin-container .welcome-illustration-image {
+    clip-path: none;
   }
 
-  .table-container th,
-  .table-container td {
-    padding: 12px;
+  .superadmin-container .welcome-copy {
+    padding: 25px 22px;
   }
 
-  .table-footer {
+  .superadmin-container .welcome-copy h1,
+  .superadmin-container .welcome-copy h3 {
+    font-size: 27px;
+  }
+
+  .superadmin-container .welcome-copy .welcome-subtitle {
+    font-size: 15px;
+  }
+
+  .superadmin-container .overview-table-heading {
     align-items: flex-start;
-    flex-direction: column;
+    padding: 16px 14px;
+  }
+
+  .superadmin-container .section-heading {
+    align-items: flex-start;
+  }
+
+  .superadmin-container .admin-actions {
+    width: 100%;
+  }
+
+  .superadmin-container .admin-actions button {
+    flex: 1 1 auto;
+  }
+
+  .superadmin-container table {
+    min-width: 540px;
   }
 }
 
-/* Preferencia de movimiento reducido */
+/* =====================================================
+   ACCESIBILIDAD
+   ===================================================== */
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  .superadmin-container *,
+  .superadmin-container *::before,
+  .superadmin-container *::after {
     scroll-behavior: auto !important;
-    transition: none !important;
+    transition-duration: 0.01ms !important;
   }
 }
