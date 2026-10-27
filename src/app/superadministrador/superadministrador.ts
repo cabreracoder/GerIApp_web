@@ -50,6 +50,7 @@ type VistaSuperadministrador =
 export class Superadministrador implements OnInit {
   private readonly apiUrl = 'https://geriapp-backend.onrender.com/api';
 
+  nombreInstitucion = '';
   vistaActiva: VistaSuperadministrador = 'resumen';
 
   sedes: Sede[] = [];
@@ -70,9 +71,34 @@ export class Superadministrador implements OnInit {
 
   ngOnInit(): void {
     // Consultamos los datos para alimentar el resumen inicial.
+    this.cargarNombreInstitucion();
     this.listarSedes();
     this.listarAdministradores();
   }
+
+  cargarNombreInstitucion(): void {
+  this.http
+    .get<{ nombre_institucion?: string | null }>(
+      `${this.apiUrl}/configuracion/institucion/`
+    )
+    .subscribe({
+      next: (respuesta) => {
+        this.nombreInstitucion =
+          respuesta.nombre_institucion?.trim() ?? '';
+
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error(
+          'Error al cargar el nombre de la institución:',
+          error
+        );
+
+        this.nombreInstitucion = '';
+        this.cdr.detectChanges();
+      }
+    });
+}
 
   // ==========================================
   // NAVEGACIÓN
