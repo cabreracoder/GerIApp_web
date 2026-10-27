@@ -855,3 +855,81 @@
   border-radius: 50%;
   display: block;
 }
+
+/* =========================================================
+   CONTENIDO A PANTALLA COMPLETA - SUPERADMINISTRADOR
+========================================================= */
+
+.layout-main-container.layout-main-superadmin {
+  width: 100%;
+  margin-left: 0;
+}
+
+/* =========================================================
+   MENÚ HAMBURGUESA DEL SUPERADMINISTRADOR
+========================================================= */
+
+.layout-superadmin-menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.layout-superadmin-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 220px;
+  padding: 8px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  z-index: 1000;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+/* Mostrar al pasar el cursor o navegar con teclado */
+.layout-superadmin-menu:hover .layout-superadmin-dropdown,
+.layout-superadmin-menu:focus-within .layout-superadmin-dropdown {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.layout-superadmin-dropdown a,
+.layout-superadmin-dropdown button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: var(--radius-sm);
+
+  background: transparent;
+  color: var(--text-primary);
+
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  text-align: left;
+  text-decoration: none;
+
+  cursor: pointer;
+}
+
+.layout-superadmin-dropdown a:hover,
+.layout-superadmin-dropdown button:hover,
+.layout-superadmin-dropdown a:focus-visible,
+.layout-superadmin-dropdown button:focus-visible {
+  background: var(--bg-neutral-light);
+  color: var(--color-primary);
+}
