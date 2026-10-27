@@ -1,17 +1,11 @@
-<section class="superadmin-container">
-  <!-- Encabezado del módulo -->
-  <header class="superadmin-header">
-    <div>
-      <p class="superadmin-eyebrow">Administración general</p>
-      <h2>Panel del Superadministrador</h2>
-      <p class="superadmin-description">
-        Administra las sedes y consulta las cuentas de los
-        administradores de la institución.
-      </p>
-    </div>
-  </header>
 
-  <!-- Navegación interna -->
+<section class="superadmin-container">
+
+  <!-- ==========================================
+       NAVEGACIÓN INTERNA
+       Se conservará hasta implementar el menú
+       hamburguesa en el layout.
+       ========================================== -->
   <nav
     class="superadmin-navigation"
     aria-label="Opciones de administración"
@@ -25,7 +19,7 @@
       <span class="material-symbols-outlined" aria-hidden="true">
         dashboard
       </span>
-      <span>Resumen</span>
+      <span>Inicio</span>
     </button>
 
     <button
@@ -37,226 +31,345 @@
       <span class="material-symbols-outlined" aria-hidden="true">
         apartment
       </span>
-      <span>Gestión de sedes</span>
+      <span>Sedes</span>
     </button>
 
     <button
       type="button"
       (click)="cambiarVista('administradores')"
       [class.active]="vistaActiva === 'administradores'"
-      [attr.aria-current]="
-        vistaActiva === 'administradores' ? 'page' : null
-      "
+      [attr.aria-current]="vistaActiva === 'administradores' ? 'page' : null"
     >
       <span class="material-symbols-outlined" aria-hidden="true">
         manage_accounts
       </span>
-      <span>Gestión de administradores</span>
+      <span>Administradores</span>
     </button>
   </nav>
 
-  <!-- ====================================== -->
-  <!-- VISTA 1: RESUMEN DEL SUPERADMINISTRADOR -->
-  <!-- ====================================== -->
+  <!-- ==========================================
+       VISTA 1: RESUMEN
+       ========================================== -->
   <section
     *ngIf="vistaActiva === 'resumen'"
-    class="superadmin-section"
+    class="dashboard-overview"
   >
-    <div class="section-heading">
-      <div>
-        <h3>Resumen general</h3>
-        <p>
-          Consulta el estado general de la institución y accede
-          rápidamente a sus principales funciones.
+
+    <!-- BANNER INSTITUCIONAL -->
+    <section
+      class="welcome-banner"
+      aria-labelledby="welcome-title"
+    >
+
+      <!-- IMAGEN DE ADULTOS MAYORES -->
+      <div class="welcome-illustration">
+        <img
+          src="/adultos-mayores-banner.png"
+          alt="Adultos mayores compartiendo un momento agradable"
+          class="welcome-illustration-image"
+        >
+      </div>
+
+      <!-- INFORMACIÓN INSTITUCIONAL -->
+      <div class="welcome-copy">
+
+        <p class="welcome-eyebrow">
+          {{ nombreInstitucion || 'GerIApp' }}
         </p>
+
+        <h1 id="welcome-title">
+          ¡Hola! Superadministrador
+        </h1>
+
+        <p class="welcome-brand">
+          GerIApp
+        </p>
+
+        <p class="welcome-subtitle">
+          Gestión eficiente,<br>
+          para un mejor cuidado
+        </p>
+
+        <span class="welcome-line"></span>
+
       </div>
-    </div>
+    </section>
 
-    <div class="superadmin-content">
-      <!-- Tarjetas de resumen -->
-      <div class="summary-grid">
-        <!-- Total de sedes -->
-        <article class="summary-card">
-          <div class="summary-card-icon">
-            <span class="material-symbols-outlined" aria-hidden="true">
-              apartment
-            </span>
+    <!-- ======================================
+         TABLAS DEL RESUMEN
+         ====================================== -->
+    <div class="overview-tables">
+
+      <!-- TABLA DE SEDES -->
+      <section
+        class="overview-table-card"
+        aria-labelledby="overview-sedes-title"
+      >
+
+        <div class="overview-table-heading">
+          <div>
+            <h2 id="overview-sedes-title">
+              Sedes
+            </h2>
+
+            <p>
+              Consulta las sedes registradas en la institución.
+            </p>
           </div>
-
-          <div class="summary-card-info">
-            <p>Sedes registradas</p>
-
-            <h4 *ngIf="!cargandoSedes && !errorSedes">
-              {{ sedes.length }}
-            </h4>
-
-            <span *ngIf="cargandoSedes" class="summary-status">
-              Consultando...
-            </span>
-
-            <span *ngIf="errorSedes" class="summary-status error-text">
-              No disponible
-            </span>
-
-            <span class="summary-caption">
-              Total de sedes en la consulta
-            </span>
-          </div>
-        </article>
-
-        <!-- Total de administradores -->
-        <article class="summary-card">
-          <div class="summary-card-icon">
-            <span class="material-symbols-outlined" aria-hidden="true">
-              groups
-            </span>
-          </div>
-
-          <div class="summary-card-info">
-            <p>Administradores</p>
-
-            <h4
-              *ngIf="
-                !cargandoAdministradores &&
-                !errorAdministradores
-              "
-            >
-              {{ administradores.length }}
-            </h4>
-
-            <span
-              *ngIf="cargandoAdministradores"
-              class="summary-status"
-            >
-              Consultando...
-            </span>
-
-            <span
-              *ngIf="errorAdministradores"
-              class="summary-status error-text"
-            >
-              No disponible
-            </span>
-
-            <span class="summary-caption">
-              Cuentas identificadas por su rol
-            </span>
-          </div>
-        </article>
-      </div>
-
-      <!-- Acciones rápidas -->
-      <div class="quick-actions">
-        <div class="quick-actions-heading">
-          <h3>Acciones rápidas</h3>
-          <p>Accede a las funciones principales.</p>
-        </div>
-
-        <div class="quick-actions-list">
-          <button
-            type="button"
-            class="quick-action"
-            (click)="crearSede()"
-          >
-            <span class="quick-action-icon">
-              <span class="material-symbols-outlined" aria-hidden="true">
-                add_business
-              </span>
-            </span>
-
-            <span class="quick-action-text">
-              <strong>Nueva sede</strong>
-              <span>Registrar una sede en la institución.</span>
-            </span>
-
-            <span
-              class="material-symbols-outlined quick-action-arrow"
-              aria-hidden="true"
-            >
-              chevron_right
-            </span>
-          </button>
 
           <button
             type="button"
-            class="quick-action"
+            class="btn-text overview-view-all"
             (click)="cambiarVista('sedes')"
           >
-            <span class="quick-action-icon">
-              <span class="material-symbols-outlined" aria-hidden="true">
-                apartment
-              </span>
-            </span>
-
-            <span class="quick-action-text">
-              <strong>Gestionar sedes</strong>
-              <span>Consultar, registrar y editar sedes.</span>
-            </span>
+            Ver todas
 
             <span
-              class="material-symbols-outlined quick-action-arrow"
+              class="material-symbols-outlined"
               aria-hidden="true"
             >
-              chevron_right
-            </span>
-          </button>
-
-          <button
-            type="button"
-            class="quick-action"
-            (click)="cambiarVista('administradores')"
-          >
-            <span class="quick-action-icon">
-              <span class="material-symbols-outlined" aria-hidden="true">
-                manage_accounts
-              </span>
-            </span>
-
-            <span class="quick-action-text">
-              <strong>Gestionar administradores</strong>
-              <span>Consultar las cuentas y sus roles.</span>
-            </span>
-
-            <span
-              class="material-symbols-outlined quick-action-arrow"
-              aria-hidden="true"
-            >
-              chevron_right
+              arrow_forward
             </span>
           </button>
         </div>
-      </div>
 
-      <!-- Avisos de carga -->
-      <div
-        *ngIf="errorSedes || errorAdministradores"
-        class="information-note"
+        <!-- CARGANDO -->
+        <div
+          *ngIf="cargandoSedes"
+          class="overview-table-state"
+          role="status"
+        >
+          Consultando sedes...
+        </div>
+
+        <!-- ERROR -->
+        <div
+          *ngIf="!cargandoSedes && errorSedes"
+          class="overview-table-state error-text"
+          role="alert"
+        >
+          No se pudieron cargar las sedes.
+
+          <button
+            type="button"
+            class="btn-text"
+            (click)="listarSedes()"
+          >
+            Reintentar
+          </button>
+        </div>
+
+        <!-- SIN REGISTROS -->
+        <div
+          *ngIf="
+            !cargandoSedes &&
+            !errorSedes &&
+            sedes.length === 0
+          "
+          class="overview-table-state"
+        >
+          Aún no hay sedes registradas.
+        </div>
+
+        <!-- TABLA -->
+        <div
+          *ngIf="
+            !cargandoSedes &&
+            !errorSedes &&
+            sedes.length > 0
+          "
+          class="table-container overview-table-container"
+        >
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Sede</th>
+                <th scope="col">Dirección</th>
+                <th scope="col">Estado</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let sede of sedes | slice:0:5">
+                <td class="cell-name">
+                  {{ sede.nombre }}
+                </td>
+
+                <td>
+                  {{ sede.direccion || 'No registrada' }}
+                </td>
+
+                <td>
+                  <span
+                    class="status-badge"
+                    [ngClass]="
+                      esActivo(sede.estado)
+                        ? 'status-active'
+                        : 'status-inactive'
+                    "
+                  >
+                    {{
+                      esActivo(sede.estado)
+                        ? 'Activa'
+                        : 'Inactiva'
+                    }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+
+      <!-- TABLA DE ADMINISTRADORES -->
+      <section
+        class="overview-table-card"
+        aria-labelledby="overview-admins-title"
       >
-        <span class="material-symbols-outlined" aria-hidden="true">
-          info
-        </span>
 
-        <p>
-          No se pudo consultar toda la información del resumen.
-          Puedes entrar a la sección correspondiente para reintentar
-          la consulta.
-        </p>
-      </div>
+        <div class="overview-table-heading">
+          <div>
+            <h2 id="overview-admins-title">
+              Administradores
+            </h2>
+
+            <p>
+              Consulta las cuentas con rol de administrador.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            class="btn-text overview-view-all"
+            (click)="cambiarVista('administradores')"
+          >
+            Ver todos
+
+            <span
+              class="material-symbols-outlined"
+              aria-hidden="true"
+            >
+              arrow_forward
+            </span>
+          </button>
+        </div>
+
+        <!-- CARGANDO -->
+        <div
+          *ngIf="cargandoAdministradores"
+          class="overview-table-state"
+          role="status"
+        >
+          Consultando administradores...
+        </div>
+
+        <!-- ERROR -->
+        <div
+          *ngIf="
+            !cargandoAdministradores &&
+            errorAdministradores
+          "
+          class="overview-table-state error-text"
+          role="alert"
+        >
+          No se pudieron cargar los administradores.
+
+          <button
+            type="button"
+            class="btn-text"
+            (click)="listarAdministradores()"
+          >
+            Reintentar
+          </button>
+        </div>
+
+        <!-- SIN REGISTROS -->
+        <div
+          *ngIf="
+            !cargandoAdministradores &&
+            !errorAdministradores &&
+            administradores.length === 0
+          "
+          class="overview-table-state"
+        >
+          No hay administradores registrados.
+        </div>
+
+        <!-- TABLA -->
+        <div
+          *ngIf="
+            !cargandoAdministradores &&
+            !errorAdministradores &&
+            administradores.length > 0
+          "
+          class="table-container overview-table-container"
+        >
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Correo electrónico</th>
+                <th scope="col">Estado</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr
+                *ngFor="
+                  let administrador of administradores | slice:0:5
+                "
+              >
+                <td class="cell-name">
+                  {{ administrador.nombres }}
+                  {{ administrador.apellidos }}
+                </td>
+
+                <td class="cell-email">
+                  {{ administrador.correo }}
+                </td>
+
+                <td>
+                  <span
+                    class="status-badge"
+                    [ngClass]="
+                      esActivo(administrador.estado)
+                        ? 'status-active'
+                        : 'status-inactive'
+                    "
+                  >
+                    {{
+                      esActivo(administrador.estado)
+                        ? 'Activo'
+                        : 'Inactivo'
+                    }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+
     </div>
   </section>
 
-  <!-- ====================================== -->
-  <!-- VISTA 2: GESTIÓN DE SEDES              -->
-  <!-- ====================================== -->
+  <!-- ==========================================
+       VISTA 2: GESTIÓN DE SEDES
+       ========================================== -->
   <section
     *ngIf="vistaActiva === 'sedes'"
     class="superadmin-section"
   >
+
     <div class="section-heading">
       <div>
-        <h3>Gestión de sedes</h3>
+        <h2>Gestión de sedes</h2>
+
         <p>
-          Consulta, registra y actualiza las sedes de la institución.
+          Consulta, registra y actualiza las sedes
+          de la institución.
         </p>
       </div>
 
@@ -268,24 +381,38 @@
         <span class="material-symbols-outlined" aria-hidden="true">
           add
         </span>
+
         Nueva sede
       </button>
     </div>
 
     <div class="superadmin-content">
-      <!-- Cargando -->
-      <div *ngIf="cargandoSedes" class="state-container">
-        <span class="material-symbols-outlined state-icon" aria-hidden="true">
+
+      <!-- CARGANDO -->
+      <div
+        *ngIf="cargandoSedes"
+        class="state-container"
+        role="status"
+      >
+        <span
+          class="material-symbols-outlined state-icon"
+          aria-hidden="true"
+        >
           progress_activity
         </span>
-        <h4>Cargando sedes</h4>
-        <p>Estamos consultando las sedes registradas.</p>
+
+        <h3>Cargando sedes</h3>
+
+        <p>
+          Estamos consultando las sedes registradas.
+        </p>
       </div>
 
-      <!-- Error -->
+      <!-- ERROR -->
       <div
         *ngIf="!cargandoSedes && errorSedes"
         class="state-container"
+        role="alert"
       >
         <span
           class="material-symbols-outlined state-icon state-icon-error"
@@ -294,9 +421,11 @@
           cloud_off
         </span>
 
-        <h4>No fue posible cargar las sedes</h4>
+        <h3>No fue posible cargar las sedes</h3>
+
         <p>
-          Verifica que el backend esté disponible e inténtalo nuevamente.
+          Verifica que el backend esté disponible
+          e inténtalo nuevamente.
         </p>
 
         <button
@@ -308,7 +437,7 @@
         </button>
       </div>
 
-      <!-- Sin sedes -->
+      <!-- SIN SEDES -->
       <div
         *ngIf="
           !cargandoSedes &&
@@ -317,13 +446,18 @@
         "
         class="state-container"
       >
-        <span class="material-symbols-outlined state-icon" aria-hidden="true">
+        <span
+          class="material-symbols-outlined state-icon"
+          aria-hidden="true"
+        >
           apartment
         </span>
 
-        <h4>No hay sedes registradas</h4>
+        <h3>No hay sedes registradas</h3>
+
         <p>
-          Cuando existan sedes registradas, aparecerán en esta sección.
+          Cuando existan sedes registradas,
+          aparecerán en esta sección.
         </p>
 
         <button
@@ -331,14 +465,18 @@
           class="btn-primary"
           (click)="crearSede()"
         >
-          <span class="material-symbols-outlined" aria-hidden="true">
+          <span
+            class="material-symbols-outlined"
+            aria-hidden="true"
+          >
             add
           </span>
+
           Registrar primera sede
         </button>
       </div>
 
-      <!-- Tabla de sedes -->
+      <!-- TABLA COMPLETA -->
       <div
         *ngIf="
           !cargandoSedes &&
@@ -361,10 +499,21 @@
 
           <tbody>
             <tr *ngFor="let sede of sedes">
-              <td class="cell-id">{{ sede.id_sede }}</td>
-              <td class="cell-name">{{ sede.nombre }}</td>
-              <td>{{ sede.direccion || 'No registrada' }}</td>
-              <td>{{ sede.telefono || 'No registrado' }}</td>
+              <td class="cell-id">
+                {{ sede.id_sede }}
+              </td>
+
+              <td class="cell-name">
+                {{ sede.nombre }}
+              </td>
+
+              <td>
+                {{ sede.direccion || 'No registrada' }}
+              </td>
+
+              <td>
+                {{ sede.telefono || 'No registrado' }}
+              </td>
 
               <td>
                 <span
@@ -375,7 +524,11 @@
                       : 'status-inactive'
                   "
                 >
-                  {{ esActivo(sede.estado) ? 'Activa' : 'Inactiva' }}
+                  {{
+                    esActivo(sede.estado)
+                      ? 'Activa'
+                      : 'Inactiva'
+                  }}
                 </span>
               </td>
 
@@ -386,9 +539,13 @@
                   (click)="editarSede(sede)"
                   [attr.aria-label]="'Editar sede ' + sede.nombre"
                 >
-                  <span class="material-symbols-outlined" aria-hidden="true">
+                  <span
+                    class="material-symbols-outlined"
+                    aria-hidden="true"
+                  >
                     edit
                   </span>
+
                   Editar
                 </button>
               </td>
@@ -397,36 +554,41 @@
         </table>
       </div>
 
-      <!-- Nota sobre la asignación de sedes -->
-      <div class="information-note">
-      </div>
     </div>
   </section>
 
-  <!-- ====================================== -->
-  <!-- VISTA 3: GESTIÓN DE ADMINISTRADORES    -->
-  <!-- ====================================== -->
+  <!-- ==========================================
+       VISTA 3: GESTIÓN DE ADMINISTRADORES
+       ========================================== -->
   <section
     *ngIf="vistaActiva === 'administradores'"
     class="superadmin-section"
   >
+
     <div class="section-heading">
       <div>
-        <h3>Gestión de administradores</h3>
+        <h2>Gestión de administradores</h2>
+
         <p>
-          Consulta y administra las cuentas con rol de administrador.
+          Consulta y administra las cuentas con rol
+          de administrador.
         </p>
       </div>
 
       <div class="admin-actions">
+
         <button
           type="button"
           class="btn-primary"
           (click)="crearAdministrador()"
         >
-          <span class="material-symbols-outlined" aria-hidden="true">
+          <span
+            class="material-symbols-outlined"
+            aria-hidden="true"
+          >
             person_add
           </span>
+
           Nuevo administrador
         </button>
 
@@ -436,9 +598,13 @@
           (click)="asignarAdministrador()"
           [disabled]="cargandoAdministradores"
         >
-          <span class="material-symbols-outlined" aria-hidden="true">
+          <span
+            class="material-symbols-outlined"
+            aria-hidden="true"
+          >
             manage_accounts
           </span>
+
           Asignar usuario existente
         </button>
 
@@ -448,34 +614,49 @@
           (click)="listarAdministradores()"
           [disabled]="cargandoAdministradores"
         >
-          <span class="material-symbols-outlined" aria-hidden="true">
+          <span
+            class="material-symbols-outlined"
+            aria-hidden="true"
+          >
             refresh
           </span>
+
           Actualizar
         </button>
+
       </div>
     </div>
 
     <div class="superadmin-content">
-      <!-- Cargando -->
+
+      <!-- CARGANDO -->
       <div
         *ngIf="cargandoAdministradores"
         class="state-container"
+        role="status"
       >
-        <span class="material-symbols-outlined state-icon" aria-hidden="true">
+        <span
+          class="material-symbols-outlined state-icon"
+          aria-hidden="true"
+        >
           progress_activity
         </span>
-        <h4>Cargando administradores</h4>
-        <p>Estamos consultando los usuarios y sus roles.</p>
+
+        <h3>Cargando administradores</h3>
+
+        <p>
+          Estamos consultando los usuarios y sus roles.
+        </p>
       </div>
 
-      <!-- Error -->
+      <!-- ERROR -->
       <div
         *ngIf="
           !cargandoAdministradores &&
           errorAdministradores
         "
         class="state-container"
+        role="alert"
       >
         <span
           class="material-symbols-outlined state-icon state-icon-error"
@@ -484,9 +665,11 @@
           cloud_off
         </span>
 
-        <h4>No fue posible cargar los administradores</h4>
+        <h3>No fue posible cargar los administradores</h3>
+
         <p>
-          Verifica que el backend esté disponible e inténtalo nuevamente.
+          Verifica que el backend esté disponible
+          e inténtalo nuevamente.
         </p>
 
         <button
@@ -498,7 +681,7 @@
         </button>
       </div>
 
-      <!-- Lista vacía -->
+      <!-- SIN ADMINISTRADORES -->
       <div
         *ngIf="
           !cargandoAdministradores &&
@@ -507,26 +690,35 @@
         "
         class="state-container"
       >
-        <span class="material-symbols-outlined state-icon" aria-hidden="true">
+        <span
+          class="material-symbols-outlined state-icon"
+          aria-hidden="true"
+        >
           manage_accounts
         </span>
 
-        <h4>No hay administradores registrados</h4>
+        <h3>No hay administradores registrados</h3>
+
         <p>
           No se encontraron cuentas con el rol de Administrador.
-          Puedes registrar una cuenta nueva o asignar el rol a un usuario
-          existente.
+          Puedes registrar una cuenta nueva o asignar el rol
+          a un usuario existente.
         </p>
 
         <div class="admin-actions">
+
           <button
             type="button"
             class="btn-primary"
             (click)="crearAdministrador()"
           >
-            <span class="material-symbols-outlined" aria-hidden="true">
+            <span
+              class="material-symbols-outlined"
+              aria-hidden="true"
+            >
               person_add
             </span>
+
             Nuevo administrador
           </button>
 
@@ -535,15 +727,20 @@
             class="btn-secondary"
             (click)="asignarAdministrador()"
           >
-            <span class="material-symbols-outlined" aria-hidden="true">
+            <span
+              class="material-symbols-outlined"
+              aria-hidden="true"
+            >
               manage_accounts
             </span>
+
             Asignar usuario existente
           </button>
+
         </div>
       </div>
 
-      <!-- Tabla de administradores -->
+      <!-- TABLA COMPLETA -->
       <div
         *ngIf="
           !cargandoAdministradores &&
@@ -567,21 +764,27 @@
 
           <tbody>
             <tr *ngFor="let administrador of administradores">
+
               <td class="cell-id">
                 {{ administrador.id_usuario }}
               </td>
 
               <td class="cell-name">
-                {{ administrador.nombres }} {{ administrador.apellidos }}
+                {{ administrador.nombres }}
+                {{ administrador.apellidos }}
               </td>
 
-              <td>{{ administrador.correo }}</td>
+              <td class="cell-email">
+                {{ administrador.correo }}
+              </td>
 
               <td>
                 {{ administrador.telefono || 'No registrado' }}
               </td>
 
-              <td>{{ nombreRol(administrador) }}</td>
+              <td>
+                {{ nombreRol(administrador) }}
+              </td>
 
               <td>
                 <span
@@ -599,13 +802,18 @@
                   }}
                 </span>
               </td>
-               <td>
+
+              <td>
                 <div class="admin-actions">
+
                   <button
                     type="button"
                     class="btn-secondary btn-small"
                     (click)="editarAdministrador(administrador)"
-                    [attr.aria-label]="'Editar administrador ' + administrador.nombres"
+                    [attr.aria-label]="
+                      'Editar administrador ' +
+                      administrador.nombres
+                    "
                   >
                     <span
                       class="material-symbols-outlined"
@@ -613,13 +821,18 @@
                     >
                       edit
                     </span>
+
                     Editar
                   </button>
+
                   <button
                     type="button"
                     class="btn-secondary btn-small"
                     (click)="asignarSedeAdministrador(administrador)"
-                    [attr.aria-label]="'Asignar sede al administrador ' + administrador.nombres"
+                    [attr.aria-label]="
+                      'Asignar sede al administrador ' +
+                      administrador.nombres
+                    "
                   >
                     <span
                       class="material-symbols-outlined"
@@ -627,18 +840,19 @@
                     >
                       apartment
                     </span>
+
                     Sede
                   </button>
+
                 </div>
               </td>
+
             </tr>
           </tbody>
         </table>
       </div>
 
-      <!-- Información complementaria -->
-      <div class="information-note">
-      </div>
     </div>
   </section>
+
 </section>
