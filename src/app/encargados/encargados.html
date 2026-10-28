@@ -372,7 +372,7 @@
                 </button>
 
 
-              <!-- EDITAR -->
+                <!-- EDITAR -->
 
                 <button class="boton-accion" type="button" title="Editar encargado" aria-label="Editar encargado"
                   (click)="confirmarEdicion(encargado)">
@@ -815,7 +815,7 @@
         <div class="fila-formulario">
 
           <!-- FECHA DE NACIMIENTO (NUEVO) -->
-           
+
           <div class="grupo-formulario">
 
             <label class="etiqueta-formulario" for="fecha-nacimiento-encargado">
@@ -853,6 +853,30 @@
 
         </div>
 
+      </section>
+
+      <!-- FOTO DE PERFIL -->
+      <section class="seccion-formulario">
+        <div class="titulo-seccion-formulario">
+          <span class="material-symbols-outlined">image</span>
+          Foto de perfil
+        </div>
+        <div class="fila-formulario">
+          <div class="grupo-formulario campo-foto-perfil">
+            <label class="etiqueta-formulario">Fotografía</label>
+            <input #inputFoto type="file" accept="image/*" hidden (change)="seleccionarFoto($event)" />
+            <div class="control-foto-perfil">
+              <span class="nombre-archivo-foto">{{ nombreFoto || 'Ninguna foto seleccionada' }}</span>
+              <button type="button" class="boton-foto-perfil" (click)="inputFoto.click()">
+                <span class="material-symbols-outlined">image</span>
+                {{ fotoPreview ? 'Cambiar foto' : 'Elegir foto' }}
+              </button>
+            </div>
+            <div *ngIf="fotoPreview" class="vista-previa-foto">
+              <img [src]="fotoPreview" alt="Vista previa de la foto del encargado" />
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- INFORMACIÓN PROFESIONAL -->
@@ -1032,8 +1056,8 @@
 <div class="modal-overlay detalles-overlay" [class.open]="modalDetallesAbierto"
   (click)="cerrarModalDetallesPorFondo($event)">
 
-  <div class="modal-encargado modal-detalles" role="dialog" aria-modal="true"
-    aria-labelledby="titulo-detalle-encargado" *ngIf="encargadoSeleccionado">
+  <div class="modal-encargado modal-detalles" role="dialog" aria-modal="true" aria-labelledby="titulo-detalle-encargado"
+    *ngIf="encargadoSeleccionado">
 
     <!-- ENCABEZADO -->
 
@@ -1065,6 +1089,18 @@
     <!-- CUERPO -->
 
     <div class="cuerpo-modal">
+
+      <div class="perfil-detalle">
+        <div class="avatar-detalle">
+          <img *ngIf="encargadoSeleccionado.foto; else inicialesFotoDetalle" [src]="encargadoSeleccionado.foto"
+            [alt]="'Foto de ' + encargadoSeleccionado.nombres" />
+          <ng-template #inicialesFotoDetalle>{{ encargadoSeleccionado.iniciales }}</ng-template>
+        </div>
+        <div class="informacion-perfil">
+          <div class="nombre-perfil">{{ encargadoSeleccionado.nombres }} {{ encargadoSeleccionado.apellidos }}</div>
+          <div class="cargo-perfil">{{ encargadoSeleccionado.email }}</div>
+        </div>
+      </div>
 
       <!-- DATOS PERSONALES -->
 
@@ -1178,7 +1214,8 @@
 
           <div class="grupo-formulario">
             <label class="etiqueta-formulario">Fecha de ingreso</label>
-            <input class="campo-formulario" [value]="formatearFechaIngreso(encargadoSeleccionado.fechaIngreso)" readonly>
+            <input class="campo-formulario" [value]="formatearFechaIngreso(encargadoSeleccionado.fechaIngreso)"
+              readonly>
           </div>
 
         </div>

@@ -3649,19 +3649,26 @@ export class ElementosPaciente implements OnInit {
       .subscribe({
 
         next: (respuesta) => {
+          console.log('CUIDADOS RECIBIDOS DEL BACKEND:', respuesta);
 
           const cuidados =
             this.obtenerResultados(respuesta);
 
-          const registro =
-            cuidados.find(
-              cuidado =>
-                Number(
-                  this.obtenerIdPaciente(
-                    cuidado.id_paciente
-                  )
-                ) === Number(this.idPaciente)
-            );
+          const registro = cuidados
+            .filter(cuidado =>
+              Number(this.obtenerIdPaciente(cuidado.id_paciente)) ===
+              Number(this.idPaciente)
+            )
+            .filter(cuidado =>
+              !!cuidado.bano_paciente ||
+              !!cuidado.peso_talla ||
+              !!cuidado.control_glucemia ||
+              !!cuidado.curaciones ||
+              !!cuidado.control_deposicion ||
+              !!cuidado.liquidos_administrados_eliminados
+            )
+            .sort((a, b) => b.id_cuidado - a.id_cuidado)[0];
+          console.log('REGISTRO QUE SE MUESTRA:', registro);
 
           if (registro) {
 
