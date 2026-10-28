@@ -2,52 +2,6 @@
 <section class="superadmin-container">
 
   <!-- ==========================================
-       NAVEGACIÓN INTERNA
-       Se conservará hasta implementar el menú
-       hamburguesa en el layout.
-       ========================================== -->
-  <nav
-    class="superadmin-navigation"
-    aria-label="Opciones de administración"
-  >
-    <button
-      type="button"
-      (click)="cambiarVista('resumen')"
-      [class.active]="vistaActiva === 'resumen'"
-      [attr.aria-current]="vistaActiva === 'resumen' ? 'page' : null"
-    >
-      <span class="material-symbols-outlined" aria-hidden="true">
-        dashboard
-      </span>
-      <span>Inicio</span>
-    </button>
-
-    <button
-      type="button"
-      (click)="cambiarVista('sedes')"
-      [class.active]="vistaActiva === 'sedes'"
-      [attr.aria-current]="vistaActiva === 'sedes' ? 'page' : null"
-    >
-      <span class="material-symbols-outlined" aria-hidden="true">
-        apartment
-      </span>
-      <span>Sedes</span>
-    </button>
-
-    <button
-      type="button"
-      (click)="cambiarVista('administradores')"
-      [class.active]="vistaActiva === 'administradores'"
-      [attr.aria-current]="vistaActiva === 'administradores' ? 'page' : null"
-    >
-      <span class="material-symbols-outlined" aria-hidden="true">
-        manage_accounts
-      </span>
-      <span>Administradores</span>
-    </button>
-  </nav>
-
-  <!-- ==========================================
        VISTA 1: RESUMEN
        ========================================== -->
   <section

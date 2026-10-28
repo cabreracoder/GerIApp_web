@@ -3,7 +3,7 @@
   <!-- =====================================================
        BARRA LATERAL
        ===================================================== -->
-  <aside class="layout-sidebar">
+  <aside class="layout-sidebar" *ngIf="!esSuperadministrador()">
 
     <!-- LOGOTIPO -->
     <div class="layout-logo-container">
@@ -96,13 +96,51 @@
   <!-- =====================================================
        CONTENIDO PRINCIPAL
        ===================================================== -->
-  <div class="layout-main-container">
+  <div
+    class="layout-main-container"
+    [class.layout-main-superadmin]="esSuperadministrador()">
 
     <!-- ENCABEZADO -->
     <header class="layout-header">
 
       <!-- PARTE IZQUIERDA -->
       <div class="layout-header-left">
+
+        <!-- MENÚ HAMBURGUESA SOLO PARA SUPERADMINISTRADOR -->
+        <div
+          *ngIf="esSuperadministrador()"
+          class="layout-superadmin-menu"
+        >
+          <button
+            type="button"
+            class="layout-header-button"
+            aria-label="Abrir menú de navegación"
+            aria-haspopup="true"
+            title="Menú"
+          >
+            <span class="material-symbols-outlined">
+              menu
+            </span>
+          </button>
+
+          <nav class="layout-superadmin-dropdown" aria-label="Menú del superadministrador">
+            <a routerLink="/superadministrador" fragment="inicio">
+              Inicio
+            </a>
+
+            <a routerLink="/superadministrador" fragment="sedes">
+              Sedes
+            </a>
+
+            <a routerLink="/superadministrador" fragment="administradores">
+              Administradores
+            </a>
+
+            <button type="button" (click)="cerrarSesion()">
+              Cerrar sesión
+            </button>
+          </nav>
+        </div>
 
         <h1>
           {{ nombreAplicacion }}

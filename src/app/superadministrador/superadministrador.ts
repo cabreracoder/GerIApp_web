@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import Swal from 'sweetalert2';
+import { ActivatedRoute } from '@angular/router';
 
 interface Sede {
   id_sede: number;
@@ -66,7 +67,8 @@ export class Superadministrador implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -74,6 +76,19 @@ export class Superadministrador implements OnInit {
     this.cargarNombreInstitucion();
     this.listarSedes();
     this.listarAdministradores();
+
+    // Navegación desde el menú hamburguesa.
+    this.route.fragment.subscribe((fragmento) => {
+      if (fragmento === 'sedes') {
+        this.cambiarVista('sedes');
+      } else if (fragmento === 'administradores') {
+        this.cambiarVista('administradores');
+      } else {
+        this.cambiarVista('resumen');
+      }
+
+      this.cdr.detectChanges();
+    });
   }
 
   cargarNombreInstitucion(): void {
