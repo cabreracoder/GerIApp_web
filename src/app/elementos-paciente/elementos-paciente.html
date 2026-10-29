@@ -113,65 +113,92 @@
 
 
   <!-- =========================================================
-       PESTAÑAS
-       ========================================================= -->
+     INDICADOR DE PASOS - TERMINAR REGISTRO
+     ========================================================= -->
 
-  <nav class="tabs">
+  <nav class="stepper" aria-label="Etapas del registro">
 
-    <button type="button" class="tab" [class.active]="seccionActiva === 'elementos'"
-      (click)="cambiarSeccion('elementos')">
+    <div class="stepper-list">
 
-      <span>
-        Elementos del paciente
-      </span>
+      <!-- PASO 1 -->
+      <button type="button" class="step" [class.active]="seccionActiva === 'elementos'"
+        (click)="cambiarSeccion('elementos')" title="Elementos del paciente">
 
-    </button>
+        <span class="step-number">1</span>
 
+        <span class="step-info">
+          <small>
+            {{ seccionActiva === 'elementos' ? 'PASO ACTUAL' : 'PASO 1' }}
+          </small>
+          <strong>Elementos del paciente</strong>
+        </span>
 
-    <button type="button" class="tab" [class.active]="seccionActiva === 'cuidados'"
-      (click)="cambiarSeccion('cuidados')">
+      </button>
 
-      <span>
-        Cuidados de enfermería
-      </span>
+      <!-- PASO 2 -->
+      <button type="button" class="step" [class.active]="seccionActiva === 'cuidados'"
+        (click)="cambiarSeccion('cuidados')" title="Cuidados de enfermería">
 
-    </button>
+        <span class="step-number">2</span>
 
+        <span class="step-info">
+          <small>
+            {{ seccionActiva === 'cuidados' ? 'PASO ACTUAL' : 'PASO 2' }}
+          </small>
+          <strong>Cuidados de enfermería</strong>
+        </span>
 
-    <button type="button" class="tab" [class.active]="seccionActiva === 'recomendaciones'"
-      (click)="cambiarSeccion('recomendaciones')">
+      </button>
 
-      <span>
-        Recomendaciones
-      </span>
+      <!-- PASO 3 -->
+      <button type="button" class="step" [class.active]="seccionActiva === 'recomendaciones'"
+        (click)="cambiarSeccion('recomendaciones')" title="Recomendaciones">
 
-    </button>
+        <span class="step-number">3</span>
 
+        <span class="step-info">
+          <small>
+            {{ seccionActiva === 'recomendaciones' ? 'PASO ACTUAL' : 'PASO 3' }}
+          </small>
+          <strong>Recomendaciones</strong>
+        </span>
 
-    <button type="button" class="tab" [class.active]="seccionActiva === 'historia'"
-      (click)="cambiarSeccion('historia')">
+      </button>
 
-      <span>
-        Historia clínica
-      </span>
+      <!-- PASO 4 -->
+      <button type="button" class="step" [class.active]="seccionActiva === 'historia'"
+        (click)="cambiarSeccion('historia')" title="Historia clínica">
 
-    </button>
+        <span class="step-number">4</span>
 
+        <span class="step-info">
+          <small>
+            {{ seccionActiva === 'historia' ? 'PASO ACTUAL' : 'PASO 4' }}
+          </small>
+          <strong>Historia clínica</strong>
+        </span>
 
-    <!-- =========================================================
-         NUEVA PESTAÑA
-         ========================================================= -->
+      </button>
 
-    <button type="button" class="tab" [class.active]="seccionActiva === 'formulacion'"
-      (click)="cambiarSeccion('formulacion')">
+      <!-- PASO 5 -->
+      <button type="button" class="step" [class.active]="seccionActiva === 'formulacion'"
+        (click)="cambiarSeccion('formulacion')" title="Formulación de medicamentos">
 
-      <span>
-        Formulación de medicamentos
-      </span>
+        <span class="step-number">5</span>
 
-    </button>
+        <span class="step-info">
+          <small>
+            {{ seccionActiva === 'formulacion' ? 'PASO ACTUAL' : 'PASO 5' }}
+          </small>
+          <strong>Formulación de medicamentos</strong>
+        </span>
+
+      </button>
+
+    </div>
 
   </nav>
+
 
 
   <!-- =========================================================
