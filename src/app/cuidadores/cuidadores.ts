@@ -534,6 +534,8 @@ export class Cuidadores implements OnInit {
                           id_perfil_profesional:
                             perfil?.id_perfil_profesional,
 
+                          id_documento:
+                            documentosUsuario?.id_documento,
                           especialidad:
                             perfil?.especialidad || '',
 
@@ -559,6 +561,7 @@ export class Cuidadores implements OnInit {
 
                             hoja_de_vida:
                               documentosUsuario?.hoja_de_vida || ''
+
 
                           }
 
@@ -1004,15 +1007,23 @@ export class Cuidadores implements OnInit {
               perfilProfesional
             ).subscribe({
               next: () => {
-                this.finalizarGuardadoEdicion();
+                this.guardarDocumentos(idUsuario, () => {
+                  this.finalizarGuardadoEdicion();
+                });
               },
               error: (error) => {
                 console.error(
                   'Error al actualizar perfil profesional:',
                   error
                 );
+
                 this.guardando = false;
-                alertaAdvertencia('Actualización parcial', 'El usuario se actualizó, pero ocurrió un error al actualizar el perfil profesional.');
+                this.cdr.detectChanges();
+
+                alertaAdvertencia(
+                  'Actualización parcial',
+                  'El usuario se actualizó, pero ocurrió un error al actualizar el perfil profesional.'
+                );
               }
             });
 
@@ -1024,7 +1035,9 @@ export class Cuidadores implements OnInit {
               perfilProfesional
             ).subscribe({
               next: () => {
-                this.finalizarGuardadoEdicion();
+                this.guardarDocumentos(idUsuario, () => {
+                  this.finalizarGuardadoEdicion();
+                });
               },
               error: (error) => {
                 console.error(
@@ -1106,64 +1119,20 @@ export class Cuidadores implements OnInit {
               respuestaPerfil
             );
 
-            const documentos = {
-              cedula:
-                this.formulario.cedulaFile?.name || null,
+            this.guardarDocumentos(idUsuario, () => {
+              this.guardando = false;
+              this.cdr.detectChanges();
 
-              tarjeta_profesional:
-                this.formulario.tarjetaProfesionalFile?.name || null,
+              alertaExito(
+                'Cuidador registrado',
+                'El cuidador fue registrado correctamente.'
+              );
 
-              antecedentes:
-                this.formulario.antecedentesFile?.name || null,
-
-              hoja_de_vida:
-                this.formulario.hojaDeVidaFile?.name || null,
-
-              id_usuario: idUsuario
-            };
-
-            console.log(
-              'Creando documentos:',
-              documentos
-            );
-
-            // API DOCUMENTOS
-            this.http.post(
-              this.documentosUrl,
-              documentos
-            ).subscribe({
-              next: (respuestaDocumentos) => {
-
-                console.log(
-                  'Documentos registrados:',
-                  respuestaDocumentos
-                );
-
-                this.guardando = false;
-                this.cdr.detectChanges();
-
-                alertaExito('Cuidador registrado', 'El cuidador fue registrado correctamente.');
-
-                this.cerrarFormulario();
-                this.listar();
-              },
-
-              error: (errorDocumentos) => {
-
-                console.error(
-                  'Error al registrar documentos:',
-                  errorDocumentos
-                );
-
-                this.guardando = false;
-                this.cdr.detectChanges();
-
-                alertaAdvertencia('Cuidador creado', 'El cuidador fue creado, pero ocurrió un error al registrar los documentos.');
-
-                this.cerrarFormulario();
-                this.listar();
-              }
+              this.cerrarFormulario();
+              this.listar();
             });
+
+
           },
 
           error: (errorPerfil) => {
@@ -1642,6 +1611,94 @@ export class Cuidadores implements OnInit {
 
     }
 
+  }
+
+  private guardarDocumentos(
+    idUsuario: number,
+    finalizar: () => void
+  ): void {
+
+    const documentos = new FormData();
+    documentos.append('id_usuario', String(idUsuario));
+
+    // Solo enviar los documentos nuevos que el usuario seleccionó.
+    if (this.formulario.cedulaFile) {
+      documentos.append('cedula', this.formulario.cedulaFile);
+    }
+
+    if (this.formulario.tarjetaProfesionalFile) {
+      documentos.append(
+        'tarjeta_profesional',
+        this.formulario.tarjetaProfesionalFile
+      );
+    }
+
+    if (this.formulario.antecedentesFile) {
+      documentos.append(
+        'antecedentes',
+        this.formulario.antecedentesFile
+      );
+    }
+
+    if (this.formulario.hojaDeVidaFile) {
+      documentos.append(
+        'hoja_de_vida',
+        this.formulario.hojaDeVidaFile
+      );
+    }
+
+    const hayArchivos = !!(
+      this.formulario.cedulaFile ||
+      this.formulario.tarjetaProfesionalFile ||
+      this.formulario.antecedentesFile ||
+      this.formulario.hojaDeVidaFile
+    );
+
+    // Si no hay archivos nuevos, conservar los existentes.
+    if (!hayArchivos) {
+      finalizar();
+      return;
+    }
+
+    // Si ya existe el registro, actualizarlo.
+    // Si no existe, crear uno nuevo.
+    const idDocumento = this.formulario.id_documento;
+
+    const peticion = idDocumento
+      ? this.http.patch(
+        `${this.documentosUrl}${idDocumento}/`,
+        documentos
+      )
+      : this.http.post(
+        this.documentosUrl,
+        documentos
+      );
+
+    peticion.subscribe({
+      next: () => {
+        finalizar();
+      },
+
+      error: (error) => {
+        console.error(
+          'Error al guardar los documentos:',
+          error
+        );
+
+        console.error(
+          'Respuesta del backend:',
+          error.error
+        );
+
+        this.guardando = false;
+        this.cdr.detectChanges();
+
+        alertaError(
+          'Error con los documentos',
+          'No se pudieron guardar los documentos. Revisa la respuesta del servidor.'
+        );
+      }
+    });
   }
 
 

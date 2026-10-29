@@ -716,26 +716,14 @@
 
                     <div class="rejilla-formulario">
 
-                        <!-- SEDE -->
+                        <!-- SEDE FIJA -->
                         <div class="campo-formulario">
 
                             <label class="etiqueta-formulario">
                                 Sede
                             </label>
 
-                            <select class="campo-entrada" [(ngModel)]="form.idSede" (ngModelChange)="cambiarSede()">
-
-                                <option value="">
-                                    Seleccione una sede
-                                </option>
-
-                                <option *ngFor="let sede of sedesActivas" [value]="sede.id_sede">
-
-                                    {{ sede.nombre }}
-
-                                </option>
-
-                            </select>
+                            <input class="campo-entrada" type="text" [value]="form.sede || 'Cargando sede...'" readonly>
 
                         </div>
 

@@ -400,8 +400,11 @@ export class Pacientes {
             sede => sede.estado === true
           );
 
-          this.actualizarHabitacionesPorSede();
-
+          if (!this.editar) {
+            this.asignarSedeCentro();
+          } else {
+            this.actualizarHabitacionesPorSede();
+          }
           this.cdr.detectChanges();
         },
 
@@ -416,6 +419,29 @@ export class Pacientes {
           this.cdr.detectChanges();
         }
       });
+  }
+  asignarSedeCentro(): void {
+
+    const sedeCentro = this.sedesActivas.find(
+      sede => ['centro', 'sede centro'].includes(
+        sede.nombre.trim().toLowerCase()
+      )
+    );
+
+    if (!sedeCentro) {
+      this.form.idSede = '';
+      this.form.sede = '';
+      this.habitacionesActivas = [];
+      this.camasActivas = [];
+
+      console.error('No se encontró una sede Centro activa.');
+      return;
+    }
+
+    this.form.idSede = String(sedeCentro.id_sede);
+    this.form.sede = sedeCentro.nombre;
+
+    this.actualizarHabitacionesPorSede();
   }
   // =====================================================
   // FORMULARIO VACÍO
@@ -809,12 +835,20 @@ export class Pacientes {
   // =====================================================
   nuevo(): void {
     this.form = this.formularioVacio();
+
     this.fotoPreview = null;
     this.nombreFoto = null;
+
     this.editingId = null;
+
     this.habitacionesActivas = [];
     this.camasActivas = [];
+
     this.modalOpen = true;
+
+    if (this.sedesActivas.length > 0) {
+      this.asignarSedeCentro();
+    }
   }
 
   // =====================================================

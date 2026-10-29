@@ -114,10 +114,41 @@
           ">
 
           <!-- USUARIO -->
+          <!-- USUARIO -->
           <td class="px-5 py-4 rounded-l-lg">
 
-            <div class="font-medium text-[#212529]">
-              {{ user.nombres }} {{ user.apellidos }}
+            <div class="flex items-center gap-3">
+
+              <!-- AVATAR -->
+              <div class="avatar-usuario">
+
+                <!-- Mostrar foto de Cloudinary -->
+                <img *ngIf="user.foto; else inicialesUsuario" [src]="user.foto"
+                  [alt]="user.nombres + ' ' + user.apellidos" />
+
+                <!-- Mostrar iniciales si no tiene foto -->
+                <ng-template #inicialesUsuario>
+                  {{
+                  ((user.nombres || '').charAt(0) +
+                  (user.apellidos || '').charAt(0)).toUpperCase()
+                  }}
+                </ng-template>
+
+              </div>
+
+              <!-- INFORMACIÓN -->
+              <div class="flex flex-col">
+
+                <strong class="text-[#212529]">
+                  {{ user.nombres }} {{ user.apellidos }}
+                </strong>
+
+                <span class="text-xs text-[#6C757D]">
+                  {{ user.correo }}
+                </span>
+
+              </div>
+
             </div>
 
           </td>
