@@ -87,10 +87,13 @@
 
 /* =========================================================
    MENÚ PRINCIPAL
+   ICONOS CENTRADOS VERTICALMENTE
 ========================================================= */
 
 .layout-menu {
   width: 100%;
+  flex: 1;
+  min-height: 0;
 
   padding: 0 var(--spacing-xs);
 
@@ -98,10 +101,9 @@
   flex-direction: column;
 
   align-items: center;
+  justify-content: center;
 
   gap: var(--spacing-2xs);
-
-  flex: 1;
 
   overflow: visible;
 
@@ -324,6 +326,7 @@
   gap: var(--spacing-2xs);
 
   margin-top: auto;
+  flex-shrink: 0;
 }
 
 
@@ -861,8 +864,18 @@
 ========================================================= */
 
 .layout-main-container.layout-main-superadmin {
-  width: 100%;
-  margin-left: 0;
+  width: calc(
+    100% -
+    var(--web-sidebar-width) -
+    (var(--spacing-md) * 2)
+  );
+
+  margin-left: calc(
+    var(--web-sidebar-width) +
+    (var(--spacing-md) * 2)
+  );
+
+  min-width: 0;
 }
 
 /* =========================================================

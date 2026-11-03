@@ -24,6 +24,7 @@ interface OpcionMenu {
   nombre: string;
   icono: string;
   ruta: string;
+  fragment?: string;
 }
 
 interface UsuarioActualizado {
@@ -223,6 +224,47 @@ export class Layout implements OnDestroy {
     }
 
   ];
+
+  // =====================================================
+  // MENÚ EXCLUSIVO DEL SUPERADMINISTRADOR
+  // =====================================================
+
+  private readonly menuSuperadministrador: OpcionMenu[] = [
+
+    {
+      nombre: 'Inicio',
+      icono: 'dashboard',
+      ruta: '/superadministrador',
+      fragment: 'resumen'
+    },
+
+    {
+      nombre: 'Sedes',
+      icono: 'apartment',
+      ruta: '/superadministrador',
+      fragment: 'sedes'
+    },
+
+    {
+      nombre: 'Administradores',
+      icono: 'manage_accounts',
+      ruta: '/superadministrador',
+      fragment: 'administradores'
+    }
+
+  ];
+
+  // =====================================================
+  // OPCIONES VISIBLES SEGÚN EL ROL
+  // =====================================================
+
+  get opcionesMenu(): OpcionMenu[] {
+
+    return this.esSuperadministrador()
+      ? this.menuSuperadministrador
+      : this.menu;
+
+  }
 
   // =====================================================
   // ABRIR / CERRAR MENÚ DE PACIENTES
