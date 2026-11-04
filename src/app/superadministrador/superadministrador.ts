@@ -990,6 +990,18 @@ async asignarSedeAdministrador(usuario: Usuario): Promise<void> {
     });
 }
 
+nombreSede(idSede: number | null | undefined): string {
+  if (idSede === null || idSede === undefined) {
+    return 'Sin sede asignada';
+  }
+
+  const sede = this.sedes.find(
+    (item) => item.id_sede === Number(idSede)
+  );
+
+  return sede?.nombre ?? 'Sede no encontrada';
+}
+
   nombreRol(usuario: Usuario): string {
     if (
       typeof usuario.id_rol === 'object' &&

@@ -1,849 +1,976 @@
 
-/* =====================================================
-   GERIAPP — DASHBOARD DEL SUPERADMINISTRADOR
-   Identidad institucional azul
-   Banner con imagen curva y borde degradado
-   ===================================================== */
+/* =========================================================
+   CONFIGURACIÓN GENERAL
+========================================================= */
 
 .superadmin-container {
-  --sa-primary: #3B5BDB;
-  --sa-primary-dark: #243F9E;
-  --sa-primary-light: #EDF2FF;
-  --sa-accent: #70B7FF;
-
-  --sa-text: #24324B;
-  --sa-muted: #66758C;
-  --sa-border: #E1E7F0;
-  --sa-surface: #FFFFFF;
-  --sa-background: #F5F8FD;
-
-  --sa-success: #16845B;
-  --sa-success-bg: #E5F6EE;
-
-  box-sizing: border-box;
-  display: block;
   width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  padding: 28px 30px 36px;
-
-  color: var(--sa-text);
+  min-height: 100%;
+  padding: 14px 18px 28px;
+  box-sizing: border-box;
+  background: #f6f8fc;
+  color: #203451;
   font-family: inherit;
-  font-size: 14px;
-  line-height: 1.5;
 }
 
-.superadmin-container *,
-.superadmin-container *::before,
-.superadmin-container *::after {
+.superadmin-container * {
   box-sizing: border-box;
 }
 
-/* =====================================================
-   ENCABEZADO
-   ===================================================== */
-
-.superadmin-container .superadmin-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.superadmin-container .superadmin-eyebrow {
-  margin: 0 0 5px;
-  color: var(--sa-primary) !important;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.045em;
-  text-transform: uppercase;
-}
-
-.superadmin-container .superadmin-header h2 {
-  margin: 0;
-  color: var(--sa-text) !important;
-  font-size: clamp(23px, 2vw, 30px);
-  font-weight: 700;
-  line-height: 1.25;
-  letter-spacing: -0.035em;
-}
-
-.superadmin-container .superadmin-description {
-  max-width: 720px;
-  margin: 8px 0 0;
-  color: var(--sa-muted) !important;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-/* =====================================================
-   NAVEGACIÓN INTERNA
-   ===================================================== */
-
-.superadmin-container .superadmin-navigation {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 20px;
-}
-
-.superadmin-container .superadmin-navigation button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-
-  min-height: 42px;
-  padding: 9px 15px;
-
-  border: 1px solid var(--sa-border) !important;
-  border-radius: 9px;
-
-  background: #FFFFFF !important;
-  color: #45536B !important;
-
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 500;
-
-  cursor: pointer;
-
-  transition:
-    background-color 180ms ease,
-    color 180ms ease,
-    border-color 180ms ease;
-}
-
-.superadmin-container .superadmin-navigation button
-.material-symbols-outlined {
-  color: inherit;
-  font-size: 19px;
-}
-
-.superadmin-container .superadmin-navigation button:hover {
-  color: var(--sa-primary) !important;
-  background: var(--sa-primary-light) !important;
-  border-color: #B9C9FF !important;
-}
-
-.superadmin-container .superadmin-navigation button.active {
-  color: var(--sa-primary) !important;
-  background: var(--sa-primary-light) !important;
-  border-color: var(--sa-primary) !important;
-  font-weight: 600;
-}
-
-.superadmin-container button:focus-visible {
-  outline: 3px solid #A9C4FF;
-  outline-offset: 3px;
-}
-
-/* =====================================================
-   CONTENIDO GENERAL
-   ===================================================== */
-
-.superadmin-container .dashboard-overview,
-.superadmin-container .superadmin-section {
+.dashboard-view,
+.management-view {
   width: 100%;
-  min-width: 0;
-  background: transparent;
+  max-width: 1800px;
+  margin: 0 auto;
 }
 
-.superadmin-container .dashboard-overview {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
 
-/* =====================================================
-   BANNER INSTITUCIONAL DE BIENVENIDA
-   El degradado azul ocupa todo el banner.
-   ===================================================== */
+/* =========================================================
+   BANNER DE BIENVENIDA
+   CONSERVA LA IDENTIDAD INSTITUCIONAL
+========================================================= */
 
-.superadmin-container .welcome-banner {
-  position: relative;
-  isolation: isolate;
-
+.welcome-banner {
+  width: 100%;
+  min-height: 260px;
+  height: 260px;
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-
-  width: 100%;
-  min-width: 0;
-  min-height: 270px;
-
+  grid-template-columns: 52% 48%;
   overflow: hidden;
-
-  border: 1px solid #D6E3FF !important;
-  border-radius: 18px;
-
+  position: relative;
+  border-radius: 13px;
   background: linear-gradient(
-    120deg,
-    #17366B 0%,
-    #1D447F 42%,
-    #2455A4 100%
-  ) !important;
-}
-
-/* =====================================================
-   ZONA DE LA IMAGEN
-   ===================================================== */
-
-.superadmin-container .welcome-illustration {
-  position: relative;
-  z-index: 1;
-
-  min-width: 0;
-  min-height: 270px;
-
-  /*
-   * Se permite que la capa del borde se extienda
-   * ligeramente más allá del límite de la fotografía.
-   */
-  overflow: visible;
-
-  background: transparent !important;
-}
-
-/* CONTORNO AZUL CLARO DETRÁS DE LA FOTOGRAFÍA */
-
-.superadmin-container .welcome-illustration::before {
-  content: "";
-
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 0;
-
-  width: calc(100% + 8px);
-
-  background: #DCEAFF;
-
-  clip-path: ellipse(
-    100% 110% at 0% 50%
+    115deg,
+    #214a84,
+    #2458a5
   );
-
-  pointer-events: none;
+  border: 1px solid #d4e2f5;
+  margin-bottom: 24px;
 }
 
-/* FOTOGRAFÍA CON BORDE CURVO */
-
-.superadmin-container .welcome-illustration-image {
+.welcome-image {
   position: relative;
-  z-index: 1;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #dcecff;
+  clip-path: ellipse(100% 135% at 0% 50%);
+}
 
-  display: block;
-
+.welcome-image img {
   width: 100%;
   height: 100%;
-  min-height: 270px;
-
   object-fit: cover;
-  object-position: center;
+  object-position: center 38%;
+  display: block;
+}
 
-  clip-path: ellipse(
-    100% 110% at 0% 50%
+.welcome-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 25px 32px 25px 8px;
+  color: #ffffff;
+  z-index: 1;
+}
+
+.welcome-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: #a9d6ff;
+  margin-bottom: 9px;
+}
+
+.welcome-content h1 {
+  font-size: clamp(22px, 2vw, 30px);
+  font-weight: 750;
+  line-height: 1.2;
+  margin: 0 0 13px;
+  color: #ffffff;
+}
+
+.welcome-content h2 {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 5px;
+  color: #ffffff;
+}
+
+.welcome-content p {
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 0;
+  color: #edf5ff;
+}
+
+.welcome-decoration {
+  width: 44px;
+  height: 4px;
+  border-radius: 5px;
+  background: #8bcaff;
+  margin-top: 15px;
+}
+
+
+/* =========================================================
+   SECCIONES DEL DASHBOARD
+========================================================= */
+
+.dashboard-section {
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 12px;
+}
+
+.section-heading h2 {
+  font-size: 19px;
+  font-weight: 700;
+  margin: 0;
+  color: #203c63;
+}
+
+.section-eyebrow {
+  display: block;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.8px;
+  color: #5279bd;
+  margin-bottom: 5px;
+}
+
+.text-link {
+  border: 0;
+  background: transparent;
+  color: #315bd5;
+  font-size: 12px;
+  font-weight: 650;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  padding: 7px 3px;
+  transition: color 0.2s ease;
+}
+
+.text-link:hover {
+  color: #173caa;
+}
+
+.text-link .material-symbols-outlined {
+  font-size: 17px;
+}
+
+
+/* =========================================================
+   TARJETAS FOTOGRÁFICAS DE LAS SEDES
+========================================================= */
+
+.branches-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.branch-card {
+  min-width: 0;
+  background: #ffffff;
+  border: 1px solid #dce5f2;
+  border-radius: 9px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(30, 58, 100, 0.035);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.branch-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 16px rgba(30, 58, 100, 0.09);
+}
+
+.branch-image {
+  width: 100%;
+  height: 135px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    140deg,
+    #d9eaff,
+    #9dc5ef
   );
 }
 
-/* =====================================================
-   PANEL AZUL Y CONTENIDO
-   Se mantiene rectangular y sin desplazamientos.
-   La curva pertenece exclusivamente a la fotografía.
-   ===================================================== */
-
-.superadmin-container .welcome-copy {
-  position: relative;
-  z-index: 2;
-
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-
-  min-width: 0;
-  padding: 34px clamp(24px, 3vw, 44px);
-
-  color: #FFFFFF !important;
-
-  background: transparent !important;
-}
-
-/* NOMBRE DE LA FUNDACIÓN O ENTIDAD */
-
-.superadmin-container .welcome-copy .welcome-eyebrow {
-  margin: 0 0 12px;
-
-  color: #A9D6FF !important;
-
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  line-height: 1.5;
-
-  overflow-wrap: anywhere;
-}
-
-/* TÍTULO PRINCIPAL */
-
-.superadmin-container .welcome-copy h1,
-.superadmin-container .welcome-copy h3 {
-  margin: 0 0 14px;
-
-  color: #FFFFFF !important;
-  -webkit-text-fill-color: #FFFFFF;
-
-  font-size: clamp(24px, 2.4vw, 36px);
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.035em;
-}
-
-/* MARCA GERIAPP */
-
-.superadmin-container .welcome-copy .welcome-brand {
-  margin: 0 0 3px;
-
-  color: #FFFFFF !important;
-
-  font-size: 17px;
-  font-weight: 700;
-}
-
-/* MENSAJE DE BIENVENIDA */
-
-.superadmin-container .welcome-copy .welcome-subtitle {
-  margin: 0;
-
-  color: #EAF2FF !important;
-
-  font-size: 17px;
-  line-height: 1.5;
-}
-
-/* LÍNEA DECORATIVA */
-
-.superadmin-container .welcome-copy .welcome-line {
+.branch-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
   display: block;
-
-  width: 68px;
-  height: 5px;
-  margin-top: 20px;
-
-  border-radius: 10px;
-
-  background: var(--sa-accent) !important;
+  transition: transform 0.35s ease;
 }
 
-/* =====================================================
-   TABLAS DEL RESUMEN
-   ===================================================== */
+.branch-card:hover .branch-image img {
+  transform: scale(1.035);
+}
 
-.superadmin-container .overview-tables {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: stretch;
-  gap: 18px;
-
+.branch-image-fallback {
   width: 100%;
-  min-width: 0;
-}
-
-.superadmin-container .overview-table-card {
-  min-width: 0;
-  overflow: hidden;
-
-  border: 1px solid var(--sa-border) !important;
-  border-radius: 13px;
-
-  background: #FFFFFF !important;
-
-  box-shadow: 0 3px 12px rgb(36 50 75 / 3%);
-}
-
-.superadmin-container .overview-table-heading {
+  height: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-
-  padding: 19px 20px;
-
-  border-bottom: 1px solid var(--sa-border);
-
-  background: #FFFFFF !important;
-}
-
-.superadmin-container .overview-table-heading h2,
-.superadmin-container .overview-table-heading h3 {
-  margin: 0;
-
-  color: var(--sa-text) !important;
-
-  font-size: 17px;
-  font-weight: 700;
-  line-height: 1.35;
-}
-
-.superadmin-container .overview-table-heading p {
-  margin: 5px 0 0;
-
-  color: var(--sa-muted) !important;
-
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-/* =====================================================
-   BOTONES DE TEXTO Y ENLACES
-   ===================================================== */
-
-.superadmin-container .overview-view-all,
-.superadmin-container .btn-text {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
   justify-content: center;
+  color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    #91b9e9,
+    #365e9b
+  );
+}
+
+.branch-image-fallback .material-symbols-outlined {
+  font-size: 48px;
+}
+
+.branch-content {
+  padding: 12px 14px;
+}
+
+.branch-label {
+  display: flex;
+  align-items: center;
   gap: 5px;
-
-  padding: 6px 0;
-
-  border: 0;
-  border-radius: 5px;
-
-  background: transparent !important;
-  color: var(--sa-primary) !important;
-
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 600;
-
-  cursor: pointer;
+  color: #7186a5;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
 }
 
-.superadmin-container .overview-view-all:hover,
-.superadmin-container .btn-text:hover {
-  color: var(--sa-primary-dark) !important;
-  text-decoration: underline;
+.branch-label .material-symbols-outlined {
+  font-size: 14px;
+  color: #4168cb;
 }
 
-.superadmin-container .overview-view-all .material-symbols-outlined {
-  font-size: 19px;
+.branch-information {
+  margin-bottom: 9px;
 }
 
-/* =====================================================
-   TABLAS Y CONTENEDORES
-   ===================================================== */
-
-.superadmin-container .table-container,
-.superadmin-container .overview-table-container {
-  width: 100%;
-  min-width: 0;
-
-  overflow-x: auto;
-
-  background: #FFFFFF;
+.branch-information h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #24456f;
+  margin: 0 0 5px;
 }
 
-.superadmin-container table {
-  width: 100%;
-
-  border-collapse: collapse;
-  border-spacing: 0;
-
-  color: var(--sa-text);
-
-  font-size: 12px;
-  text-align: left;
+.branch-information p {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #72839c;
+  margin: 0;
 }
 
-.superadmin-container table thead th {
-  padding: 13px 15px;
-
-  border-bottom: 1px solid var(--sa-border);
-
-  background: #F1F5FC !important;
-  color: #334867 !important;
-
-  font-size: 12px;
-  font-weight: 600;
-
-  white-space: nowrap;
+.branch-information p .material-symbols-outlined {
+  font-size: 14px;
+  color: #6686c5;
 }
 
-.superadmin-container table tbody td {
-  padding: 14px 15px;
 
-  border-bottom: 1px solid #E7ECF4;
+/* =========================================================
+   ESTADOS
+========================================================= */
 
-  color: var(--sa-muted);
-
-  vertical-align: middle;
-}
-
-.superadmin-container table tbody tr:last-child td {
-  border-bottom: 0;
-}
-
-.superadmin-container table tbody tr {
-  transition: background-color 150ms ease;
-}
-
-.superadmin-container table tbody tr:hover {
-  background: #F7F9FF !important;
-}
-
-.superadmin-container table .cell-name {
-  color: var(--sa-text) !important;
-  font-weight: 600;
-}
-
-.superadmin-container table .cell-id {
-  color: var(--sa-muted);
-  font-variant-numeric: tabular-nums;
-}
-
-.superadmin-container table .cell-email {
-  overflow-wrap: anywhere;
-}
-
-/* =====================================================
-   ESTADOS DE SEDES Y ADMINISTRADORES
-   ===================================================== */
-
-.superadmin-container .status-badge {
+.status-indicator {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  min-height: 25px;
-  padding: 4px 10px;
-
-  border-radius: 999px;
-
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 1.3;
-
+  width: fit-content;
+  padding: 4px 9px;
+  border-radius: 20px;
+  background: #e2f5ee;
+  color: #25876a;
+  font-size: 10px;
+  font-weight: 700;
   white-space: nowrap;
 }
 
-.superadmin-container .status-active {
-  color: #16734D !important;
-  background: #E1F5EB !important;
+.status-inactive {
+  background: #fcebea;
+  color: #bd514b;
 }
 
-.superadmin-container .status-inactive {
-  color: #59677D !important;
-  background: #E8ECF2 !important;
+.unassigned-label {
+  color: #9a7840;
+  font-size: 11px;
 }
 
-/* =====================================================
-   VISTAS DE GESTIÓN
-   ===================================================== */
 
-.superadmin-container .superadmin-section {
+/* =========================================================
+   GRÁFICAS
+========================================================= */
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 14px;
+  width: 100%;
+}
+
+.analytics-panel {
+  min-width: 0;
+  min-height: 205px;
+  background: #ffffff;
+  border: 1px solid #dce5f2;
+  border-radius: 9px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(30, 58, 100, 0.035);
+}
+
+.panel-heading {
+  min-height: 55px;
   display: flex;
-  flex-direction: column;
-  gap: 18px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-bottom: 1px solid #e4eaf3;
 }
 
-.superadmin-container .section-heading {
+.panel-heading h3 {
+  font-size: 13px;
+  font-weight: 700;
+  color: #28466e;
+  margin: 0 0 4px;
+}
+
+.panel-heading p {
+  font-size: 10px;
+  color: #8290a5;
+  margin: 0;
+}
+
+.panel-heading > .material-symbols-outlined {
+  font-size: 19px;
+  color: #5379bf;
+}
+
+
+/* GRÁFICA DE BARRAS */
+
+.bar-chart-content {
+  padding: 13px 15px;
+}
+
+.chart-summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 16px;
+  margin-bottom: 13px;
 }
 
-.superadmin-container .section-heading h2,
-.superadmin-container .section-heading h3 {
-  margin: 0;
+.chart-summary span {
+  font-size: 10px;
+  color: #7c8ca4;
+}
 
-  color: var(--sa-text) !important;
+.chart-summary strong {
+  font-size: 15px;
+  color: #2c4c77;
+}
 
-  font-size: 22px;
+.bar-group {
+  margin-bottom: 12px;
+}
+
+.bar-description {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.bar-description span {
+  font-size: 11px;
+  color: #62758e;
+}
+
+.bar-description strong {
+  font-size: 11px;
   font-weight: 700;
-  line-height: 1.3;
+  color: #334e74;
 }
 
-.superadmin-container .section-heading p {
-  margin: 6px 0 0;
-
-  color: var(--sa-muted) !important;
-
-  font-size: 13px;
-}
-
-.superadmin-container .superadmin-content {
+.bar-track {
   width: 100%;
-  min-width: 0;
-
+  height: 8px;
   overflow: hidden;
-
-  border: 1px solid var(--sa-border) !important;
-  border-radius: 13px;
-
-  background: #FFFFFF !important;
-
-  box-shadow: 0 3px 12px rgb(36 50 75 / 3%);
+  border-radius: 10px;
+  background: #edf1f7;
 }
 
-/* =====================================================
-   BOTONES DE ACCIÓN
-   ===================================================== */
+.bar-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.4s ease;
+}
 
-.superadmin-container .btn-primary,
-.superadmin-container .btn-secondary {
+.bar-users {
+  background: linear-gradient(
+    90deg,
+    #6488e9,
+    #8daaf4
+  );
+}
+
+.bar-admins {
+  background: linear-gradient(
+    90deg,
+    #2e9992,
+    #6bc7b6
+  );
+}
+
+.chart-legend {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  margin-top: 13px;
+}
+
+.chart-legend span {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-
-  min-height: 40px;
-  padding: 10px 15px;
-
-  border-radius: 8px;
-
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.3;
-
-  cursor: pointer;
-
-  transition:
-    background-color 180ms ease,
-    border-color 180ms ease,
-    color 180ms ease;
+  gap: 6px;
+  font-size: 9px;
+  color: #7889a1;
 }
 
-.superadmin-container .btn-primary {
-  border: 1px solid var(--sa-primary) !important;
-
-  background: var(--sa-primary) !important;
-  color: #FFFFFF !important;
+.chart-legend i,
+.donut-legend i {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
-.superadmin-container .btn-primary:hover {
-  border-color: var(--sa-primary-dark) !important;
-
-  background: var(--sa-primary-dark) !important;
-  color: #FFFFFF !important;
+.legend-users {
+  background: #7796ec;
 }
 
-.superadmin-container .btn-secondary {
-  border: 1px solid #C9D6F5 !important;
-
-  background: #FFFFFF !important;
-  color: var(--sa-primary) !important;
+.legend-admins {
+  background: #329b96;
 }
 
-.superadmin-container .btn-secondary:hover {
-  border-color: #AFC2F5 !important;
 
-  background: var(--sa-primary-light) !important;
-  color: var(--sa-primary-dark) !important;
-}
+/* GRÁFICA CIRCULAR */
 
-.superadmin-container .btn-primary:disabled,
-.superadmin-container .btn-secondary:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-.superadmin-container .btn-small {
-  min-height: 32px;
-  padding: 6px 10px;
-  font-size: 12px;
-}
-
-.superadmin-container .btn-small .material-symbols-outlined,
-.superadmin-container .btn-primary .material-symbols-outlined,
-.superadmin-container .btn-secondary .material-symbols-outlined {
-  font-size: 17px;
-}
-
-.superadmin-container .admin-actions {
+.donut-chart-content {
+  min-height: 145px;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 24px;
+  padding: 15px;
 }
 
-/* =====================================================
-   CARGA, ERRORES Y ESTADOS VACÍOS
-   ===================================================== */
-
-.superadmin-container .overview-table-state {
-  padding: 22px 18px;
-
-  color: var(--sa-muted);
-
-  font-size: 13px;
-  line-height: 1.6;
+.donut-chart {
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
 }
 
-.superadmin-container .state-container {
+.donut-center {
+  width: 82px;
+  height: 82px;
+  background: #ffffff;
+  border-radius: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 3px;
+}
 
-  min-height: 240px;
-  padding: 32px 22px;
+.donut-center strong {
+  font-size: 17px;
+  color: #314f78;
+  font-weight: 750;
+}
 
+.donut-center span {
+  font-size: 8px;
+  color: #8593a8;
   text-align: center;
 }
 
-.superadmin-container .state-icon {
-  margin-bottom: 12px;
-
-  color: var(--sa-primary) !important;
-
-  font-size: 38px;
+.donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  min-width: 0;
 }
 
-.superadmin-container .state-container h3,
-.superadmin-container .state-container h4 {
-  margin: 0 0 7px;
+.donut-legend > div {
+  display: grid;
+  grid-template-columns: 9px minmax(65px, auto) auto;
+  align-items: center;
+  gap: 7px;
+}
 
-  color: var(--sa-text) !important;
+.donut-legend span {
+  font-size: 10px;
+  color: #75869d;
+}
 
-  font-size: 16px;
+.donut-legend strong {
+  font-size: 12px;
+  color: #314c73;
+}
+
+
+/* =========================================================
+   ESTADOS DE CARGA Y MENSAJES
+========================================================= */
+
+.loading-message,
+.empty-message,
+.chart-loading,
+.chart-error {
+  padding: 18px;
+  font-size: 12px;
+  text-align: center;
+  color: #7788a1;
+  background: #ffffff;
+  border: 1px solid #e1e8f2;
+  border-radius: 8px;
+}
+
+.chart-loading,
+.chart-error {
+  border: 0;
+}
+
+.chart-error {
+  color: #b65a57;
+}
+
+
+/* =========================================================
+   VISTAS DE GESTIÓN
+========================================================= */
+
+.management-view {
+  padding-top: 18px;
+}
+
+.management-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 23px;
+}
+
+.management-heading h1 {
+  font-size: 24px;
+  font-weight: 750;
+  color: #213e65;
+  margin: 0 0 6px;
+}
+
+.management-heading p {
+  font-size: 12px;
+  color: #7c8ca4;
+  margin: 0;
+}
+
+.management-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+
+/* =========================================================
+   BOTONES
+========================================================= */
+
+.primary-button,
+.secondary-button,
+.icon-text-button {
+  min-height: 38px;
+  padding: 8px 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-radius: 7px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.primary-button {
+  border: 1px solid #3b5bdb;
+  color: #ffffff;
+  background: #3b5bdb;
+}
+
+.primary-button:hover {
+  background: #2e49bd;
+  border-color: #2e49bd;
+}
+
+.secondary-button,
+.icon-text-button {
+  border: 1px solid #d3def1;
+  color: #365bc5;
+  background: #ffffff;
+}
+
+.secondary-button:hover,
+.icon-text-button:hover {
+  background: #f0f4ff;
+  border-color: #9fb6ed;
+}
+
+.primary-button .material-symbols-outlined,
+.secondary-button .material-symbols-outlined,
+.icon-text-button .material-symbols-outlined {
+  font-size: 17px;
+}
+
+
+/* =========================================================
+   GESTIÓN VISUAL DE SEDES
+========================================================= */
+
+.management-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.management-branch {
+  background: #ffffff;
+  border: 1px solid #dce5f2;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(30, 58, 100, 0.035);
+}
+
+.management-branch-image {
+  width: 100%;
+  height: 165px;
+  overflow: hidden;
+  background: #e0edfb;
+}
+
+.management-branch-image img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.management-branch-content {
+  padding: 15px;
+}
+
+.branch-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.branch-title-row h3 {
+  font-size: 14px;
+  color: #2a476f;
+  margin: 0;
+}
+
+.management-branch-content p {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #7889a1;
+  margin: 7px 0;
+}
+
+.management-branch-content p .material-symbols-outlined {
+  font-size: 15px;
+  color: #5577bd;
+}
+
+.management-branch-content .secondary-button {
+  margin-top: 12px;
+}
+
+
+/* =========================================================
+   TABLA DE ADMINISTRADORES
+========================================================= */
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  background: #ffffff;
+  border: 1px solid #dce5f2;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(30, 58, 100, 0.035);
+}
+
+.admin-table {
+  width: 100%;
+  min-width: 950px;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.admin-table thead {
+  background: #f0f4fb;
+}
+
+.admin-table th {
+  padding: 13px 15px;
+  font-size: 11px;
   font-weight: 700;
+  color: #405b7d;
+  white-space: nowrap;
 }
 
-.superadmin-container .state-container p {
-  max-width: 440px;
-  margin: 0 0 18px;
-
-  color: var(--sa-muted);
-
-  font-size: 13px;
-  line-height: 1.6;
+.admin-table td {
+  padding: 12px 15px;
+  border-top: 1px solid #e6ebf3;
+  font-size: 11px;
+  color: #62758f;
+  vertical-align: middle;
 }
 
-.superadmin-container .state-icon-error,
-.superadmin-container .error-text {
-  color: #B42318 !important;
+.admin-table tbody tr {
+  transition: background 0.2s ease;
 }
 
-/* =====================================================
-   TABLETAS
-   ===================================================== */
+.admin-table tbody tr:hover {
+  background: #f8faff;
+}
+
+.admin-table td:first-child {
+  color: #71839c;
+  font-weight: 600;
+}
+
+.admin-identity {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 150px;
+}
+
+.admin-identity strong {
+  font-size: 11px;
+  font-weight: 650;
+  color: #314c70;
+}
+
+.admin-avatar {
+  width: 31px;
+  height: 31px;
+  min-width: 31px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #e8efff;
+  color: #3b5bdb;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.icon-text-button {
+  min-height: 31px;
+  padding: 5px 9px;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   RESPONSIVE: TABLET
+========================================================= */
 
 @media (max-width: 1050px) {
+
   .superadmin-container {
-    padding: 24px 20px 30px;
+    padding: 12px;
   }
 
-  .superadmin-container .overview-tables {
-    grid-template-columns: 1fr;
+  .welcome-banner {
+    height: 225px;
+    min-height: 225px;
   }
 
-  .superadmin-container .welcome-banner {
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  .welcome-content {
+    padding-right: 18px;
   }
 
-  .superadmin-container .welcome-copy {
-    padding: 26px 24px;
+  .branches-grid,
+  .management-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .analytics-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
 }
 
-/* =====================================================
-   MÓVILES
-   ===================================================== */
 
-@media (max-width: 640px) {
+/* =========================================================
+   RESPONSIVE: MÓVILES
+========================================================= */
+
+@media (max-width: 680px) {
+
   .superadmin-container {
-    padding: 18px 12px 24px;
+    padding: 10px;
   }
 
-  .superadmin-container .superadmin-header h2 {
-    font-size: 24px;
-  }
-
-  .superadmin-container .superadmin-navigation {
-    gap: 6px;
-  }
-
-  .superadmin-container .superadmin-navigation button {
-    flex: 1 1 auto;
-    padding: 9px 10px;
-  }
-
-  .superadmin-container .welcome-banner {
+  .welcome-banner {
+    height: auto;
+    min-height: 0;
     grid-template-columns: 1fr;
   }
 
-  .superadmin-container .welcome-illustration {
-    min-height: 190px;
-    max-height: 230px;
-    overflow: hidden;
-  }
-
-  .superadmin-container .welcome-illustration-image {
-    min-height: 190px;
-    max-height: 230px;
-  }
-
-  /* En móvil, imagen rectangular y panel sin curva lateral */
-
-  .superadmin-container .welcome-illustration::before {
-    display: none;
-  }
-
-  .superadmin-container .welcome-illustration-image {
+  .welcome-image {
+    height: 180px;
     clip-path: none;
   }
 
-  .superadmin-container .welcome-copy {
-    padding: 25px 22px;
+  .welcome-content {
+    padding: 20px;
   }
 
-  .superadmin-container .welcome-copy h1,
-  .superadmin-container .welcome-copy h3 {
-    font-size: 27px;
+  .welcome-content h1 {
+    font-size: 23px;
   }
 
-  .superadmin-container .welcome-copy .welcome-subtitle {
-    font-size: 15px;
-  }
-
-  .superadmin-container .overview-table-heading {
-    align-items: flex-start;
-    padding: 16px 14px;
-  }
-
-  .superadmin-container .section-heading {
+  .section-heading {
     align-items: flex-start;
   }
 
-  .superadmin-container .admin-actions {
+  .section-heading h2 {
+    font-size: 17px;
+  }
+
+  .branches-grid,
+  .management-grid,
+  .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .branch-image {
+    height: 175px;
+  }
+
+  .management-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .management-actions {
     width: 100%;
   }
 
-  .superadmin-container .admin-actions button {
-    flex: 1 1 auto;
+  .management-actions button {
+    flex: 1;
   }
 
-  .superadmin-container table {
-    min-width: 540px;
+  .donut-chart-content {
+    gap: 17px;
   }
+
 }
 
-/* =====================================================
-   ACCESIBILIDAD
-   ===================================================== */
+
+/* =========================================================
+   PANTALLAS PEQUEÑAS
+========================================================= */
+
+@media (max-width: 380px) {
+
+  .welcome-content h1 {
+    font-size: 20px;
+  }
+
+  .donut-chart {
+    width: 95px;
+    height: 95px;
+  }
+
+  .donut-center {
+    width: 70px;
+    height: 70px;
+  }
+
+  .donut-center strong {
+    font-size: 15px;
+  }
+
+  .donut-legend span {
+    font-size: 9px;
+  }
+
+}
+
+
+/* =========================================================
+   ACCESIBILIDAD: MOVIMIENTO REDUCIDO
+========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
+
   .superadmin-container *,
   .superadmin-container *::before,
   .superadmin-container *::after {
-    scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
+
 }
