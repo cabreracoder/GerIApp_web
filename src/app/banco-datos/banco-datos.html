@@ -1991,55 +1991,6 @@
                 </select>
               </div>
 
-             
-              <!-- DETECTAR Y SELECCIONAR CÁMARA FÍSICA -->
-              <div class="campo-formulario campo-completo">
-                <label for="identificadorDispositivo">
-                  Cámara física del equipo
-                </label>
-
-                <button
-                  type="button"
-                  (click)="detectarCamaras()"
-                  [disabled]="cargandoDeteccionCamaras"
-                >
-                  {{ cargandoDeteccionCamaras
-                    ? 'Detectando cámaras...'
-                    : 'Detectar cámaras' }}
-                </button>
-
-                <select
-                  id="identificadorDispositivo"
-                  [(ngModel)]="camaraActual.identificador_dispositivo"
-                  name="identificadorDispositivo"
-                >
-                  <option [ngValue]="null">
-                    Seleccione una cámara detectada
-                  </option>
-
-                  <option
-                    *ngFor="let camara of camarasDetectadas; let i = index"
-                    [ngValue]="camara.identificador_dispositivo"
-                  >
-                    {{ camara.nombre }} — Dispositivo {{ i + 1 }}
-                  </option>
-                </select>
-
-                <small *ngIf="camarasDetectadas.length > 0">
-                  Cámaras disponibles: {{ camarasDetectadas.length }}.
-                  Selecciona la cámara física que corresponde a esta habitación.
-                </small>
-
-                <small *ngIf="cargandoDeteccionCamaras">
-                  Buscando dispositivos conectados al equipo...
-                </small>
-
-                <small *ngIf="errorDeteccionCamaras">
-                  {{ errorDeteccionCamaras }}
-                </small>
-              </div>
-
-
               <!-- HABITACIÓN -->
               <div class="campo-formulario">
                 <label for="habitacionCamara">Habitación</label>
@@ -2128,7 +2079,6 @@
               <th>Nombre</th>
               <th>Ubicación</th>
               <th>Tipo</th>
-              <th>Identificador del dispositivo</th>
               <th>Habitación</th>
               <th>Estado</th>
               <th>Acciones</th>
@@ -2140,9 +2090,6 @@
               <td>{{ camara.nombre }}</td>
               <td>{{ camara.ubicacion }}</td>
               <td>{{ camara.tipo || 'Sin especificar' }}</td>
-              <td>
-                {{ camara.identificador_dispositivo || 'Sin identificar' }}
-              </td>
               <td>
                 {{ obtenerNombreHabitacionCamara(camara.id_habitacion) }}
               </td>
@@ -2179,9 +2126,8 @@
                 </div>
               </td>
             </tr>
-
             <tr *ngIf="camaras.length === 0">
-              <td colspan="7" class="sin-registros">
+              <td colspan="6" class="sin-registros">
                 No hay cámaras registradas.
               </td>
             </tr>

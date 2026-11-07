@@ -81,18 +81,12 @@ interface Camara {
   nombre: string;
   ubicacion: string;
   direccion_stream: string;
-  identificador_dispositivo: string | null;
   tipo: string | null;
   estado: boolean | null;
   fecha_registro?: string | null;
   id_habitacion: number | null;
 }
 
-interface CamaraDetectada {
-  nombre: string;
-  identificador_dispositivo: string;
-  estado: string;
-}
 // =====================================================
 // ALERTAS (SweetAlert2 + Tailwind)
 // =====================================================
@@ -604,10 +598,6 @@ cargandoCamaras = false;
 mostrandoFormularioCamara = false;
 modoEdicionCamara = false;
 
-// Cámaras físicas detectadas por el servicio local
-camarasDetectadas: CamaraDetectada[] = [];
-cargandoDeteccionCamaras = false;
-errorDeteccionCamaras = '';
 
 camaraEditando: number | null = null;
 private camaraOriginal: Camara | null = null;
@@ -616,7 +606,6 @@ private camaraOriginal: Camara | null = null;
     nombre: '',
     ubicacion: '',
     direccion_stream: '',
-    identificador_dispositivo: null,
     tipo: '',
     estado: true,
     fecha_registro: null,
@@ -3210,42 +3199,6 @@ private camaraOriginal: Camara | null = null;
     });
   }
 
-  // =========================================================
-  // CÁMARAS - DETECTAR DISPOSITIVOS FÍSICOS
-  // =========================================================
-
-  detectarCamaras(): void {
-    this.cargandoDeteccionCamaras = true;
-    this.errorDeteccionCamaras = '';
-    this.camarasDetectadas = [];
-
-    this.http
-      .get<{ camaras: CamaraDetectada[] }>(
-        'http://127.0.0.1:8765/camaras'
-      )
-      .subscribe({
-        next: (respuesta) => {
-          this.camarasDetectadas = respuesta.camaras || [];
-          this.cargandoDeteccionCamaras = false;
-
-          if (this.camarasDetectadas.length === 0) {
-            this.errorDeteccionCamaras =
-              'No se encontraron cámaras disponibles.';
-          }
-
-          this.cdr.detectChanges();
-        },
-        error: (error) => {
-          console.error('Error al detectar cámaras:', error);
-
-          this.errorDeteccionCamaras =
-            'No fue posible detectar las cámaras. Verifica que el servicio local esté funcionando.';
-
-          this.cargandoDeteccionCamaras = false;
-          this.cdr.detectChanges();
-        }
-      });
-  }
 
   // =========================================================
   // CÁMARAS - VALIDAR FORMULARIO
@@ -3300,7 +3253,6 @@ private camaraOriginal: Camara | null = null;
           'nombre',
           'ubicacion',
           'direccion_stream',
-          'identificador_dispositivo',
           'tipo',
           'estado',
           'id_habitacion'
@@ -3321,7 +3273,6 @@ private camaraOriginal: Camara | null = null;
       nombre: this.camaraForm.nombre.trim(),
       ubicacion: this.camaraForm.ubicacion.trim(),
       direccion_stream: this.camaraForm.direccion_stream.trim(),
-      identificador_dispositivo: this.camaraForm.identificador_dispositivo?.trim() || null,
       tipo: this.camaraForm.tipo?.trim() || null,
       estado: this.camaraForm.estado,
       id_habitacion:
@@ -3408,7 +3359,6 @@ private camaraOriginal: Camara | null = null;
       nombre: camara.nombre || '',
       ubicacion: camara.ubicacion || '',
       direccion_stream: camara.direccion_stream || '',
-      identificador_dispositivo: camara.identificador_dispositivo || '',
       tipo: camara.tipo ?? '',
       estado: camara.estado ?? true,
       fecha_registro: camara.fecha_registro ?? null,
@@ -3574,7 +3524,6 @@ private camaraOriginal: Camara | null = null;
       nombre: '',
       ubicacion: '',
       direccion_stream: '',
-      identificador_dispositivo: '',
       tipo: '',
       estado: true,
       fecha_registro: null,
