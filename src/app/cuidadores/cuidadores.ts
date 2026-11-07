@@ -323,6 +323,7 @@ export class Cuidadores implements OnInit {
   private documentosUrl =
     'https://geriapp-backend.onrender.com/api/documentos/';
 
+  private crearCuidadorUrl = `${this.apiUrl}crear-cuidador/`;
   // =========================================================
   // DATOS
   // =========================================================
@@ -386,7 +387,7 @@ export class Cuidadores implements OnInit {
 
   fotoPreview: string | null = null;
   nombreFoto: string | null = null;
-
+  eliminarFotoPendiente = false;
   errores: ErroresFormulario = {};
 
   diasSeleccionados: string[] = [];
@@ -811,7 +812,7 @@ export class Cuidadores implements OnInit {
     this.formulario = this.formularioInicial();
     this.fotoPreview = null;
     this.nombreFoto = null;
-
+    this.eliminarFotoPendiente = false;
     this.diasSeleccionados = [];
 
     this.archivosSubidos = {};
@@ -886,6 +887,7 @@ export class Cuidadores implements OnInit {
     };
     this.formulario.foto = cuidador.foto || null;
     this.formulario.fotoFile = null;
+    this.eliminarFotoPendiente = false;
     this.fotoPreview = this.formulario.foto;
     // Mostrar el nombre de la foto que ya está guardada.
     this.nombreFoto = this.obtenerNombreFoto(this.formulario.foto);
@@ -954,220 +956,289 @@ export class Cuidadores implements OnInit {
       telefono: this.formulario.telefono,
       fecha_ingreso: this.formulario.fechaIngreso,
       estado: this.formulario.estado === 'activo',
+      especialidad: this.formulario.especialidad,
+      licencia: this.formulario.licencia,
+      experiencia: this.formulario.experiencia,
+      institucion: this.formulario.institucion,
       id_rol: 3
     };
     const datosCuidador = new FormData();
 
+    // Agregar los datos del cuidador.
     Object.entries(cuidador).forEach(([clave, valor]) => {
       if (valor !== undefined && valor !== null) {
         datosCuidador.append(clave, String(valor));
       }
     });
 
+    // Agregar fotografía nueva, si existe.
     if (this.formulario.fotoFile) {
-      datosCuidador.append(
-        'foto',
-        this.formulario.fotoFile
-      );
+      datosCuidador.append('foto', this.formulario.fotoFile);
     }
 
     // ============================
     // EDITAR
     // ============================
+
     if (this.modoFormulario === 'editar' && this.idEditando) {
 
       const idUsuario = this.idEditando;
+      // Datos personales permitidos por UsuariosViewSet.
+      const datosUsuarioEditar = new FormData();
+      datosUsuarioEditar.append(
+        'tipo_documento',
+        this.formulario.tipoDocumento ?? ''
+      );
 
+      datosUsuarioEditar.append(
+        'numero_documento',
+        this.formulario.numeroDocumento ?? ''
+      );
+
+      datosUsuarioEditar.append(
+        'nombres',
+        this.formulario.nombre ?? ''
+      );
+
+      datosUsuarioEditar.append(
+        'apellidos',
+        this.formulario.apellido ?? ''
+      );
+
+      datosUsuarioEditar.append(
+        'correo',
+        this.formulario.correo ?? ''
+      );
+
+      datosUsuarioEditar.append(
+        'telefono',
+        this.formulario.telefono ?? ''
+      );
+      datosUsuarioEditar.append(
+        'estado',
+        String(this.formulario.estado === 'activo')
+      );
+
+      datosUsuarioEditar.append('id_rol', '3');
+
+      // Enviar fotografía solamente si se seleccionó una nueva.
+      if (this.formulario.fotoFile) {
+        datosUsuarioEditar.append(
+          'foto',
+          this.formulario.fotoFile
+        );
+      }
       console.log('Actualizando usuario:', cuidador);
 
-      // API USUARIOS
       this.http.patch<any>(
         `${this.apiUrl}${idUsuario}/`,
-        datosCuidador
+        datosUsuarioEditar
       ).subscribe({
+
         next: () => {
 
-          const perfil = this.cuidadores.find(
-            c => c.id === idUsuario
-          );
+          // Continuar con el perfil profesional y los documentos
+          const continuarActualizacion = () => {
 
-          const perfilProfesional = {
-            id_usuario: idUsuario,
-            especialidad: this.formulario.especialidad || null,
-            licencia: this.formulario.licencia || null,
-            experiencia: this.formulario.experiencia ?? null,
-            institucion: this.formulario.institucion || null
+            const perfil = this.cuidadores.find(
+              c => c.id === idUsuario
+            );
+
+            const perfilProfesional = {
+              id_usuario: idUsuario,
+              especialidad: this.formulario.especialidad || null,
+              licencia: this.formulario.licencia || null,
+              experiencia: this.formulario.experiencia ?? null,
+              institucion: this.formulario.institucion || null
+            };
+
+            if (perfil?.id_perfil_profesional) {
+
+              this.http.patch(
+                `${this.perfilUrl}${perfil.id_perfil_profesional}/`,
+                perfilProfesional
+              ).subscribe({
+
+                next: () => {
+                  this.guardarDocumentos(idUsuario, () => {
+                    this.finalizarGuardadoEdicion();
+                  });
+                },
+
+                error: (error) => {
+                  console.error('Error al actualizar perfil profesional:', error);
+
+                  this.guardando = false;
+                  this.cdr.detectChanges();
+
+                  alertaAdvertencia(
+                    'Actualización parcial',
+                    'El usuario se actualizó, pero ocurrió un error al actualizar el perfil profesional.'
+                  );
+                }
+
+              });
+
+            } else {
+
+              this.http.post(
+                this.perfilUrl,
+                perfilProfesional
+              ).subscribe({
+
+                next: () => {
+                  this.guardarDocumentos(idUsuario, () => {
+                    this.finalizarGuardadoEdicion();
+                  });
+                },
+
+                error: (error) => {
+                  console.error('Error al crear perfil profesional:', error);
+
+                  this.guardando = false;
+                  this.cdr.detectChanges();
+
+                  alertaAdvertencia(
+                    'Actualización parcial',
+                    'El usuario se actualizó, pero no se pudo crear el perfil profesional.'
+                  );
+                }
+
+              });
+
+            }
           };
 
-          // API PERFIL PROFESIONAL
-          if (perfil?.id_perfil_profesional) {
+          // Eliminar fotografía solamente si está pendiente
+          // y no se ha seleccionado una fotografía nueva.
+          if (
+            this.eliminarFotoPendiente &&
+            !this.formulario.fotoFile
+          ) {
 
-            this.http.patch(
-              `${this.perfilUrl}${perfil.id_perfil_profesional}/`,
-              perfilProfesional
+            this.http.delete(
+              `${this.apiUrl}${idUsuario}/foto/`
             ).subscribe({
+
               next: () => {
-                this.guardarDocumentos(idUsuario, () => {
-                  this.finalizarGuardadoEdicion();
-                });
+                console.log('Foto eliminada correctamente.');
+
+                this.eliminarFotoPendiente = false;
+                continuarActualizacion();
               },
+
               error: (error) => {
-                console.error(
-                  'Error al actualizar perfil profesional:',
-                  error
-                );
+                console.error('Error eliminando fotografía:', error);
 
                 this.guardando = false;
                 this.cdr.detectChanges();
 
-                alertaAdvertencia(
-                  'Actualización parcial',
-                  'El usuario se actualizó, pero ocurrió un error al actualizar el perfil profesional.'
+                alertaError(
+                  'Error al eliminar la foto',
+                  'Los datos se actualizaron, pero no se pudo eliminar la fotografía.'
                 );
               }
+
             });
 
           } else {
 
-            // Si no existe perfil, lo crea
-            this.http.post(
-              this.perfilUrl,
-              perfilProfesional
-            ).subscribe({
-              next: () => {
-                this.guardarDocumentos(idUsuario, () => {
-                  this.finalizarGuardadoEdicion();
-                });
-              },
-              error: (error) => {
-                console.error(
-                  'Error al crear perfil profesional:',
-                  error
-                );
-                this.guardando = false;
-                this.cdr.detectChanges();
-                alertaAdvertencia('Actualización parcial', 'El usuario se actualizó, pero no se pudo crear el perfil profesional.');
-              }
-            });
+            this.eliminarFotoPendiente = false;
+            continuarActualizacion();
+
           }
+
         },
 
         error: (error) => {
-          console.error(
-            'Error al actualizar usuario:',
-            error
-          );
+          console.error('Error al actualizar usuario:', error);
+
           this.guardando = false;
           this.cdr.detectChanges();
-          alertaError('Error al actualizar', 'No se pudo actualizar el cuidador.');
+
+          alertaError(
+            'Error al actualizar',
+            'No se pudo actualizar el cuidador.'
+          );
         }
+
       });
 
       return;
     }
     // ============================
-    // CREAR
+    // CREAR CUIDADOR
     // ============================
 
-    console.log('Creando usuario:', cuidador);
+    console.log('Creando cuidador:', cuidador);
 
-    // API USUARIOS
     this.http.post<any>(
-      this.apiUrl,
+      this.crearCuidadorUrl,
       datosCuidador
     ).subscribe({
-      next: (respuestaUsuario) => {
 
-        console.log('Usuario creado:', respuestaUsuario);
+      next: (respuesta) => {
 
-        const idUsuario = respuestaUsuario.id_usuario;
+        console.log('Cuidador creado correctamente:', respuesta);
+
+        // El backend devuelve el usuario y su perfil profesional.
+        const usuario = respuesta.usuario;
+
+        const idUsuario = usuario.id_usuario || usuario.id;
 
         if (!idUsuario) {
-          console.error(
-            'La API no devolvió el id_usuario',
-            respuestaUsuario
-          );
+
+          console.error('No se recibió el ID del usuario:', respuesta);
 
           this.guardando = false;
           this.cdr.detectChanges();
-          alertaAdvertencia('Advertencia', 'El usuario fue creado, pero no se pudo crear su perfil profesional.');
+
+          alertaAdvertencia(
+            'Registro incompleto',
+            'El cuidador fue creado, pero no se recibió su identificador.'
+          );
+
           return;
         }
 
-        const perfilProfesional = {
-          id_usuario: idUsuario,
-          especialidad: this.formulario.especialidad || null,
-          licencia: this.formulario.licencia || null,
-          experiencia: this.formulario.experiencia ?? null,
-          institucion: this.formulario.institucion || null
-        };
+        // Guardar los documentos seleccionados.
+        this.guardarDocumentos(idUsuario, () => {
 
-        console.log(
-          'Creando perfil profesional:',
-          perfilProfesional
-        );
+          this.guardando = false;
+          this.cdr.detectChanges();
 
-        // API PERFIL PROFESIONAL
-        this.http.post<any>(
-          this.perfilUrl,
-          perfilProfesional
-        ).subscribe({
-          next: (respuestaPerfil) => {
+          alertaExito(
+            'Cuidador registrado',
+            'El cuidador y su perfil profesional fueron registrados correctamente.'
+          );
 
-            console.log(
-              'Perfil profesional creado:',
-              respuestaPerfil
-            );
+          this.cerrarFormulario();
+          this.listar();
 
-            this.guardarDocumentos(idUsuario, () => {
-              this.guardando = false;
-              this.cdr.detectChanges();
-
-              alertaExito(
-                'Cuidador registrado',
-                'El cuidador fue registrado correctamente.'
-              );
-
-              this.cerrarFormulario();
-              this.listar();
-            });
-
-
-          },
-
-          error: (errorPerfil) => {
-
-            console.error(
-              'Error al crear el perfil profesional:',
-              errorPerfil
-            );
-
-            this.guardando = false;
-            this.cdr.detectChanges();
-
-            alertaAdvertencia('Cuidador creado', 'El cuidador fue creado, pero no se pudo crear su perfil profesional.');
-
-            this.cerrarFormulario();
-            this.listar();
-          }
         });
+
       },
 
-      error: (errorUsuario) => {
+      error: (error) => {
 
-        console.error(
-          'Error al crear el usuario:',
-          errorUsuario
-        );
+        console.error('Error al crear cuidador:', error);
+        console.error('Respuesta del backend:', error.error);
 
         this.guardando = false;
         this.cdr.detectChanges();
-        alertaError('Error al crear', 'No se pudo registrar el cuidador.');
+
+        const mensaje =
+          error.error?.error ||
+          error.error?.detail ||
+          'No se pudo registrar el cuidador.';
+
+        alertaError('Error al crear cuidador', mensaje);
+
       }
+
     });
+
   }
-
-
   private finalizarGuardadoEdicion(): void {
 
     this.guardando = false;
@@ -1342,6 +1413,7 @@ export class Cuidadores implements OnInit {
 
     this.fotoPreview = null;
     this.nombreFoto = null;
+    this.eliminarFotoPendiente = false;
     this.idEditando = null;
 
     this.idEditando = null;
@@ -1538,6 +1610,7 @@ export class Cuidadores implements OnInit {
       return 'Foto de perfil';
     }
   }
+
   // =========================================================
   // FOTO DE PERFIL
   // =========================================================
@@ -1561,6 +1634,7 @@ export class Cuidadores implements OnInit {
 
     this.formulario.fotoFile = archivo;
     this.nombreFoto = archivo.name;
+    this.eliminarFotoPendiente = false;
     const lector = new FileReader();
 
     lector.onload = () => {
@@ -1569,6 +1643,54 @@ export class Cuidadores implements OnInit {
     };
 
     lector.readAsDataURL(archivo);
+  }
+  confirmarEliminarFoto(): void {
+
+    if (!this.fotoPreview) return;
+
+    mostrarAlerta({
+      tono: 'rojo',
+      icono: 'warning',
+      iconoSvg: ICONOS.papelera,
+      titulo: 'Eliminar foto de perfil',
+      html: htmlMensaje(
+        'La fotografía desaparecerá del formulario. Los cambios se aplicarán al guardar.'
+      ),
+      confirmar: 'Sí, eliminar',
+      cancelar: 'Cancelar',
+      enfocarCancelar: true
+
+    }).then(resultado => {
+
+      if (!resultado.isConfirmed) {
+        return;
+      }
+
+      // CREAR: solamente quitar la foto seleccionada.
+      if (this.modoFormulario === 'crear') {
+
+        this.formulario.foto = null;
+        this.formulario.fotoFile = null;
+
+        this.eliminarFotoPendiente = false;
+
+      } else {
+
+        // EDITAR: marcar eliminación para ejecutar al guardar.
+        this.formulario.foto = null;
+        this.formulario.fotoFile = null;
+
+        this.eliminarFotoPendiente = true;
+
+      }
+
+      this.fotoPreview = null;
+      this.nombreFoto = null;
+
+      this.cdr.detectChanges();
+
+    });
+
   }
   // =========================================================
   // ARCHIVOS
@@ -1734,8 +1856,28 @@ export class Cuidadores implements OnInit {
     );
 
   }
+  descargarDocumento(url: string | null | undefined): string {
 
+    if (!url) {
+      return '';
+    }
 
+    if (url.includes('res.cloudinary.com')) {
+
+      // Evitar agregar dos veces la opción de descarga
+      if (url.includes('/fl_attachment/')) {
+        return url;
+      }
+
+      // Funciona para imágenes y documentos RAW
+      return url.replace(
+        /(\/(?:image|raw)\/upload\/)/,
+        '$1fl_attachment/'
+      );
+    }
+
+    return url;
+  }
   // =========================================================
   // FORMULARIO VACÍO
   // =========================================================
