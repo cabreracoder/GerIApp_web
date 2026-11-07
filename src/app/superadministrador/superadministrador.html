@@ -545,19 +545,41 @@
             <td>{{ administrador.correo }}</td>
 
             <td>
-              <ng-container *ngIf="administrador.id_sede; else sinSede">
+              <label
+                class="status-select-wrapper"
+                [attr.aria-label]="'Sede de ' + administrador.nombres"
+              >
 
-                <ng-container *ngFor="let sede of sedes">
-                  <span *ngIf="sede.id_sede === administrador.id_sede">
+                <select
+                  class="status-select sede-select"
+                  [value]="administrador.id_sede ?? ''"
+                  [disabled]="actualizandoSedes.has(administrador.id_usuario)"
+                  (change)="cambiarSedeAdministrador(
+                    administrador,
+                    $any($event.target).value
+                  )"
+                >
+
+                  <option value="" disabled>
+                    Sin sede asignada
+                  </option>
+
+                  <option
+                    *ngFor="let sede of sedes"
+                    [value]="sede.id_sede"
+                    [disabled]="!esActivo(sede.estado)"
+                  >
                     {{ sede.nombre }}
-                  </span>
-                </ng-container>
+                    {{ !esActivo(sede.estado) ? '(Inactiva)' : '' }}
+                  </option>
 
-              </ng-container>
+                </select>
 
-              <ng-template #sinSede>
-                <span class="unassigned-label">Sin sede asignada</span>
-              </ng-template>
+                <span class="material-symbols-outlined">
+                  keyboard_arrow_down
+                </span>
+
+              </label>
             </td>
 
             <td>
@@ -566,13 +588,29 @@
 
             <td>{{ nombreRol(administrador) }}</td>
 
-            <td>
-              <span
-                class="status-indicator"
-                [class.status-inactive]="!esActivo(administrador.estado)"
+           <td>
+              <label
+                class="status-select-wrapper"
+                [attr.aria-label]="'Estado de ' + administrador.nombres"
               >
-                {{ esActivo(administrador.estado) ? 'Activo' : 'Inactivo' }}
-              </span>
+                <select
+                  class="status-select"
+                  [class.status-inactive]="!esActivo(administrador.estado)"
+                  [value]="esActivo(administrador.estado) ? 'true' : 'false'"
+                  [disabled]="actualizandoEstados.has(administrador.id_usuario)"
+                  (change)="cambiarEstadoAdministrador(
+                    administrador,
+                    $any($event.target).value
+                  )"
+                >
+                  <option value="true">Activo</option>
+                  <option value="false">Inactivo</option>
+                </select>
+
+                <span class="material-symbols-outlined">
+                  keyboard_arrow_down
+                </span>
+              </label>
             </td>
 
             <td>
@@ -586,16 +624,6 @@
                   <span class="material-symbols-outlined">edit</span>
                   Editar
                 </button>
-
-                <button
-                  class="icon-text-button"
-                  type="button"
-                  (click)="asignarSedeAdministrador(administrador)"
-                >
-                  <span class="material-symbols-outlined">apartment</span>
-                  Sede
-                </button>
-
               </div>
             </td>
 

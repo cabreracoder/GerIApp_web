@@ -64,6 +64,8 @@ export class Superadministrador implements OnInit {
 
   cargandoAdministradores = false;
   errorAdministradores = false;
+  actualizandoEstados = new Set<number>();
+  actualizandoSedes = new Set<number>();
 
   constructor(
     private http: HttpClient,
@@ -912,6 +914,148 @@ editarAdministrador(usuario: Usuario): void {
           });
       });
     });
+  });
+}
+
+cambiarEstadoAdministrador(
+  usuario: Usuario,
+  nuevoEstado: string
+): void {
+
+  const estadoAnterior = usuario.estado;
+  const estadoNuevo = nuevoEstado === 'true';
+
+  if (this.esActivo(estadoAnterior) === estadoNuevo) {
+    return;
+  }
+
+  this.actualizandoEstados.add(usuario.id_usuario);
+  this.cdr.detectChanges();
+
+  this.http.patch(
+    `${this.apiUrl}/usuarios/${usuario.id_usuario}/`,
+    {
+      estado: estadoNuevo
+    }
+  ).subscribe({
+
+    next: () => {
+
+      usuario.estado = estadoNuevo;
+
+      this.actualizandoEstados.delete(usuario.id_usuario);
+
+      this.cdr.detectChanges();
+
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Estado actualizado correctamente',
+        showConfirmButton: false,
+        timer: 1800
+      });
+
+    },
+
+    error: (error) => {
+
+      console.error(
+        'Error al actualizar el estado:',
+        error
+      );
+
+      usuario.estado = estadoAnterior;
+
+      this.actualizandoEstados.delete(usuario.id_usuario);
+
+      this.cdr.detectChanges();
+
+      Swal.fire({
+        icon: 'error',
+        title: 'No se pudo actualizar el estado',
+        text: this.obtenerMensajeError(error),
+        confirmButtonColor: '#3B5BDB'
+      });
+
+    }
+
+  });
+
+}
+
+cambiarSedeAdministrador(
+  usuario: Usuario,
+  nuevaSede: string
+): void {
+
+  const sedeAnterior = usuario.id_sede ?? null;
+  const idSedeNuevo = Number(nuevaSede);
+
+  if (!nuevaSede || sedeAnterior === idSedeNuevo) {
+    return;
+  }
+
+  const sedeSeleccionada = this.sedes.find(
+    sede => sede.id_sede === idSedeNuevo
+  );
+
+  if (!sedeSeleccionada || !this.esActivo(sedeSeleccionada.estado)) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Sede no disponible',
+      text: 'Solo puedes asignar sedes activas.',
+      confirmButtonColor: '#3B5BDB'
+    });
+    return;
+  }
+
+  this.actualizandoSedes.add(usuario.id_usuario);
+  this.cdr.detectChanges();
+
+  this.http.patch(
+    `${this.apiUrl}/usuarios/${usuario.id_usuario}/`,
+    {
+      id_sede: idSedeNuevo
+    }
+  ).subscribe({
+
+    next: () => {
+
+      usuario.id_sede = idSedeNuevo;
+
+      this.actualizandoSedes.delete(usuario.id_usuario);
+      this.cdr.detectChanges();
+
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Sede actualizada correctamente',
+        showConfirmButton: false,
+        timer: 1800
+      });
+
+    },
+
+    error: (error) => {
+
+      console.error('Error al actualizar la sede:', error);
+
+      usuario.id_sede = sedeAnterior;
+
+      this.actualizandoSedes.delete(usuario.id_usuario);
+      this.cdr.detectChanges();
+
+      Swal.fire({
+        icon: 'error',
+        title: 'No se pudo actualizar la sede',
+        text: this.obtenerMensajeError(error),
+        confirmButtonColor: '#3B5BDB'
+      });
+
+    }
+
   });
 }
 

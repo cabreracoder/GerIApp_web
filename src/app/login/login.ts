@@ -386,7 +386,26 @@ export class Login {
 
         this.cd.detectChanges();
 
-       alertaError('Error', 'Credenciales inválidas');
+        const mensajeBackend = respuestaError?.error?.error;
+
+        if (
+          respuestaError.status === 403 &&
+          mensajeBackend?.toLowerCase().includes('inactivo')
+        ) {
+
+          alertaAdvertencia(
+            'Usuario inactivo',
+            'Tu cuenta se encuentra inactiva. Comunícate con el administrador de la institución.'
+          );
+
+        } else {
+
+          alertaError(
+            'Error',
+            mensajeBackend || 'Credenciales inválidas'
+          );
+
+        }
 
       }
 
@@ -676,14 +695,28 @@ export class Login {
 
         error: (error) => {
 
-          console.log(
-            'Error backend Google:',
-            error
-          );
+          console.log('Error backend Google:', error);
 
+          const mensajeBackend = error?.error?.error;
 
-          alertaAdvertencia('Usuario no registrado', error.error.error || 'Debe crear una cuenta para ingresar con Google.');
+          if (
+            error.status === 403 &&
+            mensajeBackend?.toLowerCase().includes('inactivo')
+          ) {
 
+            alertaAdvertencia(
+              'Usuario inactivo',
+              'Tu cuenta se encuentra inactiva. Comunícate con el administrador de la institución.'
+            );
+
+          } else {
+
+            alertaAdvertencia(
+              'No se pudo iniciar sesión',
+              mensajeBackend || 'Debe crear una cuenta para ingresar con Google.'
+            );
+
+          }
 
         }
 
