@@ -2793,3 +2793,116 @@
   border-radius: var(--radius-full);
   border: 1px solid var(--border-color);
 }
+
+/* =====================================================
+   BOTÓN ELIMINAR FOTO DE PERFIL
+   ===================================================== */
+
+.boton-eliminar-foto {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  min-height: 32px;
+  padding: 5px 12px;
+
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.boton-eliminar-foto:hover {
+  background: #fee2e2;
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+.boton-eliminar-foto .material-symbols-outlined {
+  font-size: 18px;
+}
+
+/* Fila de fotografía */
+.contenedor-foto-archivo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 54px;
+  padding: 6px 10px;
+  border: 1px solid #dce2e9;
+  border-radius: 12px;
+  background: #fff;
+}
+
+/* Nombre del archivo */
+.nombre-archivo {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #77818d;
+  font-size: 15px;
+}
+
+/* Botón cambiar foto */
+.boton-cambiar-foto {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px 14px;
+  border-radius: 25px;
+  background: #e9ecef;
+  color: #707b87;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* Botón papelera */
+.boton-eliminar-foto {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border: 1px solid #dce2e9;
+  border-radius: 15px;
+  background: white;
+  color: #77818d;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.boton-eliminar-foto:hover {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+/* Vista previa centrada */
+.vista-previa-foto {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 28px auto 35px;
+}
+
+.vista-previa-foto img {
+  width: 92px;
+  height: 92px;
+  object-fit: cover;
+  border-radius: 50%;
+}

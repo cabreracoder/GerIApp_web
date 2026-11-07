@@ -23,41 +23,35 @@ import Swal from 'sweetalert2';
 
 
 interface Encargado {
-
   id: number;
+  id_documento?: number;
 
   tipoDocumento: string;
-
   documento: string;
-
   nombres: string;
-
   apellidos: string;
-
   email: string;
-
   telefono: string;
-
   fechaIngreso: string;
 
   fechaNacimiento?: string;
-
   edad?: number;
 
   especialidad?: string;
-
   licencia?: string;
-
   experiencia?: string;
-
   institucion?: string;
 
   estado: 'Activo' | 'Inactivo';
-
   iniciales: string;
-
   foto?: string | null;
 
+  archivos?: {
+    cedula?: string | null;
+    tarjeta_profesional?: string | null;
+    antecedentes?: string | null;
+    hoja_de_vida?: string | null;
+  };
 }
 
 
@@ -102,7 +96,14 @@ interface FormularioEncargado {
   fotoFile?: File | null;
   fotoUrl?: string | null;
 
+  id_documento?: number;
 
+  archivos?: {
+    cedula?: string | null;
+    tarjeta_profesional?: string | null;
+    antecedentes?: string | null;
+    hoja_de_vida?: string | null;
+  };
 
 }
 
@@ -580,10 +581,11 @@ export class Encargados implements OnInit {
 
   private apiUrl = 'https://geriapp-backend.onrender.com/api/usuarios/';
 
+  private documentosUrl = 'https://geriapp-backend.onrender.com/api/documentos/';
 
+  private perfilUrl = 'https://geriapp-backend.onrender.com/api/perfil_profesional/';
 
-
-
+  private registroUrl = 'https://geriapp-backend.onrender.com/api/usuarios/registro/';
   // =====================================================
 
   // ENCARGADOS
@@ -720,7 +722,7 @@ export class Encargados implements OnInit {
 
   fotoPreview: string | null = null;
   nombreFoto: string | null = null;
-
+  eliminarFotoPendiente = false;
 
 
 
@@ -821,112 +823,115 @@ export class Encargados implements OnInit {
 
   // =====================================================
 
-
-
   cargarEncargados(): void {
-
-
-
-
 
     this.cargando = true;
 
-
-
     this.http.get<any[]>(this.apiUrl).subscribe({
 
+      next: (respuesta) => {
 
+        const encargados = respuesta.filter(
+          (usuario: any) => usuario.id_rol === 2
+        );
 
-      next: (respuesta: any[]) => {
+        this.http.get<any[]>(this.perfilUrl).subscribe({
 
+          next: (perfiles) => {
 
+            this.http.get<any[]>(this.documentosUrl).subscribe({
 
-        this.encargados = respuesta
+              next: (documentos) => {
 
-          .filter((usuario: any) => usuario.id_rol === 2)
+                this.encargados = encargados.map((usuario: any): Encargado => {
 
-          .map((usuario: any): Encargado => ({
+                  const id = usuario.id_usuario || usuario.id;
 
-            id: usuario.id_usuario,
+                  const perfil = perfiles.find(
+                    (p: any) => p.id_usuario === id
+                  );
 
-            tipoDocumento: usuario.tipo_documento,
+                  const documentosUsuario = documentos.find(
+                    (d: any) => d.id_usuario === id
+                  );
 
-            documento: usuario.numero_documento,
+                  return {
 
-            nombres: usuario.nombres,
+                    id: id,
 
-            apellidos: usuario.apellidos,
+                    id_documento: documentosUsuario?.id_documento,
 
-            email: usuario.correo,
+                    tipoDocumento: usuario.tipo_documento,
+                    documento: usuario.numero_documento,
+                    nombres: usuario.nombres,
+                    apellidos: usuario.apellidos,
+                    email: usuario.correo,
+                    telefono: usuario.telefono,
+                    fechaIngreso: usuario.fecha_ingreso,
 
-            telefono: usuario.telefono,
+                    estado: usuario.estado ? 'Activo' : 'Inactivo',
 
-            fechaIngreso: usuario.fecha_ingreso,
+                    iniciales: this.generarIniciales(
+                      `${usuario.nombres} ${usuario.apellidos}`
+                    ),
 
-            estado: usuario.estado ? 'Activo' : 'Inactivo',
+                    foto: usuario.foto || null,
 
-            iniciales: this.generarIniciales(`${usuario.nombres} ${usuario.apellidos}`),
-            foto: usuario.foto || null,
+                    especialidad: perfil?.especialidad || '',
+                    licencia: perfil?.licencia || '',
+                    experiencia: perfil?.experiencia ?? '',
+                    institucion: perfil?.institucion || '',
 
-          }))
+                    archivos: {
+                      cedula: documentosUsuario?.cedula || null,
+                      tarjeta_profesional: documentosUsuario?.tarjeta_profesional || null,
+                      antecedentes: documentosUsuario?.antecedentes || null,
+                      hoja_de_vida: documentosUsuario?.hoja_de_vida || null
+                    }
 
-          .sort((a: Encargado, b: Encargado) => a.id - b.id);
+                  };
 
+                }).sort((a, b) => a.id - b.id);
 
+                this.encargadoPrincipal = null;
 
-        this.encargadoPrincipal = null;
+                this.filtrarEncargados();
 
+                this.cargando = false;
 
+                this.cdr.detectChanges();
 
-        this.filtrarEncargados();
+              },
 
+              error: (err) => {
+                console.error('Error cargando documentos:', err);
+                this.cargando = false;
+                alertaError('Error', 'No se pudieron cargar los documentos.');
+              }
 
+            });
 
-        this.cargando = false;
+          },
 
-
-
-        this.cdr.detectChanges();
-
-      },
-
-
-
-      error: () => {
-
-
-
-        this.cargando = false;
-
-
-
-        Swal.fire({
-
-          title: 'Error al cargar encargados',
-
-          text: 'No se pudo conectar con el servidor.',
-
-          icon: 'error',
-
-          confirmButtonText: 'Aceptar',
-
-          confirmButtonColor: '#3B5BDB',
+          error: (err) => {
+            console.error('Error cargando perfiles:', err);
+            this.cargando = false;
+            alertaError('Error', 'No se pudieron cargar los perfiles profesionales.');
+          }
 
         });
 
-
-
-        this.cdr.detectChanges();
-
       },
+
+      error: (err) => {
+        console.error('Error cargando encargados:', err);
+        this.cargando = false;
+        alertaError('Error', 'No se pudieron cargar los encargados.');
+      }
 
     });
 
   }
-
-
-
-
 
   // =====================================================
 
@@ -1050,6 +1055,7 @@ export class Encargados implements OnInit {
     }
     this.formulario.fotoFile = archivo;
     this.nombreFoto = archivo.name;
+    this.eliminarFotoPendiente = false;
     const lector = new FileReader();
     lector.onload = () => {
       this.fotoPreview = lector.result as string;
@@ -1057,7 +1063,58 @@ export class Encargados implements OnInit {
     };
     lector.readAsDataURL(archivo);
   }
+  // =====================================================
+  // ELIMINAR FOTO DE PERFIL
+  // =====================================================
 
+  confirmarEliminarFoto(): void {
+
+    if (!this.fotoPreview) return;
+
+    mostrarAlerta({
+      tono: 'rojo',
+      icono: 'warning',
+      iconoSvg: ICONOS.papelera,
+      titulo: 'Eliminar foto de perfil',
+      html: htmlMensaje(
+        'La fotografía desaparecerá del formulario. Los cambios se aplicarán al guardar.'
+      ),
+      confirmar: 'Sí, eliminar',
+      cancelar: 'Cancelar',
+      enfocarCancelar: true
+
+    }).then(resultado => {
+
+      if (!resultado.isConfirmed) {
+        return;
+      }
+
+      // CREAR: quitar solamente la foto seleccionada.
+      if (!this.modoEdicion) {
+
+        this.formulario.fotoFile = null;
+        this.formulario.fotoUrl = null;
+
+        this.eliminarFotoPendiente = false;
+
+      } else {
+
+        // EDITAR: dejar pendiente la eliminación.
+        this.formulario.fotoFile = null;
+        this.formulario.fotoUrl = null;
+
+        this.eliminarFotoPendiente = true;
+
+      }
+
+      this.fotoPreview = null;
+      this.nombreFoto = null;
+
+      this.cdr.detectChanges();
+
+    });
+
+  }
   obtenerNombreFoto(url?: string | null): string | null {
     if (!url) return null;
     try {
@@ -1066,58 +1123,148 @@ export class Encargados implements OnInit {
       return 'Foto de perfil';
     }
   }
+  // =====================================================
+  // DESCARGAR DOCUMENTOS DESDE CLOUDINARY
+  // =====================================================
 
+  obtenerUrlDescarga(url?: string | null): string {
+
+    if (!url) {
+      return '';
+    }
+
+    if (
+      url.includes('res.cloudinary.com') &&
+      url.includes('/upload/')
+    ) {
+
+      if (url.includes('/fl_attachment/')) {
+        return url;
+      }
+
+      return url.replace(
+        '/upload/',
+        '/upload/fl_attachment/'
+      );
+
+    }
+
+    return url;
+  }
+  // =====================================================
   // SELECCIONAR ARCHIVOS (DOCUMENTOS)
-
   // =====================================================
 
 
 
   onFileSelected(
-
     event: any,
-
     tipo: 'cedula' | 'tarjetaProfesional' | 'antecedentes' | 'hojaDeVida'
-
   ): void {
 
-    const file = event.target.files[0];
+    const file = event.target.files?.[0];
 
-    if (file) {
+    if (!file) return;
 
-      if (tipo === 'cedula') {
+    if (tipo === 'cedula') {
+      this.formulario.cedulaFile = file;
+    } else if (tipo === 'tarjetaProfesional') {
+      this.formulario.tarjetaProfesionalFile = file;
+    } else if (tipo === 'antecedentes') {
+      this.formulario.antecedentesFile = file;
+    } else if (tipo === 'hojaDeVida') {
+      this.formulario.hojaDeVidaFile = file;
+    }
+  }
+  // =====================================================
+  // GUARDAR DOCUMENTOS EN CLOUDINARY
+  // =====================================================
 
-        this.formulario.cedulaFile = file;
+  private guardarDocumentos(
+    idUsuario: number,
+    finalizar: () => void
+  ): void {
 
-      } else if (tipo === 'tarjetaProfesional') {
+    const documentos = new FormData();
 
-        this.formulario.tarjetaProfesionalFile = file;
+    documentos.append('id_usuario', String(idUsuario));
 
-      } else if (tipo === 'antecedentes') {
-
-        this.formulario.antecedentesFile = file;
-
-      } else if (tipo === 'hojaDeVida') {
-
-        this.formulario.hojaDeVidaFile = file;
-
-      }
-
+    if (this.formulario.cedulaFile) {
+      documentos.append('cedula', this.formulario.cedulaFile);
     }
 
+    if (this.formulario.tarjetaProfesionalFile) {
+      documentos.append(
+        'tarjeta_profesional',
+        this.formulario.tarjetaProfesionalFile
+      );
+    }
+
+    if (this.formulario.antecedentesFile) {
+      documentos.append(
+        'antecedentes',
+        this.formulario.antecedentesFile
+      );
+    }
+
+    if (this.formulario.hojaDeVidaFile) {
+      documentos.append(
+        'hoja_de_vida',
+        this.formulario.hojaDeVidaFile
+      );
+    }
+
+    const hayArchivos = !!(
+      this.formulario.cedulaFile ||
+      this.formulario.tarjetaProfesionalFile ||
+      this.formulario.antecedentesFile ||
+      this.formulario.hojaDeVidaFile
+    );
+
+    if (!hayArchivos) {
+      finalizar();
+      return;
+    }
+
+    const idDocumento = this.formulario.id_documento;
+
+    const peticion = idDocumento
+      ? this.http.patch(
+        `${this.documentosUrl}${idDocumento}/`,
+        documentos
+      )
+      : this.http.post(
+        this.documentosUrl,
+        documentos
+      );
+
+    peticion.subscribe({
+
+      next: () => {
+        finalizar();
+      },
+
+      error: (error) => {
+
+        console.error('Error al guardar documentos:', error);
+        console.error('Respuesta del backend:', error.error);
+
+        this.guardando = false;
+        this.cdr.detectChanges();
+
+        alertaError(
+          'Error con los documentos',
+          'No se pudieron guardar los documentos.'
+        );
+      }
+
+    });
   }
-
-
-
-
-
   // =====================================================
 
   // ABRIR MODAL
 
   // =====================================================
-
-
 
   openModal(
 
@@ -1187,6 +1334,9 @@ export class Encargados implements OnInit {
 
 
       this.formulario = {
+        id_documento: this.encargadoPrincipal.id_documento,
+
+        archivos: this.encargadoPrincipal.archivos,
 
         tipoDocumento: this.encargadoPrincipal.tipoDocumento || '',
 
@@ -1255,6 +1405,10 @@ export class Encargados implements OnInit {
 
 
       this.formulario = {
+
+        id_documento: encargado.id_documento,
+
+        archivos: encargado.archivos,
 
         tipoDocumento: encargado.tipoDocumento || '',
 
@@ -1363,7 +1517,7 @@ export class Encargados implements OnInit {
     this.formulario = this.formularioInicial();
     this.fotoPreview = null;
     this.nombreFoto = null;
-
+    this.eliminarFotoPendiente = false;
     this.modoEdicion = false;
 
 
@@ -1404,17 +1558,11 @@ export class Encargados implements OnInit {
 
   }
 
-
-
-
-
   // =====================================================
 
   // CERRAR DETALLES
 
   // =====================================================
-
-
 
   cerrarModalDetalles(): void {
 
@@ -1884,214 +2032,195 @@ export class Encargados implements OnInit {
 
   saveEncargado(): void {
 
-
-
     if (this.guardando) {
-
       return;
-
     }
-
-
 
     if (!this.validarFormulario()) {
 
-
-
       let mensaje = 'Completa los campos obligatorios.';
 
-
-
       if (this.errores.telefono) {
-
         mensaje = 'El teléfono debe contener exactamente 10 números.';
-
       } else if (this.errores.emailInvalido) {
-
         mensaje = 'Ingresa un correo electrónico válido.';
-
       }
 
-
-
-
-
-      /*
-
-       * AQUÍ NO SE CREAN OBJETOS QUEMADOS.
-
-       *
-
-       * El formulario debe enviarse mediante EncargadosService
-
-       * a la API de Django.
-
-       *
-
-       * Cuando me pases tu servicio/endpoints, esta parte
-
-       * se conecta directamente con POST, PUT/PATCH.
-
-       */
-
       alertaAdvertencia('Revisa el formulario', mensaje);
-
       return;
-
     }
-
-
 
     if (this.DocumentoDuplicado(this.formulario.documento)) {
-
       this.errores.documento = true;
-
       alertaAdvertencia('Documento duplicado', 'El número de documento ya se encuentra registrado.');
-
       return;
-
     }
-
-
 
     if (this.emailDuplicado(this.formulario.email)) {
-
       this.errores.email = true;
-
       alertaAdvertencia('Correo duplicado', 'El correo electrónico ya se encuentra registrado.');
-
       return;
-
     }
-
-
 
     this.guardando = true;
 
-
-
-    // Cuerpo que espera la API (nombres de campos del backend, no los tuyos)
-
     const cuerpo: any = {
-
       tipo_documento: this.formulario.tipoDocumento,
-
       numero_documento: this.formulario.documento,
-
       nombres: this.formulario.nombres,
-
       apellidos: this.formulario.apellidos,
-
       correo: this.formulario.email,
-
       telefono: this.formulario.telefono,
-
       fecha_ingreso: this.formulario.fechaIngreso,
-
       estado: this.formulario.estado === 'Activo',
-
       id_rol: 2,
-
     };
+
     if (this.modoEdicion) {
       delete cuerpo.fecha_ingreso;
     }
 
     const datosEncargado = new FormData();
+
     Object.entries(cuerpo).forEach(([campo, valor]) => {
       if (valor !== null && valor !== undefined) {
         datosEncargado.append(campo, String(valor));
       }
     });
+
     if (this.formulario.fotoFile) {
       datosEncargado.append('foto', this.formulario.fotoFile);
     }
 
+    // FINALIZAR GUARDADO
+    const finalizar = () => {
 
+      this.guardando = false;
 
+      alertaExito(
+        this.modoEdicion ? 'Encargado actualizado' : 'Encargado creado',
+        'La información y los documentos se guardaron correctamente.'
+      );
+
+      this.closeModal();
+      this.cargarEncargados();
+
+    };
+
+    // EDITAR ENCARGADO
     if (this.modoEdicion && this.idEditando) {
 
+      const idUsuario = this.idEditando;
 
-
-      // ACTUALIZAR
-
-      this.http.patch(`${this.apiUrl}${this.idEditando}/`, datosEncargado).subscribe({
-
-
+      this.http.patch(
+        `${this.apiUrl}${idUsuario}/`,
+        datosEncargado
+      ).subscribe({
 
         next: () => {
 
-          this.guardando = false;
+          // Eliminar foto solamente si existe una eliminación pendiente.
+          if (this.eliminarFotoPendiente) {
 
-          alertaExito('Encargado actualizado', 'El encargado ha sido actualizado correctamente.');
+            this.http.delete(
+              `${this.apiUrl}${idUsuario}/foto/`
+            ).subscribe({
 
-          this.closeModal();
+              next: () => {
 
-          this.cargarEncargados();
+                this.eliminarFotoPendiente = false;
+
+                // Continuar con los documentos.
+                this.guardarDocumentos(idUsuario, finalizar);
+
+              },
+
+              error: (err) => {
+
+                console.error('Error eliminando foto del encargado:', err);
+
+                this.guardando = false;
+
+                alertaError(
+                  'Error al eliminar fotografía',
+                  'No se pudo eliminar la fotografía. Los demás cambios del formulario se guardaron.'
+                );
+
+              }
+
+            });
+
+          } else {
+
+            // No hay eliminación pendiente.
+            this.guardarDocumentos(idUsuario, finalizar);
+
+          }
 
         },
-
-
 
         error: (err) => {
 
           this.guardando = false;
+          console.error('Error actualizando encargado:', err);
 
-          console.error(err);
+          alertaError(
+            'Error al actualizar',
+            'No se pudo actualizar la información del encargado.'
+          );
 
-          alertaError('Error al cargar encargados', 'No se pudo conectar con el servidor.');
-
-        },
+        }
 
       });
 
-
-
     } else {
 
+      // CREAR ENCARGADO
+      this.http.post(this.registroUrl, datosEncargado).subscribe({
+        next: (respuesta: any) => {
 
+          console.log('Respuesta al crear encargado:', respuesta);
 
-      // CREAR
+          const idUsuario =
+            respuesta?.id_usuario ??
+            respuesta?.id ??
+            respuesta?.usuario?.id_usuario ??
+            respuesta?.usuario?.id;
 
-      this.http.post(this.apiUrl, datosEncargado).subscribe({
+          if (!idUsuario) {
 
+            this.guardando = false;
 
+            alertaError(
+              'Error al guardar documentos',
+              'El encargado se creó, pero no se recibió su identificador para asociar los documentos.'
+            );
 
-        next: () => {
+            return;
+          }
 
-          this.guardando = false;
-
-          alertaExito('Encargado creado');
-
-          this.closeModal();
-
-          this.cargarEncargados();
+          // Guardar documentos en Cloudinary
+          this.guardarDocumentos(Number(idUsuario), finalizar);
 
         },
-
-
 
         error: (err) => {
 
           this.guardando = false;
+          console.error('Error creando encargado:', err);
 
-          console.error(err);
+          alertaError(
+            'Error al crear',
+            'No se pudo registrar el encargado.'
+          );
 
-          alertaError('Error al crear', 'Revisa la consola del navegador para más detalles.');
-
-        },
+        }
 
       });
 
     }
 
   }
-
-
-
-
-
-
 
   // =====================================================
 
