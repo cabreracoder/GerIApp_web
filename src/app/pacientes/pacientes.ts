@@ -371,6 +371,7 @@ export class Pacientes {
   form: PatientForm = this.formularioVacio();
   fotoPreview: string | null = null;
   nombreFoto: string | null = null;
+  eliminarFotoPendiente = false;
   // =====================================================
   // CONSTRUCTOR
   constructor(
@@ -838,7 +839,7 @@ export class Pacientes {
 
     this.fotoPreview = null;
     this.nombreFoto = null;
-
+    this.eliminarFotoPendiente = false;
     this.editingId = null;
 
     this.habitacionesActivas = [];
@@ -864,6 +865,7 @@ export class Pacientes {
       return;
     }
     this.form.foto = archivo;
+    this.eliminarFotoPendiente = false;
     this.form.fotoUrl = null;
     this.nombreFoto = archivo.name;
     const lector = new FileReader();
@@ -878,6 +880,42 @@ export class Pacientes {
     lector.readAsDataURL(archivo);
   }
 
+  async solicitarEliminarFoto(): Promise<void> {
+
+    const resultado = await mostrarAlerta({
+      tono: 'rojo',
+      icono: 'warning',
+      iconoSvg: ICONOS.papelera,
+      titulo: 'Eliminar foto de perfil',
+
+      html: `
+      <p class="m-0 text-[1.1rem] leading-snug text-slate-400">
+        La foto se eliminará permanentemente al guardar los cambios.
+      </p>
+    `,
+
+      confirmar: 'Sí, eliminar foto',
+      cancelar: 'Cancelar',
+      enfocarCancelar: true
+    });
+
+    if (!resultado.isConfirmed) {
+      return;
+    }
+
+    // Marcar eliminación pendiente
+    this.eliminarFotoPendiente = true;
+
+    // Limpiar foto del formulario
+    this.form.foto = null;
+    this.form.fotoUrl = null;
+
+    // Limpiar vista previa
+    this.fotoPreview = null;
+    this.nombreFoto = null;
+
+    this.cdr.detectChanges();
+  }
   obtenerNombreFoto(url: string | null | undefined): string | null {
     if (!url) return null;
     try {
@@ -976,6 +1014,7 @@ export class Pacientes {
     this.actualizarHabitacionesPorSede();
     this.nombreFoto = this.obtenerNombreFoto(patient.foto);
     this.fotoPreview = patient.foto || null;
+    this.eliminarFotoPendiente = false;
     if (this.form.nacimiento) {
       this.calcularEdad();
     }
@@ -1274,6 +1313,9 @@ export class Pacientes {
         this.form.foto
       );
     }
+    if (this.eliminarFotoPendiente) {
+      datosPaciente.append('eliminar_foto', 'true');
+    }
     this.http
       .put(
         `${this.apiUrl}/pacientes/${this.editingId}/`,
@@ -1520,6 +1562,7 @@ export class Pacientes {
     this.fotoPreview = null;
     this.nombreFoto = null;
     this.camasActivas = [];
+    this.eliminarFotoPendiente = false;
   }
 
   // =====================================================

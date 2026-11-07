@@ -561,7 +561,6 @@
 
                         </div>
 
-
                         <!-- FOTO DE PERFIL -->
                         <div class="campo-formulario campo-foto-perfil">
 
@@ -569,31 +568,53 @@
                                 Foto de perfil
                             </label>
 
-                            <!-- Selector de archivo existente -->
                             <input #inputFoto type="file" accept="image/*" hidden (change)="seleccionarFoto($event)">
 
-                            <!-- Campo compacto y botón discreto -->
                             <div class="control-foto-perfil">
 
                                 <span class="nombre-archivo-foto" [title]="nombreFoto || 'Ninguna foto seleccionada'">
                                     {{ nombreFoto || 'Ninguna foto seleccionada' }}
                                 </span>
 
-                                <button type="button" class="boton-foto-perfil" (click)="inputFoto.click()">
-                                    <span class="material-symbols-outlined">
-                                        image
-                                    </span>
+                                <div class="acciones-foto">
 
-                                    <span>
+                                    <!-- CAMBIAR FOTO -->
+                                    <button type="button" class="boton-foto-perfil" (click)="inputFoto.click()">
+
+                                        <span class="material-symbols-outlined">
+                                            image
+                                        </span>
+
                                         {{ fotoPreview ? 'Cambiar foto' : 'Elegir foto' }}
-                                    </span>
-                                </button>
+
+                                    </button>
+
+                                    <!-- ELIMINAR FOTO -->
+                                    <button *ngIf="fotoPreview || form.fotoUrl || form.foto" type="button"
+                                        class="boton-eliminar-foto" title="Eliminar foto de perfil"
+                                        aria-label="Eliminar foto de perfil" (click)="solicitarEliminarFoto()">
+
+                                        <span class="material-symbols-outlined">
+                                            delete
+                                        </span>
+
+                                    </button>
+
+                                </div>
 
                             </div>
 
-                            <!-- Vista previa circular: se conserva la función existente -->
-                            <div *ngIf="fotoPreview" class="vista-previa-foto">
-                                <img [src]="fotoPreview" alt="Foto de perfil del paciente">
+                            <!-- VISTA PREVIA -->
+                            <div *ngIf="fotoPreview || eliminarFotoPendiente" class="vista-previa-foto">
+
+                                <img *ngIf="fotoPreview" [src]="fotoPreview" alt="Foto de perfil del paciente">
+
+                                <div *ngIf="!fotoPreview && eliminarFotoPendiente" class="avatar-foto-iniciales">
+
+                                    {{ obtenerIniciales(form.nombre + ' ' + form.apellidos) }}
+
+                                </div>
+
                             </div>
 
                         </div>

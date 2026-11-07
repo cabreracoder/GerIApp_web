@@ -855,29 +855,52 @@
 
       </section>
 
+
       <!-- FOTO DE PERFIL -->
       <section class="seccion-formulario">
+
         <div class="titulo-seccion-formulario">
           <span class="material-symbols-outlined">image</span>
           Foto de perfil
         </div>
+
         <div class="fila-formulario">
           <div class="grupo-formulario campo-foto-perfil">
+
             <label class="etiqueta-formulario">Fotografía</label>
+
             <input #inputFoto type="file" accept="image/*" hidden (change)="seleccionarFoto($event)" />
+
+            <!-- CONTROL DE FOTOGRAFÍA -->
             <div class="control-foto-perfil">
-              <span class="nombre-archivo-foto">{{ nombreFoto || 'Ninguna foto seleccionada' }}</span>
+
+              <span class="nombre-archivo-foto">
+                {{ nombreFoto || 'Ninguna foto seleccionada' }}
+              </span>
+
               <button type="button" class="boton-foto-perfil" (click)="inputFoto.click()">
                 <span class="material-symbols-outlined">image</span>
                 {{ fotoPreview ? 'Cambiar foto' : 'Elegir foto' }}
               </button>
+
+              <!-- ELIMINAR FOTO -->
+              <button *ngIf="fotoPreview" type="button" class="boton-eliminar-foto" title="Eliminar foto"
+                aria-label="Eliminar foto" (click)="confirmarEliminarFoto()">
+                <span class="material-symbols-outlined">delete</span>
+              </button>
+
             </div>
+
+            <!-- VISTA PREVIA -->
             <div *ngIf="fotoPreview" class="vista-previa-foto">
               <img [src]="fotoPreview" alt="Vista previa de la foto del encargado" />
             </div>
+
           </div>
         </div>
+
       </section>
+
 
       <!-- INFORMACIÓN PROFESIONAL -->
 
@@ -933,9 +956,6 @@
       </section>
 
       <!-- DOCUMENTOS -->
-
-      <!-- DOCUMENTOS -->
-
       <section class="seccion-formulario">
 
         <div class="titulo-seccion-formulario">
@@ -945,67 +965,127 @@
 
         <div class="grid-documentos">
 
+
           <!-- CÉDULA -->
           <label class="tarjeta-documento">
             <span class="material-symbols-outlined">badge</span>
             <span class="nombre-documento">Cédula</span>
-            <span class="estado-documento" [class.con-archivo]="formulario.cedulaFile">
-              {{ formulario.cedulaFile ? formulario.cedulaFile.name : 'Seleccionar archivo' }}
+
+            <!-- DOCUMENTO ANTERIORMENTE GUARDADO -->
+            <a *ngIf="formulario.archivos?.cedula" class="estado-documento con-archivo"
+              [href]="obtenerUrlDescarga(formulario.archivos.cedula)" (click)="$event.stopPropagation()">
+              {{ formulario.archivos.cedula.split('/').pop() }}
+            </a>
+
+            <!-- DOCUMENTO NUEVO SELECCIONADO -->
+            <span *ngIf="formulario.cedulaFile" class="estado-documento con-archivo">
+              {{ formulario.cedulaFile.name }}
             </span>
+
+            <!-- SIN DOCUMENTO -->
+            <span *ngIf="!formulario.archivos?.cedula && !formulario.cedulaFile" class="estado-documento">
+              Seleccionar archivo
+            </span>
+
             <span class="boton-examinar">
               <span class="material-symbols-outlined">upload</span>
               Examinar
             </span>
-            <input type="file" (change)="onFileSelected($event, 'cedula')" hidden accept=".pdf,.png,.jpg,.jpeg">
-          </label>
+
+            <input type="file" hidden accept="*/*" (change)="onFileSelected($event, 'cedula')"> </label>
+
 
           <!-- TARJETA PROFESIONAL -->
           <label class="tarjeta-documento">
             <span class="material-symbols-outlined">card_membership</span>
             <span class="nombre-documento">Tarjeta profesional</span>
-            <span class="estado-documento" [class.con-archivo]="formulario.tarjetaProfesionalFile">
-              {{ formulario.tarjetaProfesionalFile ? formulario.tarjetaProfesionalFile.name : 'Seleccionar archivo' }}
-            </span>
+
+            <ng-container *ngIf="formulario.tarjetaProfesionalFile; else tarjetaGuardada">
+              <span class="estado-documento con-archivo">
+                {{ formulario.tarjetaProfesionalFile.name }}
+              </span>
+            </ng-container>
+
+            <ng-template #tarjetaGuardada>
+              <a *ngIf="formulario.archivos?.tarjeta_profesional" class="estado-documento con-archivo"
+                [href]="obtenerUrlDescarga(formulario.archivos.tarjeta_profesional)" (click)="$event.stopPropagation()">
+                {{ formulario.archivos.tarjeta_profesional.split('/').pop() }}
+              </a>
+
+              <span *ngIf="!formulario.archivos?.tarjeta_profesional" class="estado-documento">
+                Seleccionar archivo
+              </span>
+            </ng-template>
+
             <span class="boton-examinar">
               <span class="material-symbols-outlined">upload</span>
               Examinar
             </span>
-            <input type="file" (change)="onFileSelected($event, 'tarjetaProfesional')" hidden
-              accept=".pdf,.png,.jpg,.jpeg">
+
+            <input type="file" hidden accept="*/*" (change)="onFileSelected($event, 'tarjetaProfesional')">
           </label>
+
 
           <!-- ANTECEDENTES -->
           <label class="tarjeta-documento">
             <span class="material-symbols-outlined">verified_user</span>
             <span class="nombre-documento">Antecedentes</span>
-            <span class="estado-documento" [class.con-archivo]="formulario.antecedentesFile">
-              {{ formulario.antecedentesFile ? formulario.antecedentesFile.name : 'Seleccionar archivo' }}
-            </span>
+
+            <ng-container *ngIf="formulario.antecedentesFile; else antecedentesGuardados">
+              <span class="estado-documento con-archivo">
+                {{ formulario.antecedentesFile.name }}
+              </span>
+            </ng-container>
+
+            <ng-template #antecedentesGuardados>
+              <a *ngIf="formulario.archivos?.antecedentes" class="estado-documento con-archivo"
+                [href]="obtenerUrlDescarga(formulario.archivos.antecedentes)" (click)="$event.stopPropagation()">
+                {{ formulario.archivos.antecedentes.split('/').pop() }}
+              </a>
+
+              <span *ngIf="!formulario.archivos?.antecedentes" class="estado-documento">
+                Seleccionar archivo
+              </span>
+            </ng-template>
+
             <span class="boton-examinar">
               <span class="material-symbols-outlined">upload</span>
               Examinar
             </span>
-            <input type="file" (change)="onFileSelected($event, 'antecedentes')" hidden accept=".pdf,.png,.jpg,.jpeg">
-          </label>
+
+            <input type="file" hidden accept="*/*" (change)="onFileSelected($event, 'antecedentes')"> </label>
+
 
           <!-- HOJA DE VIDA -->
           <label class="tarjeta-documento">
             <span class="material-symbols-outlined">description</span>
             <span class="nombre-documento">Hoja de vida</span>
-            <span class="estado-documento" [class.con-archivo]="formulario.hojaDeVidaFile">
-              {{ formulario.hojaDeVidaFile ? formulario.hojaDeVidaFile.name : 'Seleccionar archivo' }}
-            </span>
+
+            <ng-container *ngIf="formulario.hojaDeVidaFile; else hojaVidaGuardada">
+              <span class="estado-documento con-archivo">
+                {{ formulario.hojaDeVidaFile.name }}
+              </span>
+            </ng-container>
+
+            <ng-template #hojaVidaGuardada>
+              <a *ngIf="formulario.archivos?.hoja_de_vida" class="estado-documento con-archivo"
+                [href]="obtenerUrlDescarga(formulario.archivos.hoja_de_vida)" (click)="$event.stopPropagation()">
+                {{ formulario.archivos.hoja_de_vida.split('/').pop() }}
+              </a>
+
+              <span *ngIf="!formulario.archivos?.hoja_de_vida" class="estado-documento">
+                Seleccionar archivo
+              </span>
+            </ng-template>
+
             <span class="boton-examinar">
               <span class="material-symbols-outlined">upload</span>
               Examinar
             </span>
-            <input type="file" (change)="onFileSelected($event, 'hojaDeVida')" hidden accept=".pdf,.doc,.docx">
-          </label>
 
+            <input type="file" hidden accept="*/*" (change)="onFileSelected($event, 'hojaDeVida')"> </label>
         </div>
-
       </section>
-
 
     </div>
 
@@ -1224,7 +1304,6 @@
 
 
       <!-- DOCUMENTOS -->
-
       <section class="seccion-formulario">
 
         <div class="titulo-seccion-formulario">
@@ -1232,34 +1311,86 @@
           Documentos
         </div>
 
-        <div class="grid-documentos">
+        <div class="grid-documentos"
+          style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; gap: 16px;">
 
-          <div class="tarjeta-documento">
+
+          <!-- CÉDULA -->
+          <div class="tarjeta-documento" style="width: 100%;">
             <span class="material-symbols-outlined">badge</span>
             <span class="nombre-documento">Cédula</span>
-            <span class="estado-documento">No registrado</span>
+
+            <a *ngIf="encargadoSeleccionado.archivos?.cedula" class="estado-documento con-archivo"
+              [href]="obtenerUrlDescarga(encargadoSeleccionado.archivos.cedula)">
+              {{ encargadoSeleccionado.archivos.cedula.split('/').pop() }}
+            </a>
+
+            <a *ngIf="encargadoSeleccionado.archivos?.cedula" class="boton-examinar"
+              [href]="obtenerUrlDescarga(encargadoSeleccionado.archivos.cedula)">
+              Descargar documento
+            </a>
+
+            <span *ngIf="!encargadoSeleccionado.archivos?.cedula" class="estado-documento">
+              No registrado
+            </span>
           </div>
+
+
+
 
           <div class="tarjeta-documento">
             <span class="material-symbols-outlined">card_membership</span>
             <span class="nombre-documento">Tarjeta profesional</span>
-            <span class="estado-documento">No registrado</span>
+
+            <a *ngIf="encargadoSeleccionado.archivos?.tarjeta_profesional" class="estado-documento con-archivo"
+              [href]="obtenerUrlDescarga(encargadoSeleccionado.archivos.tarjeta_profesional)">
+              {{ encargadoSeleccionado.archivos.tarjeta_profesional.split('/').pop() }}
+            </a>
+
+            <a *ngIf="encargadoSeleccionado.archivos?.tarjeta_profesional" class="boton-examinar"
+              [href]="obtenerUrlDescarga(encargadoSeleccionado.archivos.tarjeta_profesional)">
+              Descargar documento
+            </a>
+
+            <span *ngIf="!encargadoSeleccionado.archivos?.tarjeta_profesional" class="estado-documento">No
+              registrado</span>
           </div>
 
           <div class="tarjeta-documento">
             <span class="material-symbols-outlined">verified_user</span>
             <span class="nombre-documento">Antecedentes</span>
-            <span class="estado-documento">No registrado</span>
+
+            <a *ngIf="encargadoSeleccionado.archivos?.antecedentes" class="estado-documento con-archivo"
+              [href]="obtenerUrlDescarga(encargadoSeleccionado.archivos.antecedentes)">
+              {{ encargadoSeleccionado.archivos.antecedentes.split('/').pop() }}
+            </a>
+
+            <a *ngIf="encargadoSeleccionado.archivos?.antecedentes" class="boton-examinar"
+              [href]="obtenerUrlDescarga(encargadoSeleccionado.archivos.antecedentes)">
+              Descargar documento
+            </a>
+
+            <span *ngIf="!encargadoSeleccionado.archivos?.antecedentes" class="estado-documento">No registrado</span>
           </div>
 
           <div class="tarjeta-documento">
             <span class="material-symbols-outlined">description</span>
             <span class="nombre-documento">Hoja de vida</span>
-            <span class="estado-documento">No registrado</span>
+
+            <a *ngIf="encargadoSeleccionado.archivos?.hoja_de_vida" class="estado-documento con-archivo"
+              [href]="obtenerUrlDescarga(encargadoSeleccionado.archivos.hoja_de_vida)">
+              {{ encargadoSeleccionado.archivos.hoja_de_vida.split('/').pop() }}
+            </a>
+
+            <a *ngIf="encargadoSeleccionado.archivos?.hoja_de_vida" class="boton-examinar"
+              [href]="obtenerUrlDescarga(encargadoSeleccionado.archivos.hoja_de_vida)">
+              Descargar documento
+            </a>
+
+            <span *ngIf="!encargadoSeleccionado.archivos?.hoja_de_vida" class="estado-documento">No registrado</span>
           </div>
 
         </div>
-
       </section>
 
     </div>

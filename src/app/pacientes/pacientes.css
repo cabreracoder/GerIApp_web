@@ -1299,3 +1299,64 @@ textarea.campo-entrada {
   border-radius: var(--radius-full);
   border: 1px solid var(--border-color);
 }
+
+/* ACCIONES DE FOTO */
+
+.acciones-foto {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* BOTÓN ELIMINAR FOTO */
+
+.boton-eliminar-foto {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+/* AL PASAR EL CURSOR */
+
+.boton-eliminar-foto:hover {
+  background: #FDE8E8;
+  border-color: #F87171;
+  color: #DC2626;
+}
+
+.boton-eliminar-foto .material-symbols-outlined {
+  font-size: 19px;
+}
+
+/* INICIALES DESPUÉS DE ELIMINAR */
+
+.avatar-foto-iniciales {
+  width: 70px;
+  height: 70px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #E8EEFF;
+  color: var(--color-primary);
+
+  font-size: 20px;
+  font-weight: var(--font-weight-bold);
+}
