@@ -974,3 +974,85 @@
   }
 
 }
+
+/* ==========================================
+   SELECTOR DE ESTADO DE ADMINISTRADORES
+========================================== */
+
+.status-select-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+}
+
+.status-select {
+  appearance: none;
+  -webkit-appearance: none;
+
+  min-width: 100px;
+  padding: 5px 27px 5px 11px;
+
+  border: 1px solid #ccebdd;
+  border-radius: 20px;
+
+  background-color: #e2f5ee;
+  color: #25876a;
+
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+
+  cursor: pointer;
+  outline: none;
+
+  transition: all 0.2s ease;
+}
+
+.status-select.status-inactive {
+  background-color: #fcebea;
+  color: #bd514b;
+  border-color: #f2d2d0;
+}
+
+.status-select:hover {
+  filter: brightness(0.97);
+}
+
+.status-select:focus-visible {
+  outline: 2px solid #8daaf4;
+  outline-offset: 2px;
+}
+
+.status-select:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.status-select-wrapper .material-symbols-outlined {
+  position: absolute;
+  right: 6px;
+
+  font-size: 16px;
+  color: currentColor;
+
+  pointer-events: none;
+}
+
+/* SELECTOR DE SEDE DEL ADMINISTRADOR */
+
+.sede-select {
+  min-width: 145px;
+  background-color: #eef3ff;
+  border-color: #d5e0f5;
+  color: #365bc5;
+}
+
+.sede-select:hover {
+  background-color: #e4ecff;
+}
+
+.sede-select:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
