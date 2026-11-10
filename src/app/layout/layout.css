@@ -335,20 +335,13 @@
 ========================================================= */
 
 .layout-main-container {
-  width: calc(
-    100% -
-    var(--web-sidebar-width) -
-    (var(--spacing-md) * 2)
-  );
+  width: calc(100% - var(--web-sidebar-width) - (var(--spacing-md) * 2));
 
   min-width: 0;
 
   height: 100vh;
 
-  margin-left: calc(
-    var(--web-sidebar-width) +
-    (var(--spacing-md) * 2)
-  );
+  margin-left: calc(var(--web-sidebar-width) + (var(--spacing-md) * 2));
 
   display: flex;
 
@@ -436,10 +429,7 @@
   height: 40px;
 
   padding:
-    0
-    var(--spacing-md)
-    0
-    40px;
+    0 var(--spacing-md) 0 40px;
 
   border: 1px solid var(--border-color);
 
@@ -597,8 +587,7 @@
   height: 40px;
 
   padding:
-    0
-    var(--spacing-md);
+    0 var(--spacing-md);
 
   border: none;
 
@@ -737,7 +726,7 @@
    CONTENEDOR INTERNO DEL CONTENIDO
 ========================================================= */
 
-.layout-content > * {
+.layout-content>* {
   width: 100%;
 
   max-width: 100%;
@@ -809,18 +798,14 @@
 .floating-tooltip {
   position: absolute;
 
-  right: calc(
-    var(--mobile-fab-size) +
-    var(--spacing-sm)
-  );
+  right: calc(var(--mobile-fab-size) + var(--spacing-sm));
 
   top: 50%;
 
   transform: translateY(-50%);
 
   padding:
-    var(--spacing-xs)
-    var(--spacing-sm);
+    var(--spacing-xs) var(--spacing-sm);
 
   border-radius: var(--radius-md);
 
@@ -864,16 +849,9 @@
 ========================================================= */
 
 .layout-main-container.layout-main-superadmin {
-  width: calc(
-    100% -
-    var(--web-sidebar-width) -
-    (var(--spacing-md) * 2)
-  );
+  width: calc(100% - var(--web-sidebar-width) - (var(--spacing-md) * 2));
 
-  margin-left: calc(
-    var(--web-sidebar-width) +
-    (var(--spacing-md) * 2)
-  );
+  margin-left: calc(var(--web-sidebar-width) + (var(--spacing-md) * 2));
 
   min-width: 0;
 }
@@ -945,4 +923,31 @@
 .layout-superadmin-dropdown button:focus-visible {
   background: var(--bg-neutral-light);
   color: var(--color-primary);
+}
+
+/* =====================================
+   SEDE DEL USUARIO
+===================================== */
+
+.layout-sede-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 6px 12px;
+
+  background: #edf3ff;
+  color: #3159bd;
+
+  border: 1px solid #dce7ff;
+  border-radius: 20px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.layout-sede-badge .material-symbols-outlined {
+  font-size: 15px;
 }

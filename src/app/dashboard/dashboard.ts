@@ -1,7 +1,7 @@
 
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientModule, HttpClient, HttpHeaders } from '@angular/common/http';
 interface Mes {
   nombre: string;
   activo: boolean;
@@ -105,6 +105,22 @@ export class DashboardComponent implements OnInit {
 
   private readonly apiUrl =
     'https://geriapp-backend.onrender.com/api';
+
+  /** Envía el token Bearer que genera el inicio de sesión. */
+  private opcionesAutenticadas() {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      console.error('No se encontró el token de autenticación en localStorage.');
+      return {};
+    }
+
+    return {
+      headers: new HttpHeaders({
+        Authorization: `Bearer ${token}`
+      })
+    };
+  }
   /* =====================================================
      INFORMACIÓN DEL DASHBOARD
   ===================================================== */
@@ -434,7 +450,8 @@ export class DashboardComponent implements OnInit {
   private cargarPacientes(): void {
 
     this.http.get<any[]>(
-      `${this.apiUrl}/pacientes/`
+      `${this.apiUrl}/pacientes/`,
+      this.opcionesAutenticadas()
     )
       .subscribe({
 
@@ -540,7 +557,8 @@ export class DashboardComponent implements OnInit {
   private cargarCuidadores(): void {
 
     this.http.get<any[]>(
-      `${this.apiUrl}/usuarios/`
+      `${this.apiUrl}/usuarios/`,
+      this.opcionesAutenticadas()
     )
       .subscribe({
 
@@ -548,7 +566,7 @@ export class DashboardComponent implements OnInit {
 
 
           const cuidadores = usuarios.filter(
-            usuario => usuario.id_rol === 5
+            usuario => Number(usuario.id_rol?.id_rol ?? usuario.id_rol) === 3
           );
 
 
@@ -654,7 +672,8 @@ export class DashboardComponent implements OnInit {
   private cargarTurnos(): void {
 
     this.http.get<any[]>(
-      `${this.apiUrl}/asignacion_turno_usuario/`
+      `${this.apiUrl}/asignacion_turno_usuario/`,
+      this.opcionesAutenticadas()
     )
       .subscribe({
 
@@ -760,7 +779,8 @@ export class DashboardComponent implements OnInit {
   private cargarAlertas(): void {
 
     this.http.get<any[]>(
-      `${this.apiUrl}/notificaciones/`
+      `${this.apiUrl}/notificaciones/`,
+      this.opcionesAutenticadas()
     )
       .subscribe({
 

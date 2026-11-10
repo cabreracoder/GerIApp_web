@@ -1,24 +1,66 @@
 <div class="px-8 pt-4 pb-8">
 
-  <!-- ENCABEZADO -->
-  <div class="flex justify-between items-center mb-8">
-    <div>
-      <h1 class="text-3xl font-bold text-[#212529]">
-        Gestión de Cuidadores
-      </h1>
 
-      <p class="text-[#6C757D] mt-1">
-        Administración y registro de cuidadores
+  <!-- BANNER GESTIÓN DE CUIDADORES -->
+  <section class="banner-cuidadores">
+
+    <div class="banner-cuidadores__contenido">
+
+      <h1>Gestión de Cuidadores</h1>
+
+      <p class="banner-cuidadores__subtitulo">
+        Administración y registro de cuidadores del sistema.
       </p>
+
+      <div class="banner-cuidadores__mensaje">
+        <span class="material-symbols-outlined">
+          groups
+        </span>
+
+        <span>
+          Profesionales comprometidos<br>
+          con el bienestar y cuidado de nuestros pacientes.
+        </span>
+
+        <span class="material-symbols-outlined corazon">
+          favorite
+        </span>
+      </div>
+
     </div>
 
+    <!-- CAPA DECORATIVA DEL FONDO -->
+    <div class="banner-cuidadores__decoracion">
+      <span class="deco-onda-superior"></span>
+      <span class="deco-onda-inferior"></span>
+      <span class="deco-mancha-crema"></span>
+      <span class="deco-corazon">
+        <span class="material-symbols-outlined">ecg_heart</span>
+      </span>
+      <span class="deco-hojas hojas-centro"></span>
+      <span class="deco-hojas hojas-derecha"></span>
+    </div>
+
+    <div class="banner-cuidadores__foto">
+      <img src="/banner-cuidadores.jpg" alt="Profesionales de salud">
+    </div>
+
+  </section>
+
+  <!-- BOTÓN NUEVO CUIDADOR -->
+  <div class="flex justify-end mt-4 mb-5">
+
     <button type="button" (click)="abrirFormulario('crear')" class="px-5 py-3 rounded-lg
-             border border-[#3B5BDB]
-             bg-[#3B5BDB] text-white
-             hover:bg-[#324EC7] transition">
+           border border-[#3B5BDB]
+           bg-[#3B5BDB] text-white
+           hover:bg-[#324EC7] transition">
+
       + Nuevo Cuidador
+
     </button>
+
   </div>
+
 
 
 
@@ -51,467 +93,216 @@
 
   </div>
   <!-- TABLA -->
-  <div class="overflow-x-auto">
+  <div class="contenedor-tabla">
 
-    <table class="w-full border-separate border-spacing-y-2">
+    <div class="desplazamiento-tabla">
 
-      <!-- ENCABEZADO -->
-      <thead>
+      <table class="tabla-cuidadores">
+        <!-- ENCABEZADO -->
+        <thead>
 
-        <tr class="bg-[#3B5BDB]">
+          <tr class="bg-[#3B5BDB]">
 
-          <th (click)="ordenarCuidadores()"
-            class="px-5 py-4 text-left text-sm font-semibold !text-white rounded-l-lg cursor-pointer">
-            CUIDADOR
-          </th>
+            <th (click)="ordenarCuidadores()"
+              class="px-5 py-4 text-left text-sm font-semibold !text-white rounded-l-lg cursor-pointer">
+              CUIDADOR
+            </th>
 
-          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
-            DOCUMENTO
-          </th>
+            <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
+              DOCUMENTO
+            </th>
 
-          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
-            TURNO
-          </th>
+            <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
+              TURNO
+            </th>
 
-          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
-            PACIENTES
-          </th>
+            <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
+              PACIENTES
+            </th>
 
-          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
-            ESTADO
-          </th>
+            <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
+              ESTADO
+            </th>
 
-          <th class="px-5 py-4 text-center text-sm font-semibold !text-white rounded-r-lg">
-            ACCIONES
-          </th>
+            <th class="px-5 py-4 text-center text-sm font-semibold !text-white rounded-r-lg">
+              ACCIONES
+            </th>
 
-        </tr>
+          </tr>
 
-      </thead>
-
-
-      <!-- CUERPO -->
-      <tbody>
-
-        <!-- SIN RESULTADOS -->
-        <tr *ngIf="cuidadoresFiltrados.length === 0">
-
-          <td colspan="6" class="px-5 py-12 text-center text-[#6C757D]">
-
-            <div class="flex flex-col items-center gap-2">
-
-              <span class="material-symbols-outlined text-4xl">
-                group_off
-              </span>
-
-              <strong>
-                No se encontraron cuidadores.
-              </strong>
-
-            </div>
-
-          </td>
-
-        </tr>
+        </thead>
 
 
-        <!-- REGISTROS -->
-        <tr *ngFor="let caregiver of cuidadoresPaginaActual; let i = index" [class.fila-par]="i % 2 === 0"
-          [class.fila-impar]="i % 2 !== 0">
+        <!-- CUERPO -->
+        <tbody>
 
-          <!-- CUIDADOR -->
-          <td class="px-5 py-4 rounded-l-lg">
+          <!-- SIN RESULTADOS -->
+          <tr *ngIf="cuidadoresFiltrados.length === 0">
 
-            <div class="flex items-center gap-3">
+            <td colspan="6" class="px-5 py-12 text-center text-[#6C757D]">
 
-              <div class="avatar-cuidador">
-                <img *ngIf="caregiver.foto; else inicialesCuidador" [src]="caregiver.foto"
-                  [alt]="'Foto de ' + (caregiver.nombreCompleto || caregiver.nombre)" class="imagen-avatar">
+              <div class="flex flex-col items-center gap-2">
 
-                <ng-template #inicialesCuidador>
-                  <span>
-                    {{
-                    obtenerIniciales(
-                    caregiver.nombreCompleto || caregiver.nombre
-                    )
-                    }}
-                  </span>
-                </ng-template>
-              </div>
+                <span class="material-symbols-outlined text-4xl">
+                  group_off
+                </span>
 
-
-
-
-              <div class="flex flex-col">
-
-                <strong class="text-[#212529]">
-
-                  {{
-                  caregiver.nombreCompleto ||
-                  (
-                  caregiver.nombre +
-                  ' ' +
-                  (caregiver.apellido || '')
-                  )
-                  }}
-
+                <strong>
+                  No se encontraron cuidadores.
                 </strong>
 
-                <span class="text-xs text-[#6C757D]">
-                  {{ caregiver.correo }}
-                </span>
+              </div>
+
+            </td>
+
+          </tr>
+
+
+          <!-- REGISTROS -->
+          <tr *ngFor="let caregiver of cuidadoresPaginaActual; let i = index" [class.fila-par]="i % 2 === 0"
+            [class.fila-impar]="i % 2 !== 0">
+
+            <!-- CUIDADOR -->
+            <td class="px-5 py-4 rounded-l-lg">
+
+              <div class="flex items-center gap-3">
+
+                <div class="avatar-cuidador">
+                  <img *ngIf="caregiver.foto; else inicialesCuidador" [src]="caregiver.foto"
+                    [alt]="'Foto de ' + (caregiver.nombreCompleto || caregiver.nombre)" class="imagen-avatar">
+
+                  <ng-template #inicialesCuidador>
+                    <span>
+                      {{
+                      obtenerIniciales(
+                      caregiver.nombreCompleto || caregiver.nombre
+                      )
+                      }}
+                    </span>
+                  </ng-template>
+                </div>
+
+
+
+
+                <div class="flex flex-col">
+
+                  <strong class="text-[#212529]">
+
+                    {{
+                    caregiver.nombreCompleto ||
+                    (
+                    caregiver.nombre +
+                    ' ' +
+                    (caregiver.apellido || '')
+                    )
+                    }}
+
+                  </strong>
+
+                  <span class="text-xs text-[#6C757D]">
+                    {{ caregiver.correo }}
+                  </span>
+
+                </div>
 
               </div>
 
-            </div>
-
-          </td>
+            </td>
 
 
-          <!-- DOCUMENTO -->
-          <td class="px-5 py-4 text-sm text-[#495057]">
+            <!-- DOCUMENTO -->
+            <td class="px-5 py-4 text-sm text-[#495057]">
 
-            {{
-            (
-            caregiver.tipoDocumento
-            ? caregiver.tipoDocumento + ' - '
-            : ''
-            )
-            +
-            (
-            caregiver.numeroDocumento ||
-            caregiver.documento
-            )
-            }}
+              {{
+              (
+              caregiver.tipoDocumento
+              ? caregiver.tipoDocumento + ' - '
+              : ''
+              )
+              +
+              (
+              caregiver.numeroDocumento ||
+              caregiver.documento
+              )
+              }}
 
-          </td>
-
-
-          <!-- TURNO -->
-          <td class="px-5 py-4 text-sm text-[#495057]">
-
-            {{ caregiver.turno || 'Sin asignar' }}
-
-          </td>
+            </td>
 
 
-          <!-- PACIENTES -->
-          <td class="px-5 py-4 text-sm text-[#495057]">
+            <!-- TURNO -->
+            <td class="px-5 py-4 text-sm text-[#495057]">
 
-            {{ caregiver.pacientes ?? 0 }}
+              {{ caregiver.turno || 'Sin asignar' }}
 
-          </td>
-
-
-          <!-- ESTADO -->
-          <td class="px-5 py-4">
-
-            <span class="badge-estado" [class.estado-activo]="caregiver.estado === 'activo'"
-              [class.estado-inactivo]="caregiver.estado !== 'activo'">
-
-              <span class="punto-estado"></span>
-
-              {{ caregiver.estado === 'activo' ? 'Activo' : 'Inactivo' }}
-
-            </span>
-
-          </td>
+            </td>
 
 
-          <!-- ACCIONES -->
-          <td class="px-5 py-4 rounded-r-lg">
+            <!-- PACIENTES -->
+            <td class="px-5 py-4 text-sm text-[#495057]">
 
-            <div class="flex justify-center gap-2">
+              {{ caregiver.pacientes ?? 0 }}
 
-              <!-- VER -->
-              <button type="button" class="boton-icono" title="Ver cuidador" (click)="verDetalle(caregiver)">
-
-                <span class="material-symbols-outlined">
-                  visibility
-                </span>
-
-              </button>
+            </td>
 
 
-              <!-- EDITAR -->
-              <button type="button" class="boton-icono" title="Editar cuidador" (click)="confirmarEdicion(caregiver)">
+            <!-- ESTADO -->
+            <td class="px-5 py-4">
 
-                <span class="material-symbols-outlined">
-                  edit
-                </span>
+              <span class="badge-estado" [class.estado-activo]="caregiver.estado === 'activo'"
+                [class.estado-inactivo]="caregiver.estado !== 'activo'">
 
-              </button>
+                <span class="punto-estado"></span>
+
+                {{ caregiver.estado === 'activo' ? 'Activo' : 'Inactivo' }}
+
+              </span>
+
+            </td>
 
 
-              <!-- CAMBIAR ESTADO -->
-              <button type="button" class="boton-icono" [title]="
+            <!-- ACCIONES -->
+            <td class="px-5 py-4 rounded-r-lg">
+
+              <div class="flex justify-center gap-2">
+
+                <!-- VER -->
+                <button type="button" class="boton-icono" title="Ver cuidador" (click)="verDetalle(caregiver)">
+
+                  <span class="material-symbols-outlined">
+                    visibility
+                  </span>
+
+                </button>
+
+
+                <!-- EDITAR -->
+                <button type="button" class="boton-icono" title="Editar cuidador" (click)="confirmarEdicion(caregiver)">
+
+                  <span class="material-symbols-outlined">
+                    edit
+                  </span>
+
+                </button>
+
+
+                <!-- CAMBIAR ESTADO -->
+                <button type="button" class="boton-icono" [title]="
                   caregiver.estado === 'activo'
                     ? 'Desactivar cuidador'
                     : 'Activar cuidador'
                 " (click)="cambiarEstado(caregiver)">
 
-                <span class="material-symbols-outlined">
-                  toggle_on
-                </span>
-
-              </button>
-
-
-              <!-- ELIMINAR -->
-              <button type="button" class="boton-icono boton-eliminar" title="Eliminar cuidador"
-                (click)="solicitarEliminacion(caregiver)">
-
-                <span class="material-symbols-outlined">
-                  delete
-                </span>
-
-              </button>
-
-            </div>
-
-          </td>
-
-        </tr>
-
-      </tbody>
-
-    </table>
-    <!-- ===================================================== -->
-    <!-- PAGINACIÓN -->
-    <!-- ===================================================== -->
-
-    <div class="flex justify-center items-center gap-3 mt-6" *ngIf="totalPaginas > 1">
-
-      <!-- ANTERIOR -->
-
-      <button type="button" (click)="cambiarPagina(paginaActual - 1)" [disabled]="paginaActual === 1"
-        class="w-9 h-9 rounded-lg text-[#212529] disabled:opacity-40">
-        &lt;
-      </button>
-
-
-      <!-- NÚMEROS -->
-
-      <button type="button" *ngFor="let pagina of paginas" (click)="cambiarPagina(pagina)" [ngClass]="
-        paginaActual === pagina
-        ? 'bg-[#3B5BDB] text-white w-9 h-9 rounded-lg font-semibold'
-        : 'text-[#212529] w-9 h-9 rounded-lg hover:bg-[#F4F7FF]'
-      ">
-        {{ pagina }}
-      </button>
-
-
-      <!-- SIGUIENTE -->
-
-      <button type="button" (click)="cambiarPagina(paginaActual + 1)" [disabled]="paginaActual === totalPaginas"
-        class="w-9 h-9 rounded-lg text-[#212529] disabled:opacity-40">
-        &gt;
-      </button>
-    </div>
-
-
-    <!-- ===================================================== -->
-    <!-- MODAL CREAR / EDITAR CUIDADOR -->
-    <!-- ===================================================== -->
-
-    <div class="fondo-modal" [class.abierto]="formularioAbierto" (click)="cerrarFormularioPorOverlay($event)">
-
-      <div class="ventana-modal" (click)="$event.stopPropagation()">
-
-
-        <!-- ENCABEZADO -->
-        <div class="encabezado-modal">
-
-          <h3>
-
-            {{
-            modoFormulario === 'crear'
-            ? 'Nuevo Cuidador'
-            : 'Editar Cuidador'
-            }}
-
-          </h3>
-
-
-          <button class="boton-cerrar" type="button" (click)="cerrarFormulario()">
-
-            <span class="material-symbols-outlined">
-              close
-            </span>
-
-          </button>
-
-        </div>
-
-
-        <!-- FORMULARIO -->
-        <form class="cuerpo-modal" (ngSubmit)="guardarCuidador()">
-
-
-          <!-- ============================= -->
-          <!-- INFORMACIÓN PERSONAL -->
-          <!-- ============================= -->
-
-          <div class="seccion-formulario">
-            Información personal
-          </div>
-
-
-          <div class="rejilla-formulario">
-
-
-            <!-- NOMBRES -->
-            <div class="campo-formulario">
-
-              <label class="etiqueta-formulario">
-                Nombres <span class="asterisco">*</span>
-              </label>
-
-              <input type="text" class="campo-entrada" [(ngModel)]="formulario.nombre" name="nombre" required>
-
-            </div>
-
-            <!-- APELLIDOS -->
-            <div class="campo-formulario">
-
-              <label class="etiqueta-formulario">
-                Apellidos <span class="asterisco">*</span>
-              </label>
-              <input type="text" class="campo-entrada" [(ngModel)]="formulario.apellido" name="apellido" required>
-
-            </div>
-
-
-            <!-- TIPO DOCUMENTO -->
-            <div class="campo-formulario">
-
-              <label class="etiqueta-formulario">
-                Tipo de documento <span class="asterisco">*</span>
-              </label>
-
-              <select class="campo-entrada" [(ngModel)]="formulario.tipoDocumento" name="tipoDocumento" required>
-
-                <option value="">
-                  Seleccionar
-                </option>
-
-                <option value="CC">
-                  Cédula de ciudadanía
-                </option>
-
-                <option value="CE">
-                  Cédula de extranjería
-                </option>
-
-                <option value="TI">
-                  Tarjeta de identidad
-                </option>
-
-                <option value="PASAPORTE">
-                  Pasaporte
-                </option>
-
-                <option value="PEP">
-                  PEP
-                </option>
-
-              </select>
-
-            </div>
-
-
-            <!-- NÚMERO DOCUMENTO -->
-            <div class="campo-formulario">
-
-              <label class="etiqueta-formulario">
-                Número de documento <span class="asterisco">*</span>
-              </label>
-
-              <input type="text" class="campo-entrada" [(ngModel)]="formulario.numeroDocumento" name="numeroDocumento"
-                required>
-
-            </div>
-
-
-            <!-- TELÉFONO -->
-            <div class="campo-formulario">
-
-              <label class="etiqueta-formulario">
-                Teléfono <span class="asterisco">*</span>
-              </label>
-
-              <input type="tel" class="campo-entrada" [(ngModel)]="formulario.telefono" name="telefono">
-
-            </div>
-
-
-            <!-- CORREO -->
-            <div class="campo-formulario">
-
-              <label class="etiqueta-formulario">
-                Correo electrónico <span class="asterisco">*</span>
-              </label>
-
-              <input type="email" class="campo-entrada" [(ngModel)]="formulario.correo" name="correo">
-
-            </div>
-
-
-            <!-- FECHA NACIMIENTO -->
-            <div class="campo-formulario">
-
-              <label class="etiqueta-formulario">
-                Fecha de nacimiento <span class="asterisco">*</span>
-              </label>
-
-              <input type="date" class="campo-entrada" [(ngModel)]="formulario.fechaNacimiento" name="fechaNacimiento"
-                (change)="calcularEdad()">
-
-            </div>
-
-
-            <!-- EDAD -->
-            <div class="campo-formulario">
-
-              <label class="etiqueta-formulario">
-                Edad
-              </label>
-
-              <input type="number" class="campo-entrada" [(ngModel)]="formulario.edad" name="edad" readonly>
-
-            </div>
-
-
-            <!-- FOTO DE PERFIL -->
-            <div class="campo-formulario campo-foto-perfil">
-
-              <label class="etiqueta-formulario">
-                Foto de perfil
-              </label>
-
-              <input #inputFoto type="file" accept="image/*" hidden (change)="seleccionarFoto($event)">
-
-              <div class="control-foto-perfil">
-
-                <span class="nombre-archivo-foto" [title]="nombreFoto || 'Ninguna foto seleccionada'">
-                  {{ nombreFoto || 'Ninguna foto seleccionada' }}
-                </span>
-
-                <button type="button" class="boton-foto-perfil" (click)="inputFoto.click()">
-
                   <span class="material-symbols-outlined">
-                    image
-                  </span>
-
-                  <span>
-                    {{ fotoPreview ? 'Cambiar foto' : 'Elegir foto' }}
+                    toggle_on
                   </span>
 
                 </button>
 
-                <!-- ELIMINAR FOTO -->
-                <button *ngIf="fotoPreview" type="button" class="boton-eliminar-foto" title="Eliminar foto de perfil"
-                  aria-label="Eliminar foto de perfil" (click)="confirmarEliminarFoto()">
+
+                <!-- ELIMINAR -->
+                <button type="button" class="boton-icono boton-eliminar" title="Eliminar cuidador"
+                  (click)="solicitarEliminacion(caregiver)">
 
                   <span class="material-symbols-outlined">
                     delete
@@ -521,719 +312,969 @@
 
               </div>
 
-              <div *ngIf="fotoPreview" class="vista-previa-foto">
-                <img [src]="fotoPreview" alt="Foto de perfil del cuidador">
-              </div>
+            </td>
 
-            </div>
+          </tr>
 
-          </div>
+        </tbody>
 
-          <!-- ============================= -->
-          <!-- INFORMACIÓN PROFESIONAL -->
-          <!-- ============================= -->
+      </table>
+    </div>
+  </div>
+  <!-- ===================================================== -->
+  <!-- PAGINACIÓN -->
+  <!-- ===================================================== -->
 
-          <div class="seccion-formulario">
-            Información profesional
-          </div>
+  <div class="flex justify-center items-center gap-3 mt-6" *ngIf="totalPaginas > 1">
 
+    <!-- ANTERIOR -->
 
-          <div class="rejilla-formulario">
+    <button type="button" (click)="cambiarPagina(paginaActual - 1)" [disabled]="paginaActual === 1"
+      class="w-9 h-9 rounded-lg text-[#212529] disabled:opacity-40">
+      &lt;
+    </button>
 
 
-            <!-- ESPECIALIDAD -->
-            <div class="campo-formulario">
+    <!-- NÚMEROS -->
 
-              <label class="etiqueta-formulario">
-                Especialidad / Rol
-              </label>
+    <button type="button" *ngFor="let pagina of paginas" (click)="cambiarPagina(pagina)" [ngClass]="
+        paginaActual === pagina
+        ? 'bg-[#3B5BDB] text-white w-9 h-9 rounded-lg font-semibold'
+        : 'text-[#212529] w-9 h-9 rounded-lg hover:bg-[#F4F7FF]'
+      ">
+      {{ pagina }}
+    </button>
 
-              <input type="text" class="campo-entrada" [(ngModel)]="formulario.especialidad" name="especialidad">
 
-            </div>
+    <!-- SIGUIENTE -->
 
+    <button type="button" (click)="cambiarPagina(paginaActual + 1)" [disabled]="paginaActual === totalPaginas"
+      class="w-9 h-9 rounded-lg text-[#212529] disabled:opacity-40">
+      &gt;
+    </button>
+  </div>
 
-            <!-- LICENCIA -->
-            <div class="campo-formulario">
 
-              <label class="etiqueta-formulario">
-                Licencia / tarjeta profesional
-              </label>
+  <!-- ===================================================== -->
+  <!-- MODAL CREAR / EDITAR CUIDADOR -->
+  <!-- ===================================================== -->
 
-              <input type="text" class="campo-entrada" [(ngModel)]="formulario.licencia" name="licencia">
+  <div class="fondo-modal" [class.abierto]="formularioAbierto" (click)="cerrarFormularioPorOverlay($event)">
 
-            </div>
+    <div class="ventana-modal" (click)="$event.stopPropagation()">
 
 
-            <!-- EXPERIENCIA -->
-            <div class="campo-formulario">
+      <!-- ENCABEZADO -->
+      <div class="encabezado-modal">
 
-              <label class="etiqueta-formulario">
-                Experiencia <span class="asterisco">*</span>
-              </label>
+        <h3>
 
-              <input type="number" class="campo-entrada" [(ngModel)]="formulario.experiencia" name="experiencia"
-                min="0">
+          {{
+          modoFormulario === 'crear'
+          ? 'Nuevo Cuidador'
+          : 'Editar Cuidador'
+          }}
 
-            </div>
+        </h3>
 
 
-            <!-- INSTITUCIÓN -->
-            <div class="campo-formulario">
+        <button class="boton-cerrar" type="button" (click)="cerrarFormulario()">
 
-              <label class="etiqueta-formulario">
-                Institución <span class="asterisco">*</span>
-              </label>
+          <span class="material-symbols-outlined">
+            close
+          </span>
 
-              <input type="text" class="campo-entrada" [(ngModel)]="formulario.institucion" name="institucion">
-
-            </div>
-
-          </div>
-
-
-          <!-- ============================= -->
-          <!-- INFORMACIÓN LABORAL -->
-          <!-- ============================= -->
-
-          <div class="seccion-formulario">
-            Información laboral
-          </div>
-
-
-          <div class="rejilla-formulario">
-
-
-            <!-- ESTADO -->
-            <div class="campo-formulario">
-
-              <label class="etiqueta-formulario">
-                Estado
-              </label>
-
-              <select class="campo-entrada" [(ngModel)]="formulario.estado" name="estado">
-
-                <option value="activo">
-                  Activo
-                </option>
-
-                <option value="inactivo">
-                  Inactivo
-                </option>
-
-              </select>
-
-            </div>
-
-
-            <!-- FECHA INGRESO -->
-            <div class="campo-formulario">
-
-              <label class="etiqueta-formulario">
-                Fecha de ingreso <span class="asterisco">*</span>
-              </label>
-
-              <input type="date" class="campo-entrada" [(ngModel)]="formulario.fechaIngreso" name="fechaIngreso">
-
-            </div>
-
-          </div>
-
-
-          <!-- ============================= -->
-          <!-- DOCUMENTOS -->
-          <!-- ============================= -->
-
-          <div class="seccion-formulario">
-            Documentos
-          </div>
-
-
-          <div class="grid-documentos">
-
-
-            <!-- CÉDULA -->
-            <label class="tarjeta-documento">
-              <span class="material-symbols-outlined">badge</span>
-              <span class="nombre-documento">Cédula</span>
-
-              <ng-container *ngIf="formulario.cedulaFile; else documentoCedulaGuardado">
-                <span class="estado-documento con-archivo">
-                  {{ formulario.cedulaFile.name }}
-                </span>
-              </ng-container>
-
-              <ng-template #documentoCedulaGuardado>
-                <a *ngIf="formulario.archivos?.cedula" class="estado-documento con-archivo"
-                  [href]="descargarDocumento(formulario.archivos.cedula)" (click)="$event.stopPropagation()">
-                  {{ formulario.archivos?.cedula?.split('/').pop() }}
-                </a>
-
-                <span *ngIf="!formulario.archivos?.cedula" class="estado-documento">
-                  Seleccionar archivo
-                </span>
-              </ng-template>
-
-              <span class="boton-examinar">
-                <span class="material-symbols-outlined">upload</span>
-                Examinar
-              </span>
-
-              <input type="file" hidden accept="*/*" (change)="onFileSelected($event, 'cedula')"> </label>
-
-            <!-- TARJETA PROFESIONAL -->
-            <label class="tarjeta-documento">
-              <span class="material-symbols-outlined">card_membership</span>
-              <span class="nombre-documento">Tarjeta profesional</span>
-
-              <ng-container *ngIf="formulario.tarjetaProfesionalFile; else tarjetaGuardada">
-                <span class="estado-documento con-archivo">
-                  {{ formulario.tarjetaProfesionalFile.name }}
-                </span>
-              </ng-container>
-
-              <ng-template #tarjetaGuardada>
-                <a *ngIf="formulario.archivos?.tarjeta_profesional" class="estado-documento con-archivo"
-                  [href]="descargarDocumento(formulario.archivos.tarjeta_profesional)"
-                  (click)="$event.stopPropagation()">
-                  {{ formulario.archivos.tarjeta_profesional.split('/').pop() }}
-                </a>
-
-                <span *ngIf="!formulario.archivos?.tarjeta_profesional" class="estado-documento">
-                  Seleccionar archivo
-                </span>
-              </ng-template>
-
-              <span class="boton-examinar">
-                <span class="material-symbols-outlined">upload</span>
-                Examinar
-              </span>
-
-              <input type="file" hidden accept="*/*" (change)="onFileSelected($event, 'tarjetaProfesional')"> </label>
-
-            <!-- ANTECEDENTES -->
-            <label class="tarjeta-documento">
-              <span class="material-symbols-outlined">verified_user</span>
-              <span class="nombre-documento">Antecedentes</span>
-
-              <ng-container *ngIf="formulario.antecedentesFile; else antecedentesGuardados">
-                <span class="estado-documento con-archivo">
-                  {{ formulario.antecedentesFile.name }}
-                </span>
-              </ng-container>
-
-              <ng-template #antecedentesGuardados>
-                <a *ngIf="formulario.archivos?.antecedentes" class="estado-documento con-archivo"
-                  [href]="descargarDocumento(formulario.archivos.antecedentes)" (click)="$event.stopPropagation()">
-                  {{ formulario.archivos.antecedentes.split('/').pop() }}
-                </a>
-
-                <span *ngIf="!formulario.archivos?.antecedentes" class="estado-documento">
-                  Seleccionar archivo
-                </span>
-              </ng-template>
-
-              <span class="boton-examinar">
-                <span class="material-symbols-outlined">upload</span>
-                Examinar
-              </span>
-
-              <input type="file" hidden accept="*/*" (change)="onFileSelected($event, 'antecedentes')">
-            </label>
-
-            <!-- HOJA DE VIDA -->
-            <label class="tarjeta-documento">
-              <span class="material-symbols-outlined">description</span>
-              <span class="nombre-documento">Hoja de vida</span>
-
-              <ng-container *ngIf="formulario.hojaDeVidaFile; else hojaVidaGuardada">
-                <span class="estado-documento con-archivo">
-                  {{ formulario.hojaDeVidaFile.name }}
-                </span>
-              </ng-container>
-
-              <ng-template #hojaVidaGuardada>
-                <a *ngIf="formulario.archivos?.hoja_de_vida" class="estado-documento con-archivo"
-                  [href]="descargarDocumento(formulario.archivos.hoja_de_vida)" (click)="$event.stopPropagation()">
-                  {{ formulario.archivos.hoja_de_vida.split('/').pop() }}
-                </a>
-
-                <span *ngIf="!formulario.archivos?.hoja_de_vida" class="estado-documento">
-                  Seleccionar archivo
-                </span>
-              </ng-template>
-
-              <span class="boton-examinar">
-                <span class="material-symbols-outlined">upload</span>
-                Examinar
-              </span>
-
-              <input type="file" hidden accept="*/*" (change)="onFileSelected($event, 'antecedentes')"> </label>
-
-          </div>
-
-
-          <!-- ============================= -->
-          <!-- PIE DEL MODAL -->
-          <!-- ============================= -->
-
-          <div class="pie-modal">
-
-            <button type="button" class="boton-cancelar" (click)="cancelarFormulario()">
-
-              Cancelar
-
-            </button>
-
-
-            <button type="submit" class="boton-guardar" [disabled]="guardando">
-
-              {{
-              guardando
-              ? 'Guardando...'
-              : 'Guardar cuidador'
-              }}
-
-            </button>
-
-          </div>
-
-        </form>
+        </button>
 
       </div>
 
-    </div>
+
+      <!-- FORMULARIO -->
+      <form class="cuerpo-modal" (ngSubmit)="guardarCuidador()">
 
 
-    <!-- ===================================================== -->
-    <!-- MODAL DETALLE -->
-    <!-- ===================================================== -->
+        <!-- ============================= -->
+        <!-- INFORMACIÓN PERSONAL -->
+        <!-- ============================= -->
 
-    <div class="fondo-modal" [class.abierto]="detalleAbierto" (click)="cerrarDetallePorOverlay($event)">
+        <div class="seccion-formulario">
+          Información personal
+        </div>
 
-      <div *ngIf="cuidadorSeleccionado" class="ventana-modal" (click)="$event.stopPropagation()">
 
-        <!-- ENCABEZADO -->
-        <div class="encabezado-modal">
+        <div class="rejilla-formulario">
 
-          <h3>
-            Información del Cuidador
-          </h3>
 
-          <button class="boton-cerrar" type="button" (click)="cerrarDetalle()">
-            <span class="material-symbols-outlined">
-              close
-            </span>
-          </button>
+          <!-- NOMBRES -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Nombres <span class="asterisco">*</span>
+            </label>
+
+            <input type="text" class="campo-entrada" [(ngModel)]="formulario.nombre" name="nombre" required>
+
+          </div>
+
+          <!-- APELLIDOS -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Apellidos <span class="asterisco">*</span>
+            </label>
+            <input type="text" class="campo-entrada" [(ngModel)]="formulario.apellido" name="apellido" required>
+
+          </div>
+
+
+          <!-- TIPO DOCUMENTO -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Tipo de documento <span class="asterisco">*</span>
+            </label>
+
+            <select class="campo-entrada" [(ngModel)]="formulario.tipoDocumento" name="tipoDocumento" required>
+
+              <option value="">
+                Seleccionar
+              </option>
+
+              <option value="CC">
+                Cédula de ciudadanía
+              </option>
+
+              <option value="CE">
+                Cédula de extranjería
+              </option>
+
+              <option value="TI">
+                Tarjeta de identidad
+              </option>
+
+              <option value="PASAPORTE">
+                Pasaporte
+              </option>
+
+              <option value="PEP">
+                PEP
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- NÚMERO DOCUMENTO -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Número de documento <span class="asterisco">*</span>
+            </label>
+
+            <input type="text" class="campo-entrada" [(ngModel)]="formulario.numeroDocumento" name="numeroDocumento"
+              required>
+
+          </div>
+
+
+          <!-- TELÉFONO -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Teléfono <span class="asterisco">*</span>
+            </label>
+
+            <input type="tel" class="campo-entrada" [(ngModel)]="formulario.telefono" name="telefono">
+
+          </div>
+
+
+          <!-- CORREO -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Correo electrónico <span class="asterisco">*</span>
+            </label>
+
+            <input type="email" class="campo-entrada" [(ngModel)]="formulario.correo" name="correo">
+
+          </div>
+
+
+          <!-- FECHA NACIMIENTO -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Fecha de nacimiento <span class="asterisco">*</span>
+            </label>
+
+            <input type="date" class="campo-entrada" [(ngModel)]="formulario.fechaNacimiento" name="fechaNacimiento"
+              (change)="calcularEdad()">
+
+          </div>
+
+
+          <!-- EDAD -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Edad
+            </label>
+
+            <input type="number" class="campo-entrada" [(ngModel)]="formulario.edad" name="edad" readonly>
+
+          </div>
+
+
+          <!-- FOTO DE PERFIL -->
+          <div class="campo-formulario campo-foto-perfil">
+
+            <label class="etiqueta-formulario">
+              Foto de perfil
+            </label>
+
+            <input #inputFoto type="file" accept="image/*" hidden (change)="seleccionarFoto($event)">
+
+            <div class="control-foto-perfil">
+
+              <span class="nombre-archivo-foto" [title]="nombreFoto || 'Ninguna foto seleccionada'">
+                {{ nombreFoto || 'Ninguna foto seleccionada' }}
+              </span>
+
+              <button type="button" class="boton-foto-perfil" (click)="inputFoto.click()">
+
+                <span class="material-symbols-outlined">
+                  image
+                </span>
+
+                <span>
+                  {{ fotoPreview ? 'Cambiar foto' : 'Elegir foto' }}
+                </span>
+
+              </button>
+
+              <!-- ELIMINAR FOTO -->
+              <button *ngIf="fotoPreview" type="button" class="boton-eliminar-foto" title="Eliminar foto de perfil"
+                aria-label="Eliminar foto de perfil" (click)="confirmarEliminarFoto()">
+
+                <span class="material-symbols-outlined">
+                  delete
+                </span>
+
+              </button>
+
+            </div>
+
+            <div *ngIf="fotoPreview" class="vista-previa-foto">
+              <img [src]="fotoPreview" alt="Foto de perfil del cuidador">
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ============================= -->
+        <!-- INFORMACIÓN PROFESIONAL -->
+        <!-- ============================= -->
+
+        <div class="seccion-formulario">
+          Información profesional
+        </div>
+
+
+        <div class="rejilla-formulario">
+
+
+          <!-- ESPECIALIDAD -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Especialidad / Rol
+            </label>
+
+            <input type="text" class="campo-entrada" [(ngModel)]="formulario.especialidad" name="especialidad">
+
+          </div>
+
+
+          <!-- LICENCIA -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Licencia / tarjeta profesional
+            </label>
+
+            <input type="text" class="campo-entrada" [(ngModel)]="formulario.licencia" name="licencia">
+
+          </div>
+
+
+          <!-- EXPERIENCIA -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Experiencia <span class="asterisco">*</span>
+            </label>
+
+            <input type="number" class="campo-entrada" [(ngModel)]="formulario.experiencia" name="experiencia" min="0">
+
+          </div>
+
+
+          <!-- INSTITUCIÓN -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Institución <span class="asterisco">*</span>
+            </label>
+
+            <input type="text" class="campo-entrada" [(ngModel)]="formulario.institucion" name="institucion">
+
+          </div>
 
         </div>
 
 
-        <!-- CUERPO -->
-        <div class="cuerpo-modal">
+        <!-- ============================= -->
+        <!-- INFORMACIÓN LABORAL -->
+        <!-- ============================= -->
+
+        <div class="seccion-formulario">
+          Información laboral
+        </div>
 
 
-          <!-- PERFIL -->
-          <div class="flex items-center gap-4 mb-6">
+        <div class="rejilla-formulario">
 
-            <div class="avatar-detalle">
-              <img *ngIf="cuidadorSeleccionado.foto; else inicialesDetalleCuidador" [src]="cuidadorSeleccionado.foto"
-                [alt]="'Foto de ' + cuidadorSeleccionado.nombre" class="imagen-avatar-detalle">
 
-              <ng-template #inicialesDetalleCuidador>
-                <span>
-                  {{
-                  obtenerIniciales(
-                  cuidadorSeleccionado.nombreCompleto ||
-                  cuidadorSeleccionado.nombre
-                  )
-                  }}
-                </span>
-              </ng-template>
-            </div>
+          <!-- ESTADO -->
+          <div class="campo-formulario">
 
-            <div>
+            <label class="etiqueta-formulario">
+              Estado
+            </label>
 
-              <h2 class="text-xl font-bold text-[#212529]">
+            <select class="campo-entrada" [(ngModel)]="formulario.estado" name="estado">
 
+              <option value="activo">
+                Activo
+              </option>
+
+              <option value="inactivo">
+                Inactivo
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- FECHA INGRESO -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Fecha de ingreso <span class="asterisco">*</span>
+            </label>
+
+            <input type="date" class="campo-entrada" [(ngModel)]="formulario.fechaIngreso" name="fechaIngreso">
+
+          </div>
+
+        </div>
+
+
+        <!-- ============================= -->
+        <!-- DOCUMENTOS -->
+        <!-- ============================= -->
+
+        <div class="seccion-formulario">
+          Documentos
+        </div>
+
+
+        <div class="grid-documentos">
+
+
+          <!-- CÉDULA -->
+          <label class="tarjeta-documento">
+            <span class="material-symbols-outlined">badge</span>
+            <span class="nombre-documento">Cédula</span>
+
+            <ng-container *ngIf="formulario.cedulaFile; else documentoCedulaGuardado">
+              <span class="estado-documento con-archivo">
+                {{ formulario.cedulaFile.name }}
+              </span>
+            </ng-container>
+
+            <ng-template #documentoCedulaGuardado>
+              <a *ngIf="formulario.archivos?.cedula" class="estado-documento con-archivo"
+                [href]="descargarDocumento(formulario.archivos.cedula)" (click)="$event.stopPropagation()">
+                {{ formulario.archivos?.cedula?.split('/').pop() }}
+              </a>
+
+              <span *ngIf="!formulario.archivos?.cedula" class="estado-documento">
+                Seleccionar archivo
+              </span>
+            </ng-template>
+
+            <span class="boton-examinar">
+              <span class="material-symbols-outlined">upload</span>
+              Examinar
+            </span>
+
+            <input type="file" hidden accept="*/*" (change)="onFileSelected($event, 'cedula')"> </label>
+
+          <!-- TARJETA PROFESIONAL -->
+          <label class="tarjeta-documento">
+            <span class="material-symbols-outlined">card_membership</span>
+            <span class="nombre-documento">Tarjeta profesional</span>
+
+            <ng-container *ngIf="formulario.tarjetaProfesionalFile; else tarjetaGuardada">
+              <span class="estado-documento con-archivo">
+                {{ formulario.tarjetaProfesionalFile.name }}
+              </span>
+            </ng-container>
+
+            <ng-template #tarjetaGuardada>
+              <a *ngIf="formulario.archivos?.tarjeta_profesional" class="estado-documento con-archivo"
+                [href]="descargarDocumento(formulario.archivos.tarjeta_profesional)" (click)="$event.stopPropagation()">
+                {{ formulario.archivos.tarjeta_profesional.split('/').pop() }}
+              </a>
+
+              <span *ngIf="!formulario.archivos?.tarjeta_profesional" class="estado-documento">
+                Seleccionar archivo
+              </span>
+            </ng-template>
+
+            <span class="boton-examinar">
+              <span class="material-symbols-outlined">upload</span>
+              Examinar
+            </span>
+
+            <input type="file" hidden accept="*/*" (change)="onFileSelected($event, 'tarjetaProfesional')"> </label>
+
+          <!-- ANTECEDENTES -->
+          <label class="tarjeta-documento">
+            <span class="material-symbols-outlined">verified_user</span>
+            <span class="nombre-documento">Antecedentes</span>
+
+            <ng-container *ngIf="formulario.antecedentesFile; else antecedentesGuardados">
+              <span class="estado-documento con-archivo">
+                {{ formulario.antecedentesFile.name }}
+              </span>
+            </ng-container>
+
+            <ng-template #antecedentesGuardados>
+              <a *ngIf="formulario.archivos?.antecedentes" class="estado-documento con-archivo"
+                [href]="descargarDocumento(formulario.archivos.antecedentes)" (click)="$event.stopPropagation()">
+                {{ formulario.archivos.antecedentes.split('/').pop() }}
+              </a>
+
+              <span *ngIf="!formulario.archivos?.antecedentes" class="estado-documento">
+                Seleccionar archivo
+              </span>
+            </ng-template>
+
+            <span class="boton-examinar">
+              <span class="material-symbols-outlined">upload</span>
+              Examinar
+            </span>
+
+            <input type="file" hidden accept="*/*" (change)="onFileSelected($event, 'antecedentes')">
+          </label>
+
+          <!-- HOJA DE VIDA -->
+          <label class="tarjeta-documento">
+            <span class="material-symbols-outlined">description</span>
+            <span class="nombre-documento">Hoja de vida</span>
+
+            <ng-container *ngIf="formulario.hojaDeVidaFile; else hojaVidaGuardada">
+              <span class="estado-documento con-archivo">
+                {{ formulario.hojaDeVidaFile.name }}
+              </span>
+            </ng-container>
+
+            <ng-template #hojaVidaGuardada>
+              <a *ngIf="formulario.archivos?.hoja_de_vida" class="estado-documento con-archivo"
+                [href]="descargarDocumento(formulario.archivos.hoja_de_vida)" (click)="$event.stopPropagation()">
+                {{ formulario.archivos.hoja_de_vida.split('/').pop() }}
+              </a>
+
+              <span *ngIf="!formulario.archivos?.hoja_de_vida" class="estado-documento">
+                Seleccionar archivo
+              </span>
+            </ng-template>
+
+            <span class="boton-examinar">
+              <span class="material-symbols-outlined">upload</span>
+              Examinar
+            </span>
+
+            <input type="file" hidden accept="*/*" (change)="onFileSelected($event, 'antecedentes')"> </label>
+
+        </div>
+
+
+        <!-- ============================= -->
+        <!-- PIE DEL MODAL -->
+        <!-- ============================= -->
+
+        <div class="pie-modal">
+
+          <button type="button" class="boton-cancelar" (click)="cancelarFormulario()">
+
+            Cancelar
+
+          </button>
+
+
+          <button type="submit" class="boton-guardar" [disabled]="guardando">
+
+            {{
+            guardando
+            ? 'Guardando...'
+            : 'Guardar cuidador'
+            }}
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- MODAL DETALLE -->
+  <!-- ===================================================== -->
+
+  <div class="fondo-modal" [class.abierto]="detalleAbierto" (click)="cerrarDetallePorOverlay($event)">
+
+    <div *ngIf="cuidadorSeleccionado" class="ventana-modal" (click)="$event.stopPropagation()">
+
+      <!-- ENCABEZADO -->
+      <div class="encabezado-modal">
+
+        <h3>
+          Información del Cuidador
+        </h3>
+
+        <button class="boton-cerrar" type="button" (click)="cerrarDetalle()">
+          <span class="material-symbols-outlined">
+            close
+          </span>
+        </button>
+
+      </div>
+
+
+      <!-- CUERPO -->
+      <div class="cuerpo-modal">
+
+
+        <!-- PERFIL -->
+        <div class="flex items-center gap-4 mb-6">
+
+          <div class="avatar-detalle">
+            <img *ngIf="cuidadorSeleccionado.foto; else inicialesDetalleCuidador" [src]="cuidadorSeleccionado.foto"
+              [alt]="'Foto de ' + cuidadorSeleccionado.nombre" class="imagen-avatar-detalle">
+
+            <ng-template #inicialesDetalleCuidador>
+              <span>
                 {{
+                obtenerIniciales(
                 cuidadorSeleccionado.nombreCompleto ||
-                (
-                cuidadorSeleccionado.nombre +
-                ' ' +
-                (cuidadorSeleccionado.apellido || '')
+                cuidadorSeleccionado.nombre
                 )
                 }}
+              </span>
+            </ng-template>
+          </div>
 
-              </h2>
+          <div>
 
-              <p class="text-[#6C757D]">
-                {{ cuidadorSeleccionado.correo }}
-              </p>
+            <h2 class="text-xl font-bold text-[#212529]">
 
-            </div>
+              {{
+              cuidadorSeleccionado.nombreCompleto ||
+              (
+              cuidadorSeleccionado.nombre +
+              ' ' +
+              (cuidadorSeleccionado.apellido || '')
+              )
+              }}
+
+            </h2>
+
+            <p class="text-[#6C757D]">
+              {{ cuidadorSeleccionado.correo }}
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- ============================= -->
+        <!-- INFORMACIÓN PERSONAL -->
+        <!-- ============================= -->
+
+        <div class="seccion-formulario">
+          Información personal
+        </div>
+
+
+        <div class="rejilla-formulario">
+
+
+          <!-- NOMBRES -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Nombres
+            </label>
+
+            <input class="campo-entrada" [value]="cuidadorSeleccionado.nombre || ''" readonly>
 
           </div>
 
 
-          <!-- ============================= -->
-          <!-- INFORMACIÓN PERSONAL -->
-          <!-- ============================= -->
+          <!-- APELLIDOS -->
+          <div class="campo-formulario">
 
-          <div class="seccion-formulario">
-            Información personal
+            <label class="etiqueta-formulario">
+              Apellidos
+            </label>
+
+            <input class="campo-entrada" [value]="cuidadorSeleccionado.apellido || ''" readonly>
+
           </div>
 
 
-          <div class="rejilla-formulario">
+          <!-- TIPO DOCUMENTO -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Tipo de documento
+            </label>
+
+            <input class="campo-entrada" [value]="cuidadorSeleccionado.tipoDocumento || ''" readonly>
+
+          </div>
 
 
-            <!-- NOMBRES -->
-            <div class="campo-formulario">
+          <!-- NÚMERO DOCUMENTO -->
+          <div class="campo-formulario">
 
-              <label class="etiqueta-formulario">
-                Nombres
-              </label>
+            <label class="etiqueta-formulario">
+              Número de documento
+            </label>
 
-              <input class="campo-entrada" [value]="cuidadorSeleccionado.nombre || ''" readonly>
-
-            </div>
-
-
-            <!-- APELLIDOS -->
-            <div class="campo-formulario">
-
-              <label class="etiqueta-formulario">
-                Apellidos
-              </label>
-
-              <input class="campo-entrada" [value]="cuidadorSeleccionado.apellido || ''" readonly>
-
-            </div>
-
-
-            <!-- TIPO DOCUMENTO -->
-            <div class="campo-formulario">
-
-              <label class="etiqueta-formulario">
-                Tipo de documento
-              </label>
-
-              <input class="campo-entrada" [value]="cuidadorSeleccionado.tipoDocumento || ''" readonly>
-
-            </div>
-
-
-            <!-- NÚMERO DOCUMENTO -->
-            <div class="campo-formulario">
-
-              <label class="etiqueta-formulario">
-                Número de documento
-              </label>
-
-              <input class="campo-entrada" [value]="
+            <input class="campo-entrada" [value]="
               cuidadorSeleccionado.numeroDocumento ||
               cuidadorSeleccionado.documento ||
               ''
             " readonly>
 
-            </div>
+          </div>
 
 
-            <!-- TELÉFONO -->
-            <div class="campo-formulario">
+          <!-- TELÉFONO -->
+          <div class="campo-formulario">
 
-              <label class="etiqueta-formulario">
-                Teléfono
-              </label>
+            <label class="etiqueta-formulario">
+              Teléfono
+            </label>
 
-              <input class="campo-entrada" [value]="cuidadorSeleccionado.telefono || ''" readonly>
-
-            </div>
-
-
-            <!-- CORREO -->
-            <div class="campo-formulario">
-
-              <label class="etiqueta-formulario">
-                Correo electrónico
-              </label>
-
-              <input class="campo-entrada" [value]="cuidadorSeleccionado.correo || ''" readonly>
-
-            </div>
-
-
-            <!-- FECHA NACIMIENTO -->
-            <div class="campo-formulario">
-
-              <label class="etiqueta-formulario">
-                Fecha de nacimiento
-              </label>
-
-              <input type="date" class="campo-entrada" [value]="cuidadorSeleccionado.fechaNacimiento || ''" readonly>
-
-            </div>
-
-
-            <!-- EDAD -->
-            <div class="campo-formulario">
-
-              <label class="etiqueta-formulario">
-                Edad
-              </label>
-
-              <input type="number" class="campo-entrada" [value]="cuidadorSeleccionado.edad ?? ''" readonly>
-
-            </div>
+            <input class="campo-entrada" [value]="cuidadorSeleccionado.telefono || ''" readonly>
 
           </div>
 
 
-          <!-- ============================= -->
-          <!-- INFORMACIÓN PROFESIONAL -->
-          <!-- ============================= -->
+          <!-- CORREO -->
+          <div class="campo-formulario">
 
-          <div class="seccion-formulario">
-            Información profesional
-          </div>
+            <label class="etiqueta-formulario">
+              Correo electrónico
+            </label>
 
-
-          <div class="rejilla-formulario">
-
-
-            <!-- ESPECIALIDAD -->
-            <div class="campo-formulario">
-
-              <label class="etiqueta-formulario">
-                Especialidad / Rol
-              </label>
-
-              <input class="campo-entrada" [value]="cuidadorSeleccionado.especialidad || ''" readonly>
-
-            </div>
-
-
-            <!-- LICENCIA -->
-            <div class="campo-formulario">
-
-              <label class="etiqueta-formulario">
-                Licencia / tarjeta profesional
-              </label>
-
-              <input class="campo-entrada" [value]="cuidadorSeleccionado.licencia || ''" readonly>
-
-            </div>
-
-
-            <!-- EXPERIENCIA -->
-            <div class="campo-formulario">
-
-              <label class="etiqueta-formulario">
-                Experiencia
-              </label>
-
-              <input type="number" class="campo-entrada" [value]="cuidadorSeleccionado.experiencia ?? ''" readonly>
-
-            </div>
-
-
-            <!-- INSTITUCIÓN -->
-            <div class="campo-formulario">
-
-              <label class="etiqueta-formulario">
-                Institución
-              </label>
-
-              <input class="campo-entrada" [value]="cuidadorSeleccionado.institucion || ''" readonly>
-
-            </div>
+            <input class="campo-entrada" [value]="cuidadorSeleccionado.correo || ''" readonly>
 
           </div>
 
 
-          <!-- ============================= -->
-          <!-- INFORMACIÓN LABORAL -->
-          <!-- ============================= -->
+          <!-- FECHA NACIMIENTO -->
+          <div class="campo-formulario">
 
-          <div class="seccion-formulario">
-            Información laboral
+            <label class="etiqueta-formulario">
+              Fecha de nacimiento
+            </label>
+
+            <input type="date" class="campo-entrada" [value]="cuidadorSeleccionado.fechaNacimiento || ''" readonly>
+
           </div>
 
 
-          <div class="rejilla-formulario">
+          <!-- EDAD -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Edad
+            </label>
+
+            <input type="number" class="campo-entrada" [value]="cuidadorSeleccionado.edad ?? ''" readonly>
+
+          </div>
+
+        </div>
 
 
-            <!-- TURNO -->
-            <div class="campo-formulario">
+        <!-- ============================= -->
+        <!-- INFORMACIÓN PROFESIONAL -->
+        <!-- ============================= -->
 
-              <label class="etiqueta-formulario">
-                Turno
-              </label>
-
-              <input class="campo-entrada" [value]="cuidadorSeleccionado.turno || 'Sin asignar'" readonly>
-
-            </div>
+        <div class="seccion-formulario">
+          Información profesional
+        </div>
 
 
-            <!-- PACIENTES -->
-            <div class="campo-formulario">
-
-              <label class="etiqueta-formulario">
-                Pacientes asignados
-              </label>
-
-              <input type="number" class="campo-entrada" [value]="cuidadorSeleccionado.pacientes ?? 0" readonly>
-
-            </div>
+        <div class="rejilla-formulario">
 
 
-            <!-- ESTADO -->
-            <div class="campo-formulario">
+          <!-- ESPECIALIDAD -->
+          <div class="campo-formulario">
 
-              <label class="etiqueta-formulario">
-                Estado
-              </label>
+            <label class="etiqueta-formulario">
+              Especialidad / Rol
+            </label>
 
-              <input class="campo-entrada" [value]="
+            <input class="campo-entrada" [value]="cuidadorSeleccionado.especialidad || ''" readonly>
+
+          </div>
+
+
+          <!-- LICENCIA -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Licencia / tarjeta profesional
+            </label>
+
+            <input class="campo-entrada" [value]="cuidadorSeleccionado.licencia || ''" readonly>
+
+          </div>
+
+
+          <!-- EXPERIENCIA -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Experiencia
+            </label>
+
+            <input type="number" class="campo-entrada" [value]="cuidadorSeleccionado.experiencia ?? ''" readonly>
+
+          </div>
+
+
+          <!-- INSTITUCIÓN -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Institución
+            </label>
+
+            <input class="campo-entrada" [value]="cuidadorSeleccionado.institucion || ''" readonly>
+
+          </div>
+
+        </div>
+
+
+        <!-- ============================= -->
+        <!-- INFORMACIÓN LABORAL -->
+        <!-- ============================= -->
+
+        <div class="seccion-formulario">
+          Información laboral
+        </div>
+
+
+        <div class="rejilla-formulario">
+
+
+          <!-- TURNO -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Turno
+            </label>
+
+            <input class="campo-entrada" [value]="cuidadorSeleccionado.turno || 'Sin asignar'" readonly>
+
+          </div>
+
+
+          <!-- PACIENTES -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Pacientes asignados
+            </label>
+
+            <input type="number" class="campo-entrada" [value]="cuidadorSeleccionado.pacientes ?? 0" readonly>
+
+          </div>
+
+
+          <!-- ESTADO -->
+          <div class="campo-formulario">
+
+            <label class="etiqueta-formulario">
+              Estado
+            </label>
+
+            <input class="campo-entrada" [value]="
               cuidadorSeleccionado.estado === 'activo'
                 ? 'Activo'
                 : 'Inactivo'
             " readonly>
 
-            </div>
+          </div>
 
 
-            <!-- FECHA INGRESO -->
-            <div class="campo-formulario">
+          <!-- FECHA INGRESO -->
+          <div class="campo-formulario">
 
-              <label class="etiqueta-formulario">
-                Fecha de ingreso
-              </label>
+            <label class="etiqueta-formulario">
+              Fecha de ingreso
+            </label>
 
-              <input type="date" class="campo-entrada" [value]="cuidadorSeleccionado.fechaIngreso || ''" readonly>
+            <input type="date" class="campo-entrada" [value]="cuidadorSeleccionado.fechaIngreso || ''" readonly>
 
-            </div>
+          </div>
 
 
-            <!-- DÍAS DISPONIBLES -->
-            <div class="campo-formulario">
+          <!-- DÍAS DISPONIBLES -->
+          <div class="campo-formulario">
 
-              <label class="etiqueta-formulario">
-                Días disponibles
-              </label>
+            <label class="etiqueta-formulario">
+              Días disponibles
+            </label>
 
-              <input class="campo-entrada" [value]="
+            <input class="campo-entrada" [value]="
               cuidadorSeleccionado.diasDisponibles?.join(', ') ||
               'Sin especificar'
             " readonly>
 
-            </div>
-
           </div>
 
-
-          <!-- ============================= -->
-          <!-- DOCUMENTOS -->
-          <!-- ============================= -->
-
-          <div class="seccion-formulario mt-6">
-            Documentos
-          </div>
+        </div>
 
 
+        <!-- ============================= -->
+        <!-- DOCUMENTOS -->
+        <!-- ============================= -->
 
-          <div class="grid-documentos" style="display: grid;
+        <div class="seccion-formulario mt-6">
+          Documentos
+        </div>
+
+
+
+        <div class="grid-documentos" style="display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             width: 100%;
             gap: 16px;">
 
-            <!-- CÉDULA -->
-            <div class="tarjeta-documento" style="width: 100%;">
+          <!-- CÉDULA -->
+          <div class="tarjeta-documento" style="width: 100%;">
 
-              <span class="material-symbols-outlined">badge</span>
-              <span class="nombre-documento">Cédula</span>
+            <span class="material-symbols-outlined">badge</span>
+            <span class="nombre-documento">Cédula</span>
 
-              <span *ngIf="cuidadorSeleccionado.archivos?.cedula" class="estado-documento con-archivo">
-                {{ cuidadorSeleccionado.archivos?.cedula?.split('/').pop() }}
-              </span>
+            <span *ngIf="cuidadorSeleccionado.archivos?.cedula" class="estado-documento con-archivo">
+              {{ cuidadorSeleccionado.archivos?.cedula?.split('/').pop() }}
+            </span>
 
-              <a *ngIf="cuidadorSeleccionado.archivos?.cedula" class="boton-examinar"
-                [href]="descargarDocumento(cuidadorSeleccionado.archivos.cedula)">
-                Descargar documento
-              </a>
+            <a *ngIf="cuidadorSeleccionado.archivos?.cedula" class="boton-examinar"
+              [href]="descargarDocumento(cuidadorSeleccionado.archivos.cedula)">
+              Descargar documento
+            </a>
 
-              <span *ngIf="!cuidadorSeleccionado.archivos?.cedula" class="estado-documento">
-                No registrado
-              </span>
+            <span *ngIf="!cuidadorSeleccionado.archivos?.cedula" class="estado-documento">
+              No registrado
+            </span>
 
-            </div>
-
-
-            <!-- TARJETA PROFESIONAL -->
-            <div class="tarjeta-documento" style="width: 100%;">
-
-              <span class="material-symbols-outlined">card_membership</span>
-              <span class="nombre-documento">Tarjeta profesional</span>
-
-              <span *ngIf="cuidadorSeleccionado.archivos?.tarjeta_profesional" class="estado-documento con-archivo">
-                {{ cuidadorSeleccionado.archivos?.tarjeta_profesional?.split('/').pop() }}
-              </span>
-
-              <a *ngIf="cuidadorSeleccionado.archivos?.tarjeta_profesional" class="boton-examinar"
-                [href]="descargarDocumento(cuidadorSeleccionado.archivos.tarjeta_profesional)">
-                Descargar documento
-              </a>
-
-              <span *ngIf="!cuidadorSeleccionado.archivos?.tarjeta_profesional" class="estado-documento">
-                No registrado
-              </span>
-
-            </div>
+          </div>
 
 
-            <!-- ANTECEDENTES -->
-            <div class="tarjeta-documento" style="width: 100%;">
+          <!-- TARJETA PROFESIONAL -->
+          <div class="tarjeta-documento" style="width: 100%;">
 
-              <span class="material-symbols-outlined">verified_user</span>
-              <span class="nombre-documento">Antecedentes</span>
+            <span class="material-symbols-outlined">card_membership</span>
+            <span class="nombre-documento">Tarjeta profesional</span>
 
-              <span *ngIf="cuidadorSeleccionado.archivos?.antecedentes" class="estado-documento con-archivo">
-                {{ cuidadorSeleccionado.archivos?.antecedentes?.split('/').pop() }}
-              </span>
+            <span *ngIf="cuidadorSeleccionado.archivos?.tarjeta_profesional" class="estado-documento con-archivo">
+              {{ cuidadorSeleccionado.archivos?.tarjeta_profesional?.split('/').pop() }}
+            </span>
 
-              <a *ngIf="cuidadorSeleccionado.archivos?.antecedentes" class="boton-examinar"
-                [href]="descargarDocumento(cuidadorSeleccionado.archivos.antecedentes)">
-                Descargar documento
-              </a>
+            <a *ngIf="cuidadorSeleccionado.archivos?.tarjeta_profesional" class="boton-examinar"
+              [href]="descargarDocumento(cuidadorSeleccionado.archivos.tarjeta_profesional)">
+              Descargar documento
+            </a>
 
-              <span *ngIf="!cuidadorSeleccionado.archivos?.antecedentes" class="estado-documento">
-                No registrado
-              </span>
+            <span *ngIf="!cuidadorSeleccionado.archivos?.tarjeta_profesional" class="estado-documento">
+              No registrado
+            </span>
 
-            </div>
+          </div>
 
 
-            <!-- HOJA DE VIDA -->
-            <div class="tarjeta-documento" style="width: 100%;">
+          <!-- ANTECEDENTES -->
+          <div class="tarjeta-documento" style="width: 100%;">
 
-              <span class="material-symbols-outlined">description</span>
-              <span class="nombre-documento">Hoja de vida</span>
+            <span class="material-symbols-outlined">verified_user</span>
+            <span class="nombre-documento">Antecedentes</span>
 
-              <span *ngIf="cuidadorSeleccionado.archivos?.hoja_de_vida" class="estado-documento con-archivo">
-                {{ cuidadorSeleccionado.archivos?.hoja_de_vida?.split('/').pop() }}
-              </span>
+            <span *ngIf="cuidadorSeleccionado.archivos?.antecedentes" class="estado-documento con-archivo">
+              {{ cuidadorSeleccionado.archivos?.antecedentes?.split('/').pop() }}
+            </span>
 
-              <a *ngIf="cuidadorSeleccionado.archivos?.hoja_de_vida" class="boton-examinar"
-                [href]="descargarDocumento(cuidadorSeleccionado.archivos.hoja_de_vida)">
-                Descargar documento
-              </a>
+            <a *ngIf="cuidadorSeleccionado.archivos?.antecedentes" class="boton-examinar"
+              [href]="descargarDocumento(cuidadorSeleccionado.archivos.antecedentes)">
+              Descargar documento
+            </a>
 
-              <span *ngIf="!cuidadorSeleccionado.archivos?.hoja_de_vida" class="estado-documento">
-                No registrado
-              </span>
+            <span *ngIf="!cuidadorSeleccionado.archivos?.antecedentes" class="estado-documento">
+              No registrado
+            </span>
 
-            </div>
+          </div>
+
+
+          <!-- HOJA DE VIDA -->
+          <div class="tarjeta-documento" style="width: 100%;">
+
+            <span class="material-symbols-outlined">description</span>
+            <span class="nombre-documento">Hoja de vida</span>
+
+            <span *ngIf="cuidadorSeleccionado.archivos?.hoja_de_vida" class="estado-documento con-archivo">
+              {{ cuidadorSeleccionado.archivos?.hoja_de_vida?.split('/').pop() }}
+            </span>
+
+            <a *ngIf="cuidadorSeleccionado.archivos?.hoja_de_vida" class="boton-examinar"
+              [href]="descargarDocumento(cuidadorSeleccionado.archivos.hoja_de_vida)">
+              Descargar documento
+            </a>
+
+            <span *ngIf="!cuidadorSeleccionado.archivos?.hoja_de_vida" class="estado-documento">
+              No registrado
+            </span>
 
           </div>
 
@@ -1244,3 +1285,5 @@
     </div>
 
   </div>
+
+</div>

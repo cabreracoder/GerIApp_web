@@ -876,3 +876,368 @@ tbody tr:hover {
 .boton-eliminar-foto .material-symbols-outlined {
   font-size: 20px;
 }
+
+/* =========================================
+   BANNER GESTIÓN DE CUIDADORES
+========================================= */
+
+.banner-cuidadores {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 190px;
+  margin-top: -30px;
+  padding: 26px 34px;
+  overflow: hidden;
+  isolation: isolate;
+
+  background: linear-gradient(90deg,
+      #f9fbff 0%,
+      #eef4ff 60%,
+      #eaf2ff 100%);
+
+  border: 1px solid #e4ecfa;
+  border-radius: 24px;
+  box-shadow: 0 6px 20px rgba(32, 76, 145, 0.08);
+}
+
+/* CONTENIDO */
+
+.banner-cuidadores__contenido {
+  position: relative;
+  z-index: 3;
+  width: 44%;
+  max-width: 540px;
+}
+
+.banner-cuidadores__contenido h1 {
+  margin: 0;
+  color: #102c6b;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.banner-cuidadores__subtitulo {
+  margin: 9px 0 18px;
+  color: #6f84a8;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.banner-cuidadores__mensaje {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 100%;
+  padding: 12px 18px;
+  background: rgba(219, 232, 255, 0.72);
+  border-radius: 14px;
+  color: #23498d;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.banner-cuidadores__mensaje>.material-symbols-outlined {
+  color: #2474eb;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.banner-cuidadores__mensaje .corazon {
+  font-size: 20px;
+}
+
+/* CAPA DECORATIVA */
+
+.banner-cuidadores__decoracion {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Forma azul superior */
+.deco-onda-superior {
+  position: absolute;
+  top: -36px;
+  left: 27%;
+  width: 310px;
+  height: 120px;
+  background: #dce9ff;
+  border-radius: 0 0 150px 150px;
+  opacity: 0.95;
+}
+
+/* Forma azul inferior */
+.deco-onda-inferior {
+  position: absolute;
+  bottom: -58px;
+  left: 35%;
+  width: 390px;
+  height: 150px;
+  background: #dfeaff;
+  border-radius: 50%;
+  opacity: 0.9;
+}
+
+/* Mancha beige suave */
+.deco-mancha-crema {
+  position: absolute;
+  right: 17%;
+  bottom: -42px;
+  width: 260px;
+  height: 130px;
+  background: #f7ead9;
+  border-radius: 50%;
+  opacity: 0.72;
+}
+
+/* Corazón decorativo */
+.deco-corazon {
+  position: absolute;
+  left: 51%;
+  top: 58px;
+  color: #9ec1f5;
+  opacity: 0.78;
+}
+
+.deco-corazon .material-symbols-outlined {
+  font-size: 50px;
+  font-variation-settings: 'FILL' 0, 'wght' 250, 'opsz' 48;
+}
+
+/* Hojitas */
+.deco-hojas {
+  position: absolute;
+  background: linear-gradient(to bottom,
+      rgba(164, 193, 176, 0.55),
+      rgba(164, 193, 176, 0.55)) center / 2px 100% no-repeat;
+}
+
+.deco-hojas::before,
+.deco-hojas::after {
+  content: "";
+  position: absolute;
+  width: 26px;
+  height: 84px;
+  background: rgba(170, 199, 179, 0.4);
+  border-radius: 60% 10% 60% 10%;
+}
+
+/* Grupo de hojas del centro */
+.hojas-centro {
+  left: 58%;
+  top: 32px;
+  width: 70px;
+  height: 128px;
+}
+
+.hojas-centro::before {
+  left: 9px;
+  top: 30px;
+  transform: rotate(28deg);
+}
+
+.hojas-centro::after {
+  left: 34px;
+  top: 2px;
+  transform: rotate(-20deg);
+}
+
+/* Grupo de hojas de la derecha */
+.hojas-derecha {
+  right: 40px;
+  top: 62px;
+  width: 58px;
+  height: 110px;
+}
+
+.hojas-derecha::before {
+  left: 2px;
+  top: 22px;
+  transform: rotate(25deg);
+}
+
+.hojas-derecha::after {
+  left: 26px;
+  top: 4px;
+  transform: rotate(-14deg);
+}
+
+/* FOTO */
+
+.banner-cuidadores__foto {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 44%;
+  height: 100%;
+  z-index: 2;
+  overflow: hidden;
+  border-radius: 0 24px 24px 0;
+}
+
+.banner-cuidadores__foto::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75px;
+  width: 170px;
+  height: 100%;
+  z-index: 2;
+  background: linear-gradient(90deg,
+      #eef4ff 20%,
+      rgba(238, 244, 255, 0.72) 45%,
+      rgba(238, 244, 255, 0) 100%);
+}
+
+.banner-cuidadores__foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 992px) {
+  .banner-cuidadores__contenido {
+    width: 52%;
+  }
+
+  .banner-cuidadores__foto {
+    width: 46%;
+  }
+}
+
+@media (max-width: 768px) {
+  .banner-cuidadores {
+    min-height: 220px;
+    padding: 22px;
+    margin-top: 0;
+  }
+
+  .banner-cuidadores__contenido {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .banner-cuidadores__contenido h1 {
+    font-size: 24px;
+  }
+
+  .banner-cuidadores__subtitulo {
+    font-size: 14px;
+  }
+
+  .banner-cuidadores__mensaje {
+    font-size: 12px;
+  }
+
+  .banner-cuidadores__foto {
+    width: 62%;
+    opacity: 0.18;
+  }
+
+  .banner-cuidadores__decoracion {
+    opacity: 0.55;
+  }
+}
+
+@media (max-width: 480px) {
+  .banner-cuidadores {
+    padding: 18px;
+  }
+
+  .banner-cuidadores__contenido h1 {
+    font-size: 22px;
+  }
+
+  .banner-cuidadores__mensaje {
+    padding: 10px 14px;
+    font-size: 11px;
+  }
+}
+
+/* =========================================
+   TABLA DE CUIDADORES RESPONSIVA
+========================================= */
+
+.contenedor-tabla {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.desplazamiento-tabla {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: inherit;
+}
+
+.tabla-cuidadores {
+  width: 100%;
+  min-width: 1050px;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+/* ENCABEZADO AZUL */
+
+.tabla-cuidadores thead {
+  background: var(--color-primary);
+}
+
+.tabla-cuidadores thead th {
+  background: var(--color-primary);
+  color: white;
+  white-space: nowrap;
+  padding: 16px 20px;
+}
+
+/* ESQUINAS SUPERIORES */
+
+.tabla-cuidadores thead th:first-child {
+  border-radius: 16px 0 0 0;
+}
+
+.tabla-cuidadores thead th:last-child {
+  border-radius: 0 16px 0 0;
+}
+
+/* FILAS */
+
+.tabla-cuidadores tbody tr {
+  transition: background 0.2s ease;
+}
+
+.tabla-cuidadores tbody td {
+  padding: 14px 20px;
+}
+
+/* TABLET Y MÓVIL */
+
+@media (max-width: 768px) {
+  .contenedor-tabla {
+    border-radius: 15px;
+  }
+
+  .tabla-cuidadores thead th {
+    padding: 13px 15px;
+  }
+
+  .tabla-cuidadores tbody td {
+    padding: 12px 15px;
+  }
+}

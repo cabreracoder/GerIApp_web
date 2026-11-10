@@ -8,11 +8,7 @@
     <!-- LOGOTIPO -->
     <div class="layout-logo-container">
       <div class="layout-logo">
-        <img
-          src="/Logo-GerIApp.png"
-          alt="GerIApp"
-          class="layout-logo-image"
-        >
+        <img src="/Logo-GerIApp.png" alt="GerIApp" class="layout-logo-image">
       </div>
     </div>
 
@@ -21,15 +17,9 @@
 
       <ng-container *ngFor="let item of opcionesMenu">
 
-        <a
-          [routerLink]="item.ruta"
-          [fragment]="item.fragment || null"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: !item.fragment }"
-          class="layout-menu-button"
-          [attr.title]="item.nombre"
-          [attr.aria-label]="item.nombre"
-        >
+        <a [routerLink]="item.ruta" [fragment]="item.fragment || null" routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: !item.fragment }" class="layout-menu-button" [attr.title]="item.nombre"
+          [attr.aria-label]="item.nombre">
 
           <span class="material-symbols-outlined">
             {{ item.icono }}
@@ -49,12 +39,8 @@
     <div class="layout-sidebar-footer">
 
       <!-- CERRAR SESIÓN -->
-      <button
-        type="button"
-        class="layout-menu-button layout-logout-button"
-        [attr.title]="textoCerrarSesion"
-        (click)="cerrarSesion()"
-      >
+      <button type="button" class="layout-menu-button layout-logout-button" [attr.title]="textoCerrarSesion"
+        (click)="cerrarSesion()">
         <span class="material-symbols-outlined">
           logout
         </span>
@@ -71,9 +57,7 @@
   <!-- =====================================================
        CONTENIDO PRINCIPAL
        ===================================================== -->
-  <div
-    class="layout-main-container"
-    [class.layout-main-superadmin]="esSuperadministrador()">
+  <div class="layout-main-container" [class.layout-main-superadmin]="esSuperadministrador()">
 
     <!-- ENCABEZADO -->
     <header class="layout-header">
@@ -82,17 +66,9 @@
       <div class="layout-header-left">
 
         <!-- MENÚ HAMBURGUESA SOLO PARA SUPERADMINISTRADOR -->
-        <div
-          *ngIf="esSuperadministrador()"
-          class="layout-superadmin-menu"
-        >
-          <button
-            type="button"
-            class="layout-header-button"
-            aria-label="Abrir menú de navegación"
-            aria-haspopup="true"
-            title="Menú"
-          >
+        <div *ngIf="esSuperadministrador()" class="layout-superadmin-menu">
+          <button type="button" class="layout-header-button" aria-label="Abrir menú de navegación" aria-haspopup="true"
+            title="Menú">
             <span class="material-symbols-outlined">
               menu
             </span>
@@ -120,19 +96,21 @@
         <h1>
           {{ nombreAplicacion }}
         </h1>
+        <!-- SEDE DEL USUARIO AUTENTICADO -->
+        <div class="layout-sede-badge" *ngIf="nombreSede">
+          <span class="material-symbols-outlined">
+            location_on
+          </span>
 
+          <span>{{ nombreSede }}</span>
+        </div>
       </div>
 
       <!-- PARTE DERECHA -->
       <div class="layout-header-right">
 
         <!-- NOTIFICACIONES -->
-        <button
-          type="button"
-          class="layout-header-button"
-          title="Notificaciones"
-          routerLink="/notificaciones"
-        >
+        <button type="button" class="layout-header-button" title="Notificaciones" routerLink="/notificaciones">
           <span class="material-symbols-outlined">
             notifications
           </span>
@@ -160,20 +138,11 @@
           </div>
 
           <!-- AVATAR DEL USUARIO -->
-          <button
-            type="button"
-            class="layout-avatar"
-            title="Ver perfil"
-            (click)="abrirConfiguracion()"
-          >
+          <button type="button" class="layout-avatar" title="Ver perfil" (click)="abrirConfiguracion()">
 
             <!-- MOSTRAR FOTO SI EXISTE -->
-            <img
-              *ngIf="fotoUsuario; else mostrarIniciales"
-              [src]="fotoUsuario"
-              alt="Foto de perfil"
-              class="layout-avatar-image"
-            >
+            <img *ngIf="fotoUsuario; else mostrarIniciales" [src]="fotoUsuario" alt="Foto de perfil"
+              class="layout-avatar-image">
 
             <!-- MOSTRAR INICIALES SI NO HAY FOTO -->
             <ng-template #mostrarIniciales>
@@ -202,4 +171,3 @@
   </div>
 
 </div>
-
