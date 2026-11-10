@@ -1,3 +1,13 @@
+
+
+
+
+
+
+
+
+
+
 <div class="elementos-paciente">
 
   <!-- =========================================================
@@ -193,6 +203,18 @@
           <strong>Formulación de medicamentos</strong>
         </span>
 
+      </button>
+
+      <!-- PASO 6: REGISTRO FACIAL -->
+      <button type="button" class="step"
+        [class.active]="seccionActiva === 'facial'"
+        (click)="cambiarSeccion('facial')"
+        title="Registro facial">
+        <span class="step-number">6</span>
+        <span class="step-info">
+          <small>{{ seccionActiva === 'facial' ? 'PASO ACTUAL' : 'PASO 6' }}</small>
+          <strong>Registro facial</strong>
+        </span>
       </button>
 
     </div>
@@ -2838,11 +2860,153 @@
   </section>
 
 
+
+  <!-- =========================================================
+       REGISTRO FACIAL DEL PACIENTE - PASO 6
+       ========================================================= -->
+
+  <section class="contenido-seccion" *ngIf="seccionActiva === 'facial'">
+    <div class="registro-facial-card">
+
+      <div class="card-header">
+        <div>
+          <h3>Registro facial del paciente</h3>
+          <p>Capture fotografías claras del rostro para crear el registro facial y facilitar su reconocimiento.</p>
+        </div>
+      </div>
+
+      <div class="facial-introduccion">
+        <span class="material-symbols-outlined">info</span>
+        <p>Tome las fotografías con buena iluminación, sin filtros y con el rostro completamente visible. Cada fotografía debe mostrar únicamente el rostro del paciente.</p>
+      </div>
+
+      <div class="facial-grid">
+
+        <!-- FOTOGRAFÍA FRONTAL -->
+        <article class="facial-foto-card">
+          <div class="facial-seccion-titulo">
+            <h4>Vista frontal</h4>
+            <span class="facial-contador">Foto principal</span>
+          </div>
+          <div class="facial-preview" *ngIf="fotoFrontalPreview; else frontalVacio">
+            <img [src]="fotoFrontalPreview" alt="Vista frontal del paciente">
+          </div>
+          <ng-template #frontalVacio>
+            <div class="facial-preview facial-preview-vacio">
+              <span class="material-symbols-outlined">face</span>
+              <span>Sin fotografía</span>
+            </div>
+          </ng-template>
+          <div class="facial-acciones-foto">
+            <label class="btn-primary facial-agregar">
+              <span class="material-symbols-outlined">photo_camera</span>
+              {{ fotoFrontalPreview ? 'Cambiar fotografía' : 'Seleccionar fotografía' }}
+              <input type="file" accept="image/*" hidden (change)="seleccionarFotoFacial($event, 'frontal')">
+            </label>
+            <button *ngIf="fotoFrontalPreview" type="button" class="facial-btn-eliminar" (click)="quitarFotoFacial('frontal')">Quitar</button>
+          </div>
+        </article>
+
+        <!-- PERFIL IZQUIERDO -->
+        <article class="facial-foto-card">
+          <div class="facial-seccion-titulo">
+            <h4>Perfil izquierdo</h4>
+            <span class="facial-contador">Foto lateral</span>
+          </div>
+          <div class="facial-preview" *ngIf="fotoIzquierdaPreview; else izquierdaVacio">
+            <img [src]="fotoIzquierdaPreview" alt="Perfil izquierdo del paciente">
+          </div>
+          <ng-template #izquierdaVacio>
+            <div class="facial-preview facial-preview-vacio">
+              <span class="material-symbols-outlined">face_3</span>
+              <span>Sin fotografía</span>
+            </div>
+          </ng-template>
+          <div class="facial-acciones-foto">
+            <label class="btn-primary facial-agregar">
+              <span class="material-symbols-outlined">photo_camera</span>
+              {{ fotoIzquierdaPreview ? 'Cambiar fotografía' : 'Seleccionar fotografía' }}
+              <input type="file" accept="image/*" hidden (change)="seleccionarFotoFacial($event, 'izquierda')">
+            </label>
+            <button *ngIf="fotoIzquierdaPreview" type="button" class="facial-btn-eliminar" (click)="quitarFotoFacial('izquierda')">Quitar</button>
+          </div>
+        </article>
+
+        <!-- PERFIL DERECHO -->
+        <article class="facial-foto-card">
+          <div class="facial-seccion-titulo">
+            <h4>Perfil derecho</h4>
+            <span class="facial-contador">Foto lateral</span>
+          </div>
+          <div class="facial-preview" *ngIf="fotoDerechaPreview; else derechaVacio">
+            <img [src]="fotoDerechaPreview" alt="Perfil derecho del paciente">
+          </div>
+          <ng-template #derechaVacio>
+            <div class="facial-preview facial-preview-vacio">
+              <span class="material-symbols-outlined">face_3</span>
+              <span>Sin fotografía</span>
+            </div>
+          </ng-template>
+          <div class="facial-acciones-foto">
+            <label class="btn-primary facial-agregar">
+              <span class="material-symbols-outlined">photo_camera</span>
+              {{ fotoDerechaPreview ? 'Cambiar fotografía' : 'Seleccionar fotografía' }}
+              <input type="file" accept="image/*" hidden (change)="seleccionarFotoFacial($event, 'derecha')">
+            </label>
+            <button *ngIf="fotoDerechaPreview" type="button" class="facial-btn-eliminar" (click)="quitarFotoFacial('derecha')">Quitar</button>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- FOTOGRAFÍAS ADICIONALES -->
+      <div class="facial-adicionales">
+        <div class="facial-seccion-titulo">
+          <div>
+            <h4>Fotografías adicionales</h4>
+            <p>Puede agregar otras fotografías para complementar el registro.</p>
+          </div>
+          <span class="facial-contador">{{ fotosAdicionales.length }} seleccionadas</span>
+        </div>
+
+        <label class="btn-secundario facial-agregar">
+          <span class="material-symbols-outlined">add_a_photo</span>
+          Agregar fotografías
+          <input type="file" accept="image/*" multiple hidden (change)="seleccionarFotosAdicionales($event)">
+        </label>
+
+        <div class="facial-adicionales-grid" *ngIf="fotosAdicionales.length > 0">
+          <div class="facial-adicional-item" *ngFor="let foto of fotosAdicionales; let i = index">
+            <img [src]="foto.preview" [alt]="'Fotografía adicional ' + (i + 1)">
+            <button type="button" class="facial-btn-eliminar" title="Quitar fotografía" (click)="quitarFotoAdicional(i)">
+              <span class="material-symbols-outlined">delete</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="facial-aviso">
+        <span class="material-symbols-outlined">verified_user</span>
+        <p>Verifique que las imágenes correspondan al paciente y que el rostro se vea claramente antes de finalizar el registro.</p>
+      </div>
+
+      <p class="facial-estado" *ngIf="registroFacialCompletado">
+        Registro facial guardado correctamente.
+      </p>
+      <p class="facial-estado" *ngIf="guardandoRegistroFacial">
+        Guardando fotografías faciales. No cierre esta ventana...
+      </p>
+
+    </div>
+  </section>
+
+
   <!-- =========================================================
        BARRA FINAL
        ========================================================= -->
 
-  <section class="barra-final" *ngIf="mostrarBarraFinal">
+  <section class="barra-final"
+    *ngIf="mostrarBarraFinal && seccionActiva === 'facial'">
 
     <div class="estado-final">
 
@@ -2856,9 +3020,9 @@
 
     <div class="acciones-finales">
 
-      <button type="button" class="btn-primary btn-finalizar" (click)="finalizarRegistro()">
+      <button type="button" class="btn-primary btn-finalizar" (click)="finalizarRegistro()" [disabled]="guardandoRegistroFacial">
 
-        ✓ Finalizar registro
+        {{ guardandoRegistroFacial ? 'Guardando registro facial...' : '✓ Finalizar registro' }}
 
       </button>
 
@@ -2877,3 +3041,7 @@
   </app-inventario-paciente>
 
 </div>
+
+
+
+
