@@ -2120,45 +2120,97 @@ export class ElementosPaciente implements OnInit {
   }
 
   private guardarRegistroFacial(): void {
-    if (this.guardandoRegistroFacial) return;
+  if (this.guardandoRegistroFacial) return;
 
-    if (!this.idPaciente || this.idPaciente <= 0) {
-      alertaError('Paciente no válido', 'No se encontró el identificador del paciente.');
-      return;
-    }
-
-    if (!this.fotoFrontal || !this.fotoIzquierda || !this.fotoDerecha) {
-      alertaAdvertencia('Registro facial incompleto', 'Debe cargar la fotografía frontal, el perfil izquierdo y el perfil derecho. Las fotografías adicionales son opcionales.');
-      this.seccionActual = 'facial';
-      return;
-    }
-
-    const archivos: File[] = [this.fotoFrontal, this.fotoIzquierda, this.fotoDerecha,
-      ...this.fotosAdicionales.map(foto => foto.archivo)];
-
-    const peticiones = archivos.map(archivo => {
-      const datos = new FormData();
-      datos.append('id_paciente', String(this.idPaciente));
-      datos.append('fotografia', archivo, archivo.name);
-      return this.http.post(`${this.apiUrl}/registros_faciales/registrar/`, datos);
-    });
-
-    this.guardandoRegistroFacial = true;
-    forkJoin(peticiones).subscribe({
-      next: () => {
-        this.guardandoRegistroFacial = false;
-        this.registroFacialCompletado = true;
-        this.cdr.detectChanges();
-        this.mostrarFinalizacionExitosa();
-      },
-      error: (error) => {
-        console.error('Error al guardar el registro facial:', error);
-        this.guardandoRegistroFacial = false;
-        this.cdr.detectChanges();
-        alertaError('No se pudo guardar el registro facial', error?.error?.error || error?.error?.detail || 'Verifique la conexión y que las fotografías permitan detectar correctamente el rostro.');
-      }
-    });
+  if (!this.idPaciente || this.idPaciente <= 0) {
+    alertaError(
+      'Paciente no válido',
+      'No se encontró el identificador del paciente.'
+    );
+    return;
   }
+
+  // Validar las tres fotografías obligatorias
+  if (!this.fotoFrontal || !this.fotoIzquierda || !this.fotoDerecha) {
+    alertaAdvertencia(
+      'Registro facial incompleto',
+      'Debe cargar la fotografía frontal, el perfil izquierdo y el perfil derecho. Las fotografías adicionales son opcionales.'
+    );
+
+    this.seccionActual = 'facial';
+    return;
+  }
+
+  // Crear un único FormData
+  const datos = new FormData();
+
+  datos.append('id_paciente', String(this.idPaciente));
+
+  // Agregar fotografías obligatorias
+  datos.append(
+    'fotografias',
+    this.fotoFrontal,
+    this.fotoFrontal.name
+  );
+
+  datos.append(
+    'fotografias',
+    this.fotoIzquierda,
+    this.fotoIzquierda.name
+  );
+
+  datos.append(
+    'fotografias',
+    this.fotoDerecha,
+    this.fotoDerecha.name
+  );
+
+  // Agregar fotografías adicionales
+  this.fotosAdicionales.forEach(foto => {
+    datos.append(
+      'fotografias',
+      foto.archivo,
+      foto.archivo.name
+    );
+  });
+
+  this.guardandoRegistroFacial = true;
+
+  // Una sola petición al backend
+  this.http.post(
+    `${this.apiUrl}/registros_faciales/registrar/`,
+    datos
+  ).subscribe({
+    next: (respuesta: any) => {
+      console.log('Registro facial completado:', respuesta);
+
+      this.guardandoRegistroFacial = false;
+      this.registroFacialCompletado = true;
+
+      this.cdr.detectChanges();
+
+      this.mostrarFinalizacionExitosa();
+    },
+
+    error: (error) => {
+      console.error(
+        'Error al guardar el registro facial:',
+        error
+      );
+
+      this.guardandoRegistroFacial = false;
+
+      this.cdr.detectChanges();
+
+      alertaError(
+        'No se pudo guardar el registro facial',
+        error?.error?.error ||
+        error?.error?.detail ||
+        'Verifique que las fotografías permitan detectar correctamente el rostro.'
+      );
+    }
+  });
+}
 
   private mostrarFinalizacionExitosa(): void {
     alertaExito('¡Registro finalizado!', 'La información del paciente y su registro facial se guardaron correctamente.').then(() => {
