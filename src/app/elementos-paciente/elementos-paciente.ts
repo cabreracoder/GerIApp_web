@@ -602,9 +602,21 @@ interface HistoriaClinica {
 
 type TipoFotoFacial = 'frontal' | 'izquierda' | 'derecha';
 
+interface RegistroFacial {
+  id_registro_facial: number;
+  id_paciente: number;
+  url_fotografia: string;
+  public_id: string;
+  tipo_fotografia: 'FRONTAL' | 'IZQUIERDA' | 'DERECHA' | 'ADICIONAL' | null;
+  activo: boolean;
+  fecha_registro: string;
+  fecha_actualizacion: string;
+}
+
 interface FotoFacialAdicional {
-  archivo: File;
+  archivo: File | null;
   preview: string;
+  id_registro_facial?: number;
 }
 
 @Component({
@@ -922,6 +934,9 @@ export class ElementosPaciente implements OnInit {
       this.cargarCuidados();
       this.cargarRecomendaciones();
       this.cargarHistoriaClinica();
+
+      // Recuperar las fotografías faciales ya guardadas para este paciente.
+      this.cargarRegistroFacial();
 
     });
 
@@ -2034,6 +2049,9 @@ export class ElementosPaciente implements OnInit {
   fotosAdicionales: FotoFacialAdicional[] = [];
   guardandoRegistroFacial = false;
   registroFacialCompletado = false;
+
+  registrosFaciales: RegistroFacial[] = [];
+  cargandoRegistroFacial = false;
   private readonly tamanoMaximoFoto = 10 * 1024 * 1024; // 10 MB
 
   seleccionarFotoFacial(evento: Event, tipo: TipoFotoFacial): void {
@@ -2165,8 +2183,12 @@ export class ElementosPaciente implements OnInit {
     this.fotoDerecha.name
   );
 
-  // Agregar fotografías adicionales
+  // Agregar únicamente fotografías adicionales nuevas.
+  // Las recuperadas desde Cloudinary tienen archivo = null y no deben
+  // volver a enviarse porque ya existen en la base de datos.
   this.fotosAdicionales.forEach(foto => {
+    if (!foto.archivo) return;
+
     datos.append(
       'fotografias',
       foto.archivo,
@@ -2219,6 +2241,106 @@ export class ElementosPaciente implements OnInit {
     });
   }
 
+  // ============================================================
+// CARGAR FOTOGRAFÍAS FACIALES DEL PACIENTE
+// ============================================================
+
+cargarRegistroFacial(): void {
+
+  if (!this.idPaciente || this.idPaciente <= 0) {
+    console.error('No se pueden cargar las fotografías: ID de paciente inválido.');
+    return;
+  }
+
+  this.cargandoRegistroFacial = true;
+
+  this.http.get<
+    RegistroFacial[] | RespuestaPaginada<RegistroFacial>
+  >(
+    `${this.apiUrl}/registros_faciales/?id_paciente=${this.idPaciente}`
+  ).subscribe({
+
+    next: (respuesta) => {
+
+      // Admite tanto respuestas normales como respuestas paginadas de DRF.
+      const registros = this.obtenerResultados(respuesta);
+
+      // Mostrar únicamente fotografías activas.
+      this.registrosFaciales = registros.filter(
+        registro => registro.activo
+      );
+
+      // Recuperar fotografía frontal.
+      const frontal = this.registrosFaciales.find(
+        foto => foto.tipo_fotografia === 'FRONTAL'
+      );
+      this.fotoFrontalPreview = frontal?.url_fotografia ?? null;
+
+      // Recuperar perfil izquierdo.
+      const izquierda = this.registrosFaciales.find(
+        foto => foto.tipo_fotografia === 'IZQUIERDA'
+      );
+      this.fotoIzquierdaPreview = izquierda?.url_fotografia ?? null;
+
+      // Recuperar perfil derecho.
+      const derecha = this.registrosFaciales.find(
+        foto => foto.tipo_fotografia === 'DERECHA'
+      );
+      this.fotoDerechaPreview = derecha?.url_fotografia ?? null;
+
+      // Recuperar fotografías adicionales ya almacenadas.
+      this.fotosAdicionales = this.registrosFaciales
+        .filter(foto => foto.tipo_fotografia === 'ADICIONAL')
+        .map(foto => ({
+          archivo: null,
+          preview: foto.url_fotografia,
+          id_registro_facial: foto.id_registro_facial
+        }));
+
+      // El registro está completo si existen las tres vistas obligatorias.
+      this.registroFacialCompletado = Boolean(
+        frontal && izquierda && derecha
+      );
+
+      this.cargandoRegistroFacial = false;
+
+      console.log(
+        `Fotografías faciales recuperadas para paciente ${this.idPaciente}:`,
+        this.registrosFaciales
+      );
+
+      this.cdr.detectChanges();
+
+    },
+
+    error: (error) => {
+
+      console.error(
+        'Error al recuperar fotografías faciales:',
+        error
+      );
+
+      this.registrosFaciales = [];
+      this.fotoFrontalPreview = null;
+      this.fotoIzquierdaPreview = null;
+      this.fotoDerechaPreview = null;
+      this.fotosAdicionales = [];
+      this.registroFacialCompletado = false;
+      this.cargandoRegistroFacial = false;
+
+      this.cdr.detectChanges();
+
+      alertaError(
+        'Error al cargar fotografías',
+        error?.error?.detail ||
+        'No fue posible recuperar las fotografías faciales del paciente.'
+      );
+
+    }
+
+  });
+
+} 
   // ============================================================
   // SECCIÓN ACTUAL
   // ============================================================
