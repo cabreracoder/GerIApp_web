@@ -2046,6 +2046,10 @@ export class ElementosPaciente implements OnInit {
   fotoIzquierdaPreview: string | null = null;
   fotoDerechaPreview: string | null = null;
 
+  idFotoFrontal: number | null = null;
+  idFotoIzquierda: number | null = null;
+  idFotoDerecha: number | null = null;
+
   fotosAdicionales: FotoFacialAdicional[] = [];
   guardandoRegistroFacial = false;
   registroFacialCompletado = false;
@@ -2055,116 +2059,675 @@ export class ElementosPaciente implements OnInit {
   private readonly tamanoMaximoFoto = 10 * 1024 * 1024; // 10 MB
 
   seleccionarFotoFacial(evento: Event, tipo: TipoFotoFacial): void {
-    const input = evento.target as HTMLInputElement;
-    const archivo = input.files?.[0];
-    if (!archivo) return;
 
-    if (!archivo.type.startsWith('image/')) {
-      alertaAdvertencia('Archivo no válido', 'Seleccione una imagen en formato JPG, PNG o similar.');
-      input.value = '';
-      return;
-    }
+  const input = evento.target as HTMLInputElement;
+  const archivo = input.files?.[0];
 
-    if (archivo.size > this.tamanoMaximoFoto) {
-      alertaAdvertencia('Imagen demasiado grande', 'Cada fotografía debe pesar máximo 10 MB.');
-      input.value = '';
-      return;
-    }
+  if (!archivo) return;
 
-    const lector = new FileReader();
-    lector.onload = () => {
-      const preview = String(lector.result ?? '');
-      if (tipo === 'frontal') {
+  // Validar formato
+  if (!archivo.type.startsWith('image/')) {
+
+    alertaAdvertencia(
+      'Archivo no válido',
+      'Seleccione una imagen en formato JPG, PNG o similar.'
+    );
+
+    input.value = '';
+    return;
+  }
+
+  // Validar tamaño máximo
+  if (archivo.size > this.tamanoMaximoFoto) {
+
+    alertaAdvertencia(
+      'Imagen demasiado grande',
+      'Cada fotografía debe pesar máximo 10 MB.'
+    );
+
+    input.value = '';
+    return;
+  }
+
+  const lector = new FileReader();
+
+  lector.onload = () => {
+
+    const preview = String(lector.result ?? '');
+
+    switch (tipo) {
+
+      case 'frontal':
+
         this.fotoFrontal = archivo;
         this.fotoFrontalPreview = preview;
-      } else if (tipo === 'izquierda') {
+
+        break;
+
+      case 'izquierda':
+
         this.fotoIzquierda = archivo;
         this.fotoIzquierdaPreview = preview;
-      } else {
+
+        break;
+
+      case 'derecha':
+
         this.fotoDerecha = archivo;
         this.fotoDerechaPreview = preview;
-      }
-      this.registroFacialCompletado = false;
-      this.cdr.detectChanges();
-    };
-    lector.onerror = () => alertaError('No se pudo leer la imagen', 'Intente seleccionar la fotografía nuevamente.');
-    lector.readAsDataURL(archivo);
-    input.value = '';
-  }
+
+        break;
+
+    }
+
+    // Indicar que hay cambios pendientes
+    this.registroFacialCompletado = false;
+
+    this.cdr.detectChanges();
+
+  };
+
+  lector.onerror = () => {
+
+    alertaError(
+      'No se pudo leer la imagen',
+      'Intente seleccionar la fotografía nuevamente.'
+    );
+
+  };
+
+  lector.readAsDataURL(archivo);
+
+  input.value = '';
+
+}
 
   quitarFotoFacial(tipo: TipoFotoFacial): void {
-    if (tipo === 'frontal') {
-      this.fotoFrontal = null;
-      this.fotoFrontalPreview = null;
-    } else if (tipo === 'izquierda') {
-      this.fotoIzquierda = null;
-      this.fotoIzquierdaPreview = null;
-    } else {
-      this.fotoDerecha = null;
-      this.fotoDerechaPreview = null;
-    }
-    this.registroFacialCompletado = false;
+
+  let idRegistro: number | null = null;
+  let nombre = '';
+
+  switch (tipo) {
+
+    case 'frontal':
+      idRegistro = this.idFotoFrontal;
+      nombre = 'fotografía frontal';
+      break;
+
+    case 'izquierda':
+      idRegistro = this.idFotoIzquierda;
+      nombre = 'fotografía izquierda';
+      break;
+
+    case 'derecha':
+      idRegistro = this.idFotoDerecha;
+      nombre = 'fotografía derecha';
+      break;
+
   }
 
-  seleccionarFotosAdicionales(evento: Event): void {
-    const input = evento.target as HTMLInputElement;
-    const archivos = Array.from(input.files ?? []);
+  // Si ya existe en el backend, eliminarlo también de MySQL.
+  if (idRegistro !== null) {
 
-    for (const archivo of archivos) {
-      if (!archivo.type.startsWith('image/')) {
-        alertaAdvertencia('Archivo no válido', `El archivo ${archivo.name} no es una imagen.`);
-        continue;
+    this.eliminarRegistroFacial(
+      idRegistro,
+      nombre,
+      () => {
+
+        // Limpiar el archivo nuevo seleccionado.
+        if (tipo === 'frontal') {
+
+          this.fotoFrontal = null;
+          this.fotoFrontalPreview = null;
+
+        } else if (tipo === 'izquierda') {
+
+          this.fotoIzquierda = null;
+          this.fotoIzquierdaPreview = null;
+
+        } else if (tipo === 'derecha') {
+
+          this.fotoDerecha = null;
+          this.fotoDerechaPreview = null;
+
+        }
+
       }
-      if (archivo.size > this.tamanoMaximoFoto) {
-        alertaAdvertencia('Imagen demasiado grande', `${archivo.name} supera el límite de 10 MB.`);
-        continue;
-      }
-      const lector = new FileReader();
-      lector.onload = () => {
-        this.fotosAdicionales.push({ archivo, preview: String(lector.result ?? '') });
-        this.registroFacialCompletado = false;
+    );
+
+    return;
+
+  }
+
+  // Si todavía no está guardada, solamente limpiar la selección.
+  if (tipo === 'frontal') {
+
+    this.fotoFrontal = null;
+    this.fotoFrontalPreview = null;
+
+  } else if (tipo === 'izquierda') {
+
+    this.fotoIzquierda = null;
+    this.fotoIzquierdaPreview = null;
+
+  } else if (tipo === 'derecha') {
+
+    this.fotoDerecha = null;
+    this.fotoDerechaPreview = null;
+
+  }
+
+  this.registroFacialCompletado = false;
+
+  this.cdr.detectChanges();
+
+}
+// ============================================================
+// ELIMINAR REGISTRO FACIAL DEL BACKEND Y CLOUDINARY
+// ============================================================
+
+private eliminarRegistroFacial(
+  idRegistro: number,
+  nombre: string,
+  alEliminar?: () => void
+): void {
+
+  alertaEliminar(
+    nombre,
+    'fotografía facial'
+  ).then(resultado => {
+
+    if (!resultado.isConfirmed) return;
+
+    this.guardandoRegistroFacial = true;
+
+    this.http.delete(
+      `${this.apiUrl}/registros_faciales/${idRegistro}/`
+    ).subscribe({
+
+      next: (respuesta: any) => {
+        // Ejecutar limpieza de archivos locales si se confirmó la eliminación.
+        if (alEliminar) {
+          alEliminar();
+        }
+
+        console.log(
+          'Registro facial eliminado:',
+          respuesta
+        );
+
+        // Actualizar las fotografías desde el backend.
+        this.cargarRegistroFacial(() => {
+
+          this.guardandoRegistroFacial = false;
+
+          this.registroFacialCompletado = Boolean(
+            this.idFotoFrontal &&
+            this.idFotoIzquierda &&
+            this.idFotoDerecha
+          );
+
+          this.cdr.detectChanges();
+
+          // Verificar si Cloudinary devolvió alguna advertencia.
+          if (respuesta?.advertencia) {
+
+            alertaAdvertencia(
+              'Fotografía desactivada',
+              respuesta.advertencia
+            );
+
+            return;
+          }
+
+          alertaExito(
+            'Fotografía eliminada',
+            respuesta?.mensaje ||
+            'La fotografía fue eliminada correctamente de MySQL y Cloudinary.'
+          );
+
+        });
+
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Error eliminando registro facial:',
+          error
+        );
+
+        this.guardandoRegistroFacial = false;
+
+        alertaError(
+          'No se pudo eliminar la fotografía',
+          error?.error?.error ||
+          error?.error?.detail ||
+          'Ocurrió un problema al eliminar el registro facial.'
+        );
+
         this.cdr.detectChanges();
-      };
-      lector.onerror = () => alertaError('No se pudo leer la imagen', archivo.name);
-      lector.readAsDataURL(archivo);
-    }
-    input.value = '';
-  }
 
-  quitarFotoAdicional(indice: number): void {
-    if (indice < 0 || indice >= this.fotosAdicionales.length) return;
-    this.fotosAdicionales.splice(indice, 1);
-    this.registroFacialCompletado = false;
-  }
+      }
 
-  private guardarRegistroFacial(): void {
+    });
+
+  });
+
+}
+
+// ============================================================
+// GUARDAR REGISTRO FACIAL
+// ============================================================
+
+private guardarRegistroFacial(): void {
+
   if (this.guardandoRegistroFacial) return;
 
+  // ==========================================
+  // VALIDAR PACIENTE
+  // ==========================================
+
   if (!this.idPaciente || this.idPaciente <= 0) {
+
     alertaError(
       'Paciente no válido',
       'No se encontró el identificador del paciente.'
     );
+
     return;
   }
 
-  // Validar las tres fotografías obligatorias
-  if (!this.fotoFrontal || !this.fotoIzquierda || !this.fotoDerecha) {
+  // ==========================================
+  // VALIDAR FOTOGRAFÍAS OBLIGATORIAS
+  // ==========================================
+
+  const tieneFrontal =
+    !!this.fotoFrontal || !!this.idFotoFrontal;
+
+  const tieneIzquierda =
+    !!this.fotoIzquierda || !!this.idFotoIzquierda;
+
+  const tieneDerecha =
+    !!this.fotoDerecha || !!this.idFotoDerecha;
+
+  if (!tieneFrontal || !tieneIzquierda || !tieneDerecha) {
+
     alertaAdvertencia(
       'Registro facial incompleto',
-      'Debe cargar la fotografía frontal, el perfil izquierdo y el perfil derecho. Las fotografías adicionales son opcionales.'
+      'Debe registrar las fotografías frontal, izquierda y derecha.'
     );
 
     this.seccionActual = 'facial';
+
     return;
   }
 
-  // Crear un único FormData
+  // ==========================================
+  // REGISTRO INICIAL
+  // ==========================================
+
+  const esRegistroNuevo =
+    !this.idFotoFrontal &&
+    !this.idFotoIzquierda &&
+    !this.idFotoDerecha;
+
+  if (esRegistroNuevo) {
+
+    if (
+      !this.fotoFrontal ||
+      !this.fotoIzquierda ||
+      !this.fotoDerecha
+    ) {
+
+      alertaAdvertencia(
+        'Fotografías incompletas',
+        'Para realizar el registro inicial debe seleccionar las tres fotografías.'
+      );
+
+      return;
+    }
+
+    this.registrarFotografiasFaciales();
+
+    return;
+  }
+
+  // ==========================================
+  // PREPARAR OPERACIONES
+  // ==========================================
+
+  const peticiones: any[] = [];
+
+  // ==========================================
+  // FOTOGRAFÍA FRONTAL
+  // ==========================================
+
+  if (this.fotoFrontal) {
+
+    if (this.idFotoFrontal) {
+
+      peticiones.push({
+        nombre: 'Frontal',
+        peticion: this.crearPeticionActualizar(
+          this.idFotoFrontal,
+          this.fotoFrontal
+        )
+      });
+
+    } else {
+
+      peticiones.push({
+        nombre: 'Frontal',
+        peticion: this.crearPeticionAgregar(
+          'FRONTAL',
+          this.fotoFrontal
+        )
+      });
+
+    }
+  }
+
+  // ==========================================
+  // FOTOGRAFÍA IZQUIERDA
+  // ==========================================
+
+  if (this.fotoIzquierda) {
+
+    if (this.idFotoIzquierda) {
+
+      peticiones.push({
+        nombre: 'Izquierda',
+        peticion: this.crearPeticionActualizar(
+          this.idFotoIzquierda,
+          this.fotoIzquierda
+        )
+      });
+
+    } else {
+
+      peticiones.push({
+        nombre: 'Izquierda',
+        peticion: this.crearPeticionAgregar(
+          'IZQUIERDA',
+          this.fotoIzquierda
+        )
+      });
+
+    }
+  }
+
+  // ==========================================
+  // FOTOGRAFÍA DERECHA
+  // ==========================================
+
+  if (this.fotoDerecha) {
+
+    if (this.idFotoDerecha) {
+
+      peticiones.push({
+        nombre: 'Derecha',
+        peticion: this.crearPeticionActualizar(
+          this.idFotoDerecha,
+          this.fotoDerecha
+        )
+      });
+
+    } else {
+
+      peticiones.push({
+        nombre: 'Derecha',
+        peticion: this.crearPeticionAgregar(
+          'DERECHA',
+          this.fotoDerecha
+        )
+      });
+
+    }
+  }
+
+  // ==========================================
+  // FOTOGRAFÍAS ADICIONALES
+  // ==========================================
+
+  this.fotosAdicionales.forEach(foto => {
+
+    if (!foto.archivo) return;
+
+    if (foto.id_registro_facial) {
+
+      // Actualizar fotografía adicional existente.
+
+      peticiones.push({
+        nombre: 'Adicional',
+        peticion: this.crearPeticionActualizar(
+          foto.id_registro_facial,
+          foto.archivo
+        )
+      });
+
+    } else {
+
+      // Registrar nueva fotografía adicional.
+
+      peticiones.push({
+        nombre: 'Adicional',
+        peticion: this.crearPeticionAgregar(
+          'ADICIONAL',
+          foto.archivo
+        )
+      });
+
+    }
+
+  });
+
+  // ==========================================
+  // VALIDAR CAMBIOS
+  // ==========================================
+
+  if (peticiones.length === 0) {
+
+    alertaAdvertencia(
+      'Sin cambios',
+      'No seleccionaste nuevas fotografías para actualizar.'
+    );
+
+    return;
+  }
+
+  // ==========================================
+  // EJECUTAR OPERACIONES
+  // ==========================================
+
+  this.ejecutarOperacionesFaciales(peticiones);
+
+}
+
+
+// ============================================================
+// CREAR PETICIÓN PARA AGREGAR FOTOGRAFÍA
+// ============================================================
+
+private crearPeticionAgregar(
+  tipo: 'FRONTAL' | 'IZQUIERDA' | 'DERECHA' | 'ADICIONAL',
+  archivo: File
+) {
+
   const datos = new FormData();
 
-  datos.append('id_paciente', String(this.idPaciente));
+  datos.append(
+    'id_paciente',
+    String(this.idPaciente)
+  );
 
-  // Agregar fotografías obligatorias
+  datos.append(
+    'tipo_fotografia',
+    tipo
+  );
+
+  datos.append(
+    'fotografia',
+    archivo,
+    archivo.name
+  );
+
+  return this.http.post(
+    `${this.apiUrl}/registros_faciales/agregar/`,
+    datos
+  );
+
+}
+
+
+// ============================================================
+// CREAR PETICIÓN PARA ACTUALIZAR FOTOGRAFÍA
+// ============================================================
+
+private crearPeticionActualizar(
+  idRegistro: number,
+  archivo: File
+) {
+
+  const datos = new FormData();
+
+  datos.append(
+    'id_registro_facial',
+    String(idRegistro)
+  );
+
+  datos.append(
+    'fotografia',
+    archivo,
+    archivo.name
+  );
+
+  return this.http.post(
+    `${this.apiUrl}/registros_faciales/actualizar/`,
+    datos
+  );
+
+}
+
+
+// ============================================================
+// EJECUTAR OPERACIONES FACIALES
+// ============================================================
+
+private ejecutarOperacionesFaciales(
+  operaciones: { nombre: string; peticion: any }[]
+): void {
+
+  if (!operaciones.length) return;
+
+  this.guardandoRegistroFacial = true;
+
+  const peticiones = operaciones.map(
+    operacion => operacion.peticion
+  );
+
+  forkJoin(peticiones).subscribe({
+
+    next: (respuestas) => {
+
+      console.log(
+        'Operaciones faciales completadas:',
+        respuestas
+      );
+
+      this.finalizarGuardadoFacial();
+
+    },
+
+    error: (error) => {
+
+      console.error(
+        'Error ejecutando operaciones faciales:',
+        error
+      );
+
+      this.guardandoRegistroFacial = false;
+
+      this.cargarRegistroFacial();
+
+      alertaError(
+        'Error al guardar fotografías',
+        error?.error?.error ||
+        error?.error?.detail ||
+        'No fue posible completar todas las operaciones faciales.'
+      );
+
+      this.cdr.detectChanges();
+
+    }
+
+  });
+
+}
+
+
+// ============================================================
+// FINALIZAR GUARDADO FACIAL
+// ============================================================
+
+private finalizarGuardadoFacial(): void {
+
+  this.fotoFrontal = null;
+  this.fotoIzquierda = null;
+  this.fotoDerecha = null;
+
+  this.fotosAdicionales = this.fotosAdicionales.map(foto => ({
+    ...foto,
+    archivo: null
+  }));
+
+  this.cdr.detectChanges();
+
+  // Esperar a que el backend devuelva los registros actualizados.
+  this.cargarRegistroFacial(() => {
+
+    this.guardandoRegistroFacial = false;
+
+    this.mostrarFinalizacionExitosa();
+
+    this.cdr.detectChanges();
+
+  });
+
+}
+
+
+// ============================================================
+// REGISTRAR FOTOGRAFÍAS FACIALES INICIALES
+// ============================================================
+
+private registrarFotografiasFaciales(): void {
+
+  if (
+    !this.fotoFrontal ||
+    !this.fotoIzquierda ||
+    !this.fotoDerecha
+  ) {
+
+    alertaAdvertencia(
+      'Fotografías incompletas',
+      'Debe seleccionar las tres fotografías obligatorias.'
+    );
+
+    return;
+  }
+
+  const datos = new FormData();
+
+  datos.append(
+    'id_paciente',
+    String(this.idPaciente)
+  );
+
+  // IMPORTANTE:
+  // El orden debe coincidir con el backend:
+  // FRONTAL, IZQUIERDA y DERECHA.
+
   datos.append(
     'fotografias',
     this.fotoFrontal,
@@ -2183,10 +2746,10 @@ export class ElementosPaciente implements OnInit {
     this.fotoDerecha.name
   );
 
-  // Agregar únicamente fotografías adicionales nuevas.
-  // Las recuperadas desde Cloudinary tienen archivo = null y no deben
-  // volver a enviarse porque ya existen en la base de datos.
+  // Fotografías adicionales iniciales.
+
   this.fotosAdicionales.forEach(foto => {
+
     if (!foto.archivo) return;
 
     datos.append(
@@ -2194,62 +2757,86 @@ export class ElementosPaciente implements OnInit {
       foto.archivo,
       foto.archivo.name
     );
+
   });
 
   this.guardandoRegistroFacial = true;
 
-  // Una sola petición al backend
   this.http.post(
     `${this.apiUrl}/registros_faciales/registrar/`,
     datos
   ).subscribe({
-    next: (respuesta: any) => {
-      console.log('Registro facial completado:', respuesta);
 
-      this.guardandoRegistroFacial = false;
-      this.registroFacialCompletado = true;
+    next: (respuesta) => {
 
-      this.cdr.detectChanges();
+      console.log(
+        'Registro facial inicial creado:',
+        respuesta
+      );
 
-      this.mostrarFinalizacionExitosa();
+      this.finalizarGuardadoFacial();
+
     },
 
     error: (error) => {
+
       console.error(
-        'Error al guardar el registro facial:',
+        'Error registrando fotografías:',
         error
       );
 
       this.guardandoRegistroFacial = false;
 
-      this.cdr.detectChanges();
-
       alertaError(
-        'No se pudo guardar el registro facial',
+        'No se pudo registrar el rostro',
         error?.error?.error ||
         error?.error?.detail ||
-        'Verifique que las fotografías permitan detectar correctamente el rostro.'
+        'Verifique las fotografías e intente nuevamente.'
       );
+
+      this.cdr.detectChanges();
+
     }
+
   });
+
 }
 
-  private mostrarFinalizacionExitosa(): void {
-    alertaExito('¡Registro finalizado!', 'La información del paciente y su registro facial se guardaron correctamente.').then(() => {
-      this.mostrarBarraFinal = false;
-      this.cdr.detectChanges();
-    });
-  }
 
-  // ============================================================
+// ============================================================
+// MENSAJE DE FINALIZACIÓN EXITOSA
+// ============================================================
+
+private mostrarFinalizacionExitosa(): void {
+
+  alertaExito(
+    '¡Registro finalizado!',
+    'La información del paciente y su registro facial se guardaron correctamente.'
+  ).then(() => {
+
+    this.mostrarBarraFinal = false;
+
+    this.cdr.detectChanges();
+
+  });
+
+}
+// ============================================================
 // CARGAR FOTOGRAFÍAS FACIALES DEL PACIENTE
 // ============================================================
 
-cargarRegistroFacial(): void {
+cargarRegistroFacial(
+  alFinalizar?: () => void
+): void {
 
   if (!this.idPaciente || this.idPaciente <= 0) {
-    console.error('No se pueden cargar las fotografías: ID de paciente inválido.');
+
+    console.error(
+      'No se pueden cargar las fotografías: ID de paciente inválido.'
+    );
+
     return;
+
   }
 
   this.cargandoRegistroFacial = true;
@@ -2262,85 +2849,136 @@ cargarRegistroFacial(): void {
 
     next: (respuesta) => {
 
-      // Admite tanto respuestas normales como respuestas paginadas de DRF.
+      // Obtener resultados independientemente
+      // de si el backend devuelve una lista o paginación.
+
       const registros = this.obtenerResultados(respuesta);
 
-      // Mostrar únicamente fotografías activas.
+      // Recuperar solamente fotografías activas.
+
       this.registrosFaciales = registros.filter(
         registro => registro.activo
       );
 
-      // Recuperar fotografía frontal.
+      // ==========================================
+      // FOTOGRAFÍA FRONTAL
+      // ==========================================
+
       const frontal = this.registrosFaciales.find(
         foto => foto.tipo_fotografia === 'FRONTAL'
       );
-      this.fotoFrontalPreview = frontal?.url_fotografia ?? null;
 
-      // Recuperar perfil izquierdo.
+      this.fotoFrontalPreview =
+        frontal?.url_fotografia ?? null;
+
+      this.idFotoFrontal =
+        frontal?.id_registro_facial ?? null;
+
+      // ==========================================
+      // PERFIL IZQUIERDO
+      // ==========================================
+
       const izquierda = this.registrosFaciales.find(
         foto => foto.tipo_fotografia === 'IZQUIERDA'
       );
-      this.fotoIzquierdaPreview = izquierda?.url_fotografia ?? null;
 
-      // Recuperar perfil derecho.
+      this.fotoIzquierdaPreview =
+        izquierda?.url_fotografia ?? null;
+
+      this.idFotoIzquierda =
+        izquierda?.id_registro_facial ?? null;
+
+      // ==========================================
+      // PERFIL DERECHO
+      // ==========================================
+
       const derecha = this.registrosFaciales.find(
         foto => foto.tipo_fotografia === 'DERECHA'
       );
-      this.fotoDerechaPreview = derecha?.url_fotografia ?? null;
 
-      // Recuperar fotografías adicionales ya almacenadas.
+      this.fotoDerechaPreview =
+        derecha?.url_fotografia ?? null;
+
+      this.idFotoDerecha =
+        derecha?.id_registro_facial ?? null;
+
+      // ==========================================
+      // FOTOGRAFÍAS ADICIONALES
+      // ==========================================
+
       this.fotosAdicionales = this.registrosFaciales
-        .filter(foto => foto.tipo_fotografia === 'ADICIONAL')
+
+        .filter(
+          foto => foto.tipo_fotografia === 'ADICIONAL'
+        )
+
         .map(foto => ({
+
           archivo: null,
+
           preview: foto.url_fotografia,
+
           id_registro_facial: foto.id_registro_facial
+
         }));
 
-      // El registro está completo si existen las tres vistas obligatorias.
+      // ==========================================
+      // VALIDAR SI EL REGISTRO ESTÁ COMPLETO
+      // ==========================================
+
       this.registroFacialCompletado = Boolean(
-        frontal && izquierda && derecha
+        frontal &&
+        izquierda &&
+        derecha
       );
 
       this.cargandoRegistroFacial = false;
 
       console.log(
-        `Fotografías faciales recuperadas para paciente ${this.idPaciente}:`,
+        'Fotografías faciales recuperadas:',
         this.registrosFaciales
       );
 
+      console.log(
+        'Identificadores de fotografías:',
+        {
+          frontal: this.idFotoFrontal,
+          izquierda: this.idFotoIzquierda,
+          derecha: this.idFotoDerecha
+        }
+      );
+
       this.cdr.detectChanges();
+
+      if (alFinalizar) {
+        alFinalizar();
+}
 
     },
 
     error: (error) => {
 
-      console.error(
-        'Error al recuperar fotografías faciales:',
-        error
-      );
+  console.error(
+    'Error al cargar registros faciales:',
+    error
+  );
 
-      this.registrosFaciales = [];
-      this.fotoFrontalPreview = null;
-      this.fotoIzquierdaPreview = null;
-      this.fotoDerechaPreview = null;
-      this.fotosAdicionales = [];
-      this.registroFacialCompletado = false;
-      this.cargandoRegistroFacial = false;
+  this.cargandoRegistroFacial = false;
+  this.guardandoRegistroFacial = false;
 
-      this.cdr.detectChanges();
+  this.cdr.detectChanges();
 
-      alertaError(
-        'Error al cargar fotografías',
-        error?.error?.detail ||
-        'No fue posible recuperar las fotografías faciales del paciente.'
-      );
+  alertaError(
+    'Error al cargar fotografías',
+    error?.error?.detail ||
+    'No fue posible recuperar las fotografías faciales del paciente. Intenta nuevamente.'
+  );
 
-    }
+}
 
   });
 
-} 
+}
   // ============================================================
   // SECCIÓN ACTUAL
   // ============================================================
@@ -2351,11 +2989,23 @@ cargarRegistroFacial(): void {
   // CAMBIAR SECCIÓN
   // ============================================================
 
-  cambiarSeccion(
-    seccion: 'elementos' | 'cuidados' | 'recomendaciones' | 'historia' | 'formulacion' | 'facial'
-  ): void {
-    this.seccionActual = seccion;
+ cambiarSeccion(
+  seccion:
+    | 'elementos'
+    | 'cuidados'
+    | 'recomendaciones'
+    | 'historia'
+    | 'formulacion'
+    | 'facial'
+): void {
+
+  this.seccionActual = seccion;
+
+  if (seccion === 'facial') {
+    this.cargarRegistroFacial();
   }
+
+}
   // ============================================================
   // INICIALES DEL PACIENTE
   // ============================================================
