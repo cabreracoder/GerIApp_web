@@ -2142,6 +2142,86 @@ export class ElementosPaciente implements OnInit {
 
 }
 
+// ============================================================
+// SELECCIONAR FOTOGRAFÍAS ADICIONALES
+// ============================================================
+
+seleccionarFotosAdicionales(evento: Event): void {
+
+  const input = evento.target as HTMLInputElement;
+
+  const archivos = Array.from(input.files ?? []);
+
+  if (archivos.length === 0) {
+    return;
+  }
+
+  archivos.forEach(archivo => {
+
+    // Validar que sea una imagen.
+    if (!archivo.type.startsWith('image/')) {
+
+      alertaAdvertencia(
+        'Archivo no válido',
+        `${archivo.name} no es una imagen válida.`
+      );
+
+      return;
+    }
+
+    // Validar tamaño máximo de 10 MB.
+    if (archivo.size > this.tamanoMaximoFoto) {
+
+      alertaAdvertencia(
+        'Imagen demasiado grande',
+        `${archivo.name} supera el límite de 10 MB.`
+      );
+
+      return;
+    }
+
+    const lector = new FileReader();
+
+    lector.onload = () => {
+
+      const preview = String(lector.result ?? '');
+
+      // Agregar la fotografía al arreglo.
+      this.fotosAdicionales.push({
+        archivo: archivo,
+        preview: preview
+      });
+
+      // Indicar que hay cambios pendientes.
+      this.registroFacialCompletado = false;
+
+      this.cdr.detectChanges();
+
+      console.log(
+        'Fotografía adicional seleccionada:',
+        archivo.name
+      );
+
+    };
+
+    lector.onerror = () => {
+
+      alertaError(
+        'Error al leer fotografía',
+        `No fue posible cargar ${archivo.name}.`
+      );
+
+    };
+
+    lector.readAsDataURL(archivo);
+
+  });
+
+  // Permitir seleccionar nuevamente los mismos archivos.
+  input.value = '';
+
+}
+
   quitarFotoFacial(tipo: TipoFotoFacial): void {
 
   let idRegistro: number | null = null;
