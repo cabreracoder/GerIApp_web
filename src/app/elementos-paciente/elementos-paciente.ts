@@ -2222,6 +2222,58 @@ export class ElementosPaciente implements OnInit {
   this.cdr.detectChanges();
 
 }
+
+// ============================================================
+// ELIMINAR FOTOGRAFÍA ADICIONAL
+// ============================================================
+
+quitarFotoAdicional(indice: number): void {
+
+  // Validar que el índice exista.
+  if (
+    indice < 0 ||
+    indice >= this.fotosAdicionales.length
+  ) {
+    return;
+  }
+
+  const foto = this.fotosAdicionales[indice];
+
+  if (!foto) {
+    return;
+  }
+
+  // Si la fotografía ya está guardada en el backend,
+  // eliminarla también de MySQL y Cloudinary.
+  if (foto.id_registro_facial != null) {
+
+    this.eliminarRegistroFacial(
+      foto.id_registro_facial,
+      'fotografía adicional',
+      () => {
+
+        this.fotosAdicionales.splice(indice, 1);
+
+        this.registroFacialCompletado = false;
+
+        this.cdr.detectChanges();
+
+      }
+    );
+
+    return;
+  }
+
+  // Si todavía no está guardada, eliminarla solamente
+  // del arreglo local.
+  this.fotosAdicionales.splice(indice, 1);
+
+  this.registroFacialCompletado = false;
+
+  this.cdr.detectChanges();
+
+}
+
 // ============================================================
 // ELIMINAR REGISTRO FACIAL DEL BACKEND Y CLOUDINARY
 // ============================================================
