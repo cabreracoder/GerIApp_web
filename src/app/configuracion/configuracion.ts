@@ -296,9 +296,11 @@ export class Configuracion implements OnInit, OnDestroy {
   camaraActiva = false;
   registrandoRostro = false;
 
-  // Este estado refleja el registro realizado durante esta sesión.
-  // Para persistirlo entre sesiones se necesita consultar un endpoint de estado.
+  // Estado persistente consultado desde el backend.
   rostroRegistrado = false;
+  consultandoEstadoRostro = false;
+  estadoRostroConsultado = false;
+  errorConsultaEstadoRostro = false;
 
   private flujoCamaraFacial: MediaStream | null = null;
 
@@ -355,12 +357,17 @@ export class Configuracion implements OnInit, OnDestroy {
       }
 
       this.idUsuario =
-        usuarioLocal.id_usuario;
+      usuarioLocal.id_usuario;
 
       console.log(
         'ID DEL USUARIO LOGUEADO:',
         this.idUsuario
       );
+
+      // Consultar si el usuario ya tiene un rostro registrado.
+      this.consultarEstadoRostro();
+
+
 
       this.http.get<Usuario>(
         `${this.apiUrl}/usuarios/${this.idUsuario}/`
@@ -431,6 +438,61 @@ export class Configuracion implements OnInit, OnDestroy {
 
       this.cdr.detectChanges();
     }
+  }
+
+  // =====================================================
+  // CONSULTAR ESTADO DEL REGISTRO FACIAL
+  // =====================================================
+
+  consultarEstadoRostro(): void {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      console.error(
+        'No se encontró el token para consultar el registro facial.'
+      );
+      this.errorConsultaEstadoRostro = true;
+      this.consultandoEstadoRostro = false;
+      this.estadoRostroConsultado = false;
+      this.cdr.detectChanges();
+      return;
+    }
+
+    this.consultandoEstadoRostro = true;
+    this.errorConsultaEstadoRostro = false;
+
+    this.http.get<{ registrado: boolean; mensaje: string }>(
+      `${this.apiUrl}/usuarios/estado-rostro/`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    ).subscribe({
+      next: (respuesta) => {
+        console.log(
+          'ESTADO DEL REGISTRO FACIAL:',
+          respuesta
+        );
+
+        this.rostroRegistrado = respuesta.registrado === true;
+        this.estadoRostroConsultado = true;
+        this.errorConsultaEstadoRostro = false;
+        this.consultandoEstadoRostro = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error(
+          'ERROR AL CONSULTAR EL ESTADO FACIAL:',
+          error
+        );
+
+        this.consultandoEstadoRostro = false;
+        this.errorConsultaEstadoRostro = true;
+        this.estadoRostroConsultado = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   // =====================================================
@@ -1333,6 +1395,8 @@ export class Configuracion implements OnInit, OnDestroy {
         next: (respuesta) => {
           this.registrandoRostro = false;
           this.rostroRegistrado = true;
+          this.estadoRostroConsultado = true;
+          this.errorConsultaEstadoRostro = false;
 
           this.detenerCamaraFacial();
           this.mostrarRegistroFacial = false;

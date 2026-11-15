@@ -6,30 +6,45 @@
   <header class="encabezado-configuracion">
     <div class="contenido-encabezado-configuracion">
       <h1 class="titulo-configuracion">Perfil</h1>
+
       <p class="subtitulo-configuracion">
         Configure su perfil y cambie su contraseña para mantener su cuenta segura.
       </p>
     </div>
   </header>
 
+
   <!-- =====================================================
        PERFIL DE ADMINISTRADOR
   ====================================================== -->
   <section class="tarjeta-configuracion">
+
     <div class="titulo-seccion-configuracion">
       <span class="material-symbols-outlined">manage_accounts</span>
       <h3>Perfil de Administrador</h3>
     </div>
 
     <div class="fila-perfil-configuracion">
+
       <div class="avatar-administrador">
-        <img *ngIf="fotoUsuario" [src]="fotoUsuario" alt="Foto de perfil">
-        <span *ngIf="!fotoUsuario">{{ inicialesUsuario }}</span>
+        <img
+          *ngIf="fotoUsuario"
+          [src]="fotoUsuario"
+          alt="Foto de perfil">
+
+        <span *ngIf="!fotoUsuario">
+          {{ inicialesUsuario }}
+        </span>
       </div>
 
       <div class="informacion-perfil">
-        <div class="nombre-perfil">{{ nombreUsuario }}</div>
-        <div class="datos-perfil">{{ cargoUsuario }} · {{ correoUsuario }}</div>
+        <div class="nombre-perfil">
+          {{ nombreUsuario }}
+        </div>
+
+        <div class="datos-perfil">
+          {{ cargoUsuario }} · {{ correoUsuario }}
+        </div>
       </div>
 
       <input
@@ -45,14 +60,19 @@
         (click)="cambiarFoto(selectorFoto)">
         Cambiar foto
       </button>
+
     </div>
 
+
+    <!-- FORMULARIO DEL PERFIL -->
     <div class="cuadricula-formulario-configuracion">
 
       <div class="campo-formulario-configuracion">
         <label for="configuracionNombre">
-          Nombre Completo <span class="asterisco-obligatorio">*</span>
+          Nombre Completo
+          <span class="asterisco-obligatorio">*</span>
         </label>
+
         <input
           id="configuracionNombre"
           type="text"
@@ -61,10 +81,13 @@
           required>
       </div>
 
+
       <div class="campo-formulario-configuracion">
         <label for="configuracionEmail">
-          Correo Electrónico <span class="asterisco-obligatorio">*</span>
+          Correo Electrónico
+          <span class="asterisco-obligatorio">*</span>
         </label>
+
         <input
           id="configuracionEmail"
           type="email"
@@ -73,10 +96,13 @@
           required>
       </div>
 
+
       <div class="campo-formulario-configuracion">
         <label for="configuracionTelefono">
-          Teléfono <span class="asterisco-obligatorio">*</span>
+          Teléfono
+          <span class="asterisco-obligatorio">*</span>
         </label>
+
         <input
           id="configuracionTelefono"
           type="tel"
@@ -85,8 +111,12 @@
           required>
       </div>
 
+
       <div class="campo-formulario-configuracion">
-        <label for="configuracionCargo">Cargo</label>
+        <label for="configuracionCargo">
+          Cargo
+        </label>
+
         <input
           id="configuracionCargo"
           type="text"
@@ -96,7 +126,10 @@
 
     </div>
 
+
+    <!-- GUARDAR CAMBIOS -->
     <div class="pie-tarjeta-configuracion">
+
       <button
         type="button"
         class="boton-principal-configuracion"
@@ -113,8 +146,12 @@
         </span>
 
       </button>
+
     </div>
+
   </section>
+
+
 
   <!-- =====================================================
        RECONOCIMIENTO FACIAL
@@ -126,15 +163,20 @@
       <h3>Reconocimiento facial</h3>
     </div>
 
+
     <div class="contenedor-registro-facial">
 
+      <!-- ICONO -->
       <div class="icono-registro-facial">
         <span class="material-symbols-outlined">
           face_retouching_natural
         </span>
       </div>
 
+
+      <!-- INFORMACIÓN -->
       <div class="informacion-registro-facial">
+
         <h4>Registra tu rostro</h4>
 
         <p>
@@ -142,30 +184,84 @@
           facial al iniciar sesión en GerIApp.
         </p>
 
+
+        <!-- ESTADO DEL REGISTRO FACIAL -->
         <div
           class="estado-registro-facial"
-          [class.registro-completado]="rostroRegistrado">
+          [class.registro-completado]="rostroRegistrado && !consultandoEstadoRostro"
+          [class.registro-consultando]="consultandoEstadoRostro"
+          [class.registro-error]="errorConsultaEstadoRostro">
 
-          <span class="material-symbols-outlined">
-            {{ rostroRegistrado ? 'check_circle' : 'info' }}
-          </span>
+          <!-- CONSULTANDO ESTADO -->
+          <ng-container *ngIf="consultandoEstadoRostro">
 
-          {{
-            rostroRegistrado
-              ? 'Rostro registrado en esta sesión'
-              : 'Registro facial pendiente de confirmar'
-          }}
+            <span class="material-symbols-outlined">
+              sync
+            </span>
+
+            Consultando registro facial...
+
+          </ng-container>
+
+
+          <!-- CONSULTA EXITOSA -->
+          <ng-container
+            *ngIf="!consultandoEstadoRostro && !errorConsultaEstadoRostro">
+
+            <!-- ROSTRO REGISTRADO -->
+            <ng-container
+              *ngIf="rostroRegistrado; else rostroPendiente">
+
+              <span class="material-symbols-outlined">
+                check_circle
+              </span>
+
+              Rostro registrado correctamente
+
+            </ng-container>
+
+
+            <!-- ROSTRO PENDIENTE -->
+            <ng-template #rostroPendiente>
+
+              <span class="material-symbols-outlined">
+                info
+              </span>
+
+              Registro facial pendiente
+
+            </ng-template>
+
+          </ng-container>
+
+
+          <!-- ERROR AL CONSULTAR -->
+          <ng-container
+            *ngIf="!consultandoEstadoRostro && errorConsultaEstadoRostro">
+
+            <span class="material-symbols-outlined">
+              warning
+            </span>
+
+            No fue posible verificar el registro facial
+
+          </ng-container>
 
         </div>
+
       </div>
 
+
+      <!-- BOTÓN PARA REGISTRAR O ACTUALIZAR -->
       <button
         type="button"
         class="boton-registro-facial"
         (click)="abrirRegistroFacial()"
-        [disabled]="registrandoRostro">
+        [disabled]="registrandoRostro || consultandoEstadoRostro">
 
-        <span class="material-symbols-outlined">face</span>
+        <span class="material-symbols-outlined">
+          face
+        </span>
 
         {{
           rostroRegistrado
@@ -176,7 +272,10 @@
       </button>
 
     </div>
+
   </section>
+
+
 
   <!-- =====================================================
        SEGURIDAD
@@ -188,9 +287,12 @@
       <h3>Seguridad</h3>
     </div>
 
+
     <div class="cuadricula-seguridad-configuracion">
 
+      <!-- CONTRASEÑA ACTUAL -->
       <div class="campo-formulario-configuracion">
+
         <label for="configuracionPasswordActual">
           Contraseña actual
         </label>
@@ -201,13 +303,19 @@
           placeholder="••••••••"
           [(ngModel)]="contrasenaActual"
           autocomplete="current-password">
+
       </div>
+
 
       <div class="campo-formulario-vacio"></div>
 
+
+      <!-- NUEVA CONTRASEÑA -->
       <div class="campo-formulario-configuracion">
+
         <label for="configuracionPasswordNueva">
-          Nueva contraseña <span class="asterisco-obligatorio">*</span>
+          Nueva contraseña
+          <span class="asterisco-obligatorio">*</span>
         </label>
 
         <input
@@ -218,11 +326,16 @@
           autocomplete="new-password"
           minlength="8"
           maxlength="10">
+
       </div>
 
+
+      <!-- CONFIRMAR CONTRASEÑA -->
       <div class="campo-formulario-configuracion">
+
         <label for="configuracionPasswordConfirmar">
-          Confirmar contraseña <span class="asterisco-obligatorio">*</span>
+          Confirmar contraseña
+          <span class="asterisco-obligatorio">*</span>
         </label>
 
         <input
@@ -233,25 +346,34 @@
           autocomplete="new-password"
           minlength="8"
           maxlength="10">
+
       </div>
 
     </div>
 
+
+    <!-- ACTUALIZAR CONTRASEÑA -->
     <div class="pie-seguridad-configuracion">
+
       <button
         type="button"
         class="boton-outline-configuracion"
         (click)="actualizarContrasena()">
+
         Actualizar contraseña
+
       </button>
+
     </div>
 
   </section>
 
 </main>
 
+
+
 <!-- =====================================================
-     MODAL REGISTRO FACIAL
+     MODAL DE REGISTRO FACIAL
 ====================================================== -->
 <div
   class="modal-overlay modal-registro-facial-overlay"
@@ -263,6 +385,7 @@
     aria-modal="true"
     aria-labelledby="tituloRegistroFacial">
 
+
     <!-- CERRAR MODAL -->
     <button
       type="button"
@@ -270,10 +393,13 @@
       aria-label="Cerrar"
       (click)="cerrarRegistroFacial()"
       [disabled]="registrandoRostro">
+
       &times;
+
     </button>
 
-    <!-- ENCABEZADO -->
+
+    <!-- ENCABEZADO DEL MODAL -->
     <div class="encabezado-modal-facial">
 
       <span class="material-symbols-outlined">
@@ -285,10 +411,12 @@
       </h3>
 
       <p>
-        Ubica tu rostro dentro del área indicada para registrar tus características faciales.
+        Ubica tu rostro dentro del área indicada para registrar tus
+        características faciales.
       </p>
 
     </div>
+
 
     <!-- CÁMARA -->
     <div class="camara-registro-facial">
@@ -306,38 +434,55 @@
 
     </div>
 
+
     <!-- INSTRUCCIONES -->
     <p class="instrucciones-camara-facial">
-      Mantén tu rostro centrado, mira hacia la cámara y procura tener buena iluminación.
+
+      Mantén tu rostro centrado, mira hacia la cámara y procura tener
+      buena iluminación.
+
     </p>
 
-    <!-- BOTONES -->
+
+    <!-- BOTONES DEL MODAL -->
     <div class="acciones-registro-facial">
 
+      <!-- CANCELAR -->
       <button
         type="button"
         class="boton-cancelar-facial"
         (click)="cerrarRegistroFacial()"
         [disabled]="registrandoRostro">
+
         Cancelar
+
       </button>
 
+
+      <!-- CAPTURAR Y REGISTRAR -->
       <button
         type="button"
         class="boton-capturar-facial"
         (click)="capturarYRegistrarRostro()"
         [disabled]="!camaraActiva || registrandoRostro">
 
+
+        <!-- ICONO DE CÁMARA -->
         <span
           class="material-symbols-outlined"
           *ngIf="!registrandoRostro">
+
           photo_camera
+
         </span>
 
+
+        <!-- INDICADOR DE CARGA -->
         <span
           class="spinner-registro-facial"
           *ngIf="registrandoRostro">
         </span>
+
 
         {{
           registrandoRostro
@@ -349,10 +494,15 @@
 
     </div>
 
-    <!-- PRIVACIDAD -->
+
+    <!-- AVISO DE PRIVACIDAD -->
     <p class="privacidad-registro-facial">
-      La imagen se envía para generar el registro facial y no se guarda como fotografía de perfil.
+
+      La imagen se envía para generar el registro facial y no se guarda
+      como fotografía de perfil.
+
     </p>
 
   </div>
+
 </div>
