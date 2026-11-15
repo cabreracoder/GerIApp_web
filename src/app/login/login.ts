@@ -1,4 +1,9 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  ElementRef,
+  ViewChild
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -225,7 +230,7 @@ function alertaAdvertencia(titulo: string, mensaje?: string) {
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
-export class Login {
+export class Login implements OnDestroy {
 
   // =========================================================
   // URL BASE DE LA API
@@ -248,6 +253,316 @@ export class Login {
   error = '';
   cargando = false;
   cargandoRecuperacion = false;
+
+// =========================================================
+// LOGIN CON RECONOCIMIENTO FACIAL
+// =========================================================
+
+mostrarLoginFacial = false;
+cargandoLoginFacial = false;
+camaraActiva = false;
+
+private flujoCamara: MediaStream | null = null;
+
+@ViewChild('videoFacial')
+videoFacial!: ElementRef<HTMLVideoElement>;
+
+// =========================================================
+// ABRIR LOGIN FACIAL
+// =========================================================
+
+async abrirLoginFacial(): Promise<void> {
+
+  this.mostrarLoginFacial = true;
+
+  try {
+
+    if (!navigator.mediaDevices?.getUserMedia) {
+      throw new Error(
+        'Tu navegador no permite acceder a la cámara.'
+      );
+    }
+
+    this.flujoCamara = await navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'user',
+        width: { ideal: 640 },
+        height: { ideal: 480 }
+      },
+      audio: false
+    });
+
+    this.camaraActiva = true;
+
+    this.cd.detectChanges();
+
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    const video = this.videoFacial?.nativeElement;
+
+    if (video) {
+
+      video.srcObject = this.flujoCamara;
+
+      await video.play();
+
+    }
+
+  } catch (error) {
+
+    console.error('Error al abrir la cámara:', error);
+
+    this.detenerCamara();
+
+    this.mostrarLoginFacial = false;
+
+    alertaError(
+      'No se pudo acceder a la cámara',
+      'Verifica que hayas concedido los permisos de cámara al navegador.'
+    );
+
+  }
+
+}
+
+
+// =========================================================
+// CAPTURAR FOTOGRAFÍA Y ENVIAR AL BACKEND
+// =========================================================
+
+capturarRostro(): void {
+
+  if (this.cargandoLoginFacial) {
+    return;
+  }
+
+  const video = this.videoFacial?.nativeElement;
+
+  if (!video || video.videoWidth === 0 || video.videoHeight === 0) {
+
+    alertaAdvertencia(
+      'Cámara no disponible',
+      'Espera un momento e intenta nuevamente.'
+    );
+
+    return;
+  }
+
+  const canvas = document.createElement('canvas');
+
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+
+  const contexto = canvas.getContext('2d');
+
+  if (!contexto) {
+
+    alertaError(
+      'Error',
+      'No fue posible procesar la fotografía.'
+    );
+
+    return;
+  }
+
+  contexto.drawImage(
+    video,
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+  canvas.toBlob((blob) => {
+
+    if (!blob) {
+
+      alertaError(
+        'Error',
+        'No fue posible capturar la fotografía.'
+      );
+
+      return;
+    }
+
+    const imagen = new File(
+      [blob],
+      'rostro_login.jpg',
+      { type: 'image/jpeg' }
+    );
+
+    this.enviarImagenLoginFacial(imagen);
+
+  }, 'image/jpeg', 0.90);
+
+}
+
+
+// =========================================================
+// ENVIAR IMAGEN AL BACKEND
+// =========================================================
+
+private enviarImagenLoginFacial(imagen: File): void {
+
+  this.cargandoLoginFacial = true;
+
+  const formulario = new FormData();
+
+  formulario.append('imagen', imagen);
+
+  this.http.post<any>(
+    `${this.apiUrl}/usuarios/login-facial/`,
+    formulario
+  ).subscribe({
+
+    next: (respuesta) => {
+
+      this.cargandoLoginFacial = false;
+
+      console.log(
+        'Respuesta del login facial:',
+        respuesta
+      );
+
+      if (respuesta.usuario) {
+
+        localStorage.setItem(
+          'usuario',
+          JSON.stringify(respuesta.usuario)
+        );
+
+        this.store.dispatch(
+          iniciarSesion({
+            usuario: respuesta.usuario as UsuarioSesion
+          })
+        );
+
+      }
+
+      if (respuesta.token) {
+
+        localStorage.setItem(
+          'token',
+          respuesta.token
+        );
+
+      }
+
+      this.detenerCamara();
+
+      this.mostrarLoginFacial = false;
+
+      alertaExito(
+        '¡Bienvenido!',
+        respuesta.mensaje || 'Reconocimiento facial exitoso.'
+      ).then(() => {
+
+        const idRol = Number(respuesta.usuario?.id_rol);
+
+        if (idRol === 4) {
+
+          this.router.navigate(['/superadministrador']);
+
+        } else {
+
+          this.router.navigate(['/dashboard']);
+
+        }
+
+      });
+
+    },
+
+    error: (respuestaError) => {
+
+      console.error(
+        'Error en login facial:',
+        respuestaError
+      );
+
+      this.cargandoLoginFacial = false;
+
+      this.cd.detectChanges();
+
+      const mensajeBackend =
+        respuestaError?.error?.error ||
+        respuestaError?.error?.mensaje;
+
+      if (respuestaError.status === 403) {
+
+        alertaAdvertencia(
+          'Acceso no autorizado',
+          mensajeBackend || 'No fue posible validar tu identidad.'
+        );
+
+      } else if (respuestaError.status === 429) {
+
+        alertaAdvertencia(
+          'Demasiados intentos',
+          mensajeBackend || 'Has superado el límite de intentos. Intenta nuevamente más tarde.'
+        );
+
+      } else {
+
+        alertaError(
+          'Reconocimiento facial fallido',
+          mensajeBackend || 'No fue posible reconocer tu rostro. Intenta nuevamente.'
+        );
+
+      }
+
+    }
+
+  });
+
+}
+
+
+// =========================================================
+// DETENER CÁMARA
+// =========================================================
+
+detenerCamara(): void {
+
+  if (this.flujoCamara) {
+
+    this.flujoCamara.getTracks().forEach(track => {
+      track.stop();
+    });
+
+    this.flujoCamara = null;
+
+  }
+
+  this.camaraActiva = false;
+
+}
+
+
+// =========================================================
+// CERRAR LOGIN FACIAL
+// =========================================================
+
+cerrarLoginFacial(): void {
+
+  this.detenerCamara();
+
+  this.mostrarLoginFacial = false;
+
+  this.cargandoLoginFacial = false;
+
+}
+
+
+// =========================================================
+// LIBERAR CÁMARA AL DESTRUIR EL COMPONENTE
+// =========================================================
+
+ngOnDestroy(): void {
+
+  this.detenerCamara();
+
+}
 
   // =========================================================
   // RECUPERACIÓN DE CONTRASEÑA
