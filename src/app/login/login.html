@@ -150,17 +150,24 @@
 
       <!-- LOGIN CON RECONOCIMIENTO FACIAL -->
       <button
-        type="button"
-        class="btn-facial"
-        (click)="abrirLoginFacial()">
+      type="button"
+      class="btn-facial"
+      (click)="abrirLoginFacial()"
+      [disabled]="cargandoLoginFacial">
 
-        <span class="material-symbols-outlined">
-          face
-        </span>
+      <span class="material-symbols-outlined" *ngIf="!cargandoLoginFacial">
+        face
+      </span>
 
-        <span>Iniciar sesión con reconocimiento facial</span>
+      <span class="facial-spinner" *ngIf="cargandoLoginFacial"></span>
 
-      </button>
+      <span>
+        {{ cargandoLoginFacial
+          ? 'Verificando rostro...'
+          : 'Iniciar sesión con reconocimiento facial' }}
+      </span>
+
+    </button>
 
       <!-- REGISTRO -->
       <p class="registro-link">

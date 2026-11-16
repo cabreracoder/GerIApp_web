@@ -339,12 +339,10 @@ capturarRostro(): void {
   const video = this.videoFacial?.nativeElement;
 
   if (!video || video.videoWidth === 0 || video.videoHeight === 0) {
-
     alertaAdvertencia(
       'Cámara no disponible',
       'Espera un momento e intenta nuevamente.'
     );
-
     return;
   }
 
@@ -356,12 +354,10 @@ capturarRostro(): void {
   const contexto = canvas.getContext('2d');
 
   if (!contexto) {
-
     alertaError(
       'Error',
       'No fue posible procesar la fotografía.'
     );
-
     return;
   }
 
@@ -373,9 +369,16 @@ capturarRostro(): void {
     canvas.height
   );
 
+  // ACTIVAR EL ESTADO DE CARGA INMEDIATAMENTE
+  this.cargandoLoginFacial = true;
+  this.cd.detectChanges();
+
   canvas.toBlob((blob) => {
 
     if (!blob) {
+
+      this.cargandoLoginFacial = false;
+      this.cd.detectChanges();
 
       alertaError(
         'Error',
@@ -397,14 +400,15 @@ capturarRostro(): void {
 
 }
 
-
 // =========================================================
 // ENVIAR IMAGEN AL BACKEND
 // =========================================================
 
 private enviarImagenLoginFacial(imagen: File): void {
 
+  // Mantener activo el estado de verificación
   this.cargandoLoginFacial = true;
+  this.cd.detectChanges();
 
   const formulario = new FormData();
 
@@ -418,6 +422,7 @@ private enviarImagenLoginFacial(imagen: File): void {
     next: (respuesta) => {
 
       this.cargandoLoginFacial = false;
+      this.cd.detectChanges();
 
       console.log(
         'Respuesta del login facial:',
@@ -460,13 +465,9 @@ private enviarImagenLoginFacial(imagen: File): void {
         const idRol = Number(respuesta.usuario?.id_rol);
 
         if (idRol === 4) {
-
           this.router.navigate(['/superadministrador']);
-
         } else {
-
           this.router.navigate(['/dashboard']);
-
         }
 
       });
@@ -481,7 +482,6 @@ private enviarImagenLoginFacial(imagen: File): void {
       );
 
       this.cargandoLoginFacial = false;
-
       this.cd.detectChanges();
 
       const mensajeBackend =
@@ -516,7 +516,6 @@ private enviarImagenLoginFacial(imagen: File): void {
   });
 
 }
-
 
 // =========================================================
 // DETENER CÁMARA
