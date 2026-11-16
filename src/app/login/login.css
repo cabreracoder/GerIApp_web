@@ -1771,3 +1771,161 @@
   }
 
 }
+
+
+/* =====================================================
+   ACCESOS ALTERNATIVOS - GOOGLE Y RECONOCIMIENTO FACIAL
+===================================================== */
+
+.accesos-alternativos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.acceso-alternativo {
+  position: relative;
+  min-height: 125px;
+  width: 100%;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  padding: 13px 8px;
+
+  background: #ffffff;
+  border: 1px solid #dfe3e8;
+  border-radius: 13px;
+
+  transition: all 0.25s ease;
+}
+
+/* GOOGLE */
+
+.google-container {
+  cursor: pointer;
+}
+
+.icono-google {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* BOTÓN REAL DE GOOGLE */
+
+.google-login-real {
+  position: absolute;
+  top: 13px;
+  left: 50%;
+
+  width: 42px;
+  height: 42px;
+
+  transform: translateX(-50%);
+  z-index: 2;
+
+  opacity: 0;
+  overflow: hidden;
+}
+
+.google-login-real asl-google-signin-button {
+  display: block;
+  width: 42px;
+  height: 42px;
+}
+
+/* TEXTOS */
+
+.acceso-titulo {
+  color: #263957;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.acceso-descripcion {
+  color: #8993a3;
+  font-size: 11px;
+  font-weight: 400;
+  text-align: center;
+}
+
+/* EFECTO GOOGLE */
+
+.google-container:hover {
+  background: #f9fbff;
+  border-color: #b7c9ef;
+  box-shadow: 0 4px 12px rgba(49, 91, 225, 0.08);
+}
+
+/* RECONOCIMIENTO FACIAL */
+
+.facial-alternativo {
+  background: #f0f4ff;
+  border-color: #cbd8ff;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.facial-alternativo .icono-facial {
+  font-size: 36px;
+  color: #315be1;
+  line-height: 1;
+  margin-bottom: 3px;
+}
+
+.facial-alternativo .acceso-titulo {
+  color: #263957;
+}
+
+.facial-alternativo .acceso-descripcion {
+  color: #647da9;
+}
+
+.facial-alternativo:hover:not(:disabled) {
+  background: #e6edff;
+  border-color: #9db5ff;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 4px 12px rgba(49, 91, 225, 0.10);
+}
+
+.facial-alternativo:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 480px) {
+
+  .accesos-alternativos {
+    gap: 10px;
+  }
+
+  .acceso-alternativo {
+    min-height: 115px;
+    padding: 10px 5px;
+  }
+
+  .acceso-titulo {
+    font-size: 12px;
+  }
+
+  .acceso-descripcion {
+    font-size: 10px;
+  }
+
+}
+
