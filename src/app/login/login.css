@@ -21,7 +21,6 @@
   overflow: hidden;
 }
 
-
 /* panel  azul*/
 
 .branding-panel {
@@ -43,7 +42,6 @@
   border-radius: 0 55% 55% 0;
 }
 
-
 /* Curva */
 
 .branding-panel::after {
@@ -63,7 +61,6 @@
 
   z-index: 0;
 }
-
 
 /* Círculos */
 
@@ -102,7 +99,6 @@
   margin-left: -10px;
 }
 
-
 /* logo */
 
 .logo-gerIapp {
@@ -114,7 +110,6 @@
 
   justify-content: center;
 }
-
 
 .logo-gerIapp-img {
   display: block;
@@ -129,7 +124,6 @@
 
   margin: 0 auto 8px;
 }
-
 
 /* Nombre */
 
@@ -146,7 +140,6 @@
 
   letter-spacing: -1px;
 }
-
 
 /* Gestión geriátrica */
 
@@ -178,7 +171,6 @@
 
   line-height: 1.25;
 }
-
 
 .branding-text p {
   max-width: 340px;
@@ -229,7 +221,6 @@
   margin-bottom: 30px;
 }
 
-
 .login-header h1 {
   margin: 0 0 8px;
 
@@ -242,7 +233,6 @@
   font-weight: 700;
 }
 
-
 .subtitulo {
   margin: 0;
 
@@ -254,7 +244,6 @@
 .campo {
   margin-bottom: 20px;
 }
-
 
 .campo label {
   display: block;
@@ -286,14 +275,12 @@
   transition: 0.2s ease;
 }
 
-
 .input-container:focus-within {
   border-color: #3b5bdb;
 
   box-shadow:
     0 0 0 3px rgba(59, 91, 219, 0.1);
 }
-
 
 .input-icon {
   width: 46px;
@@ -309,7 +296,6 @@
 
   font-size: 18px;
 }
-
 
 .input-container input {
   flex: 1;
@@ -329,11 +315,9 @@
   padding: 0 5px;
 }
 
-
 .input-container input::placeholder {
   color: #8a919a;
 }
-
 
 .password-icon {
   width: 46px;
@@ -359,7 +343,6 @@
 
   margin-bottom: 22px;
 }
-
 
 .recuperar-btn {
   padding: 0;
@@ -396,7 +379,6 @@
 .input-error {
   border: 1px solid #dc2626 !important;
 }
-
 
 .mensaje-error {
   color: #dc2626;
@@ -442,7 +424,6 @@
   transition: 0.2s ease;
 }
 
-
 .btn-login:hover {
   background: #2f50cb;
 
@@ -451,7 +432,6 @@
   box-shadow:
     0 7px 18px rgba(59, 91, 219, 0.22);
 }
-
 
 .btn-login:disabled {
   opacity: 0.65;
@@ -462,77 +442,6 @@
 
   box-shadow: none;
 }
-
-
-.separador {
-  width: 100%;
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 14px;
-
-  margin: 22px 0;
-}
-
-
-.separador span {
-  flex: 1;
-
-  height: 1px;
-
-  background: #e5e8ec;
-}
-
-
-.separador p {
-  margin: 0;
-
-  color: #7a8088;
-
-  font-size: 13px;
-}
-
-
-/* google */
-
-.btn-google {
-  width: 100%;
-
-  height: 52px;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  gap: 10px;
-
-  border: 1px solid #dfe3e8;
-
-  border-radius: 11px;
-
-  background: white;
-
-  color: #212529;
-
-  font-size: 14px;
-
-  font-weight: 600;
-
-  cursor: pointer;
-}
-
-
-.google-icon {
-  font-size: 19px;
-
-  font-weight: 700;
-
-  color: #4285f4;
-}
-
 
 /* registro*/
 
@@ -545,7 +454,6 @@
 
   font-size: 14px;
 }
-
 
 .registro-link button {
   margin-left: 4px;
@@ -599,9 +507,7 @@
 
 }
 
-
 @media (max-width: 700px) {
-
 
   .login-container {
     width: 100%;
@@ -615,7 +521,6 @@
 
     background: #f8fafc;
   }
-
 
   .branding-panel {
     width: 100%;
@@ -634,7 +539,6 @@
     padding: 15px 20px;
   }
 
-
   .branding-panel::after {
     width: 500px;
     height: 360px;
@@ -650,7 +554,6 @@
     left: -50px;
     bottom: 10px;
   }
-
 
   .branding-content {
     width: 100%;
@@ -672,7 +575,6 @@
     margin-bottom: 3px;
   }
 
-
   .logo-gerIapp h2 {
     margin: 0;
 
@@ -680,7 +582,6 @@
 
     line-height: 1;
   }
-
 
   .logo-gerIapp p {
     margin-top: 5px;
@@ -702,7 +603,6 @@
 
     line-height: 1.2;
   }
-
 
   .branding-text p {
     max-width: 280px;
@@ -730,8 +630,6 @@
     background: #f8fafc;
   }
 
-
-
   .login-card {
     width: 100%;
 
@@ -745,11 +643,9 @@
       0 5px 20px rgba(33, 37, 41, 0.06);
   }
 
-
   .login-header {
     margin-bottom: 25px;
   }
-
 
   .login-header h1 {
     font-size: 24px;
@@ -757,16 +653,13 @@
     margin-bottom: 6px;
   }
 
-
   .subtitulo {
     font-size: 14px;
   }
 
-
   .campo {
     margin-bottom: 17px;
   }
-
 
   .campo label {
     margin-bottom: 7px;
@@ -774,13 +667,11 @@
     font-size: 13px;
   }
 
-
   .input-container {
     height: 50px;
 
     border-radius: 10px;
   }
-
 
   .input-icon {
     width: 42px;
@@ -788,16 +679,13 @@
     font-size: 17px;
   }
 
-
   .password-icon {
     width: 42px;
   }
 
-
   .input-container input {
     font-size: 14px;
   }
-
 
   .recuperar-container {
     margin-top: 0;
@@ -805,11 +693,9 @@
     margin-bottom: 20px;
   }
 
-
   .recuperar-btn {
     font-size: 13px;
   }
-
 
   .btn-login {
     height: 50px;
@@ -819,20 +705,9 @@
     font-size: 15px;
   }
 
-
   .separador {
     margin: 20px 0;
   }
-
-
-  .btn-google {
-    height: 50px;
-
-    border-radius: 10px;
-
-    font-size: 14px;
-  }
-
 
   .registro-link {
     margin-top: 22px;
@@ -840,13 +715,11 @@
     font-size: 13px;
   }
 
-
   .registro-link button {
     font-size: 13px;
   }
 
 }
-
 
 @media (max-width: 380px) {
 
@@ -856,48 +729,39 @@
     min-height: 250px;
   }
 
-
   .logo-gerIapp-img {
     width: 135px;
 
     max-height: 110px;
   }
 
-
   .logo-gerIapp h2 {
     font-size: 27px;
   }
-
 
   .logo-gerIapp p {
     font-size: 13px;
   }
 
-
   .linea-decorativa {
     margin: 10px auto 7px;
   }
-
 
   .branding-text h3 {
     font-size: 16px;
   }
 
-
   .branding-text p {
     font-size: 11px;
   }
-
 
   .login-panel {
     padding: 14px 10px 25px;
   }
 
-
   .login-card {
     padding: 24px 17px;
   }
-
 
   .login-header h1 {
     font-size: 22px;
@@ -907,7 +771,6 @@
 /* ==========================
    MODAL RECUPERAR CONTRASEÑA
 ========================== */
-
 
 .modal-overlay {
 
@@ -930,7 +793,6 @@
 
 }
 
-
 .modal-recuperacion {
 
   width: 420px;
@@ -952,8 +814,6 @@
 
 }
 
-
-
 .modal-recuperacion h2 {
 
   margin: 0 0 10px;
@@ -965,8 +825,6 @@
   font-size: 25px;
 
 }
-
-
 
 .modal-recuperacion p {
 
@@ -980,10 +838,7 @@
 
 }
 
-
-
 .modal-recuperacion input {
-
 
   width: 100%;
 
@@ -1001,8 +856,6 @@
 
 }
 
-
-
 .modal-recuperacion input:focus {
 
   border-color: #3b5bdb;
@@ -1011,8 +864,6 @@
     0 0 0 3px rgba(59, 91, 219, 0.1);
 
 }
-
-
 
 .cerrar-modal {
 
@@ -1033,8 +884,6 @@
   cursor: pointer;
 
 }
-
-
 
 .btn-recuperar-modal {
 
@@ -1060,8 +909,6 @@
 
 }
 
-
-
 .btn-recuperar-modal:hover {
 
   background: #2f50cb;
@@ -1069,8 +916,6 @@
   transform: translateY(-1px);
 
 }
-
-
 
 @keyframes aparecerModal {
 
@@ -1081,7 +926,6 @@
     transform: translateY(-15px);
 
   }
-
 
   to {
 
@@ -1096,87 +940,6 @@
 .swal2-container {
   z-index: 10000 !important;
 }
-
-.google-container {
-  width: 100%;
-  height: 52px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-
-/* componente Google */
-.google-container asl-google-signin-button {
-  width: 100% !important;
-  display: block !important;
-}
-
-
-/* contenedor interno que crea Google */
-.google-container div[role="button"] {
-  width: 100% !important;
-  height: 52px !important;
-}
-
-
-/* iframe de Google */
-.google-container iframe {
-  width: 100% !important;
-  height: 52px !important;
-}
-
-/* =====================================================
-   RECONOCIMIENTO FACIAL - BOTÓN DE ACCESO
-===================================================== */
-
-.btn-facial {
-  width: 100%;
-  min-height: 52px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-
-  margin-top: 15px;
-  padding: 12px 16px;
-
-  background: #f0f4ff;
-  color: #3b5bdb;
-
-  border: 1px solid #d5dfff;
-  border-radius: 11px;
-
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 600;
-
-  cursor: pointer;
-
-  transition: background 0.25s ease,
-              border-color 0.25s ease,
-              transform 0.25s ease,
-              box-shadow 0.25s ease;
-}
-
-.btn-facial:hover {
-  background: #e5ecff;
-  border-color: #3b5bdb;
-
-  transform: translateY(-2px);
-
-  box-shadow: 0 6px 16px rgba(59, 91, 219, 0.12);
-}
-
-.btn-facial:active {
-  transform: scale(0.98);
-}
-
-.btn-facial .material-symbols-outlined {
-  font-size: 22px;
-}
-
 
 /* =====================================================
    MODAL DE RECONOCIMIENTO FACIAL
@@ -1205,7 +968,6 @@
   overflow-y: auto;
 }
 
-
 /* CONTENEDOR PRINCIPAL */
 
 .modal-facial {
@@ -1229,7 +991,6 @@
   animation: aparecerModalFacial 0.3s ease;
 }
 
-
 /* ANIMACIÓN */
 
 @keyframes aparecerModalFacial {
@@ -1243,7 +1004,6 @@
     transform: translateY(0) scale(1);
   }
 }
-
 
 /* BOTÓN CERRAR */
 
@@ -1285,7 +1045,6 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
-
 
 /* =====================================================
    ENCABEZADO
@@ -1334,7 +1093,6 @@
   line-height: 1.5;
 }
 
-
 /* =====================================================
    CONTENEDOR DE LA CÁMARA
 ===================================================== */
@@ -1365,7 +1123,6 @@
   transform: scaleX(-1);
 }
 
-
 /* GUÍA DEL ROSTRO */
 
 .facial-camera-overlay {
@@ -1388,7 +1145,6 @@
 
   box-shadow: 0 0 0 1000px rgba(15, 23, 42, 0.12);
 }
-
 
 /* =====================================================
    INSTRUCCIONES
@@ -1423,7 +1179,6 @@
   font-size: 12px;
   line-height: 1.5;
 }
-
 
 /* =====================================================
    BOTONES DE ACCIÓN
@@ -1497,7 +1252,6 @@
   transform: none;
 }
 
-
 /* =====================================================
    INDICADOR DE CARGA
 ===================================================== */
@@ -1520,7 +1274,6 @@
   }
 }
 
-
 /* =====================================================
    MENSAJE DE PRIVACIDAD
 ===================================================== */
@@ -1536,7 +1289,6 @@
   text-align: center;
 }
 
-
 /* =====================================================
    RESPONSIVE - TABLET
 ===================================================== */
@@ -1550,19 +1302,13 @@
 
 }
 
-
 /* =====================================================
    RESPONSIVE - MÓVILES
 ===================================================== */
 
 @media (max-width: 480px) {
 
-  .btn-facial {
-    min-height: 48px;
-    font-size: 13px;
-  }
-
-  .modal-facial-overlay {
+.modal-facial-overlay {
     padding: 12px;
   }
 
@@ -1604,7 +1350,6 @@
 
 }
 
-
 /* =====================================================
    PANTALLAS MUY PEQUEÑAS
 ===================================================== */
@@ -1627,10 +1372,34 @@
 
 }
 
+/* ==========================================
+   SEPARADOR
+========================================== */
 
-/* =====================================================
-   ACCESOS ALTERNATIVOS - GOOGLE Y RECONOCIMIENTO FACIAL
-   ===================================================== */
+.separador {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 22px 0;
+}
+
+.separador span {
+  flex: 1;
+  height: 1px;
+  background: #e5e8ec;
+}
+
+.separador p {
+  margin: 0;
+  color: #7a8088;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* ==========================================
+   ACCESOS ALTERNATIVOS
+========================================== */
 
 .accesos-alternativos {
   display: grid;
@@ -1638,157 +1407,16 @@
   gap: 16px;
   width: 100%;
   margin-top: 15px;
+  align-items: stretch;
 }
 
-/* TARJETAS DE ACCESO */
+/* Ambos botones con idénticas dimensiones */
 
 .accesos-alternativos .acceso-alternativo {
-  width: 100%;
-  min-width: 0;
-  min-height: 105px;
-  box-sizing: border-box;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-
-  padding: 12px 8px;
-  margin: 0;
-
-  background: #ffffff;
-  border: 1px solid #dfe3e8;
-  border-radius: 13px;
-
-  transition: all 0.25s ease;
-}
-
-/* GOOGLE */
-
-.accesos-alternativos .google-container {
-  height: 105px;
-  cursor: pointer;
-}
-
-.accesos-alternativos .google-container asl-google-signin-button {
-  width: 40px !important;
-  height: 40px !important;
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-}
-
-.accesos-alternativos .google-container iframe {
-  width: 40px !important;
-  height: 40px !important;
-}
-
-.accesos-alternativos .google-container div[role="button"] {
-  width: 40px !important;
-  height: 40px !important;
-}
-
-.accesos-alternativos .google-container:hover {
-  background: #f9fbff;
-  border-color: #b7c9ef;
-  box-shadow: 0 4px 12px rgba(49, 91, 225, 0.08);
-}
-
-/* RECONOCIMIENTO FACIAL */
-
-.accesos-alternativos .btn-facial {
-  min-height: 105px;
-
-  background: #f0f4ff;
-  color: #315be1;
-
-  border: 1px solid #cbd8ff;
-
-  font-family: inherit;
-  cursor: pointer;
-}
-
-.accesos-alternativos .btn-facial:hover:not(:disabled) {
-  background: #e6edff;
-  border-color: #9db5ff;
-
-  transform: translateY(-2px);
-
-  box-shadow: 0 4px 12px rgba(49, 91, 225, 0.10);
-}
-
-/* ICONO FACIAL */
-
-.accesos-alternativos .icono-facial {
-  font-size: 36px;
-  color: #315be1;
-  line-height: 1;
-}
-
-/* TEXTOS */
-
-.accesos-alternativos .acceso-alternativo-texto {
-  display: block;
-
-  font-size: 13px;
-  font-weight: 600;
-
-  color: #263957;
-  text-align: center;
-  line-height: 1.3;
-}
-
-/* CARGA */
-
-.accesos-alternativos .btn-facial .facial-spinner {
-  border-color: rgba(49, 91, 225, 0.2);
-  border-top-color: #315be1;
-}
-
-/* DESHABILITADO */
-
-.accesos-alternativos .btn-facial:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
-}
-
-/* RESPONSIVE */
-
-@media (max-width: 480px) {
-
-  .accesos-alternativos {
-    gap: 10px;
-  }
-
-  .accesos-alternativos .acceso-alternativo {
-    min-height: 95px;
-    padding: 10px 5px;
-  }
-
-  .accesos-alternativos .acceso-alternativo-texto {
-    font-size: 12px;
-  }
-
-}
-
-
-/* =====================================================
-   ACCESOS ALTERNATIVOS - GOOGLE Y RECONOCIMIENTO FACIAL
-===================================================== */
-
-.accesos-alternativos {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  width: 100%;
-  margin-top: 15px;
-}
-
-.acceso-alternativo {
   position: relative;
-  min-height: 125px;
   width: 100%;
+  height: 120px;
+  min-height: 120px;
   box-sizing: border-box;
 
   display: flex;
@@ -1797,19 +1425,23 @@
   justify-content: center;
   gap: 5px;
 
-  padding: 13px 8px;
+  padding: 12px 8px;
+  margin: 0;
 
-  background: #ffffff;
   border: 1px solid #dfe3e8;
   border-radius: 13px;
 
   transition: all 0.25s ease;
 }
 
-/* GOOGLE */
+/* ==========================================
+   GOOGLE
+========================================== */
 
 .google-container {
+  background: #ffffff;
   cursor: pointer;
+  overflow: visible;
 }
 
 .icono-google {
@@ -1821,31 +1453,6 @@
   justify-content: center;
 }
 
-/* BOTÓN REAL DE GOOGLE */
-
-.google-login-real {
-  position: absolute;
-  top: 13px;
-  left: 50%;
-
-  width: 42px;
-  height: 42px;
-
-  transform: translateX(-50%);
-  z-index: 2;
-
-  opacity: 0;
-  overflow: hidden;
-}
-
-.google-login-real asl-google-signin-button {
-  display: block;
-  width: 42px;
-  height: 42px;
-}
-
-/* TEXTOS */
-
 .acceso-titulo {
   color: #263957;
   font-size: 13px;
@@ -1856,11 +1463,37 @@
 .acceso-descripcion {
   color: #8993a3;
   font-size: 11px;
-  font-weight: 400;
   text-align: center;
 }
 
-/* EFECTO GOOGLE */
+/* Superficie transparente de autenticación Google */
+
+.google-login-real {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 5;
+  opacity: 0;
+  overflow: visible;
+  cursor: pointer;
+}
+
+.google-login-real asl-google-signin-button {
+  display: block;
+  flex: 0 0 auto;
+
+  transform: scaleX(4.5) scaleY(2.8);
+  transform-origin: center center;
+}
+
+/* Hover Google */
 
 .google-container:hover {
   background: #f9fbff;
@@ -1868,13 +1501,16 @@
   box-shadow: 0 4px 12px rgba(49, 91, 225, 0.08);
 }
 
-/* RECONOCIMIENTO FACIAL */
+/* ==========================================
+   RECONOCIMIENTO FACIAL
+========================================== */
 
 .facial-alternativo {
   background: #f0f4ff;
   border-color: #cbd8ff;
-  cursor: pointer;
+
   font-family: inherit;
+  cursor: pointer;
 }
 
 .facial-alternativo .icono-facial {
@@ -1901,12 +1537,19 @@
   box-shadow: 0 4px 12px rgba(49, 91, 225, 0.10);
 }
 
+.facial-alternativo .facial-spinner {
+  border-color: rgba(49, 91, 225, 0.2);
+  border-top-color: #315be1;
+}
+
 .facial-alternativo:disabled {
   opacity: 0.65;
   cursor: not-allowed;
 }
 
-/* RESPONSIVE */
+/* ==========================================
+   RESPONSIVE
+========================================== */
 
 @media (max-width: 480px) {
 
@@ -1914,7 +1557,8 @@
     gap: 10px;
   }
 
-  .acceso-alternativo {
+  .accesos-alternativos .acceso-alternativo {
+    height: 115px;
     min-height: 115px;
     padding: 10px 5px;
   }
@@ -1928,4 +1572,3 @@
   }
 
 }
-
