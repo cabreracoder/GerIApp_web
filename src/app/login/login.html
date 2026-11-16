@@ -143,31 +143,53 @@
 
       </div>
 
-      <div class="google-container">
-        <asl-google-signin-button type="standard" size="large">
-        </asl-google-signin-button>
+      
+      <!-- ACCESOS ALTERNATIVOS -->
+      <div class="accesos-alternativos">
+
+        <!-- INICIO DE SESIÓN CON GOOGLE -->
+        <div class="google-container acceso-alternativo">
+
+          <asl-google-signin-button
+            type="icon"
+            size="large"
+            shape="circle">
+          </asl-google-signin-button>
+
+          <span class="acceso-alternativo-texto">
+            Google
+          </span>
+
+        </div>
+
+        <!-- INICIO DE SESIÓN FACIAL -->
+        <button
+          type="button"
+          class="btn-facial acceso-alternativo"
+          (click)="abrirLoginFacial()"
+          [disabled]="cargandoLoginFacial">
+
+          <span
+            class="material-symbols-outlined icono-facial"
+            *ngIf="!cargandoLoginFacial">
+            face
+          </span>
+
+          <span
+            class="facial-spinner"
+            *ngIf="cargandoLoginFacial">
+          </span>
+
+          <span class="acceso-alternativo-texto">
+            {{ cargandoLoginFacial
+              ? 'Verificando...'
+              : 'Reconocimiento facial' }}
+          </span>
+
+        </button>
+
       </div>
 
-      <!-- LOGIN CON RECONOCIMIENTO FACIAL -->
-      <button
-      type="button"
-      class="btn-facial"
-      (click)="abrirLoginFacial()"
-      [disabled]="cargandoLoginFacial">
-
-      <span class="material-symbols-outlined" *ngIf="!cargandoLoginFacial">
-        face
-      </span>
-
-      <span class="facial-spinner" *ngIf="cargandoLoginFacial"></span>
-
-      <span>
-        {{ cargandoLoginFacial
-          ? 'Verificando rostro...'
-          : 'Iniciar sesión con reconocimiento facial' }}
-      </span>
-
-    </button>
 
       <!-- REGISTRO -->
       <p class="registro-link">
@@ -463,8 +485,7 @@
     </div>
 
     <p class="facial-privacidad">
-      La fotografía se utiliza para verificar tu identidad
-      y no se almacena en Cloudinary.
+      La fotografía se utiliza para verificar tu identidad.
     </p>
 
   </div>
