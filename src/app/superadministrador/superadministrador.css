@@ -6,14 +6,16 @@
 .superadmin-container {
   width: 100%;
   min-height: 100%;
-  padding: 14px 18px 28px;
+  padding: 16px 22px 30px;
   box-sizing: border-box;
   background: #f6f8fc;
   color: #203451;
   font-family: inherit;
 }
 
-.superadmin-container * {
+.superadmin-container *,
+.superadmin-container *::before,
+.superadmin-container *::after {
   box-sizing: border-box;
 }
 
@@ -22,270 +24,824 @@
   width: 100%;
   max-width: 1800px;
   margin: 0 auto;
+  min-width: 0;
 }
 
 
 /* =========================================================
    BANNER DE BIENVENIDA
-   CONSERVA LA IDENTIDAD INSTITUCIONAL
 ========================================================= */
 
 .welcome-banner {
-  width: 100%;
-  min-height: 260px;
-  height: 260px;
-  display: grid;
-  grid-template-columns: 52% 48%;
-  overflow: hidden;
   position: relative;
-  border-radius: 13px;
+  isolation: isolate;
+  width: 100%;
+  min-height: 120px;
+  display: grid;
+  grid-template-columns: 180px minmax(220px, 1fr) auto;
+  align-items: center;
+  gap: 20px;
+  overflow: hidden;
+  margin-bottom: 22px;
+  padding: 0 20px 0 0;
+  border: 1px solid #d9e4f7;
+  border-radius: 15px;
   background: linear-gradient(
-    115deg,
-    #214a84,
-    #2458a5
+    110deg,
+    #e1ecfc 0%,
+    #edf3fd 52%,
+    #f7f9fe 100%
   );
-  border: 1px solid #d4e2f5;
-  margin-bottom: 24px;
+  box-shadow: 0 3px 12px rgba(30, 58, 100, 0.045);
 }
 
 .welcome-image {
   position: relative;
-  min-width: 0;
-  height: 100%;
+  z-index: 0;
+  width: 100%;
+  height: 120px;
   overflow: hidden;
-  background: #dcecff;
-  clip-path: ellipse(100% 135% at 0% 50%);
 }
 
 .welcome-image img {
+  position: absolute;
+  inset: 0;
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 38%;
-  display: block;
+  object-position: center 35%;
 }
 
 .welcome-content {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 25px 32px 25px 8px;
-  color: #ffffff;
   z-index: 1;
+  min-width: 0;
 }
 
 .welcome-eyebrow {
-  font-size: 11px;
-  font-weight: 700;
+  display: block;
+  margin-bottom: 5px;
+  color: #5579bd;
+  font-size: 9px;
+  font-weight: 800;
   letter-spacing: 0.8px;
-  color: #a9d6ff;
-  margin-bottom: 9px;
 }
 
 .welcome-content h1 {
-  font-size: clamp(22px, 2vw, 30px);
-  font-weight: 750;
+  margin: 0 0 6px;
+  color: #1c2f86;
+  font-size: clamp(20px, 1.8vw, 27px);
+  font-weight: 800;
   line-height: 1.2;
-  margin: 0 0 13px;
-  color: #ffffff;
-}
-
-.welcome-content h2 {
-  font-size: 14px;
-  font-weight: 700;
-  margin: 0 0 5px;
-  color: #ffffff;
 }
 
 .welcome-content p {
-  font-size: 13px;
-  line-height: 1.55;
+  max-width: 540px;
   margin: 0;
-  color: #edf5ff;
-}
-
-.welcome-decoration {
-  width: 44px;
-  height: 4px;
-  border-radius: 5px;
-  background: #8bcaff;
-  margin-top: 15px;
+  color: #40577c;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 
 /* =========================================================
-   SECCIONES DEL DASHBOARD
+   FILTRO DE PERIODO
 ========================================================= */
 
-.dashboard-section {
-  margin-bottom: 24px;
-  width: 100%;
-}
-
-.section-heading {
+.period-filter {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 15px;
-  margin-bottom: 12px;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-.section-heading h2 {
-  font-size: 19px;
-  font-weight: 700;
-  margin: 0;
-  color: #203c63;
-}
-
-.section-eyebrow {
-  display: block;
-  font-size: 9px;
-  font-weight: 750;
-  letter-spacing: 0.8px;
-  color: #5279bd;
-  margin-bottom: 5px;
-}
-
-.text-link {
-  border: 0;
-  background: transparent;
-  color: #315bd5;
-  font-size: 12px;
-  font-weight: 650;
-  display: inline-flex;
+.period-label {
+  display: flex;
   align-items: center;
-  gap: 5px;
-  cursor: pointer;
-  padding: 7px 3px;
-  transition: color 0.2s ease;
+  gap: 7px;
+  color: #3b5bdb;
 }
 
-.text-link:hover {
-  color: #173caa;
+.period-label .material-symbols-outlined {
+  font-size: 25px;
 }
 
-.text-link .material-symbols-outlined {
+.period-label div {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.period-label strong {
+  color: #1c2f86;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.period-label div > span {
+  color: #647796;
+  font-size: 10px;
+}
+
+.period-field {
+  min-height: 39px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 10px;
+  border: 1px solid #d3def1;
+  border-radius: 9px;
+  background: #fff;
+  color: #365bc5;
+}
+
+.period-field .material-symbols-outlined {
   font-size: 17px;
 }
 
+.period-field input {
+  width: 108px;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #203451;
+  font: inherit;
+  font-size: 10px;
+}
+
+.period-field input:disabled {
+  cursor: not-allowed;
+}
+
+.period-separator {
+  color: #71829b;
+  font-size: 12px;
+}
+
+.search-button {
+  min-height: 37px;
+  padding: 7px 12px;
+  border-radius: 9px;
+}
+
+.period-filter .primary-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
 
 /* =========================================================
-   TARJETAS FOTOGRÁFICAS DE LAS SEDES
+   RESUMEN INSTITUCIONAL
 ========================================================= */
 
-.branches-grid {
+.institutional-summary {
   width: 100%;
+  margin-bottom: 18px;
+}
+
+.section-title {
+  margin: 0 0 12px;
+  color: #1c2f86;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.summary-card {
+  width: 100%;
+  padding: 17px 24px;
+  border: 1px solid #e1e7f0;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 3px 12px rgba(30, 58, 100, 0.045);
+}
+
+.summary-kpis {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 15px;
+  grid-template-columns: 1fr 1px 1fr;
+  align-items: center;
+  gap: 26px;
 }
 
-.branch-card {
+.summary-kpi {
+  display: flex;
+  align-items: center;
+  gap: 17px;
   min-width: 0;
-  background: #ffffff;
-  border: 1px solid #dce5f2;
-  border-radius: 9px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(30, 58, 100, 0.035);
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
 }
 
-.branch-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 16px rgba(30, 58, 100, 0.09);
-}
-
-.branch-image {
-  width: 100%;
-  height: 135px;
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(
-    140deg,
-    #d9eaff,
-    #9dc5ef
-  );
-}
-
-.branch-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  display: block;
-  transition: transform 0.35s ease;
-}
-
-.branch-card:hover .branch-image img {
-  transform: scale(1.035);
-}
-
-.branch-image-fallback {
-  width: 100%;
-  height: 100%;
+.summary-icon {
+  width: 66px;
+  height: 66px;
+  flex: 0 0 66px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  border-radius: 50%;
+}
+
+.summary-icon .material-symbols-outlined {
+  font-size: 33px;
+}
+
+.summary-icon-blue {
+  background: #e7edff;
+  color: #3b5bdb;
+}
+
+.summary-icon-green {
+  background: #e3f6f4;
+  color: #20a69b;
+}
+
+.summary-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  min-width: 0;
+}
+
+.summary-copy > span {
+  color: #344765;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.summary-copy strong {
+  color: #101a3a;
+  font-size: 34px;
+  font-weight: 850;
+  line-height: 1.12;
+  font-variant-numeric: tabular-nums;
+}
+
+.summary-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 20px;
+  background: #dff5e8;
+  color: #1e7f57;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.summary-badge-neutral {
+  background: #e9eefb;
+  color: #365bc5;
+}
+
+.summary-divider {
+  width: 1px;
+  height: 72px;
+  background: #e1e7f0;
+}
+
+
+/* =========================================================
+   DISTRIBUCIÓN PRINCIPAL DE LAS GRÁFICAS
+========================================================= */
+
+.dashboard-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas:
+    "resumen registros"
+    "activos registros"
+    "roles admins";
+  gap: 17px;
+  align-items: stretch;
+}
+
+.area-resumen {
+  grid-area: resumen;
+  margin-bottom: 0;
+}
+
+.area-activos {
+  grid-area: activos;
+}
+
+.area-registros {
+  grid-area: registros;
+}
+
+.area-roles {
+  grid-area: roles;
+}
+
+.area-admins {
+  grid-area: admins;
+}
+
+
+
+/* RESUMEN Y TENDENCIA: COMPOSICIÓN DE LA REFERENCIA */
+.area-registros {
+  grid-row: span 2;
+  min-height: 610px;
+}
+
+.area-resumen .section-title {
+  margin-bottom: 12px;
+}
+
+.area-resumen .summary-card {
+  min-height: 160px;
+  display: flex;
+  align-items: center;
+}
+
+.area-resumen .summary-kpis {
+  width: 100%;
+}
+
+/* GRÁFICA DE ACTIVOS E INACTIVOS */
+.activity-chart {
+  min-height: 205px;
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  padding: 12px 12px 0 0;
+}
+
+.activity-y-labels {
+  width: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0 0 30px;
+  color: #75839a;
+  font-size: 10px;
+  text-align: right;
+}
+
+.activity-bars {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-around;
+  gap: 14px;
+  border-bottom: 1px solid #dce4f2;
+  background: repeating-linear-gradient(to top, transparent 0, transparent 39px, #edf1f8 40px);
+}
+
+.activity-group {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+.activity-bar-pair {
+  height: 165px;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 5px;
+}
+
+.activity-bar {
+  position: relative;
+  width: min(34%, 42px);
+  min-height: 2px;
+  border-radius: 9px 9px 0 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  transition: height .3s ease;
+}
+
+.activity-bar span {
+  position: absolute;
+  top: -22px;
+  color: #263b59;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.active-bar { background: linear-gradient(180deg, #2588ef, #3974e5); }
+.inactive-bar { background: linear-gradient(180deg, #bd8af7, #8b43e9); }
+.activity-sede-label {
+  width: 100%;
+  min-height: 24px;
+  overflow: hidden;
+  color: #263b59;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* GRÁFICA DE TENDENCIA MENSUAL */
+.trend-chart {
+  min-height: 510px;
+  height: calc(100% - 55px);
+  display: flex;
+  align-items: center;
+  padding: 16px 8px 4px;
+  background: #fff;
+}
+
+.trend-svg { width: 100%; height: 100%; min-height: 450px; overflow: visible; }
+.trend-grid-lines line { stroke: #edf0f7; stroke-width: 1; }
+.trend-line { fill: none; stroke: #8537f3; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.trend-point { fill: #fff; stroke: #8537f3; stroke-width: 3.5; }
+.trend-month { fill: #27364d; font-size: 14px; font-weight: 700; }
+.trend-count { fill: #6e2ed5; font-size: 12px; font-weight: 800; }
+
+.roles-empty { grid-column: 1 / -1; color: #8291a8; font-size: 11px; }
+
+
+/* =========================================================
+   TARJETAS DE GRÁFICAS
+========================================================= */
+
+.dash-card {
+  position: relative;
+  min-width: 0;
+  min-height: 290px;
+  padding: 20px 22px;
+  border: 1px solid #e1e7f0;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 3px 12px rgba(30, 58, 100, 0.05);
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.dash-card:hover {
+  box-shadow: 0 5px 17px rgba(30, 58, 100, 0.085);
+}
+
+.dash-card-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.dash-card-heading > .material-symbols-outlined {
+  flex: 0 0 auto;
+  color: #3b5bdb;
+  font-size: 23px;
+}
+
+.dash-card-heading h3 {
+  margin: 0;
+  color: #1c2f86;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.dash-card-heading p {
+  margin: 4px 0 0;
+  color: #8291a8;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+
+/* =========================================================
+   GRÁFICA 1
+   ACTIVOS E INACTIVOS POR SEDE
+========================================================= */
+
+.activity-chart {
+  width: 100%;
+  min-height: 170px;
+  overflow: hidden;
+  border-radius: 10px;
   background: linear-gradient(
-    135deg,
-    #91b9e9,
-    #365e9b
+    180deg,
+    #fbfcff 0%,
+    #f5f8fd 100%
   );
 }
 
-.branch-image-fallback .material-symbols-outlined {
-  font-size: 48px;
-}
-
-.branch-content {
-  padding: 12px 14px;
-}
-
-.branch-label {
+.chart-legend {
   display: flex;
   align-items: center;
-  gap: 5px;
-  color: #7186a5;
+  justify-content: center;
+  gap: 25px;
+  margin-top: 13px;
+}
+
+.chart-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #40516d;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.chart-legend i {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legend-active {
+  background: #3267db;
+}
+
+.legend-inactive {
+  background: #86c5f5;
+}
+
+
+/* =========================================================
+   GRÁFICA 2
+   REGISTROS DE USUARIOS EN EL TIEMPO
+========================================================= */
+
+.trend-chart {
+  width: 100%;
+  min-height: 170px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: linear-gradient(
+    180deg,
+    #fcfbff 0%,
+    #f7f5ff 100%
+  );
+}
+
+
+/* =========================================================
+   ESTADOS PENDIENTES DE CONEXIÓN
+========================================================= */
+
+.pending-chart-state {
+  min-height: 170px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 18px 15px;
+  text-align: center;
+}
+
+.pending-chart-state > .material-symbols-outlined {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #edf2ff;
+  color: #6d80e8;
+  font-size: 21px;
+}
+
+.pending-chart-state strong {
+  color: #40516d;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.pending-chart-state small {
+  max-width: 330px;
+  color: #8492a8;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   GRÁFICA 3
+   USUARIOS POR ROL
+========================================================= */
+
+.roles-content {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.donut-chart {
+  width: 175px;
+  height: 175px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 3px 12px rgba(30, 58, 100, 0.06);
+}
+
+.donut-center {
+  width: 119px;
+  height: 119px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.donut-center strong {
+  color: #101a3a;
+  font-size: 29px;
+  font-weight: 850;
+  line-height: 1.1;
+}
+
+.donut-center span {
+  color: #526783;
+  font-size: 13px;
+}
+
+.roles-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  min-width: 220px;
+  flex: 1 1 220px;
+  max-width: 380px;
+}
+
+.roles-legend > div {
+  display: grid;
+  grid-template-columns: 15px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+}
+
+.roles-legend span {
+  color: #40516d;
+  font-size: 12px;
+}
+
+.roles-legend strong {
+  color: #101a3a;
+  font-size: 16px;
+  font-weight: 800;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.roles-legend strong.value-pending {
+  color: #8291a8;
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.role-dot {
+  width: 13px;
+  height: 13px;
+  display: inline-block;
+  border-radius: 50%;
+}
+
+.role-dot-admin {
+  background: #315edb;
+}
+
+.role-dot-manager {
+  background: #3999ed;
+}
+
+.role-dot-caregiver {
+  background: #80bff2;
+}
+
+.role-dot-specialist {
+  background: #9976ed;
+}
+
+
+/* =========================================================
+   GRÁFICA 4
+   ADMINISTRADORES POR SEDE
+========================================================= */
+
+.lollipop-chart {
+  width: 100%;
+  min-height: 205px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: 15px;
+  padding: 8px 12px 0;
+}
+
+.lollipop-item {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.lollipop-plot {
+  position: relative;
+  width: 100%;
+  height: 165px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-top: 35px;
+  border-bottom: 1px solid #dce4f2;
+  background: repeating-linear-gradient(
+    to top,
+    transparent 0,
+    transparent 39px,
+    #edf1f8 40px
+  );
+}
+
+.lollipop-stem {
+  position: relative;
+  width: 3px;
+  min-height: 2px;
+  background: linear-gradient(
+    180deg,
+    #9c87f4 0%,
+    #c4b8ff 100%
+  );
+  transition: height 0.4s ease;
+}
+
+.lollipop-dot {
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  width: 15px;
+  height: 15px;
+  transform: translateX(-50%);
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #315edb;
+  box-shadow: 0 2px 6px rgba(49, 94, 219, 0.25);
+}
+
+.lollipop-value {
+  position: absolute;
+  top: -39px;
+  left: 50%;
+  min-width: 36px;
+  transform: translateX(-50%);
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: #e9e6ff;
+  color: #283c88;
+  font-size: 13px;
+  font-weight: 850;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.lollipop-label {
+  max-width: 100%;
+  overflow: hidden;
+  color: #263b59;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   ETIQUETAS DE SECCIÓN
+========================================================= */
+
+.section-eyebrow {
+  display: block;
+  margin-bottom: 5px;
+  color: #5279bd;
   font-size: 9px;
   font-weight: 750;
-  letter-spacing: 0.5px;
-  margin-bottom: 8px;
-}
-
-.branch-label .material-symbols-outlined {
-  font-size: 14px;
-  color: #4168cb;
-}
-
-.branch-information {
-  margin-bottom: 9px;
-}
-
-.branch-information h3 {
-  font-size: 14px;
-  font-weight: 700;
-  color: #24456f;
-  margin: 0 0 5px;
-}
-
-.branch-information p {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 11px;
-  line-height: 1.4;
-  color: #72839c;
-  margin: 0;
-}
-
-.branch-information p .material-symbols-outlined {
-  font-size: 14px;
-  color: #6686c5;
+  letter-spacing: 0.8px;
 }
 
 
@@ -312,243 +868,9 @@
   color: #bd514b;
 }
 
-.unassigned-label {
-  color: #9a7840;
-  font-size: 11px;
-}
-
 
 /* =========================================================
-   GRÁFICAS
-========================================================= */
-
-.analytics-grid {
-  display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: 14px;
-  width: 100%;
-}
-
-.analytics-panel {
-  min-width: 0;
-  min-height: 205px;
-  background: #ffffff;
-  border: 1px solid #dce5f2;
-  border-radius: 9px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(30, 58, 100, 0.035);
-}
-
-.panel-heading {
-  min-height: 55px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 11px 14px;
-  border-bottom: 1px solid #e4eaf3;
-}
-
-.panel-heading h3 {
-  font-size: 13px;
-  font-weight: 700;
-  color: #28466e;
-  margin: 0 0 4px;
-}
-
-.panel-heading p {
-  font-size: 10px;
-  color: #8290a5;
-  margin: 0;
-}
-
-.panel-heading > .material-symbols-outlined {
-  font-size: 19px;
-  color: #5379bf;
-}
-
-
-/* GRÁFICA DE BARRAS */
-
-.bar-chart-content {
-  padding: 13px 15px;
-}
-
-.chart-summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 13px;
-}
-
-.chart-summary span {
-  font-size: 10px;
-  color: #7c8ca4;
-}
-
-.chart-summary strong {
-  font-size: 15px;
-  color: #2c4c77;
-}
-
-.bar-group {
-  margin-bottom: 12px;
-}
-
-.bar-description {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 6px;
-}
-
-.bar-description span {
-  font-size: 11px;
-  color: #62758e;
-}
-
-.bar-description strong {
-  font-size: 11px;
-  font-weight: 700;
-  color: #334e74;
-}
-
-.bar-track {
-  width: 100%;
-  height: 8px;
-  overflow: hidden;
-  border-radius: 10px;
-  background: #edf1f7;
-}
-
-.bar-fill {
-  height: 100%;
-  border-radius: 10px;
-  transition: width 0.4s ease;
-}
-
-.bar-users {
-  background: linear-gradient(
-    90deg,
-    #6488e9,
-    #8daaf4
-  );
-}
-
-.bar-admins {
-  background: linear-gradient(
-    90deg,
-    #2e9992,
-    #6bc7b6
-  );
-}
-
-.chart-legend {
-  display: flex;
-  align-items: center;
-  gap: 17px;
-  margin-top: 13px;
-}
-
-.chart-legend span {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 9px;
-  color: #7889a1;
-}
-
-.chart-legend i,
-.donut-legend i {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.legend-users {
-  background: #7796ec;
-}
-
-.legend-admins {
-  background: #329b96;
-}
-
-
-/* GRÁFICA CIRCULAR */
-
-.donut-chart-content {
-  min-height: 145px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-  padding: 15px;
-}
-
-.donut-chart {
-  width: 112px;
-  height: 112px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  position: relative;
-}
-
-.donut-center {
-  width: 82px;
-  height: 82px;
-  background: #ffffff;
-  border-radius: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-}
-
-.donut-center strong {
-  font-size: 17px;
-  color: #314f78;
-  font-weight: 750;
-}
-
-.donut-center span {
-  font-size: 8px;
-  color: #8593a8;
-  text-align: center;
-}
-
-.donut-legend {
-  display: flex;
-  flex-direction: column;
-  gap: 13px;
-  min-width: 0;
-}
-
-.donut-legend > div {
-  display: grid;
-  grid-template-columns: 9px minmax(65px, auto) auto;
-  align-items: center;
-  gap: 7px;
-}
-
-.donut-legend span {
-  font-size: 10px;
-  color: #75869d;
-}
-
-.donut-legend strong {
-  font-size: 12px;
-  color: #314c73;
-}
-
-
-/* =========================================================
-   ESTADOS DE CARGA Y MENSAJES
+   CARGA Y MENSAJES
 ========================================================= */
 
 .loading-message,
@@ -556,12 +878,12 @@
 .chart-loading,
 .chart-error {
   padding: 18px;
-  font-size: 12px;
-  text-align: center;
-  color: #7788a1;
-  background: #ffffff;
   border: 1px solid #e1e8f2;
   border-radius: 8px;
+  background: #fff;
+  color: #7788a1;
+  font-size: 12px;
+  text-align: center;
 }
 
 .chart-loading,
@@ -592,16 +914,16 @@
 }
 
 .management-heading h1 {
+  margin: 0 0 6px;
+  color: #213e65;
   font-size: 24px;
   font-weight: 750;
-  color: #213e65;
-  margin: 0 0 6px;
 }
 
 .management-heading p {
-  font-size: 12px;
-  color: #7c8ca4;
   margin: 0;
+  color: #7c8ca4;
+  font-size: 12px;
 }
 
 .management-actions {
@@ -638,11 +960,11 @@
 
 .primary-button {
   border: 1px solid #3b5bdb;
-  color: #ffffff;
+  color: #fff;
   background: #3b5bdb;
 }
 
-.primary-button:hover {
+.primary-button:hover:not(:disabled) {
   background: #2e49bd;
   border-color: #2e49bd;
 }
@@ -651,7 +973,7 @@
 .icon-text-button {
   border: 1px solid #d3def1;
   color: #365bc5;
-  background: #ffffff;
+  background: #fff;
 }
 
 .secondary-button:hover,
@@ -678,10 +1000,10 @@
 }
 
 .management-branch {
-  background: #ffffff;
+  overflow: hidden;
   border: 1px solid #dce5f2;
   border-radius: 10px;
-  overflow: hidden;
+  background: #fff;
   box-shadow: 0 2px 8px rgba(30, 58, 100, 0.035);
 }
 
@@ -693,9 +1015,9 @@
 }
 
 .management-branch-image img {
+  display: block;
   width: 100%;
   height: 100%;
-  display: block;
   object-fit: cover;
 }
 
@@ -712,23 +1034,23 @@
 }
 
 .branch-title-row h3 {
-  font-size: 14px;
-  color: #2a476f;
   margin: 0;
+  color: #2a476f;
+  font-size: 14px;
 }
 
 .management-branch-content p {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
-  color: #7889a1;
   margin: 7px 0;
+  color: #7889a1;
+  font-size: 11px;
 }
 
 .management-branch-content p .material-symbols-outlined {
-  font-size: 15px;
   color: #5577bd;
+  font-size: 15px;
 }
 
 .management-branch-content .secondary-button {
@@ -740,244 +1062,136 @@
    TABLA DE ADMINISTRADORES
 ========================================================= */
 
-.table-container {
+.tarjeta-tabla {
   width: 100%;
-  overflow-x: auto;
-  background: #ffffff;
-  border: 1px solid #dce5f2;
-  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #e1e7f0;
+  border-radius: 16px;
+  background: #fff;
   box-shadow: 0 2px 8px rgba(30, 58, 100, 0.035);
 }
 
-.admin-table {
+.contenedor-tabla {
   width: 100%;
-  min-width: 950px;
+  overflow-x: auto;
+}
+
+.contenedor-tabla table {
+  width: 100%;
+  min-width: 900px;
   border-collapse: collapse;
   text-align: left;
 }
 
-.admin-table thead {
-  background: #f0f4fb;
-}
-
-.admin-table th {
-  padding: 13px 15px;
+.contenedor-tabla th {
+  padding: 16px 20px;
+  border-bottom: none;
+  background: #405fdb;
+  color: #fff;
   font-size: 11px;
-  font-weight: 700;
-  color: #405b7d;
+  font-weight: 750;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
   white-space: nowrap;
 }
 
-.admin-table td {
-  padding: 12px 15px;
-  border-top: 1px solid #e6ebf3;
-  font-size: 11px;
-  color: #62758f;
+.contenedor-tabla thead th:first-child {
+  border-top-left-radius: 24px;
+  border-bottom-left-radius: 24px;
+}
+
+.contenedor-tabla thead th:last-child {
+  border-top-right-radius: 24px;
+  border-bottom-right-radius: 24px;
+}
+
+.contenedor-tabla td {
+  padding: 14px 18px;
+  border-bottom: 1px solid #e8edf5;
+  color: #263b59;
+  font-size: 12px;
   vertical-align: middle;
 }
 
-.admin-table tbody tr {
-  transition: background 0.2s ease;
+.contenedor-tabla tbody tr:last-child td {
+  border-bottom: none;
 }
 
-.admin-table tbody tr:hover {
-  background: #f8faff;
+.contenedor-tabla tbody tr {
+  transition: background-color 0.2s ease;
 }
 
-.admin-table td:first-child {
-  color: #71839c;
-  font-weight: 600;
+.contenedor-tabla tbody tr:nth-child(odd) {
+  background: #fff;
 }
 
-.admin-identity {
+.contenedor-tabla tbody tr:nth-child(even) {
+  background: #f3f6fc;
+}
+
+.contenedor-tabla tbody tr:hover {
+  background: #edf2ff;
+}
+
+.celda-encargado {
   display: flex;
   align-items: center;
-  gap: 9px;
-  min-width: 150px;
+  gap: 10px;
+  min-width: 220px;
 }
 
-.admin-identity strong {
-  font-size: 11px;
-  font-weight: 650;
-  color: #314c70;
-}
-
-.admin-avatar {
-  width: 31px;
-  height: 31px;
-  min-width: 31px;
+.avatar-tabla {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  overflow: hidden;
   border-radius: 50%;
-  background: #e8efff;
-  color: #3b5bdb;
-  font-size: 10px;
+  background: #e8eef9;
+  color: #3f5ed5;
+  font-size: 11px;
   font-weight: 750;
 }
 
-.table-actions {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.avatar-tabla img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.icon-text-button {
-  min-height: 31px;
-  padding: 5px 9px;
-  font-size: 10px;
+.informacion-tabla {
+  min-width: 0;
+}
+
+.nombre-tabla {
+  overflow: hidden;
+  color: #203451;
+  font-size: 12px;
+  font-weight: 750;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.correo-tabla {
+  margin-top: 3px;
+  overflow: hidden;
+  color: #71829b;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.telefono-tabla {
   white-space: nowrap;
 }
 
 
 /* =========================================================
-   RESPONSIVE: TABLET
+   SELECTORES DE ESTADO Y SEDE
 ========================================================= */
-
-@media (max-width: 1050px) {
-
-  .superadmin-container {
-    padding: 12px;
-  }
-
-  .welcome-banner {
-    height: 225px;
-    min-height: 225px;
-  }
-
-  .welcome-content {
-    padding-right: 18px;
-  }
-
-  .branches-grid,
-  .management-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .analytics-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-}
-
-
-/* =========================================================
-   RESPONSIVE: MÓVILES
-========================================================= */
-
-@media (max-width: 680px) {
-
-  .superadmin-container {
-    padding: 10px;
-  }
-
-  .welcome-banner {
-    height: auto;
-    min-height: 0;
-    grid-template-columns: 1fr;
-  }
-
-  .welcome-image {
-    height: 180px;
-    clip-path: none;
-  }
-
-  .welcome-content {
-    padding: 20px;
-  }
-
-  .welcome-content h1 {
-    font-size: 23px;
-  }
-
-  .section-heading {
-    align-items: flex-start;
-  }
-
-  .section-heading h2 {
-    font-size: 17px;
-  }
-
-  .branches-grid,
-  .management-grid,
-  .analytics-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .branch-image {
-    height: 175px;
-  }
-
-  .management-heading {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .management-actions {
-    width: 100%;
-  }
-
-  .management-actions button {
-    flex: 1;
-  }
-
-  .donut-chart-content {
-    gap: 17px;
-  }
-
-}
-
-
-/* =========================================================
-   PANTALLAS PEQUEÑAS
-========================================================= */
-
-@media (max-width: 380px) {
-
-  .welcome-content h1 {
-    font-size: 20px;
-  }
-
-  .donut-chart {
-    width: 95px;
-    height: 95px;
-  }
-
-  .donut-center {
-    width: 70px;
-    height: 70px;
-  }
-
-  .donut-center strong {
-    font-size: 15px;
-  }
-
-  .donut-legend span {
-    font-size: 9px;
-  }
-
-}
-
-
-/* =========================================================
-   ACCESIBILIDAD: MOVIMIENTO REDUCIDO
-========================================================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-  .superadmin-container *,
-  .superadmin-container *::before,
-  .superadmin-container *::after {
-    transition-duration: 0.01ms !important;
-    animation-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-
-}
-
-/* ==========================================
-   SELECTOR DE ESTADO DE ADMINISTRADORES
-========================================== */
 
 .status-select-wrapper {
   position: relative;
@@ -989,30 +1203,25 @@
 .status-select {
   appearance: none;
   -webkit-appearance: none;
-
   min-width: 100px;
+  max-width: 180px;
   padding: 5px 27px 5px 11px;
-
   border: 1px solid #ccebdd;
   border-radius: 20px;
-
+  outline: none;
   background-color: #e2f5ee;
   color: #25876a;
-
   font-family: inherit;
   font-size: 10px;
   font-weight: 700;
-
   cursor: pointer;
-  outline: none;
-
   transition: all 0.2s ease;
 }
 
 .status-select.status-inactive {
+  border-color: #f2d2d0;
   background-color: #fcebea;
   color: #bd514b;
-  border-color: #f2d2d0;
 }
 
 .status-select:hover {
@@ -1032,19 +1241,15 @@
 .status-select-wrapper .material-symbols-outlined {
   position: absolute;
   right: 6px;
-
-  font-size: 16px;
   color: currentColor;
-
+  font-size: 16px;
   pointer-events: none;
 }
 
-/* SELECTOR DE SEDE DEL ADMINISTRADOR */
-
 .sede-select {
   min-width: 145px;
-  background-color: #eef3ff;
   border-color: #d5e0f5;
+  background-color: #eef3ff;
   color: #365bc5;
 }
 
@@ -1052,7 +1257,325 @@
   background-color: #e4ecff;
 }
 
-.sede-select:disabled {
-  opacity: 0.6;
-  cursor: wait;
+
+/* =========================================================
+   BOTONES DE ACCIONES DE TABLA
+========================================================= */
+
+.botones-acciones {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.boton-accion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid #e0e6ef;
+  border-radius: 8px;
+  background: #fff;
+  color: #647b98;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.boton-accion:hover {
+  border-color: #b9c9f0;
+  background: #f0f4ff;
+  color: #365bd1;
+}
+
+.boton-accion .material-symbols-outlined {
+  font-size: 17px;
+}
+
+.fila-mensaje-tabla {
+  padding: 28px 18px !important;
+  color: #74849a !important;
+  text-align: center;
+  font-size: 12px !important;
+}
+
+.error-tabla {
+  color: #b94c48 !important;
+}
+
+
+/* =========================================================
+   RESPONSIVE: TABLET
+========================================================= */
+
+@media (max-width: 1100px) {
+
+  .superadmin-container {
+    padding: 12px 14px 25px;
+  }
+
+  .welcome-banner {
+    grid-template-columns: 130px minmax(0, 1fr);
+    padding: 0 15px 14px 0;
+  }
+
+  .period-filter {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+    padding-left: 15px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "resumen resumen"
+      "registros registros"
+      "activos activos"
+      "roles admins";
+  }
+
+  .dash-card {
+    min-height: 270px;
+  }
+
+  .area-registros {
+    grid-row: auto;
+    min-height: 360px;
+  }
+
+  .area-resumen .summary-card {
+    min-height: 0;
+  }
+
+  .activity-chart {
+    min-height: 205px;
+  }
+
+  .trend-chart {
+    min-height: 300px;
+  }
+
+  .trend-svg {
+    min-height: 280px;
+  }
+
+  .management-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE: MÓVILES
+========================================================= */
+
+@media (max-width: 680px) {
+
+  .superadmin-container {
+    padding: 10px;
+  }
+
+  .welcome-banner {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 0 0 15px;
+  }
+
+  .welcome-image {
+    height: 125px;
+  }
+
+  .welcome-content {
+    padding: 14px 16px 10px;
+  }
+
+  .welcome-content h1 {
+    font-size: 21px;
+  }
+
+  .welcome-content p {
+    font-size: 12px;
+  }
+
+  .period-filter {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 5px 16px 0;
+  }
+
+  .period-label {
+    margin-bottom: 3px;
+  }
+
+  .period-field {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .period-field input {
+    flex: 1;
+    width: auto;
+  }
+
+  .search-button {
+    width: fit-content;
+  }
+
+  .summary-card {
+    padding: 16px;
+  }
+
+  .summary-kpis {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .summary-divider {
+    width: 100%;
+    height: 1px;
+  }
+
+  .summary-icon {
+    width: 56px;
+    height: 56px;
+    flex-basis: 56px;
+  }
+
+  .summary-icon .material-symbols-outlined {
+    font-size: 28px;
+  }
+
+  .summary-copy strong {
+    font-size: 29px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "resumen"
+      "registros"
+      "activos"
+      "roles"
+      "admins";
+    gap: 13px;
+  }
+
+  .dash-card {
+    min-height: 260px;
+    padding: 16px;
+  }
+
+  .dash-card-heading h3 {
+    font-size: 14px;
+  }
+
+  .roles-content {
+    gap: 20px;
+  }
+
+  .donut-chart {
+    width: 155px;
+    height: 155px;
+  }
+
+  .donut-center {
+    width: 105px;
+    height: 105px;
+  }
+
+  .roles-legend {
+    min-width: 100%;
+  }
+
+  .lollipop-chart {
+    gap: 6px;
+    padding-right: 2px;
+    padding-left: 2px;
+  }
+
+  .lollipop-label {
+    font-size: 10px;
+  }
+
+  .management-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .management-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .management-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .management-actions button {
+    flex: 1 1 180px;
+  }
+
+  .area-registros {
+    grid-row: auto;
+    min-height: 360px;
+  }
+
+  .trend-chart { min-height: 300px; }
+  .trend-svg { min-height: 280px; }
+  .area-resumen .summary-card { min-height: 0; }
+
+}
+
+
+/* =========================================================
+   PANTALLAS PEQUEÑAS
+========================================================= */
+
+@media (max-width: 380px) {
+
+  .welcome-content h1 {
+    font-size: 19px;
+  }
+
+  .summary-copy strong {
+    font-size: 26px;
+  }
+
+  .donut-chart {
+    width: 145px;
+    height: 145px;
+  }
+
+  .donut-center {
+    width: 99px;
+    height: 99px;
+  }
+
+  .donut-center strong {
+    font-size: 24px;
+  }
+
+  .dash-card {
+    padding: 13px;
+  }
+
+}
+
+
+/* =========================================================
+   ACCESIBILIDAD: MOVIMIENTO REDUCIDO
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .superadmin-container *,
+  .superadmin-container *::before,
+  .superadmin-container *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
 }

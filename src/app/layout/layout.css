@@ -946,3 +946,35 @@
   background: var(--bg-neutral-light);
   color: var(--color-primary);
 }
+
+/* ==========================================
+   MENÚ SUPERADMINISTRADOR
+   ========================================== */
+
+.layout-sidebar-superadmin .layout-menu-button {
+  background: transparent !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+/* Estado activo */
+.layout-sidebar-superadmin .layout-menu-button.active {
+  background: transparent !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+/* Iconos blancos */
+.layout-sidebar-superadmin .layout-menu-button .material-symbols-outlined {
+  color: #ffffff !important;
+}
+
+/* Efecto hover */
+.layout-sidebar-superadmin .layout-menu-button:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* El clic lo recibe el enlace completo */
+.layout-sidebar-superadmin .menu-icon {
+  pointer-events: none;
+}
