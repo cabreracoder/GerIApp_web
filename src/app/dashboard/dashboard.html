@@ -14,9 +14,24 @@
         Panel de administración de GeriApp.
       </p>
 
-      <p class="banner-dashboard__descripcion">
-        Monitoreo integral de pacientes, cuidadores y servicios del centro.
-      </p>
+
+      <div class="banner-dashboard__mensaje">
+
+        <span class="material-symbols-outlined">
+          monitor_heart
+        </span>
+
+        <span>
+          Monitoreo integral de pacientes,
+          cuidadores y servicios del centro.
+        </span>
+
+        <span class="material-symbols-outlined corazon">
+          favorite
+        </span>
+
+      </div>
+
     </div>
 
     <div class="banner-dashboard__decoracion">
@@ -116,6 +131,7 @@
 
       </div>
 
+
       <div class="occupation-details">
 
         <div class="occupation-detail">
@@ -124,11 +140,22 @@
         </div>
 
         <div class="occupation-detail">
+          <span>Habitaciones disponibles</span>
+          <strong>{{ habitacionesDisponibles }}</strong>
+        </div>
+
+        <div class="occupation-detail">
+          <span>Camas ocupadas</span>
+          <strong>{{ camasOcupadas }}</strong>
+        </div>
+
+        <div class="occupation-detail">
           <span>Camas disponibles</span>
           <strong>{{ camasDisponibles }}</strong>
         </div>
 
       </div>
+
 
     </article>
 
