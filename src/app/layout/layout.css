@@ -27,7 +27,7 @@
   overflow: hidden;
 
   box-sizing: border-box;
-  background: #F4F7FF;
+  background: var(--bg-primary);
 }
 
 /* =========================================================
@@ -755,7 +755,7 @@
   padding: var(--spacing-xl);
 
   /* MISMO FONDO GENERAL DE LA APLICACIÓN */
-  background: #F4F7FF;
+  background: var(--bg-primary);
 
   scrollbar-width: thin;
 }
