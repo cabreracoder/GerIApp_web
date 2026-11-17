@@ -45,39 +45,34 @@
       <img src="/banner-cuidadores.jpg" alt="Profesionales de salud">
     </div>
 
-  </section>
+    <!-- BOTÓN NUEVO CUIDADOR INTEGRADO AL BANNER -->
 
-  <!-- BOTÓN NUEVO CUIDADOR -->
-  <div class="flex justify-end mt-4 mb-5">
+    <button type="button" class="banner-boton-nuevo" (click)="abrirFormulario('crear')" aria-label="Nuevo cuidador">
+      <span class="material-symbols-outlined">
+        person_add
+      </span>
 
-    <button type="button" (click)="abrirFormulario('crear')" class="px-5 py-3 rounded-lg
-           border border-[#3B5BDB]
-           bg-[#3B5BDB] text-white
-           hover:bg-[#324EC7] transition">
-
-      + Nuevo Cuidador
-
+      <span class="tooltip-nuevo-cuidador">
+        Nuevo cuidador
+      </span>
     </button>
 
-  </div>
 
-
-
+  </section>
 
 
   <!-- BUSCADOR -->
-  <div
-    class="flex items-center gap-3 w-full min-h-[52px] mb-5 px-4 bg-white border border-gray-200 rounded-full shadow-sm">
+  <div class="tarjeta-buscador">
 
-    <span class="material-symbols-outlined flex-shrink-0" style="font-size: 22px; line-height: 1; color: #6C757D;">
+    <span class="material-symbols-outlined icono-busqueda">
       search
     </span>
 
     <input type="search" placeholder="Buscar por documento o nombre..." aria-label="Buscar cuidador" autocomplete="off"
-      [(ngModel)]="textoBusqueda" (input)="filtrarCuidadores()"
-      class="flex-1 h-12 bg-transparent outline-none text-sm text-[#212529] placeholder-gray-400">
+      [(ngModel)]="textoBusqueda" (input)="filtrarCuidadores()">
 
   </div>
+
 
 
   <!-- CONTADOR -->
@@ -100,39 +95,15 @@
       <table class="tabla-cuidadores">
         <!-- ENCABEZADO -->
         <thead>
-
-          <tr class="bg-[#3B5BDB]">
-
-            <th (click)="ordenarCuidadores()"
-              class="px-5 py-4 text-left text-sm font-semibold !text-white rounded-l-lg cursor-pointer">
-              CUIDADOR
-            </th>
-
-            <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
-              DOCUMENTO
-            </th>
-
-            <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
-              TURNO
-            </th>
-
-            <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
-              PACIENTES
-            </th>
-
-            <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
-              ESTADO
-            </th>
-
-            <th class="px-5 py-4 text-center text-sm font-semibold !text-white rounded-r-lg">
-              ACCIONES
-            </th>
-
+          <tr>
+            <th>CUIDADOR</th>
+            <th>DOCUMENTO</th>
+            <th>TURNO</th>
+            <th>PACIENTES</th>
+            <th>ESTADO</th>
+            <th>ACCIONES</th>
           </tr>
-
         </thead>
-
-
         <!-- CUERPO -->
         <tbody>
 

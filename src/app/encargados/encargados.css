@@ -193,78 +193,78 @@
 }
 
 /* =====================================================
-
-   BUSCADOR
-
+   BUSCADOR - MISMO DISEÑO QUE CUIDADORES
 ===================================================== */
 
 .tarjeta-buscador {
-
   position: relative;
-
   display: flex;
-
   align-items: center;
-
   gap: 10px;
 
   width: 100%;
-
   min-height: 52px;
 
   margin-bottom: var(--spacing-md);
-
   padding: 0 14px;
 
   border: 1px solid var(--border-color);
-
-  border-radius: var(--radius-lg);
-
+  border-radius: 999px;
   background: var(--bg-surface);
-
   box-shadow: var(--shadow-sm);
 
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.icono-busqueda {
+/* CONTORNO AZUL AL HACER CLIC */
+.tarjeta-buscador:focus-within {
+  border-color: #3B5BDB !important;
+  box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.15) !important;
+}
 
+.tarjeta-buscador .icono-busqueda {
   flex-shrink: 0;
-
   color: var(--text-secondary);
-
   font-size: 22px;
-
 }
 
 .tarjeta-buscador input {
-
   flex: 1;
-
   min-width: 0;
-
+  width: 100%;
   height: 48px;
 
   padding: 0;
+  margin: 0;
 
-  border: none;
-
-  outline: none;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 
   background: transparent;
-
   color: var(--text-primary);
 
   font-family: var(--font-family-base);
-
   font-size: var(--font-size-sm);
+}
 
+.tarjeta-buscador input:focus {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .tarjeta-buscador input::placeholder {
-
   color: var(--text-secondary);
-
 }
+
+.tarjeta-buscador .contador-resultados {
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
 
 .contador-resultados {
 
@@ -725,19 +725,13 @@
 }
 
 .contenedor-tabla thead th:first-child {
-
-  border-top-left-radius: var(--radius-full);
-
-  border-bottom-left-radius: var(--radius-full);
-
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 0;
 }
 
 .contenedor-tabla thead th:last-child {
-
-  border-top-right-radius: var(--radius-full);
-
-  border-bottom-right-radius: var(--radius-full);
-
+  border-top-right-radius: 16px;
+  border-bottom-right-radius: 0;
 }
 
 .contenedor-tabla td {
@@ -2905,4 +2899,477 @@
   height: 92px;
   object-fit: cover;
   border-radius: 50%;
+}
+
+/* =========================================
+   BANNER GESTIÓN DE ENCARGADOS
+   MISMO DISEÑO QUE PACIENTES
+========================================= */
+
+.banner-encargados {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+  min-height: 190px;
+  margin-top: 0;
+  margin-bottom: 22px;
+  padding: 26px 34px;
+
+  overflow: hidden;
+  isolation: isolate;
+
+  background: linear-gradient(90deg,
+      #f9fbff 0%,
+      #eef4ff 60%,
+      #eaf2ff 100%);
+
+  border: 1px solid #e4ecfa;
+  border-radius: 24px;
+  box-shadow: 0 6px 20px rgba(32, 76, 145, 0.08);
+}
+
+/* CONTENIDO */
+
+.banner-encargados__contenido {
+  position: relative;
+  z-index: 3;
+  width: 55%;
+  max-width: 570px;
+}
+
+.banner-encargados__contenido h1 {
+  margin: 0;
+  color: #102c6b;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.banner-encargados__subtitulo {
+  margin: 9px 0 18px;
+  color: #6f84a8;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.banner-encargados__mensaje {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 100%;
+  padding: 12px 18px;
+
+  background: rgba(219, 232, 255, 0.72);
+  border-radius: 14px;
+
+  color: #23498d;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.banner-encargados__mensaje>.material-symbols-outlined {
+  color: #2474eb;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+/* DECORACIÓN */
+
+.banner-encargados__decoracion {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.banner-encargados .deco-onda-superior {
+  position: absolute;
+  top: -36px;
+  left: 27%;
+  width: 310px;
+  height: 120px;
+  background: #dce9ff;
+  border-radius: 0 0 150px 150px;
+  opacity: 0.95;
+}
+
+.banner-encargados .deco-onda-inferior {
+  position: absolute;
+  bottom: -58px;
+  left: 35%;
+  width: 390px;
+  height: 150px;
+  background: #dfeaff;
+  border-radius: 50%;
+  opacity: 0.9;
+}
+
+.banner-encargados .deco-mancha-crema {
+  position: absolute;
+  right: 17%;
+  bottom: -42px;
+  width: 260px;
+  height: 130px;
+  background: #f7ead9;
+  border-radius: 50%;
+  opacity: 0.72;
+}
+
+.banner-encargados .deco-corazon {
+  position: absolute;
+  left: 51%;
+  top: 58px;
+  color: #9ec1f5;
+  opacity: 0.78;
+}
+
+.banner-encargados .deco-corazon .material-symbols-outlined {
+  font-size: 50px;
+  font-variation-settings: 'FILL' 0, 'wght' 250, 'opsz' 48;
+}
+
+/* HOJAS DECORATIVAS */
+
+.banner-encargados .deco-hojas {
+  position: absolute;
+  background: linear-gradient(to bottom,
+      rgba(164, 193, 176, 0.55),
+      rgba(164, 193, 176, 0.55)) center / 2px 100% no-repeat;
+}
+
+.banner-encargados .deco-hojas::before,
+.banner-encargados .deco-hojas::after {
+  content: "";
+  position: absolute;
+  width: 26px;
+  height: 84px;
+  background: rgba(170, 199, 179, 0.4);
+  border-radius: 60% 10% 60% 10%;
+}
+
+.banner-encargados .hojas-centro {
+  left: 58%;
+  top: 32px;
+  width: 70px;
+  height: 128px;
+}
+
+.banner-encargados .hojas-centro::before {
+  left: 9px;
+  top: 30px;
+  transform: rotate(28deg);
+}
+
+.banner-encargados .hojas-centro::after {
+  left: 34px;
+  top: 2px;
+  transform: rotate(-20deg);
+}
+
+.banner-encargados .hojas-derecha {
+  right: 40px;
+  top: 62px;
+  width: 58px;
+  height: 110px;
+}
+
+.banner-encargados .hojas-derecha::before {
+  left: 2px;
+  top: 22px;
+  transform: rotate(25deg);
+}
+
+.banner-encargados .hojas-derecha::after {
+  left: 26px;
+  top: 4px;
+  transform: rotate(-14deg);
+}
+
+/* FOTOGRAFÍA */
+
+.banner-encargados__foto {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 44%;
+  height: 100%;
+  z-index: 2;
+  overflow: hidden;
+  border-radius: 0 24px 24px 0;
+}
+
+.banner-encargados__foto::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75px;
+  width: 170px;
+  height: 100%;
+  z-index: 2;
+
+  background: linear-gradient(90deg,
+      #eef4ff 20%,
+      rgba(238, 244, 255, 0.72) 45%,
+      rgba(238, 244, 255, 0) 100%);
+}
+
+.banner-encargados__foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+/* BOTÓN NUEVO ENCARGADO */
+
+.banner-encargados__boton {
+  position: absolute;
+  z-index: 10;
+  left: 42%;
+  top: 68%;
+  transform: translate(-50%, -50%);
+
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  background: #3B5BDB;
+  color: white;
+  border: none;
+  border-radius: 13px;
+
+  box-shadow: 0 5px 14px rgba(59, 91, 219, 0.25);
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.banner-encargados__boton>.material-symbols-outlined {
+  font-size: 25px;
+}
+
+.banner-encargados__boton:hover {
+  background: #324EC7;
+  box-shadow: 0 7px 17px rgba(59, 91, 219, 0.35);
+}
+
+/* TOOLTIP */
+
+.banner-encargados .tooltip-encargado {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 12px);
+  transform: translateX(-50%);
+
+  padding: 8px 12px;
+  background: #1e293b;
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 7px;
+  white-space: nowrap;
+
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.banner-encargados .tooltip-encargado::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-bottom-color: #1e293b;
+}
+
+.banner-encargados__boton:hover .tooltip-encargado {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 992px) {
+  .banner-encargados__contenido {
+    width: 52%;
+  }
+
+  .banner-encargados__foto {
+    width: 46%;
+  }
+}
+
+@media (max-width: 768px) {
+  .banner-encargados {
+    min-height: 220px;
+    padding: 22px;
+  }
+
+  .banner-encargados__contenido {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .banner-encargados__contenido h1 {
+    font-size: 24px;
+  }
+
+  .banner-encargados__subtitulo {
+    font-size: 14px;
+  }
+
+  .banner-encargados__mensaje {
+    font-size: 12px;
+  }
+
+  .banner-encargados__foto {
+    width: 62%;
+    opacity: 0.18;
+  }
+
+  .banner-encargados__decoracion {
+    opacity: 0.55;
+  }
+
+  .banner-encargados__boton {
+    left: auto;
+    right: 14px;
+    top: 14px;
+    transform: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .banner-encargados {
+    padding: 18px;
+  }
+
+  .banner-encargados__contenido h1 {
+    font-size: 22px;
+  }
+
+  .banner-encargados__mensaje {
+    padding: 10px 14px;
+    font-size: 11px;
+  }
+
+  .banner-encargados__boton {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+
+/* =========================================
+   TABLA DE ENCARGADOS
+   MISMO DISEÑO QUE CUIDADORES
+========================================= */
+
+.tarjeta-tabla {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.tarjeta-tabla .contenedor-tabla {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: inherit;
+}
+
+.tarjeta-tabla table {
+  width: 100%;
+  min-width: 1050px;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: auto;
+}
+
+/* ENCABEZADO AZUL */
+
+.tarjeta-tabla thead th {
+  padding: 16px 20px !important;
+  background: var(--color-primary) !important;
+  color: #ffffff !important;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+/* ESQUINAS SUPERIORES */
+
+.tarjeta-tabla thead th:first-child {
+  border-top-left-radius: 16px !important;
+}
+
+.tarjeta-tabla thead th:last-child {
+  border-top-right-radius: 16px !important;
+}
+
+/* FILAS */
+
+.tarjeta-tabla tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.tarjeta-tabla tbody td {
+  padding: 14px 20px !important;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+}
+
+.tarjeta-tabla tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* FILAS ALTERNADAS */
+
+.tarjeta-tabla tbody tr:nth-child(odd) {
+  background: var(--bg-surface);
+}
+
+.tarjeta-tabla tbody tr:nth-child(even) {
+  background: #F4F7FF;
+}
+
+.tarjeta-tabla tbody tr:hover {
+  background: var(--bg-neutral-light);
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+  .tarjeta-tabla {
+    border-radius: 15px;
+  }
+
+  .tarjeta-tabla thead th {
+    padding: 13px 15px !important;
+  }
+
+  .tarjeta-tabla tbody td {
+    padding: 12px 15px !important;
+  }
 }

@@ -96,14 +96,7 @@
         <h1>
           {{ nombreAplicacion }}
         </h1>
-        <!-- SEDE DEL USUARIO AUTENTICADO -->
-        <div class="layout-sede-badge" *ngIf="nombreSede">
-          <span class="material-symbols-outlined">
-            location_on
-          </span>
 
-          <span>{{ nombreSede }}</span>
-        </div>
       </div>
 
       <!-- PARTE DERECHA -->
@@ -124,16 +117,27 @@
         <!-- USUARIO -->
         <div class="layout-user">
 
-          <!-- INFORMACIÓN DEL USUARIO -->
           <div class="layout-user-info">
 
             <strong>
               {{ nombreUsuario }}
             </strong>
 
-            <span>
-              {{ rolUsuario }}
-            </span>
+            <div class="layout-user-details">
+
+              <span class="layout-user-sede" *ngIf="nombreSede">
+                {{ nombreSede }}
+              </span>
+
+              <span class="layout-user-separator" *ngIf="nombreSede">
+                |
+              </span>
+
+              <span class="layout-user-role">
+                {{ rolUsuario }}
+              </span>
+
+            </div>
 
           </div>
 
