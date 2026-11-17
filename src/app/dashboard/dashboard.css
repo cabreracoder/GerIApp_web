@@ -16,16 +16,23 @@
    CONTENEDOR PRINCIPAL
 ========================================================= */
 
+
+/* =========================================================
+   CONTENEDOR PRINCIPAL DEL DASHBOARD
+========================================================= */
+
 .pagina,
 .contenedor-dashboard {
+  display: block;
   width: 100%;
   min-height: 100%;
-  padding: var(--spacing-lg);
-  background: var(--bg-surface);
+  padding: 0;
+  background: transparent;
   color: var(--text-primary);
   font-family: var(--font-family-base);
   font-size: var(--font-size-sm);
 }
+
 
 /* =========================================================
    ICONOS
@@ -56,18 +63,23 @@
   justify-content: space-between;
   width: 100%;
   min-height: 190px;
+  margin-top: 0;
   margin-bottom: 22px;
   padding: 26px 34px;
   overflow: hidden;
   isolation: isolate;
+
   background: linear-gradient(90deg,
       #f9fbff 0%,
       #eef4ff 60%,
       #eaf2ff 100%);
+
   border: 1px solid #e4ecfa;
   border-radius: 24px;
   box-shadow: 0 6px 20px rgba(32, 76, 145, 0.08);
 }
+
+/* CONTENIDO */
 
 .banner-dashboard__contenido {
   position: relative;
@@ -93,18 +105,42 @@
 }
 
 .banner-dashboard__subtitulo {
-  margin: 9px 0 0;
+  margin: 9px 0 18px;
   color: #6f84a8;
   font-size: 15px;
   line-height: 1.4;
 }
 
-.banner-dashboard__descripcion {
-  margin: 9px 0 0;
-  color: #7b91b5;
-  font-size: 14px;
-  line-height: 1.5;
+/* MENSAJE AZUL */
+
+.banner-dashboard__mensaje {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 100%;
+  padding: 12px 18px;
+
+  background: rgba(219, 232, 255, 0.82);
+  border-radius: 14px;
+
+  color: #23498d;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
 }
+
+.banner-dashboard__mensaje>.material-symbols-outlined {
+  flex-shrink: 0;
+  color: #2474eb;
+  font-size: 28px;
+}
+
+.banner-dashboard__mensaje .corazon {
+  color: #2474eb;
+  font-size: 20px;
+}
+
+/* DECORACIÓN */
 
 .banner-dashboard__decoracion {
   position: absolute;
@@ -121,7 +157,7 @@
   height: 120px;
   background: #dce9ff;
   border-radius: 0 0 150px 150px;
-  opacity: .65;
+  opacity: .95;
 }
 
 .dashboard-onda-inferior {
@@ -132,8 +168,10 @@
   height: 150px;
   background: #dfeaff;
   border-radius: 50%;
-  opacity: .7;
+  opacity: .9;
 }
+
+/* FOTOGRAFÍA */
 
 .banner-dashboard__foto {
   position: absolute;
@@ -146,6 +184,8 @@
   border-radius: 0 24px 24px 0;
 }
 
+/* DIFUMINADO SUAVE */
+
 .banner-dashboard__foto::before {
   content: "";
   position: absolute;
@@ -154,6 +194,7 @@
   z-index: 2;
   width: 170px;
   height: 100%;
+
   background: linear-gradient(90deg,
       #eef4ff 20%,
       rgba(238, 244, 255, .72) 45%,
@@ -922,4 +963,113 @@
     height: 68px;
   }
 
+}
+
+/* =========================================================
+   RESPONSIVE - BANNER DASHBOARD
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .pagina,
+  .contenedor-dashboard {
+    padding: 0;
+    background: transparent;
+  }
+
+  .banner-dashboard {
+    min-height: 220px;
+    padding: 22px;
+    margin-top: 0;
+    border-radius: 17px;
+  }
+
+  .banner-dashboard__contenido {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .banner-dashboard__contenido h1 {
+    font-size: 24px;
+  }
+
+  .banner-dashboard__subtitulo {
+    font-size: 14px;
+  }
+
+  .banner-dashboard__mensaje {
+    padding: 11px 15px;
+    font-size: 12px;
+    gap: 10px;
+  }
+
+  /* La fotografía ocupa todo el banner */
+  .banner-dashboard__foto {
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    border-radius: inherit;
+  }
+
+  /* Difuminado sobre toda la fotografía */
+  .banner-dashboard__foto::before {
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+
+    background: linear-gradient(90deg,
+        #f9fbff 0%,
+        rgba(249, 251, 255, .92) 40%,
+        rgba(249, 251, 255, .55) 100%);
+  }
+
+  .banner-dashboard__foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 72% center;
+    opacity: .45;
+  }
+
+  .banner-dashboard__decoracion {
+    opacity: .55;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .banner-dashboard {
+    padding: 18px;
+  }
+
+  .banner-dashboard__contenido h1 {
+    font-size: 22px;
+  }
+
+  .banner-dashboard__mensaje {
+    padding: 10px 14px;
+    font-size: 11px;
+    gap: 8px;
+  }
+
+  .banner-dashboard__mensaje>.material-symbols-outlined {
+    font-size: 24px;
+  }
+
+  .banner-dashboard__mensaje .corazon {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 380px) {
+
+  .banner-dashboard__contenido h1 {
+    font-size: 21px;
+  }
+
+  .banner-dashboard__mensaje {
+    gap: 6px;
+    padding: 9px 11px;
+  }
 }

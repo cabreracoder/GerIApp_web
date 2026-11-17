@@ -120,7 +120,7 @@ export class DashboardComponent implements OnInit {
   camasOcupadas = 0;
 
   habitacionesOcupadas = 0;
-
+  habitacionesDisponibles = 0;
   camasDisponibles = 0;
 
   porcentajeOcupacion = 0;
@@ -488,7 +488,7 @@ export class DashboardComponent implements OnInit {
       camas: this.consultar('camas'),
 
       habitaciones: this.consultar('habitaciones'),
-
+      asignacionesHabitacion: this.consultar('asignacion_habitacion'),
       turnos:
         this.consultar('asignacion_turno_usuario'),
 
@@ -515,6 +515,7 @@ export class DashboardComponent implements OnInit {
 
     }).subscribe({
 
+
       next: datos => {
 
         const periodo = this.obtenerPeriodo();
@@ -525,6 +526,9 @@ export class DashboardComponent implements OnInit {
         const habitaciones =
           this.obtenerLista(datos.habitaciones);
 
+        // ASIGNACIONES DE HABITACIONES
+        const asignacionesHabitacion =
+          this.obtenerLista(datos.asignacionesHabitacion);
 
         const turnos =
           this.obtenerLista(datos.turnos);
@@ -550,18 +554,26 @@ export class DashboardComponent implements OnInit {
         const notificaciones =
           this.obtenerLista(datos.notificaciones);
 
+        // COMPROBACIÓN DE DATOS
+        console.log('CAMAS:', camas);
+        console.log('HABITACIONES:', habitaciones);
+        console.log('ASIGNACIONES HABITACIÓN:', asignacionesHabitacion);
+
+        // 1. OCUPACIÓN DEL CENTRO
         this.calcularCapacidad(
           camas,
           habitaciones,
-          pacientes
+          pacientes,
+          periodo
         );
-
+        // 2. CUMPLIMIENTO DE TURNOS
         this.calcularCumplimiento(
           turnos,
           cierres,
           periodo
         );
 
+        // 3. EVENTOS IA
         this.calcularEventosIA(
           eventos,
           tiposEventos,
@@ -569,6 +581,7 @@ export class DashboardComponent implements OnInit {
           periodo
         );
 
+        // 4. ASIGNACIONES DE CUIDADORES
         this.calcularAsignaciones(
           asignacionesCuidadores,
           usuarios,
@@ -576,8 +589,7 @@ export class DashboardComponent implements OnInit {
           periodo
         );
 
-        // Estos indicadores requieren información
-        // adicional que todavía no registra el backend.
+        // 5. INDICADORES NO DISPONIBLES
         this.calcularPuntualidadNoDisponible();
 
         this.calcularSaludNoDisponible();
@@ -585,8 +597,14 @@ export class DashboardComponent implements OnInit {
         this.cargando = false;
 
         this.cd.detectChanges();
-
+        console.log('PACIENTES RECIBIDOS:', pacientes);
+        console.log(
+          'DETALLE COMPLETO DE PACIENTES:',
+          JSON.stringify(pacientes, null, 2)
+        );
+        console.log('ASIGNACIONES HABITACIÓN:', asignacionesHabitacion);
       },
+
 
       error: error => {
 
@@ -607,96 +625,101 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  // =====================================================
-
-  // =====================================================
-  // 1. OCUPACIÓN ACTUAL DEL CENTRO
-  // =====================================================
-
   private calcularCapacidad(
     camas: any[],
     habitaciones: any[],
-    pacientes: any[]
+    pacientes: any[],
+    periodo: Periodo
   ): void {
 
-    // Únicamente se cuentan las camas activas
-    // que existen realmente en el sistema.
-
+    // 1. CAMAS ACTIVAS
     const camasActivas = camas.filter(
       cama => cama.estado === true
     );
 
     this.capacidadMaxima = camasActivas.length;
 
-    // Identificadores de camas existentes y activas.
-
-    const idsCamasActivas = new Set(
+    const idsCamasActivas = new Set<number>(
       camasActivas.map(cama => Number(cama.id_cama))
     );
 
-    // Pacientes activos que tienen una cama
-    // válida y asignada.
-
-    const pacientesAlojados = pacientes.filter(patient => {
-
-      const camaId = this.idRelacion(patient.cama);
-
-      return (
-        patient.estado === true &&
-        camaId !== null &&
-        idsCamasActivas.has(camaId)
-      );
-
-    });
-
-    this.pacientesActuales = pacientesAlojados.length;
-
-    // Camas ocupadas: se cuentan una sola vez
-    // aunque existiera una asignación duplicada.
-
-    const idsCamasOcupadas = new Set(
-      pacientesAlojados.map(patient =>
-        this.idRelacion(patient.cama)
-      )
-    );
-
-    this.camasOcupadas = idsCamasOcupadas.size;
-
-    // Habitaciones activas.
-
+    // 2. HABITACIONES ACTIVAS
     const habitacionesActivas = habitaciones.filter(
       habitacion => habitacion.estado === true
     );
 
-    const idsHabitacionesActivas = new Set(
+    const idsHabitacionesActivas = new Set<number>(
       habitacionesActivas.map(
         habitacion => Number(habitacion.id_habitacion)
       )
     );
 
-    // Habitaciones que tienen pacientes activos.
+    // 3. PACIENTES QUE INGRESARON EN EL MES SELECCIONADO
+    const pacientesPeriodo = pacientes.filter(paciente => {
 
-    const idsHabitacionesOcupadas = new Set(
-      pacientesAlojados
-        .map(patient => this.idRelacion(patient.habitacion))
-        .filter(
-          (id): id is number =>
-            id !== null && idsHabitacionesActivas.has(id)
-        )
-    );
+      const ingreso = paciente.fecha_ingreso
+        ? new Date(paciente.fecha_ingreso)
+        : null;
+
+      if (!ingreso || Number.isNaN(ingreso.getTime())) {
+        return false;
+      }
+
+      return ingreso <= periodo.fin;
+    });
+
+    // 4. IDENTIFICAR CAMAS Y HABITACIONES OCUPADAS
+    const idsCamasOcupadas = new Set<number>();
+    const idsHabitacionesOcupadas = new Set<number>();
+
+    pacientesPeriodo.forEach(paciente => {
+
+      // Solo pacientes activos
+      if (paciente.estado !== true) {
+        return;
+      }
+
+      const camaId = this.idRelacion(paciente.cama);
+
+      const habitacionId = this.idRelacion(
+        paciente.habitacion
+      );
+
+      if (
+        camaId !== null &&
+        idsCamasActivas.has(camaId)
+      ) {
+        idsCamasOcupadas.add(camaId);
+      }
+
+      if (
+        habitacionId !== null &&
+        idsHabitacionesActivas.has(habitacionId)
+      ) {
+        idsHabitacionesOcupadas.add(habitacionId);
+      }
+
+    });
+
+    // 5. RESULTADOS
+    this.camasOcupadas = idsCamasOcupadas.size;
 
     this.habitacionesOcupadas =
       idsHabitacionesOcupadas.size;
-
-    // Camas libres reales.
 
     this.camasDisponibles = Math.max(
       this.capacidadMaxima - this.camasOcupadas,
       0
     );
 
-    // Porcentaje de ocupación.
+    this.habitacionesDisponibles = Math.max(
+      habitacionesActivas.length - this.habitacionesOcupadas,
+      0
+    );
 
+    this.pacientesActuales = this.camasOcupadas;
+
+    // 6. PORCENTAJE DE OCUPACIÓN
     this.porcentajeOcupacion =
       this.capacidadMaxima > 0
         ? Math.round(
@@ -704,23 +727,26 @@ export class DashboardComponent implements OnInit {
         )
         : 0;
 
-    // Actualizar gráfico circular.
-
+    // 7. GRÁFICO CIRCULAR
     const radio = 42;
-
     const circunferencia = 2 * Math.PI * radio;
 
-    const porcentaje = Math.min(
-      Math.max(this.porcentajeOcupacion, 0),
-      100
-    );
-
-    const ocupado = (porcentaje / 100) * circunferencia;
+    const ocupado =
+      (this.porcentajeOcupacion / 100) * circunferencia;
 
     const restante = circunferencia - ocupado;
 
     this.ocupacionDashArray =
       `${ocupado} ${restante}`;
+
+    console.log('OCUPACIÓN DEL CENTRO:', {
+      mes: this.mesSeleccionado,
+      camasOcupadas: this.camasOcupadas,
+      camasDisponibles: this.camasDisponibles,
+      habitacionesOcupadas: this.habitacionesOcupadas,
+      habitacionesDisponibles: this.habitacionesDisponibles,
+      porcentaje: this.porcentajeOcupacion
+    });
 
   }
 
