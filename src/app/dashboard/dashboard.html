@@ -1,61 +1,47 @@
 <main class="pagina">
 
-  <!-- =====================================================
-       SALUDO
-  ====================================================== -->
+  <!-- BANNER DE BIENVENIDA -->
+  <section class="banner-dashboard">
 
-  <section class="seccion-saludo">
-
-    <div class="texto-saludo">
-
-      <p class="mono" id="greet-date">
+    <div class="banner-dashboard__contenido">
+      <p class="banner-dashboard__fecha">
         {{ fechaActual }}
       </p>
 
-      <h2>
-        Bienvenido, {{ usuario.nombres }}
-      </h2>
+      <h1>Bienvenido, {{ usuario.nombres }}</h1>
 
-      <span>
-        · Panel de Administración
-      </span>
+      <p class="banner-dashboard__subtitulo">
+        Panel de administración de GeriApp.
+      </p>
 
+      <p class="banner-dashboard__descripcion">
+        Monitoreo integral de pacientes, cuidadores y servicios del centro.
+      </p>
     </div>
 
-    <div class="acciones-saludo">
+    <div class="banner-dashboard__decoracion">
+      <span class="dashboard-onda-superior"></span>
+      <span class="dashboard-onda-inferior"></span>
+    </div>
 
-      <div class="informacion-saludo">
-
-        <p>
-          {{ nombreFundacion }}
-        </p>
-
-        <p id="greet-date2">
-          {{ fechaActual }}
-        </p>
-
-      </div>
-
-      <button class="boton-reportes" type="button">
-
-        <span class="icono-material">
-          download
-        </span>
-
-        Reportes
-
-      </button>
-
+    <div class="banner-dashboard__foto">
+      <img src="/banner-dashboard.png" alt="Bienvenida a GeriApp">
     </div>
 
   </section>
 
+
+  <!-- RESUMEN DEL PERIODO -->
   <section class="selector-mes-dashboard">
 
     <div class="selector-mes-header">
-      <span class="titulo-mes">
-        Resumen del periodo
-      </span>
+      <div>
+        <span class="titulo-mes">Resumen del periodo</span>
+
+        <p class="cs">
+          Consulta el comportamiento del centro según el mes seleccionado.
+        </p>
+      </div>
 
       <span class="mes-activo">
         {{ mesSeleccionado }}
@@ -70,380 +56,30 @@
       </div>
     </div>
 
-  </section>
-  <!-- =====================================================
-       RESUMEN PRINCIPAL
-  ====================================================== -->
-
-  <section class="g12 mb4">
-
-    <!-- RESUMEN DE PACIENTES -->
-
-    <article class="card c7">
-
-      <div class="flex ic jb mb1">
-
-        <span class="ct titulo-pacientes">
-          Resumen de Pacientes
-        </span>
-
-        <span class="mono" style="
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--color-primary);
-          " id="mes-label">
-
-          {{ mesSeleccionado }}
-
-        </span>
-
-      </div>
-
-
-
-
-      <!-- Progreso -->
-
-      <div class="mb4">
-
-        <div class="flex jb txs mb1">
-
-          <span class="tm">
-            Progreso de ocupación
-          </span>
-
-          <span class="mono fb primary-text">
-            {{ porcentajeOcupacion }}% · {{ pacientesActuales }}/{{ capacidadMaxima }}
-          </span>
-
-        </div>
-
-        <div class="pt">
-
-          <div class="pf" [style.width.%]="porcentajeOcupacion">
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <!-- Estadísticas -->
-
-      <div class="stats-grid mb4">
-
-        <div class="stat-card patients">
-
-          <div class="stat-icon">
-
-            <span class="icono-material">
-              groups
-            </span>
-
-          </div>
-
-          <div class="stat-number">
-            {{ totalPacientes }}
-          </div>
-
-          <div class="stat-label">
-            Total Pacientes
-          </div>
-
-          <div class="stat-percent">
-            {{ porcentajeOcupacion }}%
-          </div>
-
-        </div>
-
-
-        <div class="stat-card stable">
-
-          <div class="stat-icon">
-
-            <span class="icono-material">
-              check_circle
-            </span>
-
-          </div>
-
-          <div class="stat-number">
-            {{ pacientesEstables }}
-          </div>
-
-          <div class="stat-label">
-            Estables
-          </div>
-
-          <div class="stat-percent">
-            {{ porcentajeEstables }}%
-          </div>
-
-        </div>
-
-
-        <div class="stat-card critical">
-
-          <div class="stat-icon">
-
-            <span class="icono-material">
-              warning
-            </span>
-
-          </div>
-
-          <div class="stat-number">
-            {{ pacientesCriticos }}
-          </div>
-
-          <div class="stat-label">
-            Críticos
-          </div>
-
-          <div class="stat-percent">
-            {{ porcentajeCriticos }}%
-          </div>
-
-        </div>
-
-
-        <div class="stat-card discharged">
-
-          <div class="stat-icon">
-
-            <span class="icono-material">
-              logout
-            </span>
-
-          </div>
-
-          <div class="stat-number">
-            {{ altasDelMes }}
-          </div>
-
-          <div class="stat-label">
-            Altas del mes
-          </div>
-
-          <div class="stat-percent">
-            {{ porcentajeAltas }}%
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <!-- Registros recientes -->
-
-      <div class="section-label mb2">
-        REGISTROS RECIENTES
-      </div>
-
-
-      <div class="sy2">
-
-        <div *ngFor="let paciente of pacientesRecientes" class="fila-paciente">
-
-          <div class="avatar-paciente" [ngClass]="paciente.avatarClass">
-
-            {{ paciente.iniciales }}
-
-          </div>
-
-          <div class="f1">
-
-            <div class="patient-name fs">
-              {{ paciente.nombre }}
-            </div>
-
-            <div class="txs tm">
-              Hab. {{ paciente.habitacion }} · Doc. {{ paciente.documento }}
-            </div>
-
-          </div>
-
-          <span class="badge" [ngClass]="paciente.badgeClass">
-
-            <span class="bd" [style.background]="paciente.colorEstado">
-            </span>
-
-            {{ paciente.estado }}
-
-          </span>
-
-          <div class="txs tm">
-            {{ paciente.cuidador }}
-          </div>
-
-        </div>
-
-      </div>
-
-    </article>
-
-
-    <!-- GESTIÓN DE CUIDADORES -->
-
-    <article class="card c5 caregiver-card">
-
-      <div class="flex ic jb mb3">
-
-        <span class="ct">
-          Gestión Cuidadores
-        </span>
-
-        <span class="badge bi">
-          {{ totalCuidadores }} registrados
-        </span>
-
-      </div>
-
-
-      <div class="g3 mb4">
-
-        <div class="care-stat blue">
-
-          <span class="icono-material">
-            health_and_safety
-          </span>
-
-          <div class="care-number">
-            {{ cuidadoresEnTurno }}
-          </div>
-
-          <div class="care-label">
-            En turno
-          </div>
-
-        </div>
-
-
-        <div class="care-stat beige">
-
-          <span class="icono-material">
-            weekend
-          </span>
-
-          <div class="care-number">
-            {{ cuidadoresLibres }}
-          </div>
-
-          <div class="care-label">
-            Libres
-          </div>
-
-        </div>
-
-
-        <div class="care-stat primary">
-
-          <span class="icono-material">
-            person_add
-          </span>
-
-          <div class="care-number">
-            {{ ingresosCuidadores }}
-          </div>
-
-          <div class="care-label">
-            Ingresos
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div class="sy2 f1">
-
-        <div *ngFor="let cuidador of cuidadores" class="fila-cuidador">
-
-          <div class="rel fs0">
-
-            <div class="avatar-cuidador">
-              {{ cuidador.iniciales }}
-            </div>
-
-            <span class="indicador-estado-cuidador" [ngClass]="cuidador.estadoClase">
-            </span>
-
-          </div>
-
-          <div class="f1">
-
-            <div class="fs">
-              {{ cuidador.nombre }}
-            </div>
-
-            <div class="txs tm">
-              {{ cuidador.especialidad }}
-            </div>
-
-          </div>
-
-          <div class="care-status">
-
-            <span class="badge" [ngClass]="cuidador.badgeClass">
-
-              {{ cuidador.estado }}
-
-            </span>
-
-            <span class="txs tm mono">
-              {{ cuidador.turno }} · {{ cuidador.pacientes }} pac.
-            </span>
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div class="flex jb pt3 bt mt3">
-
-        <span class="txs tm">
-          REGISTROS RECIENTES
-        </span>
-
-        <span class="mono fb ratio">
-          {{ ratioCuidadorPaciente }}
-        </span>
-
-      </div>
-
-    </article>
+    <div class="periodo-fechas">
+      <span>{{ fechaInicioPeriodo }}</span>
+      <span>{{ fechaFinPeriodo }}</span>
+    </div>
 
   </section>
 
 
-  <!-- =====================================================
-       ROW 2
-  ====================================================== -->
+  <!-- DASHBOARD PRINCIPAL -->
+  <section class="dashboard-grid dashboard-grid-principal">
 
-  <section class="dashboard-grid">
-
-    <!-- OCUPACIÓN -->
-
-    <section class="card occupation-card">
+    <!-- 1. OCUPACIÓN DEL CENTRO -->
+    <article class="card occupation-card">
 
       <div class="card-header">
-
         <div>
-
-          <h2 class="ct">
-            Capacidad del centro
-          </h2>
-
-          <p class="cs">
-            Progreso de capacidad · {{ mesSeleccionado }}
-          </p>
-
+          <h2 class="ct">Ocupación del centro</h2>
+          <p class="cs">Disponibilidad actual de camas y habitaciones</p>
         </div>
 
+        <span class="icono-material card-icon">
+          apartment
+        </span>
       </div>
-
 
       <div class="occupation-content">
 
@@ -455,11 +91,10 @@
             </circle>
 
             <circle cx="50" cy="50" r="42" fill="none" stroke="var(--color-primary)" stroke-width="10"
-              stroke-linecap="round" [attr.stroke-dasharray]="ocupacionDashArray">
+              stroke-linecap="round" [attr.stroke-dasharray]="ocupacionDashArray" transform="rotate(-90 50 50)">
             </circle>
 
           </svg>
-
 
           <div class="centro-grafico-ocupacion">
 
@@ -468,373 +103,316 @@
             </strong>
 
             <span class="occupation-label">
-              OCUPADO
+              OCUPACIÓN
             </span>
 
           </div>
 
         </div>
-
 
         <div class="occupation-meta">
-
-          <span class="icono-material">
-            trending_up
-          </span>
-
-          <span>
-            Meta: {{ metaOcupacion }}%
-          </span>
-
+          {{ camasOcupadas }} de {{ capacidadMaxima }} camas ocupadas
         </div>
 
       </div>
 
+      <div class="occupation-details">
 
-      <div class="shift-info">
-
-        <div class="section-label">
-          INFO DE TURNO
+        <div class="occupation-detail">
+          <span>Habitaciones ocupadas</span>
+          <strong>{{ habitacionesOcupadas }}</strong>
         </div>
 
-        <div class="shift-row">
-
-          <span>
-            Turno
-          </span>
-
-          <strong>
-            {{ cuidadoresEnTurno }}
-          </strong>
-
-        </div>
-
-        <div class="shift-row">
-
-          <span>
-            En servicio
-          </span>
-
-          <strong>
-            {{ ingresosCuidadores }} cuidadores
-          </strong>
-
+        <div class="occupation-detail">
+          <span>Camas disponibles</span>
+          <strong>{{ camasDisponibles }}</strong>
         </div>
 
       </div>
 
-    </section>
+    </article>
 
 
-    <!-- COLUMNA CENTRAL -->
 
-    <div class="analysis-column">
-
-      <!-- Análisis de salud -->
-
-      <section class="card health-card">
-
-        <div class="card-header">
-
-          <div>
-
-            <h2 class="ct">
-              Análisis de Salud
-            </h2>
-
-            <p class="cs">
-              Estados clínicos · {{ mesActual }}
-            </p>
-
-          </div>
-
-          <span class="icono-material card-icon">
-            monitor_heart
-          </span>
-
-        </div>
-
-
-        <div class="health-grid">
-
-          <div *ngFor="let estado of estadosSalud" class="health-item" [ngClass]="estado.clase">
-
-            <div class="health-icon">
-
-              <span class="icono-material">
-                {{ estado.icono }}
-              </span>
-
-            </div>
-
-            <div>
-
-              <strong class="health-number">
-                {{ estado.cantidad }}
-              </strong>
-
-              <span>
-                {{ estado.nombre }}
-              </span>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      <!-- Tendencia -->
-
-      <section class="card trend-card">
-
-        <div class="trend-header">
-
-          <span class="section-label">
-            TENDENCIA SEMESTRAL
-          </span>
-
-          <span class="trend-badge">
-            {{ tendenciaTexto }}
-          </span>
-
-        </div>
-
-
-        <div class="trend-chart">
-
-          <svg viewBox="0 0 400 100" preserveAspectRatio="none">
-
-            <defs>
-
-              <linearGradient id="trendGradient" x1="0" x2="0" y1="0" y2="1">
-
-                <stop offset="0%" stop-color="#3B5BDB" stop-opacity=".18">
-                </stop>
-
-                <stop offset="100%" stop-color="#3B5BDB" stop-opacity="0">
-                </stop>
-
-              </linearGradient>
-
-            </defs>
-
-
-            <line x1="0" y1="20" x2="400" y2="20" class="chart-grid">
-            </line>
-
-            <line x1="0" y1="50" x2="400" y2="50" class="chart-grid">
-            </line>
-
-            <line x1="0" y1="80" x2="400" y2="80" class="chart-grid">
-            </line>
-
-
-            <path [attr.d]="tendenciaAreaPath" fill="url(#trendGradient)">
-            </path>
-
-
-            <path [attr.d]="tendenciaLinePath" fill="none" stroke="var(--color-primary)" stroke-width="4"
-              stroke-linecap="round" stroke-linejoin="round">
-            </path>
-
-
-            <circle *ngFor="let punto of puntosTendencia" [attr.cx]="punto.x" [attr.cy]="punto.y" r="5"
-              class="trend-point">
-            </circle>
-
-          </svg>
-
-        </div>
-
-
-        <div class="sl">
-
-          <span *ngFor="let mes of mesesTendencia" class="slb" [class.tp]="mes.activo">
-
-            {{ mes.nombre }}
-
-          </span>
-
-        </div>
-
-
-        <div class="section-label mt3 mb3">
-          INDICADORES DE BIENESTAR
-        </div>
-
-
-        <div *ngFor="let indicador of indicadoresBienestar" class="indicator mb3">
-
-          <div class="flex jb ic mb1">
-
-            <div class="flex ic g2p">
-
-              <span class="icono-material" [ngClass]="indicador.iconoClase">
-
-                {{ indicador.icono }}
-
-              </span>
-
-              <span class="txs">
-                {{ indicador.nombre }}
-              </span>
-
-            </div>
-
-            <strong class="indicator-value" [ngClass]="indicador.valorClase">
-
-              {{ indicador.porcentaje }}%
-
-            </strong>
-
-          </div>
-
-          <div class="pt small-progress">
-
-            <div class="pf" [ngClass]="indicador.progresoClase" [style.width.%]="indicador.porcentaje">
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
-    </div>
-
-
-    <!-- ALERTAS -->
-
-    <section class="card alerts-card">
+    <!-- 2. PUNTUALIDAD DE CUIDADORES -->
+    <article class="card punctuality-card">
 
       <div class="card-header">
-
         <div>
-
-          <h2 class="ct">
-            Alertas del Sistema
-          </h2>
-
-          <p class="cs">
-            {{ alertasSinLeer }} sin leer · {{ totalAlertas }} total
-          </p>
-
+          <h2 class="ct">Puntualidad de cuidadores</h2>
+          <p class="cs">Control de asistencia a los turnos</p>
         </div>
 
+        <span class="icono-material card-icon">
+          schedule
+        </span>
+      </div>
 
-        <div class="contenedor-icono-alertas">
+      <div class="punctuality-summary">
 
-          <div class="icono-alertas">
+        <strong class="punctuality-percent">
+          {{ porcentajePuntualidad }}%
+        </strong>
 
+        <span>Asistencia puntual</span>
+
+        <small>{{ totalRegistrosPuntualidad }} registros</small>
+
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-fill" [style.width.%]="porcentajePuntualidad">
+        </div>
+      </div>
+
+      <div class="punctuality-details">
+
+        <div class="punctuality-item">
+          <span>A tiempo</span>
+          <strong>{{ cuidadoresPuntuales }}</strong>
+        </div>
+
+        <div class="punctuality-item">
+          <span>Con retraso</span>
+          <strong>{{ cuidadoresConRetraso }}</strong>
+        </div>
+
+      </div>
+
+      <div class="card-footer-info">
+        Promedio de retraso:
+        <strong>{{ promedioRetraso }} min</strong>
+      </div>
+
+    </article>
+
+
+    <!-- 3. CUMPLIMIENTO DE TURNOS -->
+    <article class="card compliance-card">
+
+      <div class="card-header">
+        <div>
+          <h2 class="ct">Cumplimiento de turnos</h2>
+          <p class="cs">Estado y finalización de la jornada</p>
+        </div>
+
+        <span class="icono-material card-icon">
+          assignment_turned_in
+        </span>
+      </div>
+
+      <div class="compliance-total">
+        <span>Total programados</span>
+        <strong>{{ totalTurnosProgramados }}</strong>
+      </div>
+
+      <div class="compliance-bars">
+
+        <div class="compliance-item">
+          <div class="compliance-label">
+            <span>Finalizados con éxito</span>
+            <strong>{{ turnosFinalizados }}</strong>
+          </div>
+
+          <div class="progress-track">
+            <div class="progress-fill" [style.width.%]="porcentajeTurnosFinalizados">
+            </div>
+          </div>
+        </div>
+
+        <div class="compliance-item">
+          <div class="compliance-label">
+            <span>Asignados y en curso</span>
+            <strong>{{ turnosEnCurso }}</strong>
+          </div>
+
+          <div class="progress-track">
+            <div class="progress-fill progress-blue" [style.width.%]="porcentajeTurnosEnCurso">
+            </div>
+          </div>
+        </div>
+
+        <div class="compliance-item">
+          <div class="compliance-label">
+            <span>Pendientes de cierre</span>
+            <strong>{{ turnosPendientesCierre }}</strong>
+          </div>
+
+          <div class="progress-track">
+            <div class="progress-fill progress-warning" [style.width.%]="porcentajeTurnosPendientes">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </article>
+
+
+    <!-- 4. ESTADO GENERAL DE SALUD -->
+    <article class="card health-card">
+
+      <div class="card-header">
+        <div>
+          <h2 class="ct">Estado general de salud</h2>
+          <p class="cs">Estado general de los residentes</p>
+        </div>
+
+        <span class="icono-material card-icon">
+          favorite
+        </span>
+      </div>
+
+      <div class="health-grid">
+
+        <div *ngFor="let estado of estadosSalud" class="health-item" [ngClass]="estado.clase">
+
+          <div class="health-icon">
             <span class="icono-material">
-              notifications_active
+              {{ estado.icono }}
             </span>
-
           </div>
 
-          <span class="contador-alertas">
-            {{ alertasSinLeer }}
-          </span>
+          <div>
+            <strong class="health-number">
+              {{ estado.cantidad }}
+            </strong>
+
+            <span>{{ estado.nombre }}</span>
+          </div>
 
         </div>
 
       </div>
 
-
-      <!-- Resumen -->
-
-      <div class="g3 mb3">
-
-        <div class="alert-stat critical-alert">
-
-          <span class="icono-material">
-            emergency
-          </span>
-
-          <div>
-            {{ alertasCriticas }}
-          </div>
-
-          <span>
-            Crítica
-          </span>
-
-        </div>
-
-
-        <div class="alert-stat warning-alert">
-
-          <span class="icono-material">
-            warning
-          </span>
-
-          <div>
-            {{ alertasAvisos }}
-          </div>
-
-          <span>
-            Advertencia
-          </span>
-
-        </div>
-
-
-        <div class="alert-stat info-alert">
-
-          <span class="icono-material">
-            info
-          </span>
-
-          <div>
-            {{ alertasInfo }}
-          </div>
-
-          <span>
-            Informativo
-          </span>
-
-        </div>
-
+      <div class="card-footer-info">
+        Total de pacientes evaluados:
+        <strong>{{ totalPacientesEvaluados }}</strong>
       </div>
 
+    </article>
 
-      <!-- Lista -->
 
-      <div class="lista-alertas sy2">
+    <!-- 5. CÁMARAS Y EVENTOS IA -->
+    <article class="card events-card">
 
-        <div *ngFor="let alerta of alertas" class="item-alerta" [ngClass]="alerta.clase">
+      <div class="card-header">
+        <div>
+          <h2 class="ct">Cámaras y eventos IA</h2>
+          <p class="cs">Detecciones y notificaciones del periodo</p>
+        </div>
 
-          <span class="icono-material simbolo-alerta">
-            {{ alerta.icono }}
-          </span>
+        <span class="icono-material card-icon">
+          videocam
+        </span>
+      </div>
 
-          <div class="contenido-alerta">
+      <div class="events-summary">
 
-            <div class="titulo-alerta">
-              {{ alerta.titulo }}
-            </div>
+        <div class="events-chart">
 
-            <div class="descripcion-alerta">
-              {{ alerta.descripcion }}
+          <div class="events-donut" [style.background]="eventosRiesgoGradient">
+
+            <div class="events-donut-center">
+              <strong>{{ totalEventosIa }}</strong>
+              <span>EVENTOS</span>
             </div>
 
           </div>
 
-          <span class="hora-alerta">
-            {{ alerta.tiempo }}
-          </span>
+        </div>
 
-          <span *ngIf="alerta.noLeida" class="punto-alerta-no-leida">
-          </span>
+        <div class="events-legend">
+
+          <div class="event-legend-item">
+            <span class="legend-dot high-risk"></span>
+            <span>Riesgo alto</span>
+            <strong>{{ eventosRiesgoAlto }}</strong>
+          </div>
+
+          <div class="event-legend-item">
+            <span class="legend-dot medium-risk"></span>
+            <span>Riesgo medio</span>
+            <strong>{{ eventosRiesgoMedio }}</strong>
+          </div>
+
+          <div class="event-legend-item">
+            <span class="legend-dot low-risk"></span>
+            <span>Riesgo bajo</span>
+            <strong>{{ eventosRiesgoBajo }}</strong>
+          </div>
 
         </div>
 
       </div>
 
-    </section>
+      <div class="events-footer">
+        <span>
+          Notificaciones relacionadas:
+        </span>
+
+        <strong>{{ totalNotificacionesEventos }}</strong>
+      </div>
+
+    </article>
+
+
+    <!-- 6. ASIGNACIONES DE CUIDADORES -->
+    <article class="card assignments-card">
+
+      <div class="card-header">
+        <div>
+          <h2 class="ct">Asignaciones de cuidadores</h2>
+          <p class="cs">
+            Pacientes asignados por cuidador
+          </p>
+        </div>
+
+        <span class="icono-material card-icon">
+          groups
+        </span>
+      </div>
+
+      <div class="assignments-list">
+
+        <div *ngFor="let cuidador of asignacionesCuidadores" class="assignment-item">
+
+          <div class="avatar-cuidador">
+            {{ cuidador.iniciales }}
+          </div>
+
+          <div class="assignment-info">
+
+            <div class="assignment-name">
+              {{ cuidador.nombre }}
+            </div>
+
+            <div class="assignment-progress">
+              <div class="assignment-progress-fill" [style.width.%]="cuidador.porcentaje">
+              </div>
+            </div>
+
+          </div>
+
+          <div class="assignment-count">
+            {{ cuidador.pacientes }} pacientes
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="card-footer-info">
+        Total asignados:
+        <strong>{{ totalPacientesAsignados }}</strong>
+
+        <span class="footer-separator">·</span>
+
+        Cuidadores activos:
+        <strong>{{ cuidadoresActivosAsignacion }}</strong>
+      </div>
+
+    </article>
 
   </section>
 

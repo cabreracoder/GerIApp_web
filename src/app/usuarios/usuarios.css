@@ -549,3 +549,397 @@ tbody tr:hover {
     padding: 11px 12px;
   }
 }
+
+
+/* =========================================
+   TABLA DE USUARIOS
+   DISEÑO UNIFICADO CON LOS DEMÁS MÓDULOS
+========================================= */
+
+.contenedor-tabla {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.desplazamiento-tabla {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: inherit;
+}
+
+.tabla-usuarios {
+  width: 100%;
+  min-width: 1050px;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  table-layout: auto;
+}
+
+/* ENCABEZADO AZUL */
+
+.tabla-usuarios thead th {
+  padding: 16px 20px !important;
+  background: var(--color-primary) !important;
+  color: #ffffff !important;
+
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+
+  white-space: nowrap;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+/* ESQUINAS SUPERIORES */
+
+.tabla-usuarios thead th:first-child {
+  border-top-left-radius: 16px !important;
+}
+
+.tabla-usuarios thead th:last-child {
+  border-top-right-radius: 16px !important;
+}
+
+/* FILAS */
+
+.tabla-usuarios tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.tabla-usuarios tbody td {
+  padding: 14px 20px !important;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+}
+
+.tabla-usuarios tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+
+  .contenedor-tabla {
+    border-radius: 15px;
+  }
+
+  .tabla-usuarios thead th {
+    padding: 13px 15px !important;
+  }
+
+  .tabla-usuarios tbody td {
+    padding: 12px 15px !important;
+  }
+}
+
+/* =========================================
+   BANNER GESTIÓN DE USUARIOS
+   DISEÑO UNIFICADO CON CUIDADORES
+========================================= */
+
+.banner-usuarios {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 190px;
+  margin-top: 0;
+  margin-bottom: 22px;
+  padding: 26px 34px;
+  overflow: hidden;
+  isolation: isolate;
+
+  background: linear-gradient(90deg,
+      #f9fbff 0%,
+      #eef4ff 60%,
+      #eaf2ff 100%);
+
+  border: 1px solid #e4ecfa;
+  border-radius: 24px;
+  box-shadow: 0 6px 20px rgba(32, 76, 145, 0.08);
+}
+
+/* CONTENIDO */
+
+.banner-usuarios__contenido {
+  position: relative;
+  z-index: 3;
+  width: 44%;
+  max-width: 540px;
+}
+
+.banner-usuarios__contenido h1 {
+  margin: 0;
+  color: #102c6b;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.banner-usuarios__subtitulo {
+  margin: 9px 0 18px;
+  color: #6f84a8;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+/* TARJETA DEL MENSAJE */
+
+.banner-usuarios__mensaje {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 100%;
+  padding: 12px 18px;
+  background: rgba(219, 232, 255, 0.72);
+  border-radius: 14px;
+  color: #23498d;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.banner-usuarios__mensaje>.material-symbols-outlined {
+  color: #2474eb;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.banner-usuarios__mensaje .corazon {
+  font-size: 20px;
+  color: #2474eb;
+}
+
+/* DECORACIÓN */
+
+.banner-usuarios__decoracion {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ONDA SUPERIOR */
+
+.deco-usuarios-onda-superior {
+  position: absolute;
+  top: -36px;
+  left: 27%;
+  width: 310px;
+  height: 120px;
+  background: #dce9ff;
+  border-radius: 0 0 150px 150px;
+  opacity: 0.95;
+}
+
+/* ONDA INFERIOR */
+
+.deco-usuarios-onda-inferior {
+  position: absolute;
+  bottom: -58px;
+  left: 35%;
+  width: 390px;
+  height: 150px;
+  background: #dfeaff;
+  border-radius: 50%;
+  opacity: 0.9;
+}
+
+/* MANCHA CREMA */
+
+.deco-usuarios-mancha-crema {
+  position: absolute;
+  right: 17%;
+  bottom: -42px;
+  width: 260px;
+  height: 130px;
+  background: #f7ead9;
+  border-radius: 50%;
+  opacity: 0.72;
+}
+
+/* CORAZÓN DECORATIVO */
+
+.deco-usuarios-corazon {
+  position: absolute;
+  left: 51%;
+  top: 58px;
+  color: #9ec1f5;
+  opacity: 0.78;
+}
+
+.deco-usuarios-corazon .material-symbols-outlined {
+  font-size: 50px;
+  font-variation-settings: 'FILL' 0, 'wght' 250, 'opsz' 48;
+}
+
+/* HOJAS */
+
+.deco-usuarios-hojas {
+  position: absolute;
+  right: 40px;
+  top: 62px;
+  width: 58px;
+  height: 110px;
+  background: linear-gradient(to bottom,
+      rgba(164, 193, 176, 0.55),
+      rgba(164, 193, 176, 0.55)) center / 2px 100% no-repeat;
+  opacity: 0.65;
+}
+
+.deco-usuarios-hojas::before,
+.deco-usuarios-hojas::after {
+  content: "";
+  position: absolute;
+  width: 26px;
+  height: 84px;
+  background: rgba(170, 199, 179, 0.4);
+  border-radius: 60% 10% 60% 10%;
+}
+
+.deco-usuarios-hojas::before {
+  left: 2px;
+  top: 22px;
+  transform: rotate(25deg);
+}
+
+.deco-usuarios-hojas::after {
+  left: 26px;
+  top: 4px;
+  transform: rotate(-14deg);
+}
+
+/* FOTO */
+
+.banner-usuarios__foto {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 44%;
+  height: 100%;
+  z-index: 2;
+  overflow: hidden;
+  border-radius: 0 24px 24px 0;
+}
+
+/* DIFUMINADO DE LA IMAGEN */
+
+.banner-usuarios__foto::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75px;
+  width: 170px;
+  height: 100%;
+  z-index: 2;
+
+  background: linear-gradient(90deg,
+      #eef4ff 20%,
+      rgba(238, 244, 255, 0.72) 45%,
+      rgba(238, 244, 255, 0) 100%);
+}
+
+.banner-usuarios__foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 992px) {
+  .banner-usuarios__contenido {
+    width: 52%;
+  }
+
+  .banner-usuarios__foto {
+    width: 46%;
+  }
+}
+
+@media (max-width: 768px) {
+  .banner-usuarios {
+    min-height: 220px;
+    padding: 22px;
+    margin-top: 0;
+  }
+
+  .banner-usuarios__contenido {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .banner-usuarios__contenido h1 {
+    font-size: 24px;
+  }
+
+  .banner-usuarios__subtitulo {
+    font-size: 14px;
+  }
+
+  .banner-usuarios__mensaje {
+    font-size: 12px;
+  }
+
+  .banner-usuarios__foto {
+    width: 62%;
+    opacity: 0.18;
+  }
+
+  .banner-usuarios__decoracion {
+    opacity: 0.55;
+  }
+}
+
+@media (max-width: 480px) {
+  .banner-usuarios {
+    padding: 18px;
+  }
+
+  .banner-usuarios__contenido h1 {
+    font-size: 22px;
+  }
+
+  .banner-usuarios__mensaje {
+    padding: 10px 14px;
+    font-size: 11px;
+  }
+}
+
+/* BUSCADOR REDONDO - GESTIÓN DE USUARIOS */
+
+.tarjeta-buscador {
+  width: 100%;
+  min-height: 50px;
+  margin-bottom: var(--spacing-lg);
+  padding: 0 20px;
+
+  border-radius: 999px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* RESALTADO AZUL AL SELECCIONAR */
+
+.tarjeta-buscador:focus-within {
+  border-color: #3B5BDB;
+  box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.13);
+}

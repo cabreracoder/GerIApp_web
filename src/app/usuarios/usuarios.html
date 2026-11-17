@@ -1,17 +1,49 @@
 <div class="px-8 pt-4 pb-8">
 
-  <!-- ENCABEZADO -->
-  <div class="flex justify-between items-center mb-8">
-    <div>
-      <h1 class="text-3xl font-bold text-[#212529]">
-        Gestión de Usuarios
-      </h1>
+  <!-- BANNER GESTIÓN DE USUARIOS -->
+  <section class="banner-usuarios">
 
-      <p class="text-[#6C757D] mt-1">
-        Administración y asignación de roles de los usuarios
+    <div class="banner-usuarios__contenido">
+
+      <h1>Gestión de Usuarios</h1>
+
+      <p class="banner-usuarios__subtitulo">
+        Administración y asignación de roles de los usuarios del sistema.
       </p>
+
+      <div class="banner-usuarios__mensaje">
+        <span class="material-symbols-outlined">
+          groups
+        </span>
+
+        <span>
+          Un equipo organizado,<br>
+          brinda una mejor atención.
+        </span>
+
+        <span class="material-symbols-outlined corazon">
+          favorite
+        </span>
+      </div>
+
     </div>
-  </div>
+
+    <!-- CAPAS DECORATIVAS -->
+    <div class="banner-usuarios__decoracion">
+      <span class="deco-usuarios-onda-superior"></span>
+      <span class="deco-usuarios-onda-inferior"></span>
+      <span class="deco-usuarios-mancha-crema"></span>
+      <span class="deco-usuarios-corazon">
+        <span class="material-symbols-outlined">favorite</span>
+      </span>
+      <span class="deco-usuarios-hojas"></span>
+    </div>
+
+    <div class="banner-usuarios__foto">
+      <img src="/banner-usuarios.png" alt="Equipo de atención geriátrica">
+    </div>
+
+  </section>
 
   <!-- BUSCADOR -->
   <section class="tarjeta-buscador">
@@ -47,220 +79,222 @@
     </p>
   </div>
 
-  <!-- TABLA -->
-  <div class="overflow-x-auto">
+  <!-- TABLA DE USUARIOS -->
+  <div class="contenedor-tabla">
 
-    <table class="w-full border-separate border-spacing-y-2">
+    <div class="desplazamiento-tabla">
 
-      <!-- ENCABEZADO TABLA -->
-      <thead>
-        <tr class="bg-[#3B5BDB]">
+      <table class="tabla-usuarios">
+        <!-- ENCABEZADO TABLA -->
+        <thead>
+          <tr class="bg-[#3B5BDB]">
 
-          <th class="px-5 py-4 text-left text-sm font-semibold !text-white rounded-l-lg">
-            Usuario
-          </th>
+            <th class="px-5 py-4 text-left text-sm font-semibold !text-white rounded-l-lg">
+              Usuario
+            </th>
 
-          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
-            Documento
-          </th>
+            <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
+              Documento
+            </th>
 
-          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
-            Correo
-          </th>
+            <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
+              Correo
+            </th>
 
-          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
-            Teléfono
-          </th>
+            <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
+              Teléfono
+            </th>
 
-          <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
-            Rol
-          </th>
+            <th class="px-5 py-4 text-left text-sm font-semibold !text-white">
+              Rol
+            </th>
 
-          <th class="px-5 py-4 text-center text-sm font-semibold !text-white rounded-r-lg">
-            Acción
-          </th>
+            <th class="px-5 py-4 text-center text-sm font-semibold !text-white rounded-r-lg">
+              Acción
+            </th>
 
-        </tr>
-      </thead>
+          </tr>
+        </thead>
 
-      <tbody>
+        <tbody>
 
-        <!-- SIN USUARIOS -->
-        <tr *ngIf="users.length === 0">
+          <!-- SIN USUARIOS -->
+          <tr *ngIf="users.length === 0">
 
-          <td colspan="6" class="px-5 py-12 text-center text-[#6C757D]">
-            No hay usuarios registrados.
-          </td>
+            <td colspan="6" class="px-5 py-12 text-center text-[#6C757D]">
+              No hay usuarios registrados.
+            </td>
 
-        </tr>
+          </tr>
 
-        <!-- SIN RESULTADOS DE BÚSQUEDA -->
-        <tr *ngIf="users.length > 0 && usuariosFiltrados.length === 0">
+          <!-- SIN RESULTADOS DE BÚSQUEDA -->
+          <tr *ngIf="users.length > 0 && usuariosFiltrados.length === 0">
 
-          <td colspan="6" class="px-5 py-12 text-center text-[#6C757D]">
-            No se encontraron usuarios para
-            "<span class="font-medium text-[#212529]">
-              {{ busqueda }}
-            </span>".
-          </td>
+            <td colspan="6" class="px-5 py-12 text-center text-[#6C757D]">
+              No se encontraron usuarios para
+              "<span class="font-medium text-[#212529]">
+                {{ busqueda }}
+              </span>".
+            </td>
 
-        </tr>
+          </tr>
 
-        <!-- USUARIOS FILTRADOS -->
-        <tr *ngFor="let user of usuariosPaginaActual; let i = index" [class]="
+          <!-- USUARIOS FILTRADOS -->
+          <tr *ngFor="let user of usuariosPaginaActual; let i = index" [class]="
             i % 2 === 0
               ? 'bg-[#F4F7FF] text-gray-800'
               : 'bg-white text-gray-800'
           ">
 
-          <!-- USUARIO -->
-          <!-- USUARIO -->
-          <td class="px-5 py-4 rounded-l-lg">
+            <!-- USUARIO -->
+            <!-- USUARIO -->
+            <td class="px-5 py-4 rounded-l-lg">
 
-            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-3">
 
-              <!-- AVATAR -->
-              <div class="avatar-usuario">
+                <!-- AVATAR -->
+                <div class="avatar-usuario">
 
-                <!-- Mostrar foto de Cloudinary -->
-                <img *ngIf="user.foto; else inicialesUsuario" [src]="user.foto"
-                  [alt]="user.nombres + ' ' + user.apellidos" />
+                  <!-- Mostrar foto de Cloudinary -->
+                  <img *ngIf="user.foto; else inicialesUsuario" [src]="user.foto"
+                    [alt]="user.nombres + ' ' + user.apellidos" />
 
-                <!-- Mostrar iniciales si no tiene foto -->
-                <ng-template #inicialesUsuario>
-                  {{
-                  ((user.nombres || '').charAt(0) +
-                  (user.apellidos || '').charAt(0)).toUpperCase()
-                  }}
-                </ng-template>
+                  <!-- Mostrar iniciales si no tiene foto -->
+                  <ng-template #inicialesUsuario>
+                    {{
+                    ((user.nombres || '').charAt(0) +
+                    (user.apellidos || '').charAt(0)).toUpperCase()
+                    }}
+                  </ng-template>
+
+                </div>
+
+                <!-- INFORMACIÓN -->
+                <div class="flex flex-col">
+
+                  <strong class="text-[#212529]">
+                    {{ user.nombres }} {{ user.apellidos }}
+                  </strong>
+
+                  <span class="text-xs text-[#6C757D]">
+                    {{ user.correo }}
+                  </span>
+
+                </div>
 
               </div>
 
-              <!-- INFORMACIÓN -->
-              <div class="flex flex-col">
+            </td>
 
-                <strong class="text-[#212529]">
-                  {{ user.nombres }} {{ user.apellidos }}
-                </strong>
+            <!-- DOCUMENTO -->
+            <td class="px-5 py-4 text-sm text-[#495057]">
 
-                <span class="text-xs text-[#6C757D]">
-                  {{ user.correo }}
-                </span>
+              <span class="font-medium">
+                {{ user.tipo_documento }}
+              </span>
 
-              </div>
+              {{ user.numero_documento }}
 
-            </div>
+            </td>
 
-          </td>
+            <!-- CORREO -->
+            <td class="px-5 py-4 text-sm text-[#495057]">
+              {{ user.correo }}
+            </td>
 
-          <!-- DOCUMENTO -->
-          <td class="px-5 py-4 text-sm text-[#495057]">
+            <!-- TELÉFONO -->
+            <td class="px-5 py-4 text-sm text-[#495057]">
+              {{ user.telefono || 'No registrado' }}
+            </td>
 
-            <span class="font-medium">
-              {{ user.tipo_documento }}
-            </span>
+            <!-- ROL -->
+            <td class="px-5 py-4">
 
-            {{ user.numero_documento }}
+              <div class="flex flex-col gap-1">
 
-          </td>
-
-          <!-- CORREO -->
-          <td class="px-5 py-4 text-sm text-[#495057]">
-            {{ user.correo }}
-          </td>
-
-          <!-- TELÉFONO -->
-          <td class="px-5 py-4 text-sm text-[#495057]">
-            {{ user.telefono || 'No registrado' }}
-          </td>
-
-          <!-- ROL -->
-          <td class="px-5 py-4">
-
-            <div class="flex flex-col gap-1">
-
-              <select [ngClass]="{
+                <select [ngClass]="{
                   'selector-rol': user.id_rol !== null,
                   'selector-rol-sin-rol': user.id_rol === null
                 }" [ngModel]="user.id_rol" (ngModelChange)="onRoleChange(user, $event)">
 
-                <option [ngValue]="null">
-                  Sin rol asignado
-                </option>
+                  <option [ngValue]="null">
+                    Sin rol asignado
+                  </option>
 
-                <option *ngFor="let role of roles" [ngValue]="role.id_rol">
-                  {{ role.nombre }}
-                </option>
+                  <option *ngFor="let role of roles" [ngValue]="role.id_rol">
+                    {{ role.nombre }}
+                  </option>
 
-              </select>
+                </select>
 
-            </div>
+              </div>
 
-          </td>
+            </td>
 
-          <!-- ACCIÓN -->
-          <td class="px-5 py-4 rounded-r-lg">
+            <!-- ACCIÓN -->
+            <td class="px-5 py-4 rounded-r-lg">
 
-            <div class="flex justify-center">
+              <div class="flex justify-center">
 
-              <button type="button" (click)="saveRole(user)" [disabled]="savingUserId === user.id_usuario"
-                title="Guardar rol" class="boton-guardar-rol">
+                <button type="button" (click)="saveRole(user)" [disabled]="savingUserId === user.id_usuario"
+                  title="Guardar rol" class="boton-guardar-rol">
 
-                <!-- ICONO NORMAL -->
-                <span *ngIf="savingUserId !== user.id_usuario" class="material-symbols-outlined text-[20px]">
-                  save
-                </span>
+                  <!-- ICONO NORMAL -->
+                  <span *ngIf="savingUserId !== user.id_usuario" class="material-symbols-outlined text-[20px]">
+                    save
+                  </span>
 
-                <!-- ICONO GUARDANDO -->
-                <span *ngIf="savingUserId === user.id_usuario" class="material-symbols-outlined text-[20px]">
-                  sync
-                </span>
+                  <!-- ICONO GUARDANDO -->
+                  <span *ngIf="savingUserId === user.id_usuario" class="material-symbols-outlined text-[20px]">
+                    sync
+                  </span>
 
-                <!-- TEXTO -->
-                <span>
-                  {{
-                  savingUserId === user.id_usuario
-                  ? 'Guardando...'
-                  : 'Guardar'
-                  }}
-                </span>
+                  <!-- TEXTO -->
+                  <span>
+                    {{
+                    savingUserId === user.id_usuario
+                    ? 'Guardando...'
+                    : 'Guardar'
+                    }}
+                  </span>
 
-              </button>
+                </button>
 
-            </div>
+              </div>
 
-          </td>
+            </td>
 
-        </tr>
+          </tr>
 
-      </tbody>
+        </tbody>
 
-    </table>
-    <!-- PAGINACIÓN -->
-    <div class="flex justify-center items-center gap-3 mt-6" *ngIf="totalPaginas > 1">
-
-      <!-- ANTERIOR -->
-      <button type="button" (click)="cambiarPagina(paginaActual - 1)" [disabled]="paginaActual === 1"
-        class="w-9 h-9 flex items-center justify-center rounded-lg text-[#212529] disabled:opacity-40 disabled:cursor-not-allowed">
-        &lt;
-      </button>
-
-      <!-- NÚMEROS -->
-      <button type="button" *ngFor="let pagina of paginas" (click)="cambiarPagina(pagina)" [ngClass]="
-      paginaActual === pagina
-        ? 'w-9 h-9 rounded-lg bg-[#3B5BDB] text-white font-semibold'
-        : 'w-9 h-9 rounded-lg text-[#212529] hover:bg-[#F4F7FF]'
-    ">
-        {{ pagina }}
-      </button>
-
-      <!-- SIGUIENTE -->
-      <button type="button" (click)="cambiarPagina(paginaActual + 1)" [disabled]="paginaActual === totalPaginas"
-        class="w-9 h-9 flex items-center justify-center rounded-lg text-[#212529] disabled:opacity-40 disabled:cursor-not-allowed">
-        &gt;
-      </button>
-
+      </table>
     </div>
+  </div>
+  <!-- PAGINACIÓN -->
+  <div class="flex justify-center items-center gap-3 mt-6" *ngIf="totalPaginas > 1">
+
+    <!-- ANTERIOR -->
+    <button type="button" (click)="cambiarPagina(paginaActual - 1)" [disabled]="paginaActual === 1"
+      class="w-9 h-9 flex items-center justify-center rounded-lg text-[#212529] disabled:opacity-40 disabled:cursor-not-allowed">
+      &lt;
+    </button>
+
+    <!-- NÚMEROS -->
+    <button type="button" *ngFor="let pagina of paginas" (click)="cambiarPagina(pagina)" [ngClass]="
+        paginaActual === pagina
+          ? 'w-9 h-9 rounded-lg bg-[#3B5BDB] text-white font-semibold'
+          : 'w-9 h-9 rounded-lg text-[#212529] hover:bg-[#F4F7FF]'
+      ">
+      {{ pagina }}
+    </button>
+
+    <!-- SIGUIENTE -->
+    <button type="button" (click)="cambiarPagina(paginaActual + 1)" [disabled]="paginaActual === totalPaginas"
+      class="w-9 h-9 flex items-center justify-center rounded-lg text-[#212529] disabled:opacity-40 disabled:cursor-not-allowed">
+      &gt;
+    </button>
+
   </div>
 
 </div>
