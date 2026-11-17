@@ -131,22 +131,71 @@
 
       </form>
 
-
       <!-- SEPARADOR -->
       <div class="separador">
-
         <span></span>
-
-        <p>o</p>
-
+        <p>o inicia sesión con</p>
         <span></span>
+      </div>
+
+      <!-- ACCESOS ALTERNATIVOS -->
+      <div class="accesos-alternativos">
+
+        <!-- GOOGLE -->
+        <div class="acceso-alternativo google-container">
+
+          <div class="icono-google">
+            <svg viewBox="0 0 48 48" width="34" height="34">
+              <path fill="#4285F4" d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11a9.4 9.4 0 0 1-4.1 6.2v5.1h6.6c3.9-3.6 6.1-8.8 6.1-15z"/>
+              <path fill="#34A853" d="M24 44c5.5 0 10.1-1.8 13.5-4.9l-6.6-5.1c-1.8 1.2-4 1.9-6.9 1.9-5.3 0-9.8-3.6-11.4-8.4H5.8v5.3A20 20 0 0 0 24 44z"/>
+              <path fill="#FBBC05" d="M12.6 27.5a12 12 0 0 1 0-7.1v-5.3H5.8a20 20 0 0 0 0 17.7z"/>
+              <path fill="#EA4335" d="M24 12.1c3 0 5.7 1 7.8 3.1l5.8-5.8A19.3 19.3 0 0 0 24 4 20 20 0 0 0 5.8 15.1l6.8 5.3c1.6-4.8 6.1-8.3 11.4-8.3z"/>
+            </svg>
+          </div>
+
+          <span class="acceso-titulo">Google</span>
+          <span class="acceso-descripcion">Acceso externo</span>
+
+          <!-- Autenticación oficial de Google -->
+          <div class="google-login-real">
+            <asl-google-signin-button
+              type="icon"
+              size="large"
+              shape="circle">
+            </asl-google-signin-button>
+          </div>
+
+        </div>
+
+        <!-- RECONOCIMIENTO FACIAL -->
+        <button
+          type="button"
+          class="acceso-alternativo facial-alternativo"
+          (click)="abrirLoginFacial()"
+          [disabled]="cargandoLoginFacial">
+
+          <span class="material-symbols-outlined icono-facial">
+             center_focus_strong
+          </span>
+
+          <span class="acceso-titulo">
+            Reconocimiento facial
+          </span>
+
+          <span class="acceso-descripcion">
+            Acceso biométrico
+          </span>
+
+          <span
+            class="facial-spinner"
+            *ngIf="cargandoLoginFacial">
+          </span>
+
+        </button>
 
       </div>
 
-      <div class="google-container">
-        <asl-google-signin-button type="standard" size="large">
-        </asl-google-signin-button>
-      </div>
+
 
       <!-- REGISTRO -->
       <p class="registro-link">
@@ -330,3 +379,117 @@
 
 
   </div>
+  <!-- =====================================================
+     MODAL DE RECONOCIMIENTO FACIAL
+   ===================================================== -->
+
+  <div
+  class="modal-overlay modal-facial-overlay"
+  *ngIf="mostrarLoginFacial">
+
+  <div class="modal-facial">
+
+    <!-- ENCABEZADO -->
+
+    <button
+      type="button"
+      class="cerrar-modal"
+      (click)="cerrarLoginFacial()"
+      [disabled]="cargandoLoginFacial">
+
+      &times;
+
+    </button>
+
+    <div class="facial-header">
+
+      <h2>Reconocimiento facial</h2>
+
+      <p>
+        Ubica tu rostro frente a la cámara para iniciar sesión.
+      </p>
+
+    </div>
+
+    <!-- CÁMARA -->
+
+    <div class="facial-camera-container">
+
+      <video
+        #videoFacial
+        autoplay
+        muted
+        playsinline>
+      </video>
+
+      <div class="facial-camera-overlay">
+
+        <div class="facial-guide"></div>
+
+      </div>
+
+    </div>
+
+    <!-- INSTRUCCIONES -->
+
+    <div class="facial-instrucciones">
+
+      <span class="material-symbols-outlined">
+        info
+      </span>
+
+      <p>
+        Mantén tu rostro centrado, procura tener buena iluminación
+        y evita cubrir tu cara.
+      </p>
+
+    </div>
+
+    <!-- BOTONES -->
+
+    <div class="facial-acciones">
+
+      <button
+        type="button"
+        class="btn-facial-cancelar"
+        (click)="cerrarLoginFacial()"
+        [disabled]="cargandoLoginFacial">
+
+        Cancelar
+
+      </button>
+
+      <button
+        type="button"
+        class="btn-facial-capturar"
+        (click)="capturarRostro()"
+        [disabled]="!camaraActiva || cargandoLoginFacial">
+
+        <span
+          class="material-symbols-outlined"
+          *ngIf="!cargandoLoginFacial">
+          photo_camera
+        </span>
+
+        <span
+          class="facial-spinner"
+          *ngIf="cargandoLoginFacial">
+        </span>
+
+        {{ cargandoLoginFacial
+          ? 'Verificando rostro...'
+          : 'Capturar y verificar' }}
+
+      </button>
+
+    </div>
+
+    <p class="facial-privacidad">
+      La fotografía se utiliza para verificar tu identidad.
+    </p>
+
+  </div>
+
+  </div>
+
+</div>

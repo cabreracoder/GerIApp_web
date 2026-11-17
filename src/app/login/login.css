@@ -21,7 +21,6 @@
   overflow: hidden;
 }
 
-
 /* panel  azul*/
 
 .branding-panel {
@@ -43,7 +42,6 @@
   border-radius: 0 55% 55% 0;
 }
 
-
 /* Curva */
 
 .branding-panel::after {
@@ -63,7 +61,6 @@
 
   z-index: 0;
 }
-
 
 /* Círculos */
 
@@ -102,7 +99,6 @@
   margin-left: -10px;
 }
 
-
 /* logo */
 
 .logo-gerIapp {
@@ -114,7 +110,6 @@
 
   justify-content: center;
 }
-
 
 .logo-gerIapp-img {
   display: block;
@@ -129,7 +124,6 @@
 
   margin: 0 auto 8px;
 }
-
 
 /* Nombre */
 
@@ -146,7 +140,6 @@
 
   letter-spacing: -1px;
 }
-
 
 /* Gestión geriátrica */
 
@@ -178,7 +171,6 @@
 
   line-height: 1.25;
 }
-
 
 .branding-text p {
   max-width: 340px;
@@ -229,7 +221,6 @@
   margin-bottom: 30px;
 }
 
-
 .login-header h1 {
   margin: 0 0 8px;
 
@@ -242,7 +233,6 @@
   font-weight: 700;
 }
 
-
 .subtitulo {
   margin: 0;
 
@@ -254,7 +244,6 @@
 .campo {
   margin-bottom: 20px;
 }
-
 
 .campo label {
   display: block;
@@ -286,14 +275,12 @@
   transition: 0.2s ease;
 }
 
-
 .input-container:focus-within {
   border-color: #3b5bdb;
 
   box-shadow:
     0 0 0 3px rgba(59, 91, 219, 0.1);
 }
-
 
 .input-icon {
   width: 46px;
@@ -309,7 +296,6 @@
 
   font-size: 18px;
 }
-
 
 .input-container input {
   flex: 1;
@@ -329,11 +315,9 @@
   padding: 0 5px;
 }
 
-
 .input-container input::placeholder {
   color: #8a919a;
 }
-
 
 .password-icon {
   width: 46px;
@@ -359,7 +343,6 @@
 
   margin-bottom: 22px;
 }
-
 
 .recuperar-btn {
   padding: 0;
@@ -396,7 +379,6 @@
 .input-error {
   border: 1px solid #dc2626 !important;
 }
-
 
 .mensaje-error {
   color: #dc2626;
@@ -442,7 +424,6 @@
   transition: 0.2s ease;
 }
 
-
 .btn-login:hover {
   background: #2f50cb;
 
@@ -451,7 +432,6 @@
   box-shadow:
     0 7px 18px rgba(59, 91, 219, 0.22);
 }
-
 
 .btn-login:disabled {
   opacity: 0.65;
@@ -462,77 +442,6 @@
 
   box-shadow: none;
 }
-
-
-.separador {
-  width: 100%;
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 14px;
-
-  margin: 22px 0;
-}
-
-
-.separador span {
-  flex: 1;
-
-  height: 1px;
-
-  background: #e5e8ec;
-}
-
-
-.separador p {
-  margin: 0;
-
-  color: #7a8088;
-
-  font-size: 13px;
-}
-
-
-/* google */
-
-.btn-google {
-  width: 100%;
-
-  height: 52px;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  gap: 10px;
-
-  border: 1px solid #dfe3e8;
-
-  border-radius: 11px;
-
-  background: white;
-
-  color: #212529;
-
-  font-size: 14px;
-
-  font-weight: 600;
-
-  cursor: pointer;
-}
-
-
-.google-icon {
-  font-size: 19px;
-
-  font-weight: 700;
-
-  color: #4285f4;
-}
-
 
 /* registro*/
 
@@ -545,7 +454,6 @@
 
   font-size: 14px;
 }
-
 
 .registro-link button {
   margin-left: 4px;
@@ -599,9 +507,7 @@
 
 }
 
-
 @media (max-width: 700px) {
-
 
   .login-container {
     width: 100%;
@@ -615,7 +521,6 @@
 
     background: #f8fafc;
   }
-
 
   .branding-panel {
     width: 100%;
@@ -634,7 +539,6 @@
     padding: 15px 20px;
   }
 
-
   .branding-panel::after {
     width: 500px;
     height: 360px;
@@ -650,7 +554,6 @@
     left: -50px;
     bottom: 10px;
   }
-
 
   .branding-content {
     width: 100%;
@@ -672,7 +575,6 @@
     margin-bottom: 3px;
   }
 
-
   .logo-gerIapp h2 {
     margin: 0;
 
@@ -680,7 +582,6 @@
 
     line-height: 1;
   }
-
 
   .logo-gerIapp p {
     margin-top: 5px;
@@ -702,7 +603,6 @@
 
     line-height: 1.2;
   }
-
 
   .branding-text p {
     max-width: 280px;
@@ -730,8 +630,6 @@
     background: #f8fafc;
   }
 
-
-
   .login-card {
     width: 100%;
 
@@ -745,11 +643,9 @@
       0 5px 20px rgba(33, 37, 41, 0.06);
   }
 
-
   .login-header {
     margin-bottom: 25px;
   }
-
 
   .login-header h1 {
     font-size: 24px;
@@ -757,16 +653,13 @@
     margin-bottom: 6px;
   }
 
-
   .subtitulo {
     font-size: 14px;
   }
 
-
   .campo {
     margin-bottom: 17px;
   }
-
 
   .campo label {
     margin-bottom: 7px;
@@ -774,13 +667,11 @@
     font-size: 13px;
   }
 
-
   .input-container {
     height: 50px;
 
     border-radius: 10px;
   }
-
 
   .input-icon {
     width: 42px;
@@ -788,16 +679,13 @@
     font-size: 17px;
   }
 
-
   .password-icon {
     width: 42px;
   }
 
-
   .input-container input {
     font-size: 14px;
   }
-
 
   .recuperar-container {
     margin-top: 0;
@@ -805,11 +693,9 @@
     margin-bottom: 20px;
   }
 
-
   .recuperar-btn {
     font-size: 13px;
   }
-
 
   .btn-login {
     height: 50px;
@@ -819,20 +705,9 @@
     font-size: 15px;
   }
 
-
   .separador {
     margin: 20px 0;
   }
-
-
-  .btn-google {
-    height: 50px;
-
-    border-radius: 10px;
-
-    font-size: 14px;
-  }
-
 
   .registro-link {
     margin-top: 22px;
@@ -840,13 +715,11 @@
     font-size: 13px;
   }
 
-
   .registro-link button {
     font-size: 13px;
   }
 
 }
-
 
 @media (max-width: 380px) {
 
@@ -856,48 +729,39 @@
     min-height: 250px;
   }
 
-
   .logo-gerIapp-img {
     width: 135px;
 
     max-height: 110px;
   }
 
-
   .logo-gerIapp h2 {
     font-size: 27px;
   }
-
 
   .logo-gerIapp p {
     font-size: 13px;
   }
 
-
   .linea-decorativa {
     margin: 10px auto 7px;
   }
-
 
   .branding-text h3 {
     font-size: 16px;
   }
 
-
   .branding-text p {
     font-size: 11px;
   }
-
 
   .login-panel {
     padding: 14px 10px 25px;
   }
 
-
   .login-card {
     padding: 24px 17px;
   }
-
 
   .login-header h1 {
     font-size: 22px;
@@ -907,7 +771,6 @@
 /* ==========================
    MODAL RECUPERAR CONTRASEÑA
 ========================== */
-
 
 .modal-overlay {
 
@@ -930,7 +793,6 @@
 
 }
 
-
 .modal-recuperacion {
 
   width: 420px;
@@ -952,8 +814,6 @@
 
 }
 
-
-
 .modal-recuperacion h2 {
 
   margin: 0 0 10px;
@@ -965,8 +825,6 @@
   font-size: 25px;
 
 }
-
-
 
 .modal-recuperacion p {
 
@@ -980,10 +838,7 @@
 
 }
 
-
-
 .modal-recuperacion input {
-
 
   width: 100%;
 
@@ -1001,8 +856,6 @@
 
 }
 
-
-
 .modal-recuperacion input:focus {
 
   border-color: #3b5bdb;
@@ -1011,8 +864,6 @@
     0 0 0 3px rgba(59, 91, 219, 0.1);
 
 }
-
-
 
 .cerrar-modal {
 
@@ -1033,8 +884,6 @@
   cursor: pointer;
 
 }
-
-
 
 .btn-recuperar-modal {
 
@@ -1060,8 +909,6 @@
 
 }
 
-
-
 .btn-recuperar-modal:hover {
 
   background: #2f50cb;
@@ -1069,8 +916,6 @@
   transform: translateY(-1px);
 
 }
-
-
 
 @keyframes aparecerModal {
 
@@ -1081,7 +926,6 @@
     transform: translateY(-15px);
 
   }
-
 
   to {
 
@@ -1097,31 +941,634 @@
   z-index: 10000 !important;
 }
 
-.google-container {
-  width: 100%;
-  height: 52px;
+/* =====================================================
+   MODAL DE RECONOCIMIENTO FACIAL
+===================================================== */
+
+.modal-facial-overlay {
+  position: fixed;
+  inset: 0;
+
+  z-index: 10001;
+
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+
+  padding: 20px;
+
+  background: rgba(15, 23, 42, 0.72);
+
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+
+  overflow-y: auto;
 }
 
+/* CONTENEDOR PRINCIPAL */
 
-/* componente Google */
-.google-container asl-google-signin-button {
-  width: 100% !important;
-  display: block !important;
+.modal-facial {
+  position: relative;
+
+  width: 100%;
+  max-width: 460px;
+
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+
+  padding: 32px;
+
+  background: #ffffff;
+
+  border: 1px solid #e8edf5;
+  border-radius: 20px;
+
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.25);
+
+  animation: aparecerModalFacial 0.3s ease;
 }
 
+/* ANIMACIÓN */
 
-/* contenedor interno que crea Google */
-.google-container div[role="button"] {
-  width: 100% !important;
-  height: 52px !important;
+@keyframes aparecerModalFacial {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
+/* BOTÓN CERRAR */
 
-/* iframe de Google */
-.google-container iframe {
-  width: 100% !important;
-  height: 52px !important;
+.modal-facial .cerrar-modal {
+  position: absolute;
+
+  top: 13px;
+  right: 15px;
+
+  width: 35px;
+  height: 35px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  background: #f1f5f9;
+  color: #64748b;
+
+  border: none;
+  border-radius: 50%;
+
+  font-size: 25px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.modal-facial .cerrar-modal:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.modal-facial .cerrar-modal:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =====================================================
+   ENCABEZADO
+===================================================== */
+
+.facial-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.facial-icono {
+  width: 65px;
+  height: 65px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 15px;
+
+  background: #eef2ff;
+  color: #3b5bdb;
+
+  border-radius: 18px;
+}
+
+.facial-icono .material-symbols-outlined {
+  font-size: 36px;
+}
+
+.facial-header h2 {
+  margin: 0 0 9px;
+
+  color: #212529;
+
+  font-size: 23px;
+  font-weight: 700;
+}
+
+.facial-header p {
+  margin: 0;
+
+  color: #6c757d;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* =====================================================
+   CONTENEDOR DE LA CÁMARA
+===================================================== */
+
+.facial-camera-container {
+  position: relative;
+
+  width: 100%;
+  aspect-ratio: 4 / 3;
+
+  overflow: hidden;
+
+  background: #0f172a;
+
+  border: 3px solid #e2e8f0;
+  border-radius: 16px;
+}
+
+.facial-camera-container video {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  /* Efecto espejo para la cámara frontal */
+  transform: scaleX(-1);
+}
+
+/* GUÍA DEL ROSTRO */
+
+.facial-camera-overlay {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  pointer-events: none;
+}
+
+.facial-guide {
+  width: 48%;
+  height: 76%;
+
+  border: 2px dashed rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+
+  box-shadow: 0 0 0 1000px rgba(15, 23, 42, 0.12);
+}
+
+/* =====================================================
+   INSTRUCCIONES
+===================================================== */
+
+.facial-instrucciones {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  margin-top: 18px;
+  padding: 13px;
+
+  background: #eff6ff;
+
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+}
+
+.facial-instrucciones .material-symbols-outlined {
+  flex-shrink: 0;
+
+  color: #2563eb;
+  font-size: 21px;
+}
+
+.facial-instrucciones p {
+  margin: 0;
+
+  color: #475569;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* =====================================================
+   BOTONES DE ACCIÓN
+===================================================== */
+
+.facial-acciones {
+  display: flex;
+  gap: 12px;
+
+  margin-top: 22px;
+}
+
+.btn-facial-cancelar,
+.btn-facial-capturar {
+  min-height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 10px 15px;
+
+  border-radius: 11px;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.btn-facial-cancelar {
+  flex: 0.8;
+
+  background: #ffffff;
+  color: #64748b;
+
+  border: 1px solid #e2e8f0;
+}
+
+.btn-facial-cancelar:hover:not(:disabled) {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.btn-facial-capturar {
+  flex: 1.4;
+
+  background: #3b5bdb;
+  color: #ffffff;
+
+  border: 1px solid #3b5bdb;
+}
+
+.btn-facial-capturar:hover:not(:disabled) {
+  background: #2f50cb;
+  border-color: #2f50cb;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 6px 15px rgba(59, 91, 219, 0.22);
+}
+
+.btn-facial-cancelar:disabled,
+.btn-facial-capturar:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* =====================================================
+   INDICADOR DE CARGA
+===================================================== */
+
+.facial-spinner {
+  width: 18px;
+  height: 18px;
+
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+
+  border-radius: 50%;
+
+  animation: girarFacial 0.7s linear infinite;
+}
+
+@keyframes girarFacial {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =====================================================
+   MENSAJE DE PRIVACIDAD
+===================================================== */
+
+.facial-privacidad {
+  margin: 18px 0 0;
+
+  color: #94a3b8;
+
+  font-size: 11px;
+  line-height: 1.5;
+
+  text-align: center;
+}
+
+/* =====================================================
+   RESPONSIVE - TABLET
+===================================================== */
+
+@media (max-width: 768px) {
+
+  .modal-facial {
+    max-width: 430px;
+    padding: 30px 25px;
+  }
+
+}
+
+/* =====================================================
+   RESPONSIVE - MÓVILES
+===================================================== */
+
+@media (max-width: 480px) {
+
+.modal-facial-overlay {
+    padding: 12px;
+  }
+
+  .modal-facial {
+    max-height: calc(100vh - 24px);
+
+    padding: 28px 18px 22px;
+
+    border-radius: 17px;
+  }
+
+  .facial-header {
+    margin-bottom: 20px;
+  }
+
+  .facial-header h2 {
+    font-size: 21px;
+  }
+
+  .facial-icono {
+    width: 58px;
+    height: 58px;
+  }
+
+  .facial-camera-container {
+    border-radius: 13px;
+  }
+
+  .facial-acciones {
+    gap: 8px;
+  }
+
+  .btn-facial-cancelar,
+  .btn-facial-capturar {
+    min-height: 46px;
+    padding: 9px 10px;
+    font-size: 12px;
+  }
+
+}
+
+/* =====================================================
+   PANTALLAS MUY PEQUEÑAS
+===================================================== */
+
+@media (max-width: 350px) {
+
+  .modal-facial {
+    padding: 26px 14px 18px;
+  }
+
+  .facial-acciones {
+    flex-direction: column;
+  }
+
+  .btn-facial-cancelar,
+  .btn-facial-capturar {
+    width: 100%;
+    flex: auto;
+  }
+
+}
+
+/* ==========================================
+   SEPARADOR
+========================================== */
+
+.separador {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 22px 0;
+}
+
+.separador span {
+  flex: 1;
+  height: 1px;
+  background: #e5e8ec;
+}
+
+.separador p {
+  margin: 0;
+  color: #7a8088;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* ==========================================
+   ACCESOS ALTERNATIVOS
+========================================== */
+
+.accesos-alternativos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+  margin-top: 15px;
+  align-items: stretch;
+}
+
+/* Ambos botones con idénticas dimensiones */
+
+.accesos-alternativos .acceso-alternativo {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  min-height: 120px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  padding: 12px 8px;
+  margin: 0;
+
+  border: 1px solid #dfe3e8;
+  border-radius: 13px;
+
+  transition: all 0.25s ease;
+}
+
+/* ==========================================
+   GOOGLE
+========================================== */
+
+.google-container {
+  background: #ffffff;
+  cursor: pointer;
+  overflow: visible;
+}
+
+.icono-google {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.acceso-titulo {
+  color: #263957;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.acceso-descripcion {
+  color: #8993a3;
+  font-size: 11px;
+  text-align: center;
+}
+
+/* Superficie transparente de autenticación Google */
+
+.google-login-real {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 5;
+  opacity: 0;
+  overflow: visible;
+  cursor: pointer;
+}
+
+.google-login-real asl-google-signin-button {
+  display: block;
+  flex: 0 0 auto;
+
+  transform: scaleX(4.5) scaleY(2.8);
+  transform-origin: center center;
+}
+
+/* Hover Google */
+
+.google-container:hover {
+  background: #f9fbff;
+  border-color: #b7c9ef;
+  box-shadow: 0 4px 12px rgba(49, 91, 225, 0.08);
+}
+
+/* ==========================================
+   RECONOCIMIENTO FACIAL
+========================================== */
+
+.facial-alternativo {
+  background: #f0f4ff;
+  border-color: #cbd8ff;
+
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.facial-alternativo .icono-facial {
+  font-size: 36px;
+  color: #315be1;
+  line-height: 1;
+  margin-bottom: 3px;
+}
+
+.facial-alternativo .acceso-titulo {
+  color: #263957;
+}
+
+.facial-alternativo .acceso-descripcion {
+  color: #647da9;
+}
+
+.facial-alternativo:hover:not(:disabled) {
+  background: #e6edff;
+  border-color: #9db5ff;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 4px 12px rgba(49, 91, 225, 0.10);
+}
+
+.facial-alternativo .facial-spinner {
+  border-color: rgba(49, 91, 225, 0.2);
+  border-top-color: #315be1;
+}
+
+.facial-alternativo:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 480px) {
+
+  .accesos-alternativos {
+    gap: 10px;
+  }
+
+  .accesos-alternativos .acceso-alternativo {
+    height: 115px;
+    min-height: 115px;
+    padding: 10px 5px;
+  }
+
+  .acceso-titulo {
+    font-size: 12px;
+  }
+
+  .acceso-descripcion {
+    font-size: 10px;
+  }
+
 }

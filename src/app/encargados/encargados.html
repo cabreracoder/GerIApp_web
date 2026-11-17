@@ -4,60 +4,90 @@
        ENCABEZADO
   ====================================================== -->
 
-  <section class="encabezado-pagina">
+  <!-- =========================================
+     BANNER GESTIÓN DE ENCARGADOS
+========================================= -->
 
-    <div class="informacion-encabezado">
+  <section class="banner-encargados">
 
-      <h1 class="titulo-pagina">
-        Gestión de Encargados
-      </h1>
+    <!-- CONTENIDO -->
+    <div class="banner-encargados__contenido">
 
-      <p class="subtitulo-pagina">
-        Responsables de la dirección y administración de la Fundación Geriátrica
+      <h1>Gestión de Encargados</h1>
+
+      <p class="banner-encargados__subtitulo">
+        Responsables de la dirección y administración de la Fundación Geriátrica.
       </p>
 
-    </div>
-
-    <div class="acciones-encabezado">
-
-      <!-- REGISTRO DE CAMBIOS -->
-
-      <!-- NUEVO ENCARGADO -->
-
-      <button type="button" (click)="openModal('new')" class="px-5 py-3 rounded-lg
-               border border-[#3B5BDB]
-               bg-[#3B5BDB] text-white
-               hover:bg-[#324EC7] transition
-               flex items-center gap-2">
+      <div class="banner-encargados__mensaje">
 
         <span class="material-symbols-outlined">
-          add
+          groups
         </span>
 
-        Nuevo Encargado
+        <span>
+          Lideran, coordinan y aseguran el correcto
+          <br>
+          funcionamiento del centro.
+        </span>
 
-      </button>
+      </div>
 
     </div>
+
+    <!-- DECORACIÓN -->
+    <div class="banner-encargados__decoracion">
+
+      <span class="deco-onda-superior"></span>
+      <span class="deco-onda-inferior"></span>
+      <span class="deco-mancha-crema"></span>
+
+      <span class="deco-corazon">
+        <span class="material-symbols-outlined">favorite</span>
+      </span>
+
+      <span class="deco-hojas hojas-centro"></span>
+      <span class="deco-hojas hojas-derecha"></span>
+
+    </div>
+
+    <!-- FOTOGRAFÍA -->
+    <div class="banner-encargados__foto">
+
+      <img src="/banner-encargados.png" alt="Equipo de atención y adultos mayores" />
+
+    </div>
+
+    <!-- BOTÓN NUEVO ENCARGADO -->
+    <button type="button" class="banner-encargados__boton" (click)="openModal('new')" aria-label="Nuevo encargado">
+
+      <span class="material-symbols-outlined">
+        person_add
+      </span>
+
+      <span class="tooltip-encargado">
+        Nuevo encargado
+      </span>
+
+    </button>
 
   </section>
 
 
-  <!-- =====================================================
-       BUSCADOR
-  ====================================================== -->
 
-  <section class="tarjeta-buscador">
+  <div class="tarjeta-buscador">
 
     <span class="material-symbols-outlined icono-busqueda">
       search
     </span>
 
-    <input type="search" placeholder="Buscar por documento, nombre o cargo..." aria-label="Buscar encargado"
-      autocomplete="off" [(ngModel)]="busqueda" (input)="filtrarEncargados()" (keyup.enter)="filtrarEncargados()" />
+    <input type="text" id="buscadorEncargados" placeholder="Buscar encargado..." autocomplete="off">
 
-  </section>
+    <span class="contador-resultados">
+      <!-- Tu contador actual -->
+    </span>
 
+  </div>
 
   <!-- =====================================================
        CONTADOR DE ENCARGADOS

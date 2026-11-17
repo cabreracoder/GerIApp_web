@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, ViewChild, ElementRef, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
@@ -243,7 +243,7 @@ interface Rol {
   templateUrl: './configuracion.html',
   styleUrl: './configuracion.css'
 })
-export class Configuracion implements OnInit {
+export class Configuracion implements OnInit, OnDestroy {
 
   private readonly http = inject(HttpClient);
   private readonly cdr = inject(ChangeDetectorRef);
@@ -287,6 +287,26 @@ export class Configuracion implements OnInit {
   cargandoUsuario = false;
   cargandoRoles = false;
   guardando = false;
+
+  // =====================================================
+  // RECONOCIMIENTO FACIAL
+  // =====================================================
+
+  mostrarRegistroFacial = false;
+  camaraActiva = false;
+  registrandoRostro = false;
+
+  // Estado persistente consultado desde el backend.
+  rostroRegistrado = false;
+  consultandoEstadoRostro = false;
+  estadoRostroConsultado = false;
+  errorConsultaEstadoRostro = false;
+
+  private flujoCamaraFacial: MediaStream | null = null;
+
+  @ViewChild('videoRegistroFacial')
+  videoRegistroFacial!: ElementRef<HTMLVideoElement>;
+
 
   // =====================================================
   // CONTRASEÑA
@@ -337,12 +357,17 @@ export class Configuracion implements OnInit {
       }
 
       this.idUsuario =
-        usuarioLocal.id_usuario;
+      usuarioLocal.id_usuario;
 
       console.log(
         'ID DEL USUARIO LOGUEADO:',
         this.idUsuario
       );
+
+      // Consultar si el usuario ya tiene un rostro registrado.
+      this.consultarEstadoRostro();
+
+
 
       this.http.get<Usuario>(
         `${this.apiUrl}/usuarios/${this.idUsuario}/`
@@ -413,6 +438,61 @@ export class Configuracion implements OnInit {
 
       this.cdr.detectChanges();
     }
+  }
+
+  // =====================================================
+  // CONSULTAR ESTADO DEL REGISTRO FACIAL
+  // =====================================================
+
+  consultarEstadoRostro(): void {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      console.error(
+        'No se encontró el token para consultar el registro facial.'
+      );
+      this.errorConsultaEstadoRostro = true;
+      this.consultandoEstadoRostro = false;
+      this.estadoRostroConsultado = false;
+      this.cdr.detectChanges();
+      return;
+    }
+
+    this.consultandoEstadoRostro = true;
+    this.errorConsultaEstadoRostro = false;
+
+    this.http.get<{ registrado: boolean; mensaje: string }>(
+      `${this.apiUrl}/usuarios/estado-rostro/`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    ).subscribe({
+      next: (respuesta) => {
+        console.log(
+          'ESTADO DEL REGISTRO FACIAL:',
+          respuesta
+        );
+
+        this.rostroRegistrado = respuesta.registrado === true;
+        this.estadoRostroConsultado = true;
+        this.errorConsultaEstadoRostro = false;
+        this.consultandoEstadoRostro = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error(
+          'ERROR AL CONSULTAR EL ESTADO FACIAL:',
+          error
+        );
+
+        this.consultandoEstadoRostro = false;
+        this.errorConsultaEstadoRostro = true;
+        this.estadoRostroConsultado = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   // =====================================================
@@ -1185,6 +1265,208 @@ export class Configuracion implements OnInit {
     });
   }
 
+
+  // =====================================================
+  // REGISTRO FACIAL
+  // =====================================================
+
+  abrirRegistroFacial(): void {
+    if (this.idUsuario === null) {
+      alertaError('Error', 'No se encontró el usuario autenticado.');
+      return;
+    }
+
+    this.mostrarRegistroFacial = true;
+    this.cdr.detectChanges();
+
+    setTimeout(() => {
+      void this.activarCamaraFacial();
+    }, 150);
+  }
+
+  // =====================================================
+  // ACTIVAR CÁMARA
+  // =====================================================
+
+  async activarCamaraFacial(): Promise<void> {
+    try {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error('Este navegador no permite acceder a la cámara.');
+      }
+
+      this.flujoCamaraFacial = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: 'user',
+          width: { ideal: 640 },
+          height: { ideal: 480 }
+        },
+        audio: false
+      });
+
+      const video = this.videoRegistroFacial?.nativeElement;
+      if (!video) {
+        throw new Error('No se encontró el elemento de video.');
+      }
+
+      video.srcObject = this.flujoCamaraFacial;
+      await video.play();
+
+      this.camaraActiva = true;
+      this.cdr.detectChanges();
+
+    } catch (error) {
+      console.error('ERROR AL ACTIVAR CÁMARA FACIAL:', error);
+      this.detenerCamaraFacial();
+      this.mostrarRegistroFacial = false;
+      this.cdr.detectChanges();
+
+      alertaError(
+        'Cámara no disponible',
+        'No fue posible acceder a la cámara. Verifica los permisos del navegador y vuelve a intentarlo.'
+      );
+    }
+  }
+
+  // =====================================================
+  // CAPTURAR Y REGISTRAR ROSTRO
+  // =====================================================
+
+  async capturarYRegistrarRostro(): Promise<void> {
+    if (this.registrandoRostro) {
+      return;
+    }
+
+    if (!this.camaraActiva || !this.videoRegistroFacial?.nativeElement) {
+      alertaAdvertencia('Cámara inactiva', 'Activa la cámara antes de registrar tu rostro.');
+      return;
+    }
+
+    const video = this.videoRegistroFacial.nativeElement;
+
+    if (!video.videoWidth || !video.videoHeight) {
+      alertaAdvertencia('Imagen no disponible', 'Espera unos segundos mientras se activa la cámara.');
+      return;
+    }
+
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const contexto = canvas.getContext('2d');
+    if (!contexto) {
+      alertaError('Error', 'No fue posible procesar la imagen.');
+      return;
+    }
+
+    // Captura la imagen sin reflejarla; el espejo solo es visual en el CSS.
+    contexto.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    this.registrandoRostro = true;
+    this.cdr.detectChanges();
+
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        this.registrandoRostro = false;
+        this.cdr.detectChanges();
+        alertaError('Error', 'No fue posible generar la fotografía.');
+        return;
+      }
+
+      const token = localStorage.getItem('token');
+      if (!token) {
+        this.registrandoRostro = false;
+        this.cdr.detectChanges();
+        alertaError('Sesión no válida', 'No se encontró el token de autenticación. Inicia sesión nuevamente.');
+        return;
+      }
+
+      const formulario = new FormData();
+      formulario.append('imagen', blob, 'registro_facial.jpg');
+
+      this.http.post<any>(
+        `${this.apiUrl}/usuarios/registrar-rostro/`,
+        formulario,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      ).subscribe({
+        next: (respuesta) => {
+          this.registrandoRostro = false;
+          this.rostroRegistrado = true;
+          this.estadoRostroConsultado = true;
+          this.errorConsultaEstadoRostro = false;
+
+          this.detenerCamaraFacial();
+          this.mostrarRegistroFacial = false;
+          this.cdr.detectChanges();
+
+          alertaExito(
+            'Registro facial exitoso',
+            respuesta?.mensaje ?? 'Tu rostro se registró correctamente.'
+          );
+        },
+        error: (error) => {
+          console.error('ERROR AL REGISTRAR ROSTRO:', error);
+          console.error('RESPUESTA DEL BACKEND:', error.error);
+
+          this.registrandoRostro = false;
+          this.cdr.detectChanges();
+
+          let mensaje = 'No fue posible registrar tu rostro.';
+
+          if (error.error?.detail) {
+            mensaje = error.error.detail;
+          } else if (error.error?.error) {
+            mensaje = error.error.error;
+          } else if (error.status === 401) {
+            mensaje = 'Tu sesión no es válida o ha expirado. Inicia sesión nuevamente.';
+          } else if (error.status === 403) {
+            mensaje = 'No tienes permisos para registrar el rostro.';
+          } else if (error.status === 400) {
+            mensaje = 'El servidor rechazó la fotografía. Verifica que se vea un único rostro y vuelve a intentarlo.';
+          } else if (error.status === 0) {
+            mensaje = 'No se pudo conectar con el servidor.';
+          }
+
+          alertaError('Error en el registro facial', mensaje);
+        }
+      });
+    }, 'image/jpeg', 0.9);
+  }
+
+  // =====================================================
+  // CERRAR MODAL Y DETENER CÁMARA
+  // =====================================================
+
+  cerrarRegistroFacial(): void {
+    if (this.registrandoRostro) {
+      return;
+    }
+
+    this.detenerCamaraFacial();
+    this.mostrarRegistroFacial = false;
+    this.cdr.detectChanges();
+  }
+
+  private detenerCamaraFacial(): void {
+    if (this.flujoCamaraFacial) {
+      this.flujoCamaraFacial.getTracks().forEach(track => track.stop());
+      this.flujoCamaraFacial = null;
+    }
+
+    this.camaraActiva = false;
+
+    if (this.videoRegistroFacial?.nativeElement) {
+      this.videoRegistroFacial.nativeElement.srcObject = null;
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.detenerCamaraFacial();
+  }
+
   // =====================================================
   // CAMBIAR CONTRASEÑA
   // =====================================================
@@ -1231,7 +1513,8 @@ export class Configuracion implements OnInit {
     // ===================================================
 
     if (!this.confirmarContrasena.trim()) {
-     alertaAdvertencia('Campo obligatorio', 'Confirma la nueva contraseña.');
+      alertaAdvertencia('Campo obligatorio', 'Confirma la nueva contraseña.');
+      return;
     }
 
     // ===================================================

@@ -42,6 +42,18 @@ interface UsuarioActualizado {
 interface ConfiguracionInstitucion {
   nombre_institucion: string;
 }
+interface UsuarioSedeResponse {
+  id_sede: number | { id_sede: number } | null;
+}
+
+interface SedeResponse {
+  id_sede: number;
+  nombre: string;
+}
+interface RolResponse {
+  id_rol: number;
+  nombre: string;
+}
 
 @Component({
   selector: 'app-layout',
@@ -89,7 +101,7 @@ export class Layout implements OnDestroy {
       this.cdr.detectChanges();
     };
 
-    
+  private ultimoRolConsultado: number | null = null;
   private suscripcionUsuario?: import('rxjs').Subscription;
 
 
@@ -168,7 +180,13 @@ export class Layout implements OnDestroy {
   inicialesUsuario = '';
 
   fotoUsuario: string | null = null;
+  // SEDE DEL USUARIO AUTENTICADO
+  nombreSede = '';
 
+  private ultimoUsuarioConsultadoParaSede: number | null = null;
+
+  private readonly apiUrl =
+    'https://geriapp-backend.onrender.com/api';
   // =====================================================
   // MENÚ FLOTANTE DE PACIENTES
   // =====================================================
@@ -324,6 +342,142 @@ export class Layout implements OnDestroy {
       );
     }
   }
+  // =====================================================
+  // CARGAR SEDE DEL USUARIO AUTENTICADO
+  // =====================================================
+
+  cargarSedeUsuario(idUsuario: number): void {
+
+    if (!idUsuario) {
+      return;
+    }
+
+    // Evitar consultas repetidas del mismo usuario.
+    if (this.ultimoUsuarioConsultadoParaSede === idUsuario) {
+      return;
+    }
+
+    this.ultimoUsuarioConsultadoParaSede = idUsuario;
+    this.nombreSede = '';
+
+    // 1. Consultar el usuario.
+    this.http
+      .get<UsuarioSedeResponse>(
+        `${this.apiUrl}/usuarios/${idUsuario}/`
+      )
+      .subscribe({
+
+        next: (usuario) => {
+
+          const sedeRelacionada = usuario.id_sede;
+
+          const idSede =
+            typeof sedeRelacionada === 'object' && sedeRelacionada !== null
+              ? sedeRelacionada.id_sede
+              : sedeRelacionada;
+
+          if (!idSede) {
+            console.log('El usuario no tiene una sede asignada.');
+            this.nombreSede = '';
+            this.cdr.detectChanges();
+            return;
+          }
+
+          console.log('ID DE SEDE DEL USUARIO:', idSede);
+
+          // 2. Consultar el nombre de la sede.
+          this.http
+            .get<SedeResponse>(
+              `${this.apiUrl}/sedes/${idSede}/`
+            )
+            .subscribe({
+
+              next: (sede) => {
+
+                this.nombreSede = sede.nombre;
+
+                console.log(
+                  'SEDE DEL USUARIO:',
+                  this.nombreSede
+                );
+
+                this.cdr.detectChanges();
+              },
+
+              error: (error) => {
+
+                console.error(
+                  'Error al consultar la sede:',
+                  error
+                );
+
+              }
+
+            });
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Error al consultar el usuario:',
+            error
+          );
+
+          this.ultimoUsuarioConsultadoParaSede = null;
+
+        }
+
+      });
+
+  }
+
+  // =====================================================
+  // CARGAR NOMBRE DEL ROL DEL USUARIO
+  // =====================================================
+
+  cargarRolUsuario(idRol: number | null): void {
+
+    if (!idRol) {
+      this.rolUsuario = '';
+      return;
+    }
+
+    if (this.ultimoRolConsultado === idRol && this.rolUsuario) {
+      return;
+    }
+
+    this.ultimoRolConsultado = idRol;
+
+    this.http
+      .get<RolResponse[]>(`${this.apiUrl}/roles/`)
+      .subscribe({
+
+        next: (roles) => {
+
+          const rolEncontrado = roles.find(
+            rol => Number(rol.id_rol) === Number(idRol)
+          );
+
+          this.rolUsuario = rolEncontrado?.nombre ?? '';
+
+          console.log('ROL DEL USUARIO:', this.rolUsuario);
+
+          this.cdr.detectChanges();
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Error al consultar los roles:',
+            error
+          );
+
+          this.ultimoRolConsultado = null;
+        }
+
+      });
+  }
 
   // =====================================================
   // ACTUALIZAR DATOS DEL USUARIO
@@ -345,9 +499,16 @@ export class Layout implements OnDestroy {
     // ROL
     // ---------------------------------------------------
 
-    this.rolUsuario =
-      usuario.rol ?? '';
+    // Obtener el nombre del rol mediante su ID.
+    if (usuario.rol?.trim()) {
 
+      this.rolUsuario = usuario.rol.trim();
+
+    } else {
+
+      this.cargarRolUsuario(usuario.id_rol);
+
+    }
     // ---------------------------------------------------
     // FOTO DE PERFIL
     // ---------------------------------------------------
@@ -368,7 +529,13 @@ export class Layout implements OnDestroy {
     this.inicialesUsuario =
       `${nombres.charAt(0)}${apellidos.charAt(0)}`
         .toUpperCase();
+    // ---------------------------------------------------
+    // SEDE ASIGNADA AL USUARIO
+    // ---------------------------------------------------
+
+    this.cargarSedeUsuario(usuario.id_usuario);
   }
+
 
   // =====================================================
   // ABRIR CONFIGURACIÓN DESDE EL AVATAR

@@ -1,8 +1,8 @@
 :host {
   display: block;
   width: 100%;
-  height: 100vh;
-  box-sizing: border-box;
+  height: 100dvh;
+  overflow: hidden;
 }
 
 :host *,
@@ -11,38 +11,34 @@
   box-sizing: border-box;
 }
 
-
-/* =========================================================
-   CONTENEDOR PRINCIPAL
-========================================================= */
-
 .layout-container {
-  width: 100%;
-  height: 100vh;
-
+  position: relative;
   display: flex;
+  align-items: stretch;
+  gap: 12px;
 
+  width: 100%;
+  height: 100dvh;
+
+  margin: 0;
+  padding: 10px;
+
+  border-radius: 0;
   overflow: hidden;
 
+  box-sizing: border-box;
   background: var(--bg-primary);
-  color: var(--text-primary);
-
-  font-family: var(--font-family-base);
 }
-
 
 /* =========================================================
    BARRA LATERAL
 ========================================================= */
-
 .layout-sidebar {
-  position: fixed;
+  position: relative;
 
-  left: var(--spacing-md);
-  top: var(--spacing-md);
-  bottom: var(--spacing-md);
-
+  flex: 0 0 var(--web-sidebar-width);
   width: var(--web-sidebar-width);
+  height: 100%;
 
   display: flex;
   flex-direction: column;
@@ -52,29 +48,77 @@
 
   background: var(--web-sidebar-bg);
 
-  border-radius: var(--radius-lg);
+  border-radius: 18px;
 
   box-shadow: var(--shadow-lg);
 
   z-index: 200;
+  box-sizing: border-box;
 }
-
 
 /* =========================================================
    LOGOTIPO
 ========================================================= */
 .layout-logo-container {
+  position: relative;
+
+  width: 100%;
+  min-height: 86px;
+
+  margin: 2px auto 16px;
+  padding: 10px 4px;
+
   display: flex;
   justify-content: center;
   align-items: center;
+
+  /* SIN CUADRO */
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+
+  overflow: visible;
+  flex-shrink: 0;
+}
+
+/* RESPLANDOR BLANCO DIFUMINADO */
+.layout-logo-container::before {
+  content: "";
+
+  position: absolute;
+
+  width: 145px;
+  height: 115px;
+
+  left: 50%;
+  top: 50%;
+
+  transform: translate(-50%, -50%);
+
+  background: radial-gradient(ellipse at center,
+      rgba(255, 255, 255, 0.42) 0%,
+      rgba(255, 255, 255, 0.25) 30%,
+      rgba(255, 255, 255, 0.10) 55%,
+      rgba(255, 255, 255, 0) 75%);
+
+  filter: blur(9px);
+
+  pointer-events: none;
+  z-index: 0;
 }
 
 .layout-logo {
+  position: relative;
+  z-index: 1;
+
   width: 64px;
   height: 64px;
+
   display: flex;
   justify-content: center;
   align-items: center;
+
   overflow: hidden;
 }
 
@@ -333,30 +377,28 @@
 /* =========================================================
    CONTENIDO PRINCIPAL
 ========================================================= */
-
 .layout-main-container {
-  width: calc(
-    100% -
-    var(--web-sidebar-width) -
-    (var(--spacing-md) * 2)
-  );
+  flex: 1;
+  width: auto;
+  height: 100%;
 
   min-width: 0;
+  min-height: 0;
 
-  height: 100vh;
-
-  margin-left: calc(
-    var(--web-sidebar-width) +
-    (var(--spacing-md) * 2)
-  );
+  margin-left: 0;
 
   display: flex;
-
   flex-direction: column;
 
+  /* ELIMINAR EL CONTENEDOR BLANCO EXTERIOR */
+  background: transparent;
+
+  border-radius: 0;
+  box-shadow: none;
+
+  /* Mantener el contenido organizado */
   overflow: hidden;
 }
-
 
 /* =========================================================
    ENCABEZADO
@@ -366,26 +408,22 @@
   width: 100%;
 
   height: var(--web-header-height);
-
   min-height: var(--web-header-height);
 
   display: flex;
-
   align-items: center;
-
   gap: var(--spacing-md);
 
   padding: 0 var(--spacing-lg);
 
-  background: var(--web-header-bg);
+  background: #FFFFFF;
 
-  border-bottom: 1px solid var(--border-color);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
 
   z-index: 100;
-
   flex-shrink: 0;
 }
-
 
 /* =========================================================
    ENCABEZADO - IZQUIERDA
@@ -436,10 +474,7 @@
   height: 40px;
 
   padding:
-    0
-    var(--spacing-md)
-    0
-    40px;
+    0 var(--spacing-md) 0 40px;
 
   border: 1px solid var(--border-color);
 
@@ -597,8 +632,7 @@
   height: 40px;
 
   padding:
-    0
-    var(--spacing-md);
+    0 var(--spacing-md);
 
   border: none;
 
@@ -651,12 +685,6 @@
   margin-left: var(--spacing-2xs);
 
   flex-shrink: 0;
-}
-
-.layout-user-info {
-  text-align: right;
-
-  line-height: 1.3;
 }
 
 .layout-user-info strong {
@@ -715,7 +743,6 @@
 /* =========================================================
    CONTENIDO
 ========================================================= */
-
 .layout-content {
   flex: 1;
 
@@ -727,17 +754,17 @@
 
   padding: var(--spacing-xl);
 
+  /* MISMO FONDO GENERAL DE LA APLICACIÓN */
   background: var(--bg-primary);
 
   scrollbar-width: thin;
 }
 
-
 /* =========================================================
    CONTENEDOR INTERNO DEL CONTENIDO
 ========================================================= */
 
-.layout-content > * {
+.layout-content>* {
   width: 100%;
 
   max-width: 100%;
@@ -809,18 +836,14 @@
 .floating-tooltip {
   position: absolute;
 
-  right: calc(
-    var(--mobile-fab-size) +
-    var(--spacing-sm)
-  );
+  right: calc(var(--mobile-fab-size) + var(--spacing-sm));
 
   top: 50%;
 
   transform: translateY(-50%);
 
   padding:
-    var(--spacing-xs)
-    var(--spacing-sm);
+    var(--spacing-xs) var(--spacing-sm);
 
   border-radius: var(--radius-md);
 
@@ -864,16 +887,9 @@
 ========================================================= */
 
 .layout-main-container.layout-main-superadmin {
-  width: calc(
-    100% -
-    var(--web-sidebar-width) -
-    (var(--spacing-md) * 2)
-  );
+  width: calc(100% - var(--web-sidebar-width) - (var(--spacing-md) * 2));
 
-  margin-left: calc(
-    var(--web-sidebar-width) +
-    (var(--spacing-md) * 2)
-  );
+  margin-left: calc(var(--web-sidebar-width) + (var(--spacing-md) * 2));
 
   min-width: 0;
 }
@@ -977,4 +993,88 @@
 /* El clic lo recibe el enlace completo */
 .layout-sidebar-superadmin .menu-icon {
   pointer-events: none;
+
+/* =====================================
+   SEDE DEL USUARIO
+===================================== */
+
+.layout-sede-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 6px 12px;
+
+  background: #edf3ff;
+  color: #3159bd;
+
+  border: 1px solid #dce7ff;
+  border-radius: 20px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.layout-sede-badge .material-symbols-outlined {
+  font-size: 15px;
+}
+
+/* =========================================
+   INFORMACIÓN DEL PERFIL
+========================================= */
+
+.layout-user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  gap: 3px;
+  line-height: 1.3;
+}
+
+.layout-user-info strong {
+  display: block;
+  margin: 0;
+  color: var(--text-primary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.layout-user-details {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+  line-height: 1.2;
+}
+
+/* SEDE Y ROL: MISMO FORMATO */
+
+.layout-user-details .layout-user-sede,
+.layout-user-details .layout-user-role {
+  display: inline;
+  margin: 0;
+  color: var(--text-secondary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-normal);
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.layout-user-separator {
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-normal);
+}
+
+/* Evitar desbordamiento de la ventana */
+:host {
+  display: block;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
 }

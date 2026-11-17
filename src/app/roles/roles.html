@@ -4,55 +4,85 @@
   <!-- CABECERA -->
   <!-- ===================================================== -->
 
-  <header class="page-header">
 
-    <h1 class="page-title">
-      Roles
-    </h1>
+  <!-- BANNER GESTIÓN DE ROLES -->
+  <section class="banner-roles">
 
-    <p class="text-[#6C757D] mt-1">
-      Crea, edita y administra los roles de usuario de la Fundación.
-    </p>
+    <div class="banner-roles__contenido">
 
-    <div class="role-actions">
+      <h1>Gestión de Roles</h1>
 
-    <button type="button" class="primary-button" (click)="abrirNuevoRol()">
+      <p class="banner-roles__subtitulo">
+        Administración y asignación de roles del sistema.
+      </p>
 
-      <span class="material-symbols-outlined">
-        add
+      <div class="banner-roles__mensaje">
+
+        <span class="material-symbols-outlined">
+          groups
+        </span>
+
+        <span>
+          Accesos organizados,<br>
+          una gestión segura y eficiente.
+        </span>
+
+        <span class="material-symbols-outlined corazon">
+          favorite
+        </span>
+
+      </div>
+
+    </div>
+
+    <div class="banner-roles__decoracion">
+
+      <span class="deco-onda-superior"></span>
+      <span class="deco-onda-inferior"></span>
+      <span class="deco-mancha-crema"></span>
+
+      <span class="deco-corazon">
+        <span class="material-symbols-outlined">
+          ecg_heart
+        </span>
       </span>
 
-      Crear rol
+      <span class="deco-hojas hojas-centro"></span>
+      <span class="deco-hojas hojas-derecha"></span>
+
+    </div>
+
+    <div class="banner-roles__foto">
+      <img src="/banner-roles.png" alt="Equipo profesional de GeriApp">
+    </div>
+
+    <button type="button" class="banner-roles__boton" (click)="abrirNuevoRol()" aria-label="Agregar rol">
+
+      <span class="material-symbols-outlined">add</span>
+
+      <span class="tooltip-rol">Agregar rol</span>
 
     </button>
 
-  </div>
-
-  </header>
-
+  </section>
   <!-- ===================================================== -->
-<!-- BUSCADOR -->
-<!-- ===================================================== -->
+  <!-- BUSCADOR -->
+  <!-- ===================================================== -->
 
-<div class="tarjeta-buscador">
+  <div class="tarjeta-buscador">
 
-  <span class="material-symbols-outlined icono-busqueda">
-    search
-  </span>
+    <span class="material-symbols-outlined icono-busqueda">
+      search
+    </span>
 
-  <input
-    type="text"
-    [(ngModel)]="searchText"
-    placeholder="Buscar por nombre del rol">
+    <input type="search" [(ngModel)]="searchText" placeholder="Buscar por nombre del rol..." aria-label="Buscar rol"
+      autocomplete="off">
 
-  <span class="contador-resultados">
-    {{ filteredRoles.length }} resultados
-  </span>
+    <span class="contador-resultados">
+      {{ filteredRoles.length }} resultados
+    </span>
 
-</div>
-
-
-
+  </div>
   <!-- ===================================================== -->
   <!-- FORMULARIO CREAR / EDITAR ROL -->
   <!-- ===================================================== -->
@@ -77,11 +107,7 @@
 
       </div>
 
-      <button
-        type="button"
-        class="close-button"
-        (click)="cerrarFormularioRol()"
-        aria-label="Cerrar formulario">
+      <button type="button" class="close-button" (click)="cerrarFormularioRol()" aria-label="Cerrar formulario">
 
         <span class="material-symbols-outlined">
           close
@@ -102,11 +128,7 @@
           Nombre del rol
         </label>
 
-        <input
-          id="nombreRol"
-          type="text"
-          [(ngModel)]="nuevoRol.nombre"
-          placeholder="Ej. Recepcionista">
+        <input id="nombreRol" type="text" [(ngModel)]="nuevoRol.nombre" placeholder="Ej. Recepcionista">
 
       </div>
 
@@ -117,10 +139,7 @@
           Descripción
         </label>
 
-        <input
-          id="descripcionRol"
-          type="text"
-          [(ngModel)]="nuevoRol.descripcion"
+        <input id="descripcionRol" type="text" [(ngModel)]="nuevoRol.descripcion"
           placeholder="Describe las funciones del rol">
 
       </div>
@@ -132,20 +151,14 @@
 
     <div class="form-actions">
 
-      <button
-        type="button"
-        class="secondary-button"
-        (click)="cerrarFormularioRol()">
+      <button type="button" class="secondary-button" (click)="cerrarFormularioRol()">
 
         Cancelar
 
       </button>
 
 
-      <button
-        type="button"
-        class="primary-button"
-        (click)="guardarRol()">
+      <button type="button" class="primary-button" (click)="guardarRol()">
 
         <span class="material-symbols-outlined">
           {{ modoFormulario === 'crear' ? 'add' : 'save' }}
@@ -178,28 +191,17 @@
     </div>
 
 
-    <section
-      class="role-cards"
-      role="radiogroup"
-      aria-label="Selección de rol">
+    <section class="role-cards" role="radiogroup" aria-label="Selección de rol">
 
-      
+
 
       <!-- ================================================= -->
       <!-- TARJETAS DE ROLES -->
       <!-- ================================================= -->
 
-      <article
-        *ngFor="let role of filteredRoles"
-        class="role-card"
-        [class.selected]="role.name === selectedRole"
-        [style.--role-color]="role.color"
-        role="radio"
-        [attr.aria-checked]="role.name === selectedRole"
-        tabindex="0"
-        [attr.aria-label]="'Rol ' + role.name"
-        (click)="selectRole(role.name)"
-        (keydown.enter)="selectRole(role.name)"
+      <article *ngFor="let role of filteredRoles" class="role-card" [class.selected]="role.name === selectedRole"
+        [style.--role-color]="role.color" role="radio" [attr.aria-checked]="role.name === selectedRole" tabindex="0"
+        [attr.aria-label]="'Rol ' + role.name" (click)="selectRole(role.name)" (keydown.enter)="selectRole(role.name)"
         (keydown.space)="
           $event.preventDefault();
           selectRole(role.name)
@@ -264,10 +266,7 @@
 
         <div class="role-card-actions">
 
-          <button
-            type="button"
-            class="small-button"
-            aria-label="Editar rol"
+          <button type="button" class="small-button" aria-label="Editar rol"
             (click)="$event.stopPropagation(); editarRol(role)">
 
             <span class="material-symbols-outlined">
@@ -277,10 +276,7 @@
           </button>
 
 
-          <button
-            type="button"
-            class="small-button delete-button"
-            aria-label="Eliminar rol"
+          <button type="button" class="small-button delete-button" aria-label="Eliminar rol"
             (click)="$event.stopPropagation(); eliminarRol(role)">
 
             <span class="material-symbols-outlined">
@@ -300,9 +296,7 @@
     <!-- MENSAJE DE ÉXITO -->
     <!-- =================================================== -->
 
-    <div
-      *ngIf="mensajeExito"
-      class="message success-message">
+    <div *ngIf="mensajeExito" class="message success-message">
 
       <span class="material-symbols-outlined">
         check_circle
@@ -330,9 +324,7 @@
     <!-- MENSAJE DE ERROR -->
     <!-- =================================================== -->
 
-    <div
-      *ngIf="mensajeError"
-      class="message error-message">
+    <div *ngIf="mensajeError" class="message error-message">
 
       <span class="material-symbols-outlined">
         error
