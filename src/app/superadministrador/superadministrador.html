@@ -456,13 +456,10 @@
                 >
 
                   <select
+                    *ngIf="!cargandoSedes && sedes.length > 0"
                     class="status-select sede-select"
                     [value]="administrador.id_sede ?? ''"
-                    [disabled]="
-                      actualizandoSedes.has(
-                        administrador.id_usuario
-                      )
-                    "
+                    [disabled]="actualizandoSedes.has(administrador.id_usuario)"
                     (change)="
                       cambiarSedeAdministrador(
                         administrador,
@@ -470,7 +467,6 @@
                       )
                     "
                   >
-
                     <option value="" disabled>
                       Sin sede asignada
                     </option>
@@ -483,7 +479,6 @@
                       {{ sede.nombre }}
                       {{ !esActivo(sede.estado) ? ' (Inactiva)' : '' }}
                     </option>
-
                   </select>
 
                   <span class="material-symbols-outlined">
