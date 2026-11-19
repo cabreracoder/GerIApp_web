@@ -8,6 +8,7 @@ import {
 } from '@angular/common/http';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import Swal from 'sweetalert2';
 
 interface EstadoSalud {
   nombre: string;
@@ -51,6 +52,10 @@ export class DashboardComponent implements OnInit {
 
     if (!token) {
       console.error('No se encontró el token de autenticación.');
+      this.mostrarAlertaCarga(
+        'Sesión no disponible',
+        'No fue posible verificar tu sesión. Inicia sesión nuevamente.'
+      );
       return {};
     }
 
@@ -207,6 +212,55 @@ export class DashboardComponent implements OnInit {
   cargando = false;
 
   errorCarga = false;
+
+  private alertaCargaMostrada = false;
+
+  // =====================================================
+  // ALERTAS DE CARGA - DISEÑO GLOBAL GERIAPP
+  // =====================================================
+
+  private mostrarAlertaCarga(titulo: string, mensaje: string): void {
+    if (this.alertaCargaMostrada) {
+      return;
+    }
+
+    this.alertaCargaMostrada = true;
+
+    Swal.fire({
+      html: `
+        <div class="geri-alerta">
+          <div class="geri-alerta__contenido">
+            <img src="/Logo-GerIApp.png" alt="GeriApp" class="geri-alerta__logo">
+            <h2 class="geri-alerta__titulo">${this.escaparHtml(titulo)}</h2>
+            <p class="geri-alerta__mensaje">${this.escaparHtml(mensaje)}</p>
+          </div>
+        </div>
+      `,
+      width: 700,
+      padding: 0,
+      showConfirmButton: true,
+      confirmButtonText: 'Aceptar',
+      buttonsStyling: false,
+      allowOutsideClick: false,
+      allowEscapeKey: true,
+      backdrop: 'rgba(33, 37, 41, 0.48)',
+      customClass: {
+        popup: 'geri-swal-popup',
+        htmlContainer: 'geri-swal-html',
+        actions: 'geri-swal-actions',
+        confirmButton: 'geri-swal-btn geri-swal-btn--azul'
+      }
+    });
+  }
+
+  private escaparHtml(valor: string): string {
+    return String(valor)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
 
   // =====================================================
   // INICIO
@@ -466,6 +520,11 @@ export class DashboardComponent implements OnInit {
           error
         );
 
+        this.mostrarAlertaCarga(
+          'No se pudo cargar la información',
+          `Ocurrió un problema al consultar ${endpoint}. Verifica tu conexión e inténtalo nuevamente.`
+        );
+
         return of([]);
 
       })
@@ -478,6 +537,8 @@ export class DashboardComponent implements OnInit {
   // =====================================================
 
   private cargarDatosDashboard(): void {
+
+    this.alertaCargaMostrada = false;
 
     this.cargando = true;
 
@@ -611,6 +672,11 @@ export class DashboardComponent implements OnInit {
         console.error(
           'Error general del dashboard:',
           error
+        );
+
+        this.mostrarAlertaCarga(
+          'Error al cargar el Dashboard',
+          'No fue posible cargar la información del panel. Verifica tu conexión e inténtalo nuevamente.'
         );
 
         this.cargando = false;
