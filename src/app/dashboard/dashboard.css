@@ -16,16 +16,23 @@
    CONTENEDOR PRINCIPAL
 ========================================================= */
 
+
+/* =========================================================
+   CONTENEDOR PRINCIPAL DEL DASHBOARD
+========================================================= */
+
 .pagina,
 .contenedor-dashboard {
+  display: block;
   width: 100%;
   min-height: 100%;
-  padding: var(--spacing-lg);
-  background: var(--bg-surface);
+  padding: 0;
+  background: transparent;
   color: var(--text-primary);
   font-family: var(--font-family-base);
   font-size: var(--font-size-sm);
 }
+
 
 /* =========================================================
    ICONOS
@@ -56,18 +63,23 @@
   justify-content: space-between;
   width: 100%;
   min-height: 190px;
+  margin-top: 0;
   margin-bottom: 22px;
   padding: 26px 34px;
   overflow: hidden;
   isolation: isolate;
+
   background: linear-gradient(90deg,
       #f9fbff 0%,
       #eef4ff 60%,
       #eaf2ff 100%);
+
   border: 1px solid #e4ecfa;
   border-radius: 24px;
   box-shadow: 0 6px 20px rgba(32, 76, 145, 0.08);
 }
+
+/* CONTENIDO */
 
 .banner-dashboard__contenido {
   position: relative;
@@ -93,18 +105,42 @@
 }
 
 .banner-dashboard__subtitulo {
-  margin: 9px 0 0;
+  margin: 9px 0 18px;
   color: #6f84a8;
   font-size: 15px;
   line-height: 1.4;
 }
 
-.banner-dashboard__descripcion {
-  margin: 9px 0 0;
-  color: #7b91b5;
-  font-size: 14px;
-  line-height: 1.5;
+/* MENSAJE AZUL */
+
+.banner-dashboard__mensaje {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 100%;
+  padding: 12px 18px;
+
+  background: rgba(219, 232, 255, 0.82);
+  border-radius: 14px;
+
+  color: #23498d;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
 }
+
+.banner-dashboard__mensaje>.material-symbols-outlined {
+  flex-shrink: 0;
+  color: #2474eb;
+  font-size: 28px;
+}
+
+.banner-dashboard__mensaje .corazon {
+  color: #2474eb;
+  font-size: 20px;
+}
+
+/* DECORACIÓN */
 
 .banner-dashboard__decoracion {
   position: absolute;
@@ -121,7 +157,7 @@
   height: 120px;
   background: #dce9ff;
   border-radius: 0 0 150px 150px;
-  opacity: .65;
+  opacity: .95;
 }
 
 .dashboard-onda-inferior {
@@ -132,8 +168,10 @@
   height: 150px;
   background: #dfeaff;
   border-radius: 50%;
-  opacity: .7;
+  opacity: .9;
 }
+
+/* FOTOGRAFÍA */
 
 .banner-dashboard__foto {
   position: absolute;
@@ -146,6 +184,8 @@
   border-radius: 0 24px 24px 0;
 }
 
+/* DIFUMINADO SUAVE */
+
 .banner-dashboard__foto::before {
   content: "";
   position: absolute;
@@ -154,6 +194,7 @@
   z-index: 2;
   width: 170px;
   height: 100%;
+
   background: linear-gradient(90deg,
       #eef4ff 20%,
       rgba(238, 244, 255, .72) 45%,
@@ -922,4 +963,667 @@
     height: 68px;
   }
 
+}
+
+/* =========================================================
+   RESPONSIVE - BANNER DASHBOARD
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .pagina,
+  .contenedor-dashboard {
+    padding: 0;
+    background: transparent;
+  }
+
+  .banner-dashboard {
+    min-height: 220px;
+    padding: 22px;
+    margin-top: 0;
+    border-radius: 17px;
+  }
+
+  .banner-dashboard__contenido {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .banner-dashboard__contenido h1 {
+    font-size: 24px;
+  }
+
+  .banner-dashboard__subtitulo {
+    font-size: 14px;
+  }
+
+  .banner-dashboard__mensaje {
+    padding: 11px 15px;
+    font-size: 12px;
+    gap: 10px;
+  }
+
+  /* La fotografía ocupa todo el banner */
+  .banner-dashboard__foto {
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    border-radius: inherit;
+  }
+
+  /* Difuminado sobre toda la fotografía */
+  .banner-dashboard__foto::before {
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+
+    background: linear-gradient(90deg,
+        #f9fbff 0%,
+        rgba(249, 251, 255, .92) 40%,
+        rgba(249, 251, 255, .55) 100%);
+  }
+
+  .banner-dashboard__foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 72% center;
+    opacity: .45;
+  }
+
+  .banner-dashboard__decoracion {
+    opacity: .55;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .banner-dashboard {
+    padding: 18px;
+  }
+
+  .banner-dashboard__contenido h1 {
+    font-size: 22px;
+  }
+
+  .banner-dashboard__mensaje {
+    padding: 10px 14px;
+    font-size: 11px;
+    gap: 8px;
+  }
+
+  .banner-dashboard__mensaje>.material-symbols-outlined {
+    font-size: 24px;
+  }
+
+  .banner-dashboard__mensaje .corazon {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 380px) {
+
+  .banner-dashboard__contenido h1 {
+    font-size: 21px;
+  }
+
+  .banner-dashboard__mensaje {
+    gap: 6px;
+    padding: 9px 11px;
+  }
+}
+
+
+
+/* =========================================================
+   DASHBOARD ASIMÉTRICO - DISTRIBUCIÓN PERSONALIZADA
+   Las tarjetas ya no tienen el mismo ancho ni la misma altura.
+========================================================= */
+
+.dashboard-grid-principal {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(13, minmax(0, 1fr));
+  grid-template-areas:
+    "occupation occupation occupation occupation occupation punctuality punctuality punctuality compliance compliance compliance compliance compliance"
+    "events events events events events health health health assignments assignments assignments assignments assignments";
+  align-items: start;
+  gap: 18px;
+}
+
+.dashboard-occupation {
+  grid-area: occupation;
+  min-height: 470px;
+}
+
+.dashboard-punctuality {
+  grid-area: punctuality;
+  min-height: 0;
+  align-self: start;
+}
+
+.dashboard-compliance {
+  grid-area: compliance;
+  min-height: 350px;
+}
+
+.dashboard-health {
+  grid-area: health;
+  min-height: 220px;
+}
+
+.dashboard-events {
+  grid-area: events;
+  min-height: 280px;
+}
+
+.dashboard-assignments {
+  grid-area: assignments;
+  min-height: 300px;
+}
+
+/* La tarjeta de puntualidad termina donde termina su contenido. */
+.punctuality-card {
+  height: fit-content;
+  padding-bottom: 14px;
+}
+
+.punctuality-card .card-footer-info {
+  margin-top: 18px;
+  padding-top: 8px;
+}
+
+/* =========================================================
+   CUMPLIMIENTO DE TURNOS - BARRAS VERTICALES
+========================================================= */
+
+.compliance-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.compliance-total {
+  padding-bottom: 8px;
+}
+
+.compliance-columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
+  gap: 18px;
+  flex: 1;
+  min-height: 220px;
+  padding: 12px 8px 4px;
+}
+
+.compliance-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+  height: 100%;
+  gap: 7px;
+}
+
+.compliance-column-value {
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.compliance-column-track {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: min(58px, 72%);
+  height: 135px;
+  overflow: hidden;
+  background: #edf1f7;
+  border-radius: 10px 10px 5px 5px;
+}
+
+.compliance-column-fill {
+  width: 100%;
+  min-height: 3px;
+  border-radius: 8px 8px 3px 3px;
+  transition: height .35s ease;
+}
+
+.compliance-column-fill.completed {
+  background: linear-gradient(180deg, #5875ed 0%, #3B5BDB 100%);
+}
+
+.compliance-column-fill.in-progress {
+  background: linear-gradient(180deg, #83baf0 0%, #4d9ce8 100%);
+}
+
+.compliance-column-fill.pending {
+  background: linear-gradient(180deg, #c8d7f5 0%, #9eb7ed 100%);
+}
+
+.compliance-column-count {
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.compliance-column-label {
+  min-height: 28px;
+  color: var(--text-secondary);
+  font-size: 10px;
+  line-height: 1.3;
+  text-align: center;
+}
+
+/* =========================================================
+   CÁMARAS Y EVENTOS IA - GRÁFICO DE TORTA
+========================================================= */
+
+.events-summary {
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+}
+
+.events-pie {
+  width: 142px;
+  height: 142px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(20, 40, 80, .06),
+    0 5px 14px rgba(27, 53, 92, .08);
+}
+
+.events-legend {
+  gap: 17px;
+}
+
+.events-total {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 5px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 10px;
+}
+
+.events-total strong {
+  color: var(--text-primary);
+  font-size: 17px;
+}
+
+/* La lista de asignaciones puede crecer según el número de cuidadores. */
+.assignments-card {
+  height: fit-content;
+}
+
+.assignments-list {
+  gap: 14px;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1050px) {
+  .dashboard-grid-principal {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-areas:
+      "occupation occupation occupation occupation occupation occupation"
+      "punctuality punctuality punctuality health health health"
+      "compliance compliance compliance compliance compliance compliance"
+      "events events events assignments assignments assignments";
+  }
+
+  .dashboard-occupation,
+  .dashboard-compliance,
+  .dashboard-health,
+  .dashboard-events,
+  .dashboard-assignments {
+    min-height: 0;
+  }
+
+  .dashboard-occupation {
+    min-height: 390px;
+  }
+
+  .dashboard-events {
+    min-height: 260px;
+  }
+}
+
+@media (max-width: 650px) {
+  .dashboard-grid-principal {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "occupation"
+      "punctuality"
+      "compliance"
+      "health"
+      "events"
+      "assignments";
+    gap: 12px;
+  }
+
+  .dashboard-occupation {
+    min-height: 0;
+  }
+
+  .dashboard-punctuality,
+  .dashboard-compliance,
+  .dashboard-health,
+  .dashboard-events,
+  .dashboard-assignments {
+    min-height: 0;
+  }
+
+  .compliance-columns {
+    min-height: 205px;
+    gap: 10px;
+  }
+
+  .compliance-column-track {
+    height: 120px;
+  }
+
+  .events-pie {
+    width: 118px;
+    height: 118px;
+  }
+}
+
+
+/* =========================================================
+   DISTRIBUCIÓN EN TRES COLUMNAS INDEPENDIENTES
+   Salud queda inmediatamente debajo de Puntualidad.
+   No se reserva una fila completa debajo de Ocupación.
+========================================================= */
+
+.dashboard-grid-principal {
+  display: grid;
+  grid-template-columns: 1.12fr 0.94fr 1.34fr;
+  align-items: start;
+  gap: 18px;
+  width: 100%;
+}
+
+.dashboard-column {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 18px;
+  min-width: 0;
+}
+
+.dashboard-column>.card {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+}
+
+.dashboard-column-left .dashboard-occupation {
+  min-height: 470px;
+}
+
+.dashboard-column-left .dashboard-events {
+  min-height: 300px;
+}
+
+.dashboard-column-center .dashboard-punctuality {
+  min-height: 0;
+  height: fit-content;
+}
+
+.dashboard-column-center .dashboard-health {
+  min-height: 220px;
+}
+
+.dashboard-column-right .dashboard-compliance {
+  min-height: 350px;
+}
+
+.dashboard-column-right .dashboard-assignments {
+  min-height: 300px;
+}
+
+/* Las tarjetas inferiores aprovechan el ancho completo de su columna. */
+.dashboard-column-left .events-summary {
+  justify-content: space-evenly;
+  gap: 24px;
+}
+
+.dashboard-column-left .events-pie {
+  width: 150px;
+  height: 150px;
+}
+
+.dashboard-column-right .assignments-list {
+  gap: 15px;
+}
+
+@media (max-width: 1050px) {
+  .dashboard-grid-principal {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-column-right {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .dashboard-column-left .dashboard-occupation {
+    min-height: 390px;
+  }
+
+  .dashboard-column-left .dashboard-events,
+  .dashboard-column-center .dashboard-health,
+  .dashboard-column-right .dashboard-assignments {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 650px) {
+  .dashboard-grid-principal {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .dashboard-column,
+  .dashboard-column-right {
+    display: flex;
+    flex-direction: column;
+    grid-column: auto;
+    gap: 12px;
+  }
+
+  .dashboard-column-left .dashboard-occupation,
+  .dashboard-column-left .dashboard-events,
+  .dashboard-column-center .dashboard-health,
+  .dashboard-column-right .dashboard-compliance,
+  .dashboard-column-right .dashboard-assignments {
+    min-height: 0;
+  }
+
+  .dashboard-column-left .events-pie {
+    width: 118px;
+    height: 118px;
+  }
+}
+
+
+/* =========================================================
+   DISTRIBUCIÓN FINAL GERIAPP
+   Tres bloques superiores + dos tarjetas inferiores anchas
+========================================================= */
+
+.dashboard-grid-principal {
+  display: grid !important;
+  width: 100%;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-rows: minmax(235px, auto) minmax(220px, auto) auto;
+  grid-template-areas:
+    "occupation occupation punctuality punctuality compliance compliance"
+    "occupation occupation health health compliance compliance"
+    "events events events assignments assignments assignments";
+  align-items: stretch;
+  gap: 18px;
+}
+
+/* Asignación de cada tarjeta a su bloque visual. */
+.dashboard-occupation {
+  grid-area: occupation;
+  min-height: 0;
+  height: 100%;
+}
+
+.dashboard-punctuality {
+  grid-area: punctuality;
+  min-height: 0;
+  height: 100%;
+  align-self: stretch;
+}
+
+.dashboard-compliance {
+  grid-area: compliance;
+  min-height: 0;
+  height: 100%;
+}
+
+.dashboard-health {
+  grid-area: health;
+  min-height: 0;
+  height: 100%;
+}
+
+.dashboard-events {
+  grid-area: events;
+  min-height: 280px;
+  height: 100%;
+}
+
+.dashboard-assignments {
+  grid-area: assignments;
+  min-height: 280px;
+  height: 100%;
+}
+
+/* Ocupación conserva su gráfico centrado y sus indicadores inferiores. */
+.dashboard-occupation .occupation-content {
+  flex: 1;
+}
+
+/* Puntualidad y salud juntas ocupan la altura de los dos bloques laterales. */
+.dashboard-punctuality .card-footer-info {
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+/* Cumplimiento aprovecha toda la altura del bloque derecho. */
+.dashboard-compliance .compliance-columns {
+  flex: 1;
+  min-height: 250px;
+}
+
+.dashboard-compliance .compliance-column-track {
+  height: 155px;
+}
+
+/* Tarjetas inferiores anchas: distribución horizontal más cómoda. */
+.dashboard-events .events-summary {
+  justify-content: space-evenly;
+  gap: 28px;
+  flex: 1;
+}
+
+.dashboard-events .events-pie {
+  width: 158px;
+  height: 158px;
+}
+
+.dashboard-events .events-legend {
+  max-width: 260px;
+}
+
+.dashboard-assignments .assignments-list {
+  gap: 15px;
+}
+
+/* TABLET: se reorganiza en bloques de dos columnas sin solaparse. */
+@media (max-width: 1050px) {
+  .dashboard-grid-principal {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto;
+    grid-template-areas:
+      "occupation compliance"
+      "punctuality health"
+      "events events"
+      "assignments assignments";
+    align-items: stretch;
+  }
+
+  .dashboard-occupation,
+  .dashboard-punctuality,
+  .dashboard-compliance,
+  .dashboard-health,
+  .dashboard-events,
+  .dashboard-assignments {
+    min-height: 0;
+    height: auto;
+  }
+
+  .dashboard-occupation,
+  .dashboard-compliance {
+    min-height: 390px;
+  }
+
+  .dashboard-events .events-pie {
+    width: 140px;
+    height: 140px;
+  }
+}
+
+/* MÓVIL: una columna, en orden natural de lectura. */
+@media (max-width: 650px) {
+  .dashboard-grid-principal {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    grid-template-areas:
+      "occupation"
+      "punctuality"
+      "health"
+      "compliance"
+      "events"
+      "assignments";
+    gap: 12px;
+  }
+
+  .dashboard-occupation,
+  .dashboard-punctuality,
+  .dashboard-compliance,
+  .dashboard-health,
+  .dashboard-events,
+  .dashboard-assignments {
+    min-height: 0;
+    height: auto;
+  }
+
+  .dashboard-compliance .compliance-columns {
+    min-height: 205px;
+  }
+
+  .dashboard-events .events-pie {
+    width: 118px;
+    height: 118px;
+  }
+
+  .dashboard-events .events-summary {
+    gap: 16px;
+  }
 }

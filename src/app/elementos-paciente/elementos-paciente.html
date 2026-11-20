@@ -91,123 +91,124 @@
   </section>
 
   <!-- =========================================================
-       TITULO
-       ========================================================= -->
-
-  <section class="titulo-seccion">
-
-    <div>
-
-      <h1>
-        registro
-      </h1>
-
-      <p>
-        Complementar información asistencial y los elementos asociados al paciente.
-      </p>
-
-    </div>
-
-  </section>
-
-  <!-- =========================================================
-     INDICADOR DE PASOS - TERMINAR REGISTRO
+     TARJETA PRINCIPAL: REGISTRO + INDICADOR DE PASOS
      ========================================================= -->
 
-  <nav class="stepper" aria-label="Etapas del registro">
+  <section class="registro-encabezado-card">
 
-    <div class="stepper-list">
+    <!-- TÍTULO Y DESCRIPCIÓN -->
+    <div class="titulo-seccion">
 
-      <!-- PASO 1 -->
-      <button type="button" class="step" [class.active]="seccionActiva === 'elementos'"
-        (click)="cambiarSeccion('elementos')" title="Elementos del paciente">
+      <div>
+        <h1>REGISTRO</h1>
 
-        <span class="step-number">1</span>
-
-        <span class="step-info">
-          <small>
-            {{ seccionActiva === 'elementos' ? 'PASO ACTUAL' : 'PASO 1' }}
-          </small>
-          <strong>Elementos del paciente</strong>
-        </span>
-
-      </button>
-
-      <!-- PASO 2 -->
-      <button type="button" class="step" [class.active]="seccionActiva === 'cuidados'"
-        (click)="cambiarSeccion('cuidados')" title="Cuidados de enfermería">
-
-        <span class="step-number">2</span>
-
-        <span class="step-info">
-          <small>
-            {{ seccionActiva === 'cuidados' ? 'PASO ACTUAL' : 'PASO 2' }}
-          </small>
-          <strong>Cuidados de enfermería</strong>
-        </span>
-
-      </button>
-
-      <!-- PASO 3 -->
-      <button type="button" class="step" [class.active]="seccionActiva === 'recomendaciones'"
-        (click)="cambiarSeccion('recomendaciones')" title="Recomendaciones">
-
-        <span class="step-number">3</span>
-
-        <span class="step-info">
-          <small>
-            {{ seccionActiva === 'recomendaciones' ? 'PASO ACTUAL' : 'PASO 3' }}
-          </small>
-          <strong>Recomendaciones</strong>
-        </span>
-
-      </button>
-
-      <!-- PASO 4 -->
-      <button type="button" class="step" [class.active]="seccionActiva === 'historia'"
-        (click)="cambiarSeccion('historia')" title="Historia clínica">
-
-        <span class="step-number">4</span>
-
-        <span class="step-info">
-          <small>
-            {{ seccionActiva === 'historia' ? 'PASO ACTUAL' : 'PASO 4' }}
-          </small>
-          <strong>Historia clínica</strong>
-        </span>
-
-      </button>
-
-      <!-- PASO 5 -->
-      <button type="button" class="step" [class.active]="seccionActiva === 'formulacion'"
-        (click)="cambiarSeccion('formulacion')" title="Formulación de medicamentos">
-
-        <span class="step-number">5</span>
-
-        <span class="step-info">
-          <small>
-            {{ seccionActiva === 'formulacion' ? 'PASO ACTUAL' : 'PASO 5' }}
-          </small>
-          <strong>Formulación de medicamentos</strong>
-        </span>
-
-      </button>
-
-      <!-- PASO 6: REGISTRO FACIAL -->
-      <button type="button" class="step" [class.active]="seccionActiva === 'facial'" (click)="cambiarSeccion('facial')"
-        title="Registro facial">
-        <span class="step-number">6</span>
-        <span class="step-info">
-          <small>{{ seccionActiva === 'facial' ? 'PASO ACTUAL' : 'PASO 6' }}</small>
-          <strong>Registro facial</strong>
-        </span>
-      </button>
+        <p>
+          Complementar información asistencial y los elementos asociados al paciente.
+        </p>
+      </div>
 
     </div>
 
-  </nav>
+    <!-- INDICADOR DE PASOS -->
+    <nav class="stepper" aria-label="Etapas del registro">
 
+      <div class="stepper-list">
 
+        <!-- PASO 1 -->
+        <button type="button" class="step" [class.active]="seccionActiva === 'elementos'"
+          (click)="cambiarSeccion('elementos')" title="Elementos del paciente">
+
+          <span class="step-number">1</span>
+
+          <span class="step-info">
+            <small>
+              {{ seccionActiva === 'elementos' ? 'PASO ACTUAL' : 'PASO 1' }}
+            </small>
+            <strong>Elementos del paciente</strong>
+          </span>
+
+        </button>
+
+        <!-- PASO 2 -->
+        <button type="button" class="step" [class.active]="seccionActiva === 'cuidados'"
+          (click)="cambiarSeccion('cuidados')" title="Cuidados de enfermería">
+
+          <span class="step-number">2</span>
+
+          <span class="step-info">
+            <small>
+              {{ seccionActiva === 'cuidados' ? 'PASO ACTUAL' : 'PASO 2' }}
+            </small>
+            <strong>Cuidados de enfermería</strong>
+          </span>
+
+        </button>
+
+        <!-- PASO 3 -->
+        <button type="button" class="step" [class.active]="seccionActiva === 'recomendaciones'"
+          (click)="cambiarSeccion('recomendaciones')" title="Recomendaciones">
+
+          <span class="step-number">3</span>
+
+          <span class="step-info">
+            <small>
+              {{ seccionActiva === 'recomendaciones' ? 'PASO ACTUAL' : 'PASO 3' }}
+            </small>
+            <strong>Recomendaciones</strong>
+          </span>
+
+        </button>
+
+        <!-- PASO 4 -->
+        <button type="button" class="step" [class.active]="seccionActiva === 'historia'"
+          (click)="cambiarSeccion('historia')" title="Historia clínica">
+
+          <span class="step-number">4</span>
+
+          <span class="step-info">
+            <small>
+              {{ seccionActiva === 'historia' ? 'PASO ACTUAL' : 'PASO 4' }}
+            </small>
+            <strong>Historia clínica</strong>
+          </span>
+
+        </button>
+
+        <!-- PASO 5 -->
+        <button type="button" class="step" [class.active]="seccionActiva === 'formulacion'"
+          (click)="cambiarSeccion('formulacion')" title="Formulación de medicamentos">
+
+          <span class="step-number">5</span>
+
+          <span class="step-info">
+            <small>
+              {{ seccionActiva === 'formulacion' ? 'PASO ACTUAL' : 'PASO 5' }}
+            </small>
+            <strong>Formulación de medicamentos</strong>
+          </span>
+
+        </button>
+
+        <!-- PASO 6 -->
+        <button type="button" class="step" [class.active]="seccionActiva === 'facial'"
+          (click)="cambiarSeccion('facial')" title="Registro facial">
+
+          <span class="step-number">6</span>
+
+          <span class="step-info">
+            <small>
+              {{ seccionActiva === 'facial' ? 'PASO ACTUAL' : 'PASO 6' }}
+            </small>
+            <strong>Registro facial</strong>
+          </span>
+
+        </button>
+
+      </div>
+
+    </nav>
+
+  </section>
 
   <!-- =========================================================
        ELEMENTOS DEL PACIENTE

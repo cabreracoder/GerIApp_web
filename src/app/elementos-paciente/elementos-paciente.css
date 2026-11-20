@@ -144,6 +144,74 @@ TITULO
 }
 
 /* =========================================================
+   TARJETA PRINCIPAL: REGISTRO + PASOS
+   ========================================================= */
+
+.registro-encabezado-card {
+  width: 100%;
+  margin-bottom: 22px;
+  padding: 20px 14px 14px;
+  background: #ffffff;
+  border: 1px solid #e1e7ef;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(33, 37, 41, 0.04);
+}
+
+/* TÍTULO DENTRO DE LA TARJETA */
+
+.registro-encabezado-card .titulo-seccion {
+  margin: 0 0 16px;
+  padding: 0 2px;
+}
+
+.registro-encabezado-card .titulo-seccion h1 {
+  margin: 0;
+  color: #212529;
+  font-size: 23px;
+  line-height: 1.2;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.4px;
+}
+
+.registro-encabezado-card .titulo-seccion p {
+  margin: 7px 0 0;
+  color: #6c757d;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* PASOS INTEGRADOS EN LA TARJETA */
+
+.registro-encabezado-card .stepper {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  overflow-x: auto;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 600px) {
+  .registro-encabezado-card {
+    padding: 17px 10px 10px;
+    margin-bottom: 18px;
+  }
+
+  .registro-encabezado-card .titulo-seccion h1 {
+    font-size: 22px;
+  }
+
+  .registro-encabezado-card .titulo-seccion {
+    margin-bottom: 14px;
+  }
+}
+
+/* =========================================================
    INDICADOR DE PASOS - TERMINAR REGISTRO
 ========================================================= */
 
@@ -1514,7 +1582,7 @@ BARRA FINAL
   box-shadow: 0 2px 8px rgba(33, 37, 41, 0.04);
 }
 
-.registro-facial-card > .card-header {
+.registro-facial-card>.card-header {
   margin-bottom: 18px;
 }
 
@@ -1677,7 +1745,7 @@ BARRA FINAL
   background: #fbfcfe;
 }
 
-.facial-adicionales > .facial-agregar {
+.facial-adicionales>.facial-agregar {
   margin-bottom: 14px;
 }
 
