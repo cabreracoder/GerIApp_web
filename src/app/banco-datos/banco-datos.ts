@@ -176,46 +176,76 @@ interface ConfigAlerta {
   autoCerrar?: boolean;
 }
 
-// Motor único de alertas
+// Contenido visual común de todas las alertas GeriApp.
+function contenidoAlerta(
+  titulo: string,
+  contenidoHtml?: string,
+  mostrarCheck = false
+): string {
+  return `
+    <div class="geri-alerta">
+      <div class="geri-alerta__onda"></div>
+
+      <div class="geri-alerta__contenido">
+        <img
+          src="/Logo-GerIApp.png"
+          class="geri-alerta__logo"
+          alt="GeriApp"
+          onerror="this.style.display='none'"
+        >
+
+        ${mostrarCheck ? `
+          <div class="geri-alerta__check">✓</div>
+        ` : ''}
+
+        <h2 class="geri-alerta__titulo">
+          ${escaparHtml(titulo)}
+        </h2>
+
+        ${contenidoHtml ? `
+          <div class="geri-alerta__mensaje">
+            ${contenidoHtml}
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+// Motor único de alertas.
+// Se conserva ConfigAlerta y la misma interfaz utilizada
+// por todas las llamadas existentes del componente.
 function mostrarAlerta(c: ConfigAlerta) {
-  const tono = TONOS[c.tono];
   const conBotones = !c.autoCerrar;
   const conCancelar = !!c.cancelar;
-  const botonSolo = conBotones && !conCancelar;
-  const tituloSinPie = !conBotones && !c.html;
 
   return Swal.fire({
-    icon: c.icono,
-    iconHtml: c.iconoSvg,
-    title: escaparHtml(c.titulo),
-    html: c.html,
+    html: contenidoAlerta(
+      c.titulo,
+      c.html,
+      c.autoCerrar && c.icono === 'success'
+    ),
 
     showConfirmButton: conBotones,
     showCancelButton: conCancelar,
     confirmButtonText: c.confirmar,
-    cancelButtonText: c.cancelar,
+    cancelButtonText: c.cancelar || 'Cancelar',
+
     reverseButtons: !c.confirmarIzquierda,
     focusCancel: !!c.enfocarCancelar,
+
     timer: c.autoCerrar ? 1800 : undefined,
 
     buttonsStyling: false,
-    backdrop: 'rgba(15, 23, 42, 0.65)',
+    backdrop: 'rgba(15, 23, 42, 0.55)',
 
     customClass: {
-      popup: '!grid-cols-[26%_1fr] !w-[34rem] !max-w-[92vw] !p-0 !rounded-[2.2rem] !overflow-hidden !bg-white',
-
-      icon: `col-start-1 row-start-1 row-span-3 !m-0 !flex !h-auto !w-auto !items-center !justify-center !rounded-none !border-0 !animate-none ${tono.panel}`,
-
-      title: `col-start-2 row-start-1 !m-0 !px-7 !pt-8 ${tituloSinPie ? '!pb-8' : '!pb-0'} !text-left !text-[1.6rem] !leading-tight !font-extrabold !text-slate-900`,
-
-      htmlContainer: `col-start-2 row-start-2 !m-0 !px-7 !pt-0 ${conBotones ? '!pb-0' : '!pb-8'} !justify-start !overflow-visible !text-left !text-base !font-normal`,
-
-      actions: `col-start-2 row-start-3 !m-0 !w-auto !flex-nowrap !gap-3 !px-7 !pt-6 !pb-8 ${botonSolo ? '!justify-end' : '!justify-stretch'}`,
-
-      confirmButton: `${botonSolo ? 'w-[calc(50%-0.375rem)]' : 'flex-1'} cursor-pointer rounded-2xl px-4 py-3 text-[1.1rem] font-bold text-white transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-slate-300 ${tono.boton}`,
-
-      cancelButton: 'flex-1 cursor-pointer rounded-2xl bg-slate-100 px-4 py-3 text-[1.1rem] font-bold text-slate-600 transition-colors hover:bg-slate-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-slate-300',
-    },
+      popup: 'geri-swal-popup',
+      htmlContainer: 'geri-swal-html',
+      actions: 'geri-swal-actions',
+      confirmButton: `geri-swal-btn geri-swal-btn--${c.tono}`,
+      cancelButton: 'geri-swal-btn geri-swal-btn--cancelar'
+    }
   });
 }
 
@@ -243,7 +273,7 @@ function alertaConfirmar(c: {
       </span>
 
       <p class="m-0 text-[1.15rem] leading-snug text-slate-700">
-        ¿${c.verbo} a
+        ¿${escaparHtml(c.verbo)} a
         <strong class="font-bold">
           ${escaparHtml(c.nombre)}
         </strong>?
@@ -260,7 +290,7 @@ function alertaConfirmar(c: {
     confirmar: c.confirmar,
     cancelar: 'Cancelar',
     confirmarIzquierda: c.confirmarIzquierda,
-    enfocarCancelar: c.enfocarCancelar,
+    enfocarCancelar: c.enfocarCancelar
   });
 }
 
@@ -278,7 +308,7 @@ function alertaEliminar(
     nombre,
     subtitulo: 'Acción permanente · no se puede deshacer',
     confirmar: 'Sí, eliminar',
-    enfocarCancelar: true,
+    enfocarCancelar: true
   });
 }
 
@@ -295,7 +325,7 @@ function alertaDesactivar(
     entidad,
     nombre,
     subtitulo: 'Cambio reversible · puedes reactivarlo luego',
-    confirmar: 'Sí, desactivar',
+    confirmar: 'Sí, desactivar'
   });
 }
 
@@ -313,7 +343,7 @@ function alertaEditar(
     nombre,
     subtitulo: 'Se abrirá el formulario de edición',
     confirmar: 'Sí, editar',
-    confirmarIzquierda: true,
+    confirmarIzquierda: true
   });
 }
 
@@ -331,7 +361,7 @@ function alertaActivar(
     nombre,
     subtitulo: 'Volverá a estar activo · puedes desactivarlo luego',
     confirmar: 'Sí, activar',
-    confirmarIzquierda: true,
+    confirmarIzquierda: true
   });
 }
 
@@ -354,7 +384,7 @@ function alertaExito(
     titulo,
     html: htmlMensaje(mensaje),
     confirmar: 'Aceptar',
-    autoCerrar: true,
+    autoCerrar: true
   });
 }
 
@@ -369,7 +399,7 @@ function alertaError(
     iconoSvg: ICONOS.equis,
     titulo,
     html: htmlMensaje(mensaje),
-    confirmar: 'Aceptar',
+    confirmar: 'Aceptar'
   });
 }
 
@@ -384,7 +414,7 @@ function alertaAdvertencia(
     iconoSvg: ICONOS.alerta,
     titulo,
     html: htmlMensaje(mensaje),
-    confirmar: 'Aceptar',
+    confirmar: 'Aceptar'
   });
 }
 
@@ -593,14 +623,14 @@ export class BancoDatos implements OnInit {
 
   camaras: Camara[] = [];
 
-cargandoCamaras = false;
+  cargandoCamaras = false;
 
-mostrandoFormularioCamara = false;
-modoEdicionCamara = false;
+  mostrandoFormularioCamara = false;
+  modoEdicionCamara = false;
 
 
-camaraEditando: number | null = null;
-private camaraOriginal: Camara | null = null;
+  camaraEditando: number | null = null;
+  private camaraOriginal: Camara | null = null;
 
   camaraForm: Camara = {
     nombre: '',

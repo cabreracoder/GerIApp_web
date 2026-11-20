@@ -1,12 +1,22 @@
 
 
+
+
 import { CommonModule } from '@angular/common';
+
+
 
 import { HttpClient } from '@angular/common/http';
 
+
+
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 
+
+
 import { FormsModule } from '@angular/forms';
+
+
 
 import Swal from 'sweetalert2';
 
@@ -14,126 +24,255 @@ import Swal from 'sweetalert2';
 
 
 
+
+
+
+
+
+
 // =====================================================
+
+
 
 // INTERFACES
 
+
+
 // =====================================================
+
+
+
+
 
 
 
 interface Encargado {
+
   id: number;
+
   id_documento?: number;
 
+
+
   tipoDocumento: string;
+
   documento: string;
+
   nombres: string;
+
   apellidos: string;
+
   email: string;
+
   telefono: string;
+
   fechaIngreso: string;
 
+
+
   fechaNacimiento?: string;
+
   edad?: number;
 
+
+
   especialidad?: string;
+
   licencia?: string;
+
   experiencia?: string;
+
   institucion?: string;
 
+
+
   estado: 'Activo' | 'Inactivo';
+
   iniciales: string;
+
   foto?: string | null;
 
+
+
   archivos?: {
+
     cedula?: string | null;
+
     tarjeta_profesional?: string | null;
+
     antecedentes?: string | null;
+
     hoja_de_vida?: string | null;
+
   };
+
 }
+
+
+
+
 
 
 
 interface FormularioEncargado {
 
+
+
   tipoDocumento: string;
+
+
 
   documento: string;
 
+
+
   nombres: string;
+
+
 
   apellidos: string;
 
+
+
   estado: 'Activo' | 'Inactivo';
+
+
 
   fechaIngreso: string;
 
+
+
   fechaNacimiento?: string;
+
+
 
   edad?: number;
 
+
+
   telefono: string;
+
+
 
   email: string;
 
+
+
   especialidad?: string;
+
+
 
   licencia?: string;
 
+
+
   experiencia?: string;
+
+
 
   institucion?: string;
 
+
+
   cedulaFile?: File | null;
+
+
 
   hojaDeVidaFile?: File | null;
 
+
+
   tarjetaProfesionalFile?: File | null;
 
+
+
   antecedentesFile?: File | null;
+
   fotoFile?: File | null;
+
   fotoUrl?: string | null;
+
+
 
   id_documento?: number;
 
+
+
   archivos?: {
+
     cedula?: string | null;
+
     tarjeta_profesional?: string | null;
+
     antecedentes?: string | null;
+
     hoja_de_vida?: string | null;
+
   };
 
+
+
 }
+
+
+
+
 
 
 
 interface ErroresFormulario {
 
+
+
   tipoDocumento: boolean;
+
+
 
   documento: boolean;
 
+
+
   nombres: boolean;
+
+
 
   apellidos: boolean;
 
+
+
   telefono: boolean;
+
+
 
   email: boolean;
 
+
+
   emailInvalido?: boolean;
+
+
 
 }
 
 
 
+
+
+
+
 // =====================================================
+
+
 
 // ALERTAS (SweetAlert2 + Tailwind)
 
+
+
 // =====================================================
+
+
+
+
 
 
 
@@ -141,179 +280,270 @@ type Tono = 'rojo' | 'ambar' | 'azul' | 'verde';
 
 
 
+
+
+
+
 const TONOS: Record<Tono, { panel: string; boton: string }> = {
+
+
 
   rojo: { panel: 'bg-linear-to-b from-red-500 to-red-700', boton: 'bg-red-600 hover:bg-red-700' },
 
+
+
   ambar: { panel: 'bg-linear-to-b from-amber-500 to-amber-700', boton: 'bg-amber-600 hover:bg-amber-700' },
+
+
 
   azul: { panel: 'bg-linear-to-b from-blue-500 to-blue-700', boton: 'bg-blue-600 hover:bg-blue-700' },
 
+
+
   verde: { panel: 'bg-linear-to-b from-emerald-500 to-emerald-700', boton: 'bg-emerald-600 hover:bg-emerald-700' },
 
+
+
 };
+
+
+
+
 
 
 
 // Iconos blancos del panel (papelera, prohibido, lápiz, check, equis, alerta)
 
+
+
 const svgIcono = (trazos: string): string =>
+
+
 
   `<svg class="h-11 w-11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${trazos}</svg>`;
 
 
 
+
+
+
+
 const ICONOS = {
+
+
 
   papelera: svgIcono('<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/>'),
 
+
+
   prohibido: svgIcono('<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/>'),
+
+
 
   lapiz: svgIcono('<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>'),
 
+
+
   check: svgIcono('<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>'),
+
+
 
   equis: svgIcono('<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>'),
 
+
+
   alerta: svgIcono('<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>'),
+
+
 
 };
 
 
 
+
+
+
+
 // Evita que un nombre del backend inyecte HTML
+
+
 
 function escaparHtml(texto: string): string {
 
+
+
   return String(texto ?? '')
+
+
 
     .replace(/&/g, '&amp;')
 
+
+
     .replace(/</g, '&lt;')
+
+
 
     .replace(/>/g, '&gt;')
 
+
+
     .replace(/"/g, '&quot;');
 
+
+
 }
+
+
+
+
 
 
 
 function inicialesAlerta(nombre: string): string {
 
+
+
   const partes = nombre.trim().split(/\s+/).filter(Boolean);
+
+
 
   if (partes.length === 0) return '?';
 
+
+
   if (partes.length === 1) return partes[0].slice(0, 2).toUpperCase();
+
+
 
   return (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
 
+
+
 }
+
+
+
+
 
 
 
 interface ConfigAlerta {
 
+
+
   tono: Tono;
+
+
 
   icono: 'warning' | 'question' | 'success' | 'error';
 
+
+
   iconoSvg: string;
+
+
 
   titulo: string;
 
+
+
   html?: string;
+
+
 
   confirmar: string;
 
+
+
   cancelar?: string;
+
+
 
   confirmarIzquierda?: boolean;   // true = "Sí, ..." a la izquierda (como en Editar)
 
+
+
   enfocarCancelar?: boolean;
+
+
 
   autoCerrar?: boolean;           // true = sin botones, se cierra a los 1,8 s
 
+
+
 }
+
+
+
+
 
 
 
 // Motor único: todas las alertas pasan por aquí.
 
+
+
 // Las clases con "!" ganan sobre el CSS que SweetAlert2 trae por defecto.
 
+
+
 function mostrarAlerta(c: ConfigAlerta) {
-
-
-
-  const tono = TONOS[c.tono];
-
   const conBotones = !c.autoCerrar;
-
   const conCancelar = !!c.cancelar;
 
-  const botonSolo = conBotones && !conCancelar;
-
-  const tituloSinPie = !conBotones && !c.html;
-
-
-
   return Swal.fire({
+    html: `
+      <div class="geri-alerta">
+        <div class="geri-alerta__onda"></div>
 
-    icon: c.icono,
+        <div class="geri-alerta__contenido">
+          <img
+            src="/Logo-GerIApp.png"
+            class="geri-alerta__logo"
+            alt="GeriApp"
+            onerror="this.style.display='none'"
+          >
 
-    iconHtml: c.iconoSvg,
+          ${c.autoCerrar && c.icono === 'success'
+        ? '<div class="geri-alerta__check">✓</div>'
+        : ''}
 
-    title: escaparHtml(c.titulo),
+          <h2 class="geri-alerta__titulo">
+            ${escaparHtml(c.titulo)}
+          </h2>
 
-    html: c.html,
-
-
+          ${c.html
+        ? `<div class="geri-alerta__mensaje">${c.html}</div>`
+        : ''}
+        </div>
+      </div>
+    `,
 
     showConfirmButton: conBotones,
-
     showCancelButton: conCancelar,
-
     confirmButtonText: c.confirmar,
-
     cancelButtonText: c.cancelar,
-
     reverseButtons: !c.confirmarIzquierda,
-
     focusCancel: !!c.enfocarCancelar,
-
     timer: c.autoCerrar ? 1800 : undefined,
 
-
-
     buttonsStyling: false,
-
     backdrop: 'rgba(15, 23, 42, 0.65)',
 
-
-
     customClass: {
-
-      popup: '!grid-cols-[26%_1fr] !w-[34rem] !max-w-[92vw] !p-0 !rounded-[2.2rem] !overflow-hidden !bg-white',
-
-      icon: `col-start-1 row-start-1 row-span-3 !m-0 !flex !h-auto !w-auto !items-center !justify-center !rounded-none !border-0 !animate-none ${tono.panel}`,
-
-      title: `col-start-2 row-start-1 !m-0 !px-7 !pt-8 ${tituloSinPie ? '!pb-8' : '!pb-0'} !text-left !text-[1.6rem] !leading-tight !font-extrabold !text-slate-900`,
-
-      htmlContainer: `col-start-2 row-start-2 !m-0 !px-7 !pt-0 ${conBotones ? '!pb-0' : '!pb-8'} !justify-start !overflow-visible !text-left !text-base !font-normal`,
-
-      actions: `col-start-2 row-start-3 !m-0 !w-auto !flex-nowrap !gap-3 !px-7 !pt-6 !pb-8 ${botonSolo ? '!justify-end' : '!justify-stretch'}`,
-
-      confirmButton: `${botonSolo ? 'w-[calc(50%-0.375rem)]' : 'flex-1'} cursor-pointer rounded-2xl px-4 py-3 text-[1.1rem] font-bold text-white transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-slate-300 ${tono.boton}`,
-
-      cancelButton: 'flex-1 cursor-pointer rounded-2xl bg-slate-100 px-4 py-3 text-[1.1rem] font-bold text-slate-600 transition-colors hover:bg-slate-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-slate-300',
-
-    },
-
+      popup: 'geri-swal-popup',
+      htmlContainer: 'geri-swal-html',
+      actions: 'geri-swal-actions',
+      confirmButton: `geri-swal-btn geri-swal-btn--${c.tono}`,
+      cancelButton: 'geri-swal-btn geri-swal-btn--cancelar'
+    }
   });
-
 }
+
+
+
+
 
 
 
@@ -321,157 +551,315 @@ function mostrarAlerta(c: ConfigAlerta) {
 
 
 
+
+
+
+
 function alertaConfirmar(c: {
+
+
 
   tono: Tono;
 
+
+
   icono: 'warning' | 'question';
+
+
 
   iconoSvg: string;
 
+
+
   verbo: string;
+
+
 
   entidad: string;
 
+
+
   nombre: string;
+
+
 
   subtitulo: string;
 
+
+
   confirmar: string;
+
+
 
   confirmarIzquierda?: boolean;
 
+
+
   enfocarCancelar?: boolean;
+
+
 
 }) {
 
 
 
+
+
+
+
   const html = `
+
+
 
     <p class="m-0 text-[1.1rem] leading-snug text-slate-400">${escaparHtml(c.subtitulo)}</p>
 
+
+
     <div class="mt-4 flex items-center gap-3.5">
+
+
 
       <span class="flex h-[2.4rem] w-[2.4rem] shrink-0 items-center justify-center rounded-xl bg-slate-100 text-sm font-bold text-slate-600">${escaparHtml(inicialesAlerta(c.nombre))}</span>
 
+
+
       <p class="m-0 text-[1.15rem] leading-snug text-slate-700">¿${c.verbo} a <strong class="font-bold">${escaparHtml(c.nombre)}</strong>?</p>
 
+
+
     </div>
+
+
 
   `;
 
 
 
+
+
+
+
   return mostrarAlerta({
+
+
 
     tono: c.tono,
 
+
+
     icono: c.icono,
+
+
 
     iconoSvg: c.iconoSvg,
 
+
+
     titulo: `${c.verbo} ${c.entidad}`,
+
+
 
     html,
 
+
+
     confirmar: c.confirmar,
+
+
 
     cancelar: 'Cancelar',
 
+
+
     confirmarIzquierda: c.confirmarIzquierda,
+
+
 
     enfocarCancelar: c.enfocarCancelar,
 
+
+
   });
 
+
+
 }
+
+
+
+
 
 
 
 // Imagen 1: rojo
 
+
+
 function alertaEliminar(nombre: string, entidad = 'encargado') {
+
+
 
   return alertaConfirmar({
 
+
+
     tono: 'rojo', icono: 'warning', iconoSvg: ICONOS.papelera,
+
+
 
     verbo: 'Eliminar', entidad, nombre,
 
+
+
     subtitulo: 'Acción permanente · no se puede deshacer',
+
+
 
     confirmar: 'Sí, eliminar',
 
+
+
     enfocarCancelar: true,
+
+
 
   });
 
+
+
 }
+
+
+
+
 
 
 
 // Imagen 2: ámbar
 
+
+
 function alertaDesactivar(nombre: string, entidad = 'encargado') {
+
+
 
   return alertaConfirmar({
 
+
+
     tono: 'ambar', icono: 'warning', iconoSvg: ICONOS.prohibido,
+
+
 
     verbo: 'Desactivar', entidad, nombre,
 
+
+
     subtitulo: 'Cambio reversible · puedes reactivarlo luego',
+
+
 
     confirmar: 'Sí, desactivar',
 
+
+
   });
 
+
+
 }
+
+
+
+
 
 
 
 // Imagen 3: azul ("Sí, editar" va a la izquierda)
 
+
+
 function alertaEditar(nombre: string, entidad = 'encargado') {
+
+
 
   return alertaConfirmar({
 
+
+
     tono: 'azul', icono: 'question', iconoSvg: ICONOS.lapiz,
+
+
 
     verbo: 'Editar', entidad, nombre,
 
+
+
     subtitulo: 'Se abrirá el formulario de edición',
+
+
 
     confirmar: 'Sí, editar',
 
+
+
     confirmarIzquierda: true,
+
+
 
   });
 
+
+
 }
+
+
+
+
 
 
 
 // Misma forma que Editar, en verde
 
+
+
 function alertaActivar(nombre: string, entidad = 'encargado') {
+
+
 
   return alertaConfirmar({
 
+
+
     tono: 'verde', icono: 'question', iconoSvg: ICONOS.check,
+
+
 
     verbo: 'Activar', entidad, nombre,
 
+
+
     subtitulo: 'Volverá a estar activo · puedes desactivarlo luego',
+
+
 
     confirmar: 'Sí, activar',
 
+
+
     confirmarIzquierda: true,
+
+
 
   });
 
+
+
 }
+
+
+
+
 
 
 
@@ -479,118 +867,237 @@ function alertaActivar(nombre: string, entidad = 'encargado') {
 
 
 
+
+
+
+
 function htmlMensaje(mensaje?: string): string | undefined {
+
+
 
   return mensaje
 
+
+
     ? `<p class="m-0 text-[1.15rem] leading-snug text-slate-700">${escaparHtml(mensaje)}</p>`
+
+
 
     : undefined;
 
+
+
 }
+
+
+
+
 
 
 
 // Se cierra solo a los 1,8 s (sin botones)
 
+
+
 function alertaExito(titulo: string, mensaje?: string) {
+
+
 
   return mostrarAlerta({
 
+
+
     tono: 'verde', icono: 'success', iconoSvg: ICONOS.check,
+
+
 
     titulo, html: htmlMensaje(mensaje), confirmar: 'Aceptar', autoCerrar: true,
 
+
+
   });
 
+
+
 }
+
+
+
+
 
 
 
 // Siempre lleva botón, para que no se pierda
 
+
+
 function alertaError(titulo: string, mensaje?: string) {
+
+
 
   return mostrarAlerta({
 
+
+
     tono: 'rojo', icono: 'error', iconoSvg: ICONOS.equis,
+
+
 
     titulo, html: htmlMensaje(mensaje), confirmar: 'Aceptar',
 
+
+
   });
 
+
+
 }
+
+
+
+
 
 
 
 function alertaAdvertencia(titulo: string, mensaje?: string) {
 
+
+
   return mostrarAlerta({
+
+
 
     tono: 'ambar', icono: 'warning', iconoSvg: ICONOS.alerta,
 
+
+
     titulo, html: htmlMensaje(mensaje), confirmar: 'Aceptar',
 
+
+
   });
+
+
 
 }
 
 
 
+
+
+
+
 // =====================================================
+
+
 
 // COMPONENTE
 
+
+
 // =====================================================
+
+
+
+
 
 
 
 @Component({
 
+
+
   selector: 'app-encargados',
+
+
 
   standalone: true,
 
+
+
   imports: [CommonModule, FormsModule],
+
+
 
   templateUrl: './encargados.html',
 
+
+
   styleUrl: './encargados.css',
 
+
+
 })
+
+
 
 export class Encargados implements OnInit {
 
 
 
+
+
+
+
   private cdr = inject(ChangeDetectorRef);
+
+
 
   private http = inject(HttpClient);
 
 
 
+
+
+
+
   // =====================================================
+
+
 
   // USUARIO RESPONSABLE
 
+
+
   // =====================================================
+
+
+
+
 
 
 
   usuarioActual = 'Administrador';
 
+
+
   private apiUrl = 'https://geriapp-backend.onrender.com/api/usuarios/';
+
+
 
   private documentosUrl = 'https://geriapp-backend.onrender.com/api/documentos/';
 
+
+
   private perfilUrl = 'https://geriapp-backend.onrender.com/api/perfil_profesional/';
 
+
+
   private registroUrl = 'https://geriapp-backend.onrender.com/api/usuarios/registro/';
+
   // =====================================================
+
+
 
   // ENCARGADOS
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -598,7 +1105,15 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
   encargados: Encargado[] = [];
+
+
+
+
 
 
 
@@ -608,11 +1123,25 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
   // =====================================================
+
+
 
   // PAGINACIÓN
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -620,7 +1149,15 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
   encargadosPorPagina = 10;
+
+
+
+
 
 
 
@@ -628,11 +1165,25 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
   totalPaginas = 1;
 
 
 
+
+
+
+
   paginas: number[] = [];
+
+
+
+
+
+
 
 
 
@@ -646,11 +1197,27 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
+
+
   // =====================================================
+
+
 
   // MODAL NUEVO / EDITAR
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -658,11 +1225,23 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
   modoEdicion = false;
 
 
 
+
+
+
+
   editarPrincipal = false;
+
+
+
+
 
 
 
@@ -672,15 +1251,33 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
   // =====================================================
+
+
 
   // MODAL DETALLES
 
+
+
   // =====================================================
+
+
+
+
 
 
 
   modalDetallesAbierto = false;
+
+
+
+
 
 
 
@@ -692,15 +1289,35 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
+
+
   // =====================================================
+
+
 
   // ESTADO
 
+
+
   // =====================================================
+
+
+
+
 
 
 
   guardando = false;
+
+
+
+
 
 
 
@@ -710,46 +1327,93 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
   // =====================================================
+
+
 
   // FORMULARIO
 
+
+
   // =====================================================
+
+
+
+
 
 
 
   formulario: FormularioEncargado = this.formularioInicial();
 
+
+
   fotoPreview: string | null = null;
+
   nombreFoto: string | null = null;
+
   eliminarFotoPendiente = false;
 
 
 
 
+
+
+
+
+
   // =====================================================
+
+
 
   // ERRORES
 
+
+
   // =====================================================
+
+
+
+
 
 
 
   errores: ErroresFormulario = {
 
+
+
     tipoDocumento: false,
+
+
 
     documento: false,
 
+
+
     nombres: false,
+
+
 
     apellidos: false,
 
+
+
     telefono: false,
+
+
 
     email: false,
 
+
+
     emailInvalido: false,
+
+
 
   };
 
@@ -759,35 +1423,73 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
+
+
   // =====================================================
+
+
 
   // CARGOS Y ÁREAS
 
+
+
   // =====================================================
+
+
+
+
 
 
 
   cargosDisponibles: string[] = [
 
+
+
     'Director General',
+
+
 
     'Subdirector',
 
+
+
     'Coordinador Administrativo',
+
+
 
     'Coordinador Operativo',
 
+
+
   ];
+
+
+
+
 
 
 
   areasDisponibles: string[] = [
 
+
+
     'Dirección',
+
+
 
     'Administración',
 
+
+
     'Operaciones',
+
+
 
   ];
 
@@ -795,11 +1497,25 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
   // =====================================================
+
+
 
   // INICIO
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -807,137 +1523,275 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
   ngOnInit(): void {
+
+
 
     this.cargarEncargados();
 
+
+
   }
 
 
 
 
 
+
+
+
+
+
+
   // =====================================================
+
+
 
   // CARGAR ENCARGADOS
 
+
+
   // =====================================================
+
+
 
   cargarEncargados(): void {
 
+
+
     this.cargando = true;
+
+
 
     this.http.get<any[]>(this.apiUrl).subscribe({
 
+
+
       next: (respuesta) => {
 
+
+
         const encargados = respuesta.filter(
+
           (usuario: any) => usuario.id_rol === 2
+
         );
+
+
 
         this.http.get<any[]>(this.perfilUrl).subscribe({
 
+
+
           next: (perfiles) => {
+
+
 
             this.http.get<any[]>(this.documentosUrl).subscribe({
 
+
+
               next: (documentos) => {
+
+
 
                 this.encargados = encargados.map((usuario: any): Encargado => {
 
+
+
                   const id = usuario.id_usuario || usuario.id;
 
+
+
                   const perfil = perfiles.find(
+
                     (p: any) => p.id_usuario === id
+
                   );
 
+
+
                   const documentosUsuario = documentos.find(
+
                     (d: any) => d.id_usuario === id
+
                   );
+
+
 
                   return {
 
+
+
                     id: id,
+
+
 
                     id_documento: documentosUsuario?.id_documento,
 
+
+
                     tipoDocumento: usuario.tipo_documento,
+
                     documento: usuario.numero_documento,
+
                     nombres: usuario.nombres,
+
                     apellidos: usuario.apellidos,
+
                     email: usuario.correo,
+
                     telefono: usuario.telefono,
+
                     fechaIngreso: usuario.fecha_ingreso,
+
+
 
                     estado: usuario.estado ? 'Activo' : 'Inactivo',
 
+
+
                     iniciales: this.generarIniciales(
+
                       `${usuario.nombres} ${usuario.apellidos}`
+
                     ),
+
+
 
                     foto: usuario.foto || null,
 
+
+
                     especialidad: perfil?.especialidad || '',
+
                     licencia: perfil?.licencia || '',
+
                     experiencia: perfil?.experiencia ?? '',
+
                     institucion: perfil?.institucion || '',
 
+
+
                     archivos: {
+
                       cedula: documentosUsuario?.cedula || null,
+
                       tarjeta_profesional: documentosUsuario?.tarjeta_profesional || null,
+
                       antecedentes: documentosUsuario?.antecedentes || null,
+
                       hoja_de_vida: documentosUsuario?.hoja_de_vida || null
+
                     }
+
+
 
                   };
 
+
+
                 }).sort((a, b) => a.id - b.id);
+
+
 
                 this.encargadoPrincipal = null;
 
+
+
                 this.filtrarEncargados();
 
+
+
                 this.cargando = false;
+
+
 
                 this.cdr.detectChanges();
 
+
+
               },
 
+
+
               error: (err) => {
+
                 console.error('Error cargando documentos:', err);
+
                 this.cargando = false;
+
                 alertaError('Error', 'No se pudieron cargar los documentos.');
+
               }
+
+
 
             });
 
+
+
           },
 
+
+
           error: (err) => {
+
             console.error('Error cargando perfiles:', err);
+
             this.cargando = false;
+
             alertaError('Error', 'No se pudieron cargar los perfiles profesionales.');
+
           }
+
+
 
         });
 
+
+
       },
 
+
+
       error: (err) => {
+
         console.error('Error cargando encargados:', err);
+
         this.cargando = false;
+
         alertaError('Error', 'No se pudieron cargar los encargados.');
+
       }
+
+
 
     });
 
+
+
   }
 
+
+
   // =====================================================
+
+
 
   // FORMULARIO INICIAL
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -947,332 +1801,667 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
     return {
+
+
 
       tipoDocumento: '',
 
+
+
       documento: '',
+
+
 
       nombres: '',
 
+
+
       apellidos: '',
+
+
 
       estado: 'Inactivo',
 
+
+
       fechaIngreso: '',
+
+
 
       fechaNacimiento: '',
 
+
+
       edad: undefined,
+
+
 
       telefono: '',
 
+
+
       email: '',
+
+
 
       cedulaFile: null,
 
+
+
       hojaDeVidaFile: null,
+
+
 
       especialidad: '',
 
+
+
       licencia: '',
+
+
 
       experiencia: '',
 
+
+
       institucion: '',
+
+
 
       tarjetaProfesionalFile: null,
 
+
+
       antecedentesFile: null,
+
       fotoFile: null,
+
       fotoUrl: null,
 
+
+
     };
+
+
 
   }
 
 
 
+
+
+
+
   // =====================================================
+
+
 
   // CALCULAR EDAD
 
+
+
   // =====================================================
+
+
+
+
 
 
 
   calcularEdad(): void {
 
+
+
     if (!this.formulario.fechaNacimiento) {
+
+
 
       this.formulario.edad = undefined;
 
+
+
       return;
 
+
+
     }
+
+
+
+
 
 
 
     const hoy = new Date();
 
+
+
     const nacimiento = new Date(this.formulario.fechaNacimiento + 'T00:00:00');
+
+
+
+
 
 
 
     let edad = hoy.getFullYear() - nacimiento.getFullYear();
 
+
+
     const m = hoy.getMonth() - nacimiento.getMonth();
+
+
+
+
 
 
 
     if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
 
+
+
       edad--;
 
+
+
     }
+
+
+
+
 
 
 
     this.formulario.edad = edad >= 0 ? edad : 0;
 
+
+
   }
 
 
 
 
 
+
+
+
+
+
+
   // =====================================================
+
+
 
   // FOTO DE PERFIL
+
   seleccionarFoto(event: Event): void {
+
     const input = event.target as HTMLInputElement;
+
     const archivo = input.files?.[0];
+
     if (!archivo) return;
+
     if (!archivo.type.startsWith('image/')) {
+
       alertaAdvertencia('Archivo no válido', 'Selecciona una imagen.');
+
       input.value = '';
+
       return;
+
     }
+
     this.formulario.fotoFile = archivo;
+
     this.nombreFoto = archivo.name;
+
     this.eliminarFotoPendiente = false;
+
     const lector = new FileReader();
+
     lector.onload = () => {
+
       this.fotoPreview = lector.result as string;
+
       this.cdr.detectChanges();
+
     };
+
     lector.readAsDataURL(archivo);
+
   }
+
   // =====================================================
+
   // ELIMINAR FOTO DE PERFIL
+
   // =====================================================
+
+
 
   confirmarEliminarFoto(): void {
 
+
+
     if (!this.fotoPreview) return;
 
+
+
     mostrarAlerta({
+
       tono: 'rojo',
+
       icono: 'warning',
+
       iconoSvg: ICONOS.papelera,
+
       titulo: 'Eliminar foto de perfil',
+
       html: htmlMensaje(
+
         'La fotografía desaparecerá del formulario. Los cambios se aplicarán al guardar.'
+
       ),
+
       confirmar: 'Sí, eliminar',
+
       cancelar: 'Cancelar',
+
       enfocarCancelar: true
+
+
 
     }).then(resultado => {
 
+
+
       if (!resultado.isConfirmed) {
+
         return;
+
       }
 
+
+
       // CREAR: quitar solamente la foto seleccionada.
+
       if (!this.modoEdicion) {
 
+
+
         this.formulario.fotoFile = null;
+
         this.formulario.fotoUrl = null;
+
+
 
         this.eliminarFotoPendiente = false;
 
+
+
       } else {
 
+
+
         // EDITAR: dejar pendiente la eliminación.
+
         this.formulario.fotoFile = null;
+
         this.formulario.fotoUrl = null;
+
+
 
         this.eliminarFotoPendiente = true;
 
+
+
       }
 
+
+
       this.fotoPreview = null;
+
       this.nombreFoto = null;
+
+
 
       this.cdr.detectChanges();
 
+
+
     });
 
+
+
   }
+
   obtenerNombreFoto(url?: string | null): string | null {
+
     if (!url) return null;
+
     try {
+
       return decodeURIComponent(new URL(url, window.location.origin).pathname.split('/').pop() || 'Foto de perfil');
+
     } catch {
+
       return 'Foto de perfil';
+
     }
+
   }
+
   // =====================================================
+
   // DESCARGAR DOCUMENTOS DESDE CLOUDINARY
+
   // =====================================================
+
+
 
   obtenerUrlDescarga(url?: string | null): string {
 
+
+
     if (!url) {
+
       return '';
+
     }
+
+
 
     if (
+
       url.includes('res.cloudinary.com') &&
+
       url.includes('/upload/')
+
     ) {
 
+
+
       if (url.includes('/fl_attachment/')) {
+
         return url;
+
       }
 
+
+
       return url.replace(
+
         '/upload/',
+
         '/upload/fl_attachment/'
+
       );
+
+
 
     }
 
+
+
     return url;
+
   }
+
   // =====================================================
+
   // SELECCIONAR ARCHIVOS (DOCUMENTOS)
+
   // =====================================================
+
+
+
+
 
 
 
   onFileSelected(
+
     event: any,
+
     tipo: 'cedula' | 'tarjetaProfesional' | 'antecedentes' | 'hojaDeVida'
+
   ): void {
+
+
 
     const file = event.target.files?.[0];
 
+
+
     if (!file) return;
 
+
+
     if (tipo === 'cedula') {
+
       this.formulario.cedulaFile = file;
+
     } else if (tipo === 'tarjetaProfesional') {
+
       this.formulario.tarjetaProfesionalFile = file;
+
     } else if (tipo === 'antecedentes') {
+
       this.formulario.antecedentesFile = file;
+
     } else if (tipo === 'hojaDeVida') {
+
       this.formulario.hojaDeVidaFile = file;
+
     }
+
   }
-  // =====================================================
-  // GUARDAR DOCUMENTOS EN CLOUDINARY
+
   // =====================================================
 
+  // GUARDAR DOCUMENTOS EN CLOUDINARY
+
+  // =====================================================
+
+
+
   private guardarDocumentos(
+
     idUsuario: number,
+
     finalizar: () => void
+
   ): void {
+
+
 
     const documentos = new FormData();
 
+
+
     documentos.append('id_usuario', String(idUsuario));
 
+
+
     if (this.formulario.cedulaFile) {
+
       documentos.append('cedula', this.formulario.cedulaFile);
+
     }
+
+
 
     if (this.formulario.tarjetaProfesionalFile) {
+
       documentos.append(
+
         'tarjeta_profesional',
+
         this.formulario.tarjetaProfesionalFile
+
       );
+
     }
+
+
 
     if (this.formulario.antecedentesFile) {
+
       documentos.append(
+
         'antecedentes',
+
         this.formulario.antecedentesFile
+
       );
+
     }
+
+
 
     if (this.formulario.hojaDeVidaFile) {
+
       documentos.append(
+
         'hoja_de_vida',
+
         this.formulario.hojaDeVidaFile
+
       );
+
     }
+
+
 
     const hayArchivos = !!(
+
       this.formulario.cedulaFile ||
+
       this.formulario.tarjetaProfesionalFile ||
+
       this.formulario.antecedentesFile ||
+
       this.formulario.hojaDeVidaFile
+
     );
 
+
+
     if (!hayArchivos) {
+
       finalizar();
+
       return;
+
     }
+
+
 
     const idDocumento = this.formulario.id_documento;
 
+
+
     const peticion = idDocumento
+
       ? this.http.patch(
+
         `${this.documentosUrl}${idDocumento}/`,
+
         documentos
+
       )
+
       : this.http.post(
+
         this.documentosUrl,
+
         documentos
+
       );
+
+
 
     peticion.subscribe({
 
+
+
       next: () => {
+
         finalizar();
+
       },
+
+
 
       error: (error) => {
 
+
+
         console.error('Error al guardar documentos:', error);
+
         console.error('Respuesta del backend:', error.error);
 
+
+
         this.guardando = false;
+
         this.cdr.detectChanges();
 
+
+
         alertaError(
+
           'Error con los documentos',
+
           'No se pudieron guardar los documentos.'
+
         );
+
       }
 
+
+
     });
+
   }
+
   // =====================================================
+
+
 
   // ABRIR MODAL
 
+
+
   // =====================================================
+
+
 
   openModal(
 
+
+
     modo: 'new' | 'editPrincipal' | 'edit',
+
+
 
     encargado?: Encargado
 
+
+
   ): void {
+
+
+
+
 
 
 
@@ -1280,7 +2469,15 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     this.modoEdicion = modo !== 'new';
+
+
+
+
 
 
 
@@ -1288,12 +2485,27 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     this.idEditando = null;
 
+
+
     this.fotoPreview = null;
+
     this.nombreFoto = null;
 
+
+
     this.limpiarErrores();
+
+
+
+
+
+
 
 
 
@@ -1303,7 +2515,15 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     if (modo === 'new') {
+
+
+
+
 
 
 
@@ -1311,9 +2531,19 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
       return;
 
+
+
     }
+
+
+
+
 
 
 
@@ -1321,72 +2551,145 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     if ((modo as string) === 'editPrincipal') {
+
+
 
       if (!this.encargadoPrincipal) {
 
+
+
         this.closeModal();
 
+
+
         return;
+
+
 
       }
 
 
 
+
+
+
+
       this.formulario = {
+
         id_documento: this.encargadoPrincipal.id_documento,
+
+
 
         archivos: this.encargadoPrincipal.archivos,
 
+
+
         tipoDocumento: this.encargadoPrincipal.tipoDocumento || '',
+
+
 
         documento: this.encargadoPrincipal.documento,
 
+
+
         nombres: this.encargadoPrincipal.nombres,
+
+
 
         apellidos: this.encargadoPrincipal.apellidos,
 
+
+
         estado: this.encargadoPrincipal.estado,
+
+
 
         fechaIngreso: this.encargadoPrincipal.fechaIngreso,
 
+
+
         fechaNacimiento: this.encargadoPrincipal.fechaNacimiento || '',
+
+
 
         edad: this.encargadoPrincipal.edad,
 
+
+
         telefono: this.encargadoPrincipal.telefono,
+
+
 
         email: this.encargadoPrincipal.email,
 
+
+
         especialidad: this.encargadoPrincipal.especialidad || '',
+
+
 
         licencia: this.encargadoPrincipal.licencia || '',
 
+
+
         experiencia: this.encargadoPrincipal.experiencia || '',
+
+
 
         institucion: this.encargadoPrincipal.institucion || '',
 
+
+
         cedulaFile: null,
+
+
 
         tarjetaProfesionalFile: null,
 
+
+
         antecedentesFile: null,
+
         fotoFile: null,
+
         fotoUrl: null,
+
+
 
         hojaDeVidaFile: null,
 
+
+
       };
+
       this.idEditando = this.encargadoPrincipal.id;
+
       this.formulario.fotoUrl = this.encargadoPrincipal.foto || null;
+
       this.fotoPreview = this.formulario.fotoUrl;
+
       this.nombreFoto = this.obtenerNombreFoto(this.formulario.fotoUrl);
+
+
+
+
 
 
 
       return;
 
+
+
     }
+
+
+
+
 
 
 
@@ -1394,73 +2697,147 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     if (modo === 'edit' && encargado) {
 
 
 
+
+
+
+
       this.idEditando = encargado.id;
+
       this.fotoPreview = encargado.foto || null;
+
       this.nombreFoto = this.obtenerNombreFoto(encargado.foto);
+
+
+
+
 
 
 
       this.formulario = {
 
+
+
         id_documento: encargado.id_documento,
+
+
 
         archivos: encargado.archivos,
 
+
+
         tipoDocumento: encargado.tipoDocumento || '',
+
+
 
         documento: encargado.documento,
 
+
+
         nombres: encargado.nombres,
+
+
 
         apellidos: encargado.apellidos,
 
+
+
         estado: encargado.estado,
+
+
 
         fechaIngreso: encargado.fechaIngreso,
 
+
+
         fechaNacimiento: encargado.fechaNacimiento || '',
+
+
 
         edad: encargado.edad,
 
+
+
         telefono: encargado.telefono,
+
+
 
         email: encargado.email,
 
+
+
         especialidad: encargado.especialidad || '',
+
+
 
         licencia: encargado.licencia || '',
 
+
+
         experiencia: encargado.experiencia || '',
+
+
 
         institucion: encargado.institucion || '',
 
+
+
         cedulaFile: null,
+
+
 
         tarjetaProfesionalFile: null,
 
+
+
         antecedentesFile: null,
+
         fotoFile: null,
+
         fotoUrl: encargado.foto || null,
+
+
 
         hojaDeVidaFile: null,
 
+
+
       };
 
+
+
     }
+
+
 
   }
 
 
 
+
+
+
+
   // =====================================================
+
+
 
   // CONFIRMAR EDICIÓN
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -1468,29 +2845,59 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     alertaEditar(`${encargado.nombres} ${encargado.apellidos}`).then((resultado) => {
+
+
+
+
 
 
 
       if (resultado.isConfirmed) {
 
+
+
         this.openModal('edit', encargado);
+
+
 
         this.cdr.detectChanges();
 
+
+
       }
 
+
+
     });
+
+
 
   }
 
 
 
+
+
+
+
   // =====================================================
+
+
 
   // CERRAR MODAL
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -1498,11 +2905,23 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     if (this.guardando) {
+
+
 
       return;
 
+
+
     }
+
+
+
+
 
 
 
@@ -1510,15 +2929,31 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     this.limpiarErrores();
 
 
 
+
+
+
+
     this.formulario = this.formularioInicial();
+
     this.fotoPreview = null;
+
     this.nombreFoto = null;
+
     this.eliminarFotoPendiente = false;
+
     this.modoEdicion = false;
+
+
+
+
 
 
 
@@ -1526,7 +2961,13 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     this.idEditando = null;
+
+
 
   }
 
@@ -1534,11 +2975,25 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
   // =====================================================
+
+
 
   // VER DETALLES
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -1546,7 +3001,15 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     this.encargadoSeleccionado = encargado;
+
+
+
+
 
 
 
@@ -1554,17 +3017,35 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     this.cdr.detectChanges();
+
+
 
   }
 
+
+
   // =====================================================
+
+
 
   // CERRAR DETALLES
 
+
+
   // =====================================================
 
+
+
   cerrarModalDetalles(): void {
+
+
+
+
 
 
 
@@ -1572,11 +3053,21 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     this.encargadoSeleccionado = null;
 
 
 
+
+
+
+
     this.cdr.detectChanges();
+
+
 
   }
 
@@ -1584,11 +3075,25 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
   // =====================================================
+
+
 
   // CERRAR DETALLES POR FONDO
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -1596,11 +3101,21 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     if (event.target === event.currentTarget) {
+
+
 
       this.cerrarModalDetalles();
 
+
+
     }
+
+
 
   }
 
@@ -1608,11 +3123,25 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
   // =====================================================
+
+
 
   // CERRAR MODAL POR FONDO
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -1620,11 +3149,21 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     if (event.target === event.currentTarget) {
+
+
 
       this.closeModal();
 
+
+
     }
+
+
 
   }
 
@@ -1632,11 +3171,25 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
   // =====================================================
+
+
 
   // DOCUMENTO DUPLICADO
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -1644,15 +3197,33 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     const documentoLimpio = documento.trim();
+
+
+
+
 
 
 
     if (!documentoLimpio) {
 
+
+
       return false;
 
+
+
     }
+
+
+
+
+
+
 
 
 
@@ -1660,19 +3231,39 @@ export class Encargados implements OnInit {
 
     if (
 
+
+
       !this.editarPrincipal &&
+
+
 
       this.encargadoPrincipal &&
 
+
+
       this.encargadoPrincipal.documento === documentoLimpio
+
+
 
     ) {
 
 
 
+
+
+
+
       return true;
 
+
+
     }
+
+
+
+
+
+
 
 
 
@@ -1682,25 +3273,49 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
       if (
+
+
 
         this.idEditando !== null &&
 
+
+
         encargado.id === this.idEditando
+
+
 
       ) {
 
 
 
+
+
+
+
         return false;
+
+
 
       }
 
 
 
+
+
+
+
       return encargado.documento === documentoLimpio;
 
+
+
     });
+
+
 
   }
 
@@ -1708,11 +3323,25 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
   // =====================================================
+
+
 
   // EMAIL VÁLIDO
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -1720,13 +3349,25 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     const regexEmail =
+
+
 
       /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 
 
+
+
+
+
     return regexEmail.test(email.trim());
+
+
 
   }
 
@@ -1734,11 +3375,25 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
   // =====================================================
+
+
 
   // TELÉFONO VÁLIDO
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -1746,7 +3401,13 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     return /^[0-9]{10}$/.test(telefono.trim());
+
+
 
   }
 
@@ -1754,11 +3415,25 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
   // =====================================================
+
+
 
   // SOLO NÚMEROS
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -1766,7 +3441,15 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     const input = event.target as HTMLInputElement;
+
+
+
+
 
 
 
@@ -1774,7 +3457,13 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     this.formulario.telefono = input.value;
+
+
 
   }
 
@@ -1782,11 +3471,25 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
   // =====================================================
+
+
 
   // EMAIL DUPLICADO
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -1794,33 +3497,67 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     const emailLimpio = email.trim().toLowerCase();
+
+
+
+
 
 
 
     if (!emailLimpio) {
 
+
+
       return false;
 
+
+
     }
+
+
+
+
 
 
 
     if (
 
+
+
       !this.editarPrincipal &&
+
+
 
       this.encargadoPrincipal &&
 
+
+
       this.encargadoPrincipal.email.toLowerCase() === emailLimpio
+
+
 
     ) {
 
 
 
+
+
+
+
       return true;
 
+
+
     }
+
+
+
+
 
 
 
@@ -1828,25 +3565,49 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
       if (
+
+
 
         this.idEditando !== null &&
 
+
+
         encargado.id === this.idEditando
+
+
 
       ) {
 
 
 
+
+
+
+
         return false;
+
+
 
       }
 
 
 
+
+
+
+
       return encargado.email.toLowerCase() === emailLimpio;
 
+
+
     });
+
+
 
   }
 
@@ -1854,11 +3615,25 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
   // =====================================================
+
+
 
   // VALIDAR FORMULARIO
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -1866,7 +3641,15 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     this.limpiarErrores();
+
+
+
+
 
 
 
@@ -1874,13 +3657,29 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     if (!this.formulario.tipoDocumento) {
+
+
 
       this.errores.tipoDocumento = true;
 
+
+
       valido = false;
 
+
+
     }
+
+
+
+
+
+
 
 
 
@@ -1890,13 +3689,29 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
       this.errores.documento = true;
+
+
+
+
 
 
 
       valido = false;
 
+
+
     }
+
+
+
+
+
+
 
 
 
@@ -1906,13 +3721,27 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
       this.errores.nombres = true;
+
+
+
+
 
 
 
       valido = false;
 
+
+
     }
+
+
+
+
 
 
 
@@ -1920,13 +3749,27 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
       this.errores.apellidos = true;
+
+
+
+
 
 
 
       valido = false;
 
+
+
     }
+
+
+
+
 
 
 
@@ -1934,7 +3777,15 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     if (!telefono || !this.telefonoValido(telefono)) {
+
+
+
+
 
 
 
@@ -1942,9 +3793,21 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
       valido = false;
 
+
+
     }
+
+
+
+
+
+
 
 
 
@@ -1954,7 +3817,15 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     if (!email) {
+
+
+
+
 
 
 
@@ -1962,7 +3833,15 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
       valido = false;
+
+
+
+
 
 
 
@@ -1970,17 +3849,33 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
       this.errores.emailInvalido = true;
+
+
+
+
 
 
 
       valido = false;
 
+
+
     }
 
 
 
+
+
+
+
     return valido;
+
+
 
   }
 
@@ -1988,11 +3883,25 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
   // =====================================================
+
+
 
   // LIMPIAR ERRORES
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -2000,23 +3909,45 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     this.errores = {
+
+
 
       tipoDocumento: false,
 
+
+
       documento: false,
+
+
 
       nombres: false,
 
+
+
       apellidos: false,
+
+
 
       telefono: false,
 
+
+
       email: false,
+
+
 
       emailInvalido: false,
 
+
+
     };
+
+
 
   }
 
@@ -2024,209 +3955,421 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
   // =====================================================
+
+
 
   // GUARDAR ENCARGADO
 
+
+
   // =====================================================
+
+
 
   saveEncargado(): void {
 
+
+
     if (this.guardando) {
+
       return;
+
     }
+
+
 
     if (!this.validarFormulario()) {
 
+
+
       let mensaje = 'Completa los campos obligatorios.';
 
+
+
       if (this.errores.telefono) {
+
         mensaje = 'El teléfono debe contener exactamente 10 números.';
+
       } else if (this.errores.emailInvalido) {
+
         mensaje = 'Ingresa un correo electrónico válido.';
+
       }
 
+
+
       alertaAdvertencia('Revisa el formulario', mensaje);
+
       return;
+
     }
+
+
 
     if (this.DocumentoDuplicado(this.formulario.documento)) {
+
       this.errores.documento = true;
+
       alertaAdvertencia('Documento duplicado', 'El número de documento ya se encuentra registrado.');
+
       return;
+
     }
 
+
+
     if (this.emailDuplicado(this.formulario.email)) {
+
       this.errores.email = true;
+
       alertaAdvertencia('Correo duplicado', 'El correo electrónico ya se encuentra registrado.');
+
       return;
+
     }
+
+
 
     this.guardando = true;
 
+
+
     const cuerpo: any = {
+
       tipo_documento: this.formulario.tipoDocumento,
+
       numero_documento: this.formulario.documento,
+
       nombres: this.formulario.nombres,
+
       apellidos: this.formulario.apellidos,
+
       correo: this.formulario.email,
+
       telefono: this.formulario.telefono,
+
       fecha_ingreso: this.formulario.fechaIngreso,
+
       estado: this.formulario.estado === 'Activo',
+
       id_rol: 2,
+
     };
 
+
+
     if (this.modoEdicion) {
+
       delete cuerpo.fecha_ingreso;
+
     }
+
+
 
     const datosEncargado = new FormData();
 
+
+
     Object.entries(cuerpo).forEach(([campo, valor]) => {
+
       if (valor !== null && valor !== undefined) {
+
         datosEncargado.append(campo, String(valor));
+
       }
+
     });
 
+
+
     if (this.formulario.fotoFile) {
+
       datosEncargado.append('foto', this.formulario.fotoFile);
+
     }
 
+
+
     // FINALIZAR GUARDADO
+
     const finalizar = () => {
+
+
 
       this.guardando = false;
 
+
+
       alertaExito(
+
         this.modoEdicion ? 'Encargado actualizado' : 'Encargado creado',
+
         'La información y los documentos se guardaron correctamente.'
+
       );
 
+
+
       this.closeModal();
+
       this.cargarEncargados();
+
+
 
     };
 
+
+
     // EDITAR ENCARGADO
+
     if (this.modoEdicion && this.idEditando) {
+
+
 
       const idUsuario = this.idEditando;
 
+
+
       this.http.patch(
+
         `${this.apiUrl}${idUsuario}/`,
+
         datosEncargado
+
       ).subscribe({
+
+
 
         next: () => {
 
+
+
           // Eliminar foto solamente si existe una eliminación pendiente.
+
           if (this.eliminarFotoPendiente) {
 
+
+
             this.http.delete(
+
               `${this.apiUrl}${idUsuario}/foto/`
+
             ).subscribe({
+
+
 
               next: () => {
 
+
+
                 this.eliminarFotoPendiente = false;
 
+
+
                 // Continuar con los documentos.
+
                 this.guardarDocumentos(idUsuario, finalizar);
+
+
 
               },
 
+
+
               error: (err) => {
+
+
 
                 console.error('Error eliminando foto del encargado:', err);
 
+
+
                 this.guardando = false;
 
+
+
                 alertaError(
+
                   'Error al eliminar fotografía',
+
                   'No se pudo eliminar la fotografía. Los demás cambios del formulario se guardaron.'
+
                 );
+
+
 
               }
 
+
+
             });
+
+
 
           } else {
 
+
+
             // No hay eliminación pendiente.
+
             this.guardarDocumentos(idUsuario, finalizar);
+
+
 
           }
 
+
+
         },
+
+
 
         error: (err) => {
 
+
+
           this.guardando = false;
+
           console.error('Error actualizando encargado:', err);
 
+
+
           alertaError(
+
             'Error al actualizar',
+
             'No se pudo actualizar la información del encargado.'
+
           );
+
+
 
         }
 
+
+
       });
+
+
 
     } else {
 
+
+
       // CREAR ENCARGADO
+
       this.http.post(this.registroUrl, datosEncargado).subscribe({
+
         next: (respuesta: any) => {
+
+
 
           console.log('Respuesta al crear encargado:', respuesta);
 
+
+
           const idUsuario =
+
             respuesta?.id_usuario ??
+
             respuesta?.id ??
+
             respuesta?.usuario?.id_usuario ??
+
             respuesta?.usuario?.id;
+
+
 
           if (!idUsuario) {
 
+
+
             this.guardando = false;
 
+
+
             alertaError(
+
               'Error al guardar documentos',
+
               'El encargado se creó, pero no se recibió su identificador para asociar los documentos.'
+
             );
 
+
+
             return;
+
           }
 
+
+
           // Guardar documentos en Cloudinary
+
           this.guardarDocumentos(Number(idUsuario), finalizar);
+
+
 
         },
 
+
+
         error: (err) => {
 
+
+
           this.guardando = false;
+
           console.error('Error creando encargado:', err);
 
+
+
           alertaError(
+
             'Error al crear',
+
             'No se pudo registrar el encargado.'
+
           );
+
+
 
         }
 
+
+
       });
+
+
 
     }
 
+
+
   }
 
+
+
   // =====================================================
+
+
 
   // CAMBIAR ESTADO
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -2234,7 +4377,15 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     const nuevoEstadoBooleano = encargado.estado !== 'Activo';
+
+
+
+
 
 
 
@@ -2244,15 +4395,33 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
     const nombre = `${encargado.nombres} ${encargado.apellidos}`;
+
+
+
+
 
 
 
     const pregunta = nuevoEstadoBooleano
 
+
+
       ? alertaActivar(nombre)
 
+
+
       : alertaDesactivar(nombre);
+
+
+
+
 
 
 
@@ -2260,19 +4429,39 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
       if (!resultado.isConfirmed) {
 
+
+
         return;
+
+
 
       }
 
 
 
+
+
+
+
       this.http
+
+
 
         .patch(`${this.apiUrl}${encargado.id}/`, { estado: nuevoEstadoBooleano })
 
+
+
         .subscribe({
+
+
+
+
 
 
 
@@ -2280,13 +4469,27 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
             alertaExito(nuevoEstadoTexto === 'Activo' ? 'Encargado activado' : 'Encargado desactivado');
+
+
+
+
 
 
 
             this.cargarEncargados();
 
+
+
           },
+
+
+
+
 
 
 
@@ -2294,17 +4497,33 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
             console.error(err);
+
+
+
+
 
 
 
             alertaError('Error al actualizar estado', 'No se pudo actualizar el estado del encargado.');
 
+
+
           },
+
+
 
         });
 
+
+
     });
+
+
 
   }
 
@@ -2312,11 +4531,25 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
   // =====================================================
+
+
 
   // ELIMINAR
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -2324,15 +4557,31 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     alertaEliminar(`${encargado.nombres} ${encargado.apellidos}`).then((resultado) => {
+
+
+
+
 
 
 
       if (!resultado.isConfirmed) {
 
+
+
         return;
 
+
+
       }
+
+
+
+
 
 
 
@@ -2340,25 +4589,49 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
         next: () => {
+
+
 
           alertaExito('Encargado eliminado');
 
+
+
           this.cargarEncargados();
 
+
+
         },
+
+
+
+
 
 
 
         error: () => {
 
+
+
           alertaError('Error al eliminar', 'No se pudo eliminar el encargado.');
+
+
 
         },
 
+
+
       });
 
+
+
     });
+
+
 
   }
 
@@ -2366,11 +4639,25 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
   // =====================================================
+
+
 
   // GENERAR INICIALES
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -2378,13 +4665,25 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     const partes =
+
+
 
       nombre
 
+
+
         .trim()
 
+
+
         .split(/\s+/)
+
+
 
         .filter(Boolean);
 
@@ -2392,11 +4691,27 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
     if (partes.length === 0) {
+
+
 
       return 'NA';
 
+
+
     }
+
+
+
+
+
+
 
 
 
@@ -2406,13 +4721,29 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
       return partes[0]
+
+
 
         .substring(0, 2)
 
+
+
         .toUpperCase();
 
+
+
     }
+
+
+
+
+
+
 
 
 
@@ -2420,27 +4751,53 @@ export class Encargados implements OnInit {
 
     return (
 
+
+
       partes[0][0] +
+
+
 
       partes[partes.length - 1][0]
 
+
+
     ).toUpperCase();
+
+
 
   }
 
 
 
+
+
+
+
   // =====================================================
+
+
 
   // FILTRAR
 
-  // =====================================================
+
 
   // =====================================================
+
+
+
+  // =====================================================
+
+
 
   // ACTUALIZAR PAGINACIÓN
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -2448,13 +4805,29 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     this.totalPaginas = Math.ceil(
+
+
 
       this.encargadosFiltrados.length /
 
+
+
       this.encargadosPorPagina
 
+
+
     );
+
+
+
+
+
+
 
 
 
@@ -2462,9 +4835,15 @@ export class Encargados implements OnInit {
 
     this.paginas = Array.from(
 
+
+
       { length: this.totalPaginas },
 
+
+
       (_, i) => i + 1
+
+
 
     );
 
@@ -2472,11 +4851,27 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
     const inicio =
+
+
 
       (this.paginaActual - 1) *
 
+
+
       this.encargadosPorPagina;
+
+
+
+
+
+
 
 
 
@@ -2484,7 +4879,11 @@ export class Encargados implements OnInit {
 
     const fin =
 
+
+
       inicio +
+
+
 
       this.encargadosPorPagina;
 
@@ -2492,15 +4891,33 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
     this.encargadosPaginaActual =
+
+
 
       this.encargadosFiltrados.slice(
 
+
+
         inicio,
+
+
 
         fin
 
+
+
       );
+
+
+
+
 
 
 
@@ -2510,11 +4927,25 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
   // =====================================================
+
+
 
   // CAMBIAR PÁGINA
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -2522,19 +4953,39 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     if (
+
+
 
       pagina < 1 ||
 
+
+
       pagina > this.totalPaginas
+
+
 
     ) {
 
+
+
       return;
+
+
 
     }
 
+
+
     this.paginaActual = pagina;
+
+
+
+
 
 
 
@@ -2542,15 +4993,33 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
   }
+
+
 
   filtrarEncargados(): void {
 
 
 
+
+
+
+
     const termino =
 
+
+
       this.busqueda.trim().toLowerCase();
+
+
+
+
+
+
 
 
 
@@ -2560,9 +5029,19 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
       this.encargadosFiltrados =
 
+
+
         [...this.encargados];
+
+
+
+
 
 
 
@@ -2570,7 +5049,15 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
       this.actualizarPaginacion();
+
+
+
+
 
 
 
@@ -2578,9 +5065,21 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
       return;
 
+
+
     }
+
+
+
+
+
+
 
 
 
@@ -2588,7 +5087,13 @@ export class Encargados implements OnInit {
 
     this.encargadosFiltrados =
 
+
+
       this.encargados.filter((encargado) => {
+
+
+
+
 
 
 
@@ -2596,47 +5101,95 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
           encargado.documento
 
+
+
             .toLowerCase()
+
+
 
             .includes(termino)
 
 
 
+
+
+
+
           ||
+
+
+
+
 
 
 
           encargado.nombres
 
+
+
             .toLowerCase()
+
+
 
             .includes(termino)
 
 
 
+
+
+
+
           ||
+
+
+
+
 
 
 
           encargado.apellidos
 
+
+
             .toLowerCase()
+
+
 
             .includes(termino)
 
 
 
+
+
+
+
           ||
+
+
+
+
 
 
 
           encargado.email
 
+
+
             .toLowerCase()
 
+
+
             .includes(termino)
+
+
+
+
 
 
 
@@ -2644,13 +5197,25 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
           encargado.telefono
+
+
 
             .toLowerCase()
 
+
+
             .includes(termino)
 
+
+
         );
+
+
 
       });
 
@@ -2658,11 +5223,25 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
     this.cdr.detectChanges();
+
+
 
     this.paginaActual = 1;
 
+
+
     this.actualizarPaginacion();
+
+
+
+
 
 
 
@@ -2670,11 +5249,23 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
   // =====================================================
+
+
 
   // FORMATEAR FECHA
 
+
+
   // =====================================================
+
+
+
+
 
 
 
@@ -2682,25 +5273,49 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     if (!fecha) {
 
+
+
       return 'Fecha no registrada';
+
+
 
     }
 
 
 
+
+
+
+
     // La API puede devolver solo la fecha ("2026-09-08") o
+
+
 
     // una fecha y hora completa en ISO ("2026-09-08T17:45:03Z").
 
+
+
     // Si ya trae la "T", no le agregamos otra.
+
+
 
     const fechaObj =
 
+
+
       fecha.includes('T')
 
+
+
         ? new Date(fecha)
+
+
 
         : new Date(`${fecha}T00:00:00`);
 
@@ -2708,21 +5323,47 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
     if (
+
+
 
       Number.isNaN(
 
+
+
         fechaObj.getTime()
 
+
+
       )
+
+
 
     ) {
 
 
 
+
+
+
+
       return 'Fecha no registrada';
 
+
+
     }
+
+
+
+
+
+
 
 
 
@@ -2732,7 +5373,15 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
     const mes = String(fechaObj.getMonth() + 1).padStart(2, '0');
+
+
+
+
 
 
 
@@ -2742,8 +5391,18 @@ export class Encargados implements OnInit {
 
 
 
+
+
+
+
+
+
     return `${dia}/${mes}/${anio}`;
 
+
+
   }
+
+
 
 }

@@ -82,8 +82,8 @@
   <!-- DASHBOARD PRINCIPAL -->
   <section class="dashboard-grid dashboard-grid-principal">
 
-    <!-- 1. OCUPACIÓN DEL CENTRO -->
-    <article class="card occupation-card">
+    <!-- BLOQUE SUPERIOR IZQUIERDO -->
+    <article class="card occupation-card dashboard-occupation">
 
       <div class="card-header">
         <div>
@@ -159,10 +159,8 @@
 
     </article>
 
-
-
-    <!-- 2. PUNTUALIDAD DE CUIDADORES -->
-    <article class="card punctuality-card">
+    <!-- BLOQUE CENTRAL SUPERIOR -->
+    <article class="card punctuality-card dashboard-punctuality">
 
       <div class="card-header">
         <div>
@@ -213,9 +211,8 @@
 
     </article>
 
-
-    <!-- 3. CUMPLIMIENTO DE TURNOS -->
-    <article class="card compliance-card">
+    <!-- BLOQUE SUPERIOR DERECHO -->
+    <article class="card compliance-card dashboard-compliance">
 
       <div class="card-header">
         <div>
@@ -233,51 +230,45 @@
         <strong>{{ totalTurnosProgramados }}</strong>
       </div>
 
-      <div class="compliance-bars">
+      <!-- BARRAS VERTICALES DE CUMPLIMIENTO -->
+      <div class="compliance-columns">
 
-        <div class="compliance-item">
-          <div class="compliance-label">
-            <span>Finalizados con éxito</span>
-            <strong>{{ turnosFinalizados }}</strong>
-          </div>
-
-          <div class="progress-track">
-            <div class="progress-fill" [style.width.%]="porcentajeTurnosFinalizados">
+        <div class="compliance-column">
+          <div class="compliance-column-value">{{ porcentajeTurnosFinalizados | number:'1.0-0' }}%</div>
+          <div class="compliance-column-track">
+            <div class="compliance-column-fill completed" [style.height.%]="porcentajeTurnosFinalizados">
             </div>
           </div>
+          <strong class="compliance-column-count">{{ turnosFinalizados }}</strong>
+          <span class="compliance-column-label">Finalizados</span>
         </div>
 
-        <div class="compliance-item">
-          <div class="compliance-label">
-            <span>Asignados y en curso</span>
-            <strong>{{ turnosEnCurso }}</strong>
-          </div>
-
-          <div class="progress-track">
-            <div class="progress-fill progress-blue" [style.width.%]="porcentajeTurnosEnCurso">
+        <div class="compliance-column">
+          <div class="compliance-column-value">{{ porcentajeTurnosEnCurso | number:'1.0-0' }}%</div>
+          <div class="compliance-column-track">
+            <div class="compliance-column-fill in-progress" [style.height.%]="porcentajeTurnosEnCurso">
             </div>
           </div>
+          <strong class="compliance-column-count">{{ turnosEnCurso }}</strong>
+          <span class="compliance-column-label">Asignados y<br>en curso</span>
         </div>
 
-        <div class="compliance-item">
-          <div class="compliance-label">
-            <span>Pendientes de cierre</span>
-            <strong>{{ turnosPendientesCierre }}</strong>
-          </div>
-
-          <div class="progress-track">
-            <div class="progress-fill progress-warning" [style.width.%]="porcentajeTurnosPendientes">
+        <div class="compliance-column">
+          <div class="compliance-column-value">{{ porcentajeTurnosPendientes | number:'1.0-0' }}%</div>
+          <div class="compliance-column-track">
+            <div class="compliance-column-fill pending" [style.height.%]="porcentajeTurnosPendientes">
             </div>
           </div>
+          <strong class="compliance-column-count">{{ turnosPendientesCierre }}</strong>
+          <span class="compliance-column-label">Pendientes<br>de cierre</span>
         </div>
 
       </div>
 
     </article>
 
-
-    <!-- 4. ESTADO GENERAL DE SALUD -->
-    <article class="card health-card">
+    <!-- BLOQUE CENTRAL INFERIOR -->
+    <article class="card health-card dashboard-health">
 
       <div class="card-header">
         <div>
@@ -319,9 +310,8 @@
 
     </article>
 
-
-    <!-- 5. CÁMARAS Y EVENTOS IA -->
-    <article class="card events-card">
+    <!-- BLOQUE INFERIOR IZQUIERDO -->
+    <article class="card events-card dashboard-events">
 
       <div class="card-header">
         <div>
@@ -337,16 +327,12 @@
       <div class="events-summary">
 
         <div class="events-chart">
-
-          <div class="events-donut" [style.background]="eventosRiesgoGradient">
-
-            <div class="events-donut-center">
-              <strong>{{ totalEventosIa }}</strong>
-              <span>EVENTOS</span>
-            </div>
-
+          <div class="events-pie" [style.background]="'conic-gradient(#d65b61 0deg ' +
+                 (eventosRiesgoAlto * 360 / (eventosRiesgoAlto + eventosRiesgoMedio || 1)) +
+                 'deg, #3B5BDB ' +
+                 (eventosRiesgoAlto * 360 / (eventosRiesgoAlto + eventosRiesgoMedio || 1)) +
+                 'deg 360deg)'">
           </div>
-
         </div>
 
         <div class="events-legend">
@@ -363,10 +349,9 @@
             <strong>{{ eventosRiesgoMedio }}</strong>
           </div>
 
-          <div class="event-legend-item">
-            <span class="legend-dot low-risk"></span>
-            <span>Riesgo bajo</span>
-            <strong>{{ eventosRiesgoBajo }}</strong>
+          <div class="events-total">
+            <span>Total de eventos</span>
+            <strong>{{ totalEventosIa }}</strong>
           </div>
 
         </div>
@@ -383,9 +368,8 @@
 
     </article>
 
-
-    <!-- 6. ASIGNACIONES DE CUIDADORES -->
-    <article class="card assignments-card">
+    <!-- BLOQUE INFERIOR DERECHO -->
+    <article class="card assignments-card dashboard-assignments">
 
       <div class="card-header">
         <div>

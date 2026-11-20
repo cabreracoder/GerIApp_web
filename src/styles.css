@@ -5,21 +5,21 @@
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
+   box-sizing: border-box;
 }
 
 html,
 body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  min-height: 100%;
+   margin: 0;
+   padding: 0;
+   width: 100%;
+   min-height: 100%;
 }
 
 body {
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: var(--font-family-base);
+   background: var(--bg-primary);
+   color: var(--text-primary);
+   font-family: var(--font-family-base);
 }
 
 
@@ -29,11 +29,12 @@ body {
 
 :root {
 
-  /* =======================================================
+   /* =======================================================
      COLORES
   ======================================================= */
 
-  --bg-primary: #F8FAFC;   /*  BLANCO (#F8FAFC) se usa este color como fondo principal de la aplicación.
+   --bg-primary: #F8FAFC;
+   /*  BLANCO (#F8FAFC) se usa este color como fondo principal de la aplicación.
     utiliza para:
      - Fondo del Body
      - Fondo de todas las pantallas
@@ -42,8 +43,9 @@ body {
      - Fondo de tablas
      - Fondo de tarjetas cuando se requiera mas contraste */
 
-  
-  --bg-surface: #FFFFFF; /* BLANCO (#FFFFFF) Blanco de superficie para crear contraste sobre el fondo principal.
+
+   --bg-surface: #FFFFFF;
+   /* BLANCO (#FFFFFF) Blanco de superficie para crear contraste sobre el fondo principal.
 
     utilizar principalmente en:
      - Cards
@@ -53,8 +55,9 @@ body {
      - Header
      - Barra inferior de navegacipon */
 
-  
-  --bg-neutral-light: #E9ECEF; /* GRIS CLARO (#E9ECEF) color de soporte para elementos secundarios de la interfaz.
+
+   --bg-neutral-light: #E9ECEF;
+   /* GRIS CLARO (#E9ECEF) color de soporte para elementos secundarios de la interfaz.
 
     utilizar para:
      - Tarjetas (Cards)
@@ -74,8 +77,9 @@ body {
   */
 
 
-  
-  --color-primary: #3B5BDB; /* AZUL PRINCIPAL (#3B5BDB) Es el color de mayor importancia de toda la aplicacion. Representa las ACCIONES PRINCIPALES.
+
+   --color-primary: #3B5BDB;
+   /* AZUL PRINCIPAL (#3B5BDB) Es el color de mayor importancia de toda la aplicacion. Representa las ACCIONES PRINCIPALES.
 
     utilizar para:
      - Botón Iniciar sesión
@@ -99,8 +103,9 @@ body {
      - Iconos principales
      - Acciones importantes de la aplicación */
 
-  
-  --color-primary-hover: #324EC7; /* AZUL PRINCIPAL OSCURO (#324EC7) Variante del azul principal utilizada cuando el usuario interactúa con un elemento.
+
+   --color-primary-hover: #324EC7;
+   /* AZUL PRINCIPAL OSCURO (#324EC7) Variante del azul principal utilizada cuando el usuario interactúa con un elemento.
 
      Principalmente se utiliza para:
      - Hover de botones principales
@@ -111,8 +116,9 @@ body {
      seleccionado o sobre el que se encuentra el cursor */
 
 
- 
-  --color-secondary: #4DABF7;  /* AZUL SECUNDARIO (#4DABF7) Se utiliza para destacar información sin quitar protagonismo al azul principal.
+
+   --color-secondary: #4DABF7;
+   /* AZUL SECUNDARIO (#4DABF7) Se utiliza para destacar información sin quitar protagonismo al azul principal.
 
     utilizar para:
      - Botones secundarios
@@ -130,16 +136,18 @@ body {
 
      Su función principal es destacar información secundaria o informativa */
 
-  
-  --color-secondary-hover: #3B99E0; /* AZUL SECUNDARIO OSCURO (#3B99E0) Variante del azul secundario utilizada para estados interactivos.
+
+   --color-secondary-hover: #3B99E0;
+   /* AZUL SECUNDARIO OSCURO (#3B99E0) Variante del azul secundario utilizada para estados interactivos.
     Principalmente se utiliza para:
      - Hover de botones secundarios
      - Hover de links
      - Estados interactivos del azul secundario */
 
 
-  
-  --color-accent-beige: #F5E8D5; /* BEIGE (#F5E8D5) Color utilizado para representar estados tranquilos, estables o completados.
+
+   --color-accent-beige: #F5E8D5;
+   /* BEIGE (#F5E8D5) Color utilizado para representar estados tranquilos, estables o completados.
 
     utilizar para:
      - Paciente estable
@@ -159,8 +167,9 @@ body {
      estres visual */
 
 
-  
-  --border-color: #E9ECEF; /* GRIS CLARO (#E9ECEF) Color utilizado para los bordes de la aplicacion
+
+   --border-color: #E9ECEF;
+   /* GRIS CLARO (#E9ECEF) Color utilizado para los bordes de la aplicacion
 
     utilizar para:
      - Bordes de Cards
@@ -174,9 +183,10 @@ body {
      colores demasiado fuertes */
 
 
-  /* COLOR DEL SISTEMA */ 
+   /* COLOR DEL SISTEMA */
 
-  --text-primary: #212529; /* TEXTO PRINCIPAL (#212529) No forma parte de la paleta principal.
+   --text-primary: #212529;
+   /* TEXTO PRINCIPAL (#212529) No forma parte de la paleta principal.
 
     utilizar para:
      - Titulos
@@ -189,8 +199,9 @@ body {
      Es un color oscuro utilizado para mantener una buena
      legibilidad sin utilizar negro puro */
 
-  
-  --text-secondary: #6C757D; /* TEXTO SECUNDARIO (#6C757D)
+
+   --text-secondary: #6C757D;
+   /* TEXTO SECUNDARIO (#6C757D)
 
     utilizar para:
      - Descripciones
@@ -204,8 +215,9 @@ body {
      principal y la informacion menos importante */
 
 
-  
-  --color-danger: #DC3545; /* ERROR (#DC3545) Se utiliza para representar situaciones criticas,
+
+   --color-danger: #DC3545;
+   /* ERROR (#DC3545) Se utiliza para representar situaciones criticas,
      errores o acciones destructivas
 
     utilizar para:
@@ -216,8 +228,9 @@ body {
      - Alertas graves
      - Situaciones de peligro */
 
-  
-  --color-warning: #F59E0B; /* ADVERTENCIA (#F59E0B) Se utiliza para situaciones que requieren atencion,
+
+   --color-warning: #F59E0B;
+   /* ADVERTENCIA (#F59E0B) Se utiliza para situaciones que requieren atencion,
      pero que no representan necesariamente un error grave
 
     utilizar para:
@@ -230,12 +243,13 @@ body {
 
 
 
-  /* =======================================================
+   /* =======================================================
      TIPOGRAFÍA
   ======================================================= */
 
-  
-  --font-family-base: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;   /* FUENTE PRINCIPAL: Inter es la fuente utilizada para el texto general de GerIApp
+
+   --font-family-base: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+   /* FUENTE PRINCIPAL: Inter es la fuente utilizada para el texto general de GerIApp
 
     utilizar en:
      - Formularios
@@ -249,8 +263,9 @@ body {
      Las fuentes posteriores funcionan como respaldo si
      Inter no está disponible en el dispositivo */
 
-  
-  --font-heading-family: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; /* FUENTE PARA TÍTULOS: Manrope se utiliza principalmente para títulos y encabezados de la aplicacion
+
+   --font-heading-family: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+   /* FUENTE PARA TÍTULOS: Manrope se utiliza principalmente para títulos y encabezados de la aplicacion
 
     utilizar para:
      - Títulos principales
@@ -258,28 +273,32 @@ body {
      - Títulos de Cards
      - Encabezados de secciones */
 
- 
-  --font-weight-regular: 400;  /*PESO REGULAR 400 representa texto normal.
+
+   --font-weight-regular: 400;
+   /*PESO REGULAR 400 representa texto normal.
      
     Se utiliza principalmente para:
      - Texto general
      - Descripciones
      - Información secundaria */
 
-  
-  --font-weight-medium: 500; /* PESO MEDIUM 500 representa un texto ligeramente mas destacado
+
+   --font-weight-medium: 500;
+   /* PESO MEDIUM 500 representa un texto ligeramente mas destacado
      que el texto normal */
 
-  
-  --font-weight-semibold: 600; /* PESO SEMIBOLD 600 representa un texto con mayor énfasis.
+
+   --font-weight-semibold: 600;
+   /* PESO SEMIBOLD 600 representa un texto con mayor énfasis.
     Se puede utilizar para:
      - Nombres
      - Subtítulos
      - Etiquetas
      - Encabezados secundarios */
 
-  
-  --font-weight-bold: 700; /* PESO BOLD 700 representa texto en negrita.
+
+   --font-weight-bold: 700;
+   /* PESO BOLD 700 representa texto en negrita.
 
     utilizar principalmente para:
      - Títulos
@@ -288,35 +307,42 @@ body {
 
 
 
-  /* =======================================================
+   /* =======================================================
      TAMAÑOS DE TEXTO
   ======================================================= */
 
-  
-  --font-size-h1: 2rem; /*TAMAÑO H1 Tamaño utilizado para los títulos principales de las páginas */
 
-  
-  --font-size-h2: 1.5rem; /* TAMAÑO H2 Tamaño utilizado para títulos secundarios y encabezados importantes */
-
-  
-  --font-size-h3: 1.25rem;/* TAMAÑO H3 Tamaño utilizado para títulos de secciones y tarjetas */
+   --font-size-h1: 2rem;
+   /*TAMAÑO H1 Tamaño utilizado para los títulos principales de las páginas */
 
 
-  --font-size-h4: 1.125rem; /* TAMAÑO H4 Tamaño utilizado para subtítulos y encabezados de menor jerarquía */
+   --font-size-h2: 1.5rem;
+   /* TAMAÑO H2 Tamaño utilizado para títulos secundarios y encabezados importantes */
 
-  
-  --font-size-body: 1rem; /* TAMAÑO DEL TEXTO NORMAL Tamaño utilizado para el contenido general de la aplicación */
 
-  
-  --font-size-sm: 0.875rem; /* TAMAÑO DE TEXTO PEQUEÑO
+   --font-size-h3: 1.25rem;
+   /* TAMAÑO H3 Tamaño utilizado para títulos de secciones y tarjetas */
+
+
+   --font-size-h4: 1.125rem;
+   /* TAMAÑO H4 Tamaño utilizado para subtítulos y encabezados de menor jerarquía */
+
+
+   --font-size-body: 1rem;
+   /* TAMAÑO DEL TEXTO NORMAL Tamaño utilizado para el contenido general de la aplicación */
+
+
+   --font-size-sm: 0.875rem;
+   /* TAMAÑO DE TEXTO PEQUEÑO
      utilizar para:
      - Fechas
      - Información secundaria
      - Etiquetas
      - Texto complementario */
 
-  
-  --font-size-xs: 0.75rem; /* TAMAÑO EXTRA PEQUEÑO Se utiliza para información que necesita ocupar poco espacio.
+
+   --font-size-xs: 0.75rem;
+   /* TAMAÑO EXTRA PEQUEÑO Se utiliza para información que necesita ocupar poco espacio.
      Ejemplos:
      - Pequeñas etiquetas
      - Información auxiliar
@@ -324,84 +350,100 @@ body {
 
 
 
-  /* =======================================================
+   /* =======================================================
      ESPACIADOS
   ======================================================= */
 
-  --spacing-2xs: 0.25rem; /* ESPACIADO EXTRA PEQUEÑO 0.25rem = 4px aproximadamente. Se utiliza para pequeñas separaciones entre elementos */
+   --spacing-2xs: 0.25rem;
+   /* ESPACIADO EXTRA PEQUEÑO 0.25rem = 4px aproximadamente. Se utiliza para pequeñas separaciones entre elementos */
 
-  
-  --spacing-xs: 0.5rem; /* ESPACIADO EXTRA PEQUEÑO 0.5rem = 8px aproximadamente 
+
+   --spacing-xs: 0.5rem;
+   /* ESPACIADO EXTRA PEQUEÑO 0.5rem = 8px aproximadamente 
     utilizar para:
      - Separaciones pequeñas
      - Iconos y texto
      - Elementos internos de componentes */
 
-  
-  --spacing-sm: 0.75rem; /* ESPACIADO PEQUEÑO 0.75rem = 12px aproximadamente.
+
+   --spacing-sm: 0.75rem;
+   /* ESPACIADO PEQUEÑO 0.75rem = 12px aproximadamente.
     utilizar para:
      - Separación entre elementos
      - Padding pequeño
      - Componentes compactos */
 
-  
-  --spacing-md: 1rem; /* ESPACIADO MEDIO 1rem = 16px aproximadamente Es uno de los espacios más utilizados dentro de la aplicación */
 
- 
-  --spacing-lg: 1.5rem;  /* ESPACIADO GRANDE 1.5rem = 24px aproximadamente.
+   --spacing-md: 1rem;
+   /* ESPACIADO MEDIO 1rem = 16px aproximadamente Es uno de los espacios más utilizados dentro de la aplicación */
+
+
+   --spacing-lg: 1.5rem;
+   /* ESPACIADO GRANDE 1.5rem = 24px aproximadamente.
 
      Se utiliza principalmente para:
      - Separación entre secciones
      - Padding de Cards
      - Contenido de formularios */
 
-  
-  --spacing-xl: 2rem; /* ESPACIADO EXTRA GRANDE 2rem = 32px aproximadamente.
+
+   --spacing-xl: 2rem;
+   /* ESPACIADO EXTRA GRANDE 2rem = 32px aproximadamente.
     utilizar para:
      - Separación de grandes secciones
      - Márgenes del contenido
      - Espaciado de páginas */
 
-  
-  --spacing-2xl: 3rem; /* ESPACIADO 2XL 3rem = 48px aproximadamente Se utiliza para espacios grandes entre secciones importantes */
+
+   --spacing-2xl: 3rem;
+   /* ESPACIADO 2XL 3rem = 48px aproximadamente Se utiliza para espacios grandes entre secciones importantes */
 
 
 
-  /* =======================================================
+   /* =======================================================
      ICONOS Y LOGOS
   ======================================================= */
 
-  --logo-size-web: 160px; /* TAMAÑO DEL LOGO EN WEB */
+   --logo-size-web: 160px;
+   /* TAMAÑO DEL LOGO EN WEB */
 
-  
-  --logo-size-mobile: 120px; /* TAMAÑO DEL LOGO EN MÓVIL */
 
-  
-  --logo-icon-only: 40px; /* TAMAÑO DEL ICONO DEL LOGO Se utiliza cuando solamente se muestra el icono del logo sin el nombre completo */
+   --logo-size-mobile: 120px;
+   /* TAMAÑO DEL LOGO EN MÓVIL */
 
-  
-  --icon-size-sm: 16px; /* ICONO PEQUEÑO 16px Se utiliza para iconos pequeños dentro de:
+
+   --logo-icon-only: 40px;
+   /* TAMAÑO DEL ICONO DEL LOGO Se utiliza cuando solamente se muestra el icono del logo sin el nombre completo */
+
+
+   --icon-size-sm: 16px;
+   /* ICONO PEQUEÑO 16px Se utiliza para iconos pequeños dentro de:
      - Texto
      - Botones
      - Etiquetas
      - Campos */
 
- 
-  --icon-size-md: 24px;  /* ICONO MEDIANO 24px Tamaño estándar para la mayoría de iconos de la aplicación */
 
- 
-  --icon-size-lg: 32px;  /* ICONO GRANDE 32px Se utiliza para iconos destacados */
+   --icon-size-md: 24px;
+   /* ICONO MEDIANO 24px Tamaño estándar para la mayoría de iconos de la aplicación */
 
-  
-  --icon-size-xl: 48px; /* ICONO EXTRA GRANDE 48px Se utiliza para iconos principales o destacados */
 
-  /* =======================================================
+   --icon-size-lg: 32px;
+   /* ICONO GRANDE 32px Se utiliza para iconos destacados */
+
+
+   --icon-size-xl: 48px;
+   /* ICONO EXTRA GRANDE 48px Se utiliza para iconos principales o destacados */
+
+   /* =======================================================
      BORDES
   ======================================================= */
 
-  --radius-sm: 4px; /* RADIO PEQUEÑO 4px Para elementos con un redondeado discreto */
+   --radius-sm: 4px;
+   /* RADIO PEQUEÑO 4px Para elementos con un redondeado discreto */
 
-  --radius-md: 8px; /* RADIO MEDIO
+   --radius-md: 8px;
+   /* RADIO MEDIO
      utiliza normalmente en:
      - Inputs
      - Botones
@@ -409,14 +451,16 @@ body {
      - Cards pequeñas */
 
 
-  --radius-lg: 16px; /* RADIO GRANDE
+   --radius-lg: 16px;
+   /* RADIO GRANDE
     Se utiliza principalmente en:
      - Cards
      - Modales
      - Contenedores destacados */
 
-  
-  --radius-full: 9999px; /* RADIO COMPLETO
+
+   --radius-full: 9999px;
+   /* RADIO COMPLETO
     Se utiliza para crear elementos completamente redondeados.
      Ejemplos:
      - Chips
@@ -427,23 +471,26 @@ body {
 
 
 
-  /* =======================================================
+   /* =======================================================
      SOMBRAS
   ======================================================= */
 
-  
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05); /* SOMBRA PEQUEÑA muy ligera Se utiliza para elementos que necesitan una separación visual mínima del fondo */
 
- 
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.10);  /* SOMBRA MEDIANA utilizada para dar profundidad a elementos
+   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+   /* SOMBRA PEQUEÑA muy ligera Se utiliza para elementos que necesitan una separación visual mínima del fondo */
+
+
+   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.10);
+   /* SOMBRA MEDIANA utilizada para dar profundidad a elementos
      como:
      - Cards
      - Header
      - Contenedores
      - Menús */
 
- 
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.10);  /* SOMBRA GRANDE utilizada para elementos que deben destacar sobre el resto de la interfaz.
+
+   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.10);
+   /* SOMBRA GRANDE utilizada para elementos que deben destacar sobre el resto de la interfaz.
     Ejemplos:
      - Modales
      - Elementos flotantes
@@ -451,81 +498,93 @@ body {
 
 
 
-  /* =======================================================
+   /* =======================================================
      LAYOUT WEB
   ======================================================= */
 
-  
-  --web-sidebar-width: 84px; /* ANCHO DEL SIDEBAR WEB El Sidebar de la versión web tendrá un ancho de 84px El Sidebar utiliza el AZUL PRINCIPAL (#3B5BDB) */
 
-  
-  --web-sidebar-gap: 16px; /* SEPARACIÓN DEL SIDEBAr Define una separación de 16px alrededor del Sidebar */
+   --web-sidebar-width: 84px;
+   /* ANCHO DEL SIDEBAR WEB El Sidebar de la versión web tendrá un ancho de 84px El Sidebar utiliza el AZUL PRINCIPAL (#3B5BDB) */
 
- 
-  --web-header-height: 70px;  /* ALTURA DEL HEADER WEB El Header de la versión web tendrá una altura de 70px El Header utiliza fondo BLANCO (#FFFFFF) */
 
-  
-  --web-content-offset:
-    calc(
-      var(--web-sidebar-width) +
-      (var(--web-sidebar-gap) * 2)
-    ); /* DESPLAZAMIENTO DEL CONTENIDO WEB Esta variable es MUY importante.
+   --web-sidebar-gap: 16px;
+   /* SEPARACIÓN DEL SIDEBAr Define una separación de 16px alrededor del Sidebar */
+
+
+   --web-header-height: 70px;
+   /* ALTURA DEL HEADER WEB El Header de la versión web tendrá una altura de 70px El Header utiliza fondo BLANCO (#FFFFFF) */
+
+
+   --web-content-offset:
+      calc(var(--web-sidebar-width) + (var(--web-sidebar-gap) * 2));
+   /* DESPLAZAMIENTO DEL CONTENIDO WEB Esta variable es MUY importante.
      Define exactamente cuánto espacio ocupa: Sidebar + separación
      De esta manera, el contenido principal no queda debajo del Sidebar.
      Actualmente: Sidebar = 84px Gap = 16px
      Resultado: 84px + (16px × 2) = 116px
      Todos los componentes deben utilizar esta variable cuando necesiten calcular la posición del contenido respecto al Sidebar */
 
-  
-  --web-content-padding-x: 32px; /* PADDING HORIZONTAL DEL CONTENIDO WEB Define 32px de separación a izquierda y derecha del contenido principal */
 
-  
-  --web-content-padding-top: 32px; /* PADDING SUPERIOR DEL CONTENIDO WEB Define 32px de espacio superior para el contenido */
-
-  
-  --web-content-padding-bottom: 48px; /* PADDING INFERIOR DEL CONTENIDO WEB Define 48px de espacio inferior para el contenido */
+   --web-content-padding-x: 32px;
+   /* PADDING HORIZONTAL DEL CONTENIDO WEB Define 32px de separación a izquierda y derecha del contenido principal */
 
 
-  /* =======================================================
+   --web-content-padding-top: 32px;
+   /* PADDING SUPERIOR DEL CONTENIDO WEB Define 32px de espacio superior para el contenido */
+
+
+   --web-content-padding-bottom: 48px;
+   /* PADDING INFERIOR DEL CONTENIDO WEB Define 48px de espacio inferior para el contenido */
+
+
+   /* =======================================================
      SIDEBAR
   ======================================================= */
 
- 
-  --web-sidebar-bg: var(--color-primary);  /* FONDO DEL SIDEBAR Utiliza directamente el COLOR PRINCIPAL #3B5BDB Según la distribución de la versión Web: Sidebar → Azul principal Por eso se referencia:
+
+   --web-sidebar-bg: var(--color-primary);
+   /* FONDO DEL SIDEBAR Utiliza directamente el COLOR PRINCIPAL #3B5BDB Según la distribución de la versión Web: Sidebar → Azul principal Por eso se referencia:
      var(--color-primary) De esta manera, si cambia el color principal, el Sidebar también se actualiza automáticamente */
 
 
 
-  /* =======================================================
+   /* =======================================================
      HEADER
   ======================================================= */
 
-  
-  --web-header-bg: var(--bg-surface); /* FONDO DEL HEADER Utiliza el color de superficie: #FFFFFF Header → Blanco */
- 
+
+   --web-header-bg: var(--bg-surface);
+   /* FONDO DEL HEADER Utiliza el color de superficie: #FFFFFF Header → Blanco */
 
 
-  /* =======================================================
+
+   /* =======================================================
      MÓVIL
   ======================================================= */
 
- 
-  --mobile-appbar-height: 56px;  /* ALTURA DEL APPBAR MÓVIL La barra superior de la aplicación móvil tendra una altura de 56px */
 
-  
-  --mobile-appbar-bg: var(--color-primary); /* FONDO DEL APPBAR MÓVIL Utiliza el COLOR PRINCIPAL: #3B5BDB Barra superior → Azul principal */
+   --mobile-appbar-height: 56px;
+   /* ALTURA DEL APPBAR MÓVIL La barra superior de la aplicación móvil tendra una altura de 56px */
 
-  
-  --mobile-bottom-nav-height: 64px; /* ALTURA DE LA BARRA INFERIOR MÓVIL La barra inferior de navegación tendrá una altura de 64px */
 
-  
-  --mobile-bottom-nav-bg: var(--bg-surface); /* FONDO DE LA BARRA INFERIOR MÓVIL Utiliza BLANCO: #FFFFFF barra inferior → Blanco El icono activo de esta barra debe utilizar el AZUL PRINCIPAL (#3B5BDB) */
+   --mobile-appbar-bg: var(--color-primary);
+   /* FONDO DEL APPBAR MÓVIL Utiliza el COLOR PRINCIPAL: #3B5BDB Barra superior → Azul principal */
 
-  
-  --mobile-fab-size: 56px; /* TAMAÑO DEL FAB = Floating Action Button El botón flotante tendrá un tamaño de 56px */
 
-  
-  --mobile-fab-bg: var(--color-primary); /* FONDO DEL FAB Utiliza el COLOR PRINCIPAL: #3B5BDB Botón flotante → Azul principal */
+   --mobile-bottom-nav-height: 64px;
+   /* ALTURA DE LA BARRA INFERIOR MÓVIL La barra inferior de navegación tendrá una altura de 64px */
+
+
+   --mobile-bottom-nav-bg: var(--bg-surface);
+   /* FONDO DE LA BARRA INFERIOR MÓVIL Utiliza BLANCO: #FFFFFF barra inferior → Blanco El icono activo de esta barra debe utilizar el AZUL PRINCIPAL (#3B5BDB) */
+
+
+   --mobile-fab-size: 56px;
+   /* TAMAÑO DEL FAB = Floating Action Button El botón flotante tendrá un tamaño de 56px */
+
+
+   --mobile-fab-bg: var(--color-primary);
+   /* FONDO DEL FAB Utiliza el COLOR PRINCIPAL: #3B5BDB Botón flotante → Azul principal */
 }
 
 
@@ -545,29 +604,29 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-heading-family);
-  color: var(--text-primary);
-  margin: 0;
+   font-family: var(--font-heading-family);
+   color: var(--text-primary);
+   margin: 0;
 }
 
 h1 {
-  font-size: var(--font-size-h1);
-  font-weight: var(--font-weight-bold);
+   font-size: var(--font-size-h1);
+   font-weight: var(--font-weight-bold);
 }
 
 h2 {
-  font-size: var(--font-size-h2);
-  font-weight: var(--font-weight-bold);
+   font-size: var(--font-size-h2);
+   font-weight: var(--font-weight-bold);
 }
 
 h3 {
-  font-size: var(--font-size-h3);
-  font-weight: var(--font-weight-semibold);
+   font-size: var(--font-size-h3);
+   font-weight: var(--font-weight-semibold);
 }
 
 h4 {
-  font-size: var(--font-size-h4);
-  font-weight: var(--font-weight-semibold);
+   font-size: var(--font-size-h4);
+   font-weight: var(--font-weight-semibold);
 }
 
 /* =========================================================
@@ -575,12 +634,10 @@ h4 {
 ========================================================= */
 
 .pagina {
-  width: 100%;
-  min-height: 100%;
-  padding:
-    var(--web-content-padding-top)
-    var(--web-content-padding-x)
-    var(--web-content-padding-bottom);
+   width: 100%;
+   min-height: 100%;
+   padding:
+      var(--web-content-padding-top) var(--web-content-padding-x) var(--web-content-padding-bottom);
 }
 
 /* =========================================================
@@ -588,9 +645,603 @@ h4 {
 ========================================================= */
 
 .tarjeta {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  padding: var(--spacing-md);
+   background: var(--bg-surface);
+   border: 1px solid var(--border-color);
+   border-radius: var(--radius-lg);
+   box-shadow: var(--shadow-sm);
+   padding: var(--spacing-md);
+}
+
+/* =====================================================
+   GERIAPP - SWEETALERT2
+   DISEÑO INSTITUCIONAL DEFINITIVO
+===================================================== */
+
+.geri-swal-popup {
+   width: min(560px, calc(100vw - 30px)) !important;
+   padding: 0 !important;
+   overflow: hidden !important;
+   border: 2px solid var(--color-secondary) !important;
+   border-radius: 27px !important;
+   background: #ffffff !important;
+   box-shadow: 0 12px 30px rgba(16, 44, 107, .20) !important;
+}
+
+.geri-swal-html {
+   margin: 0 !important;
+   padding: 0 !important;
+   overflow: hidden !important;
+}
+
+/* ==========================================
+   FONDO GENERAL
+========================================== */
+
+/* ==========================================
+   GERIAPP - ONDA ORIGINAL DE LA REFERENCIA
+========================================== */
+
+.geri-alerta {
+   position: relative;
+   min-height: 265px;
+   overflow: hidden;
+   background: #FFFFFF;
+   text-align: center;
+}
+
+/* FONDO CELESTE CON ONDA ORGÁNICA */
+
+.geri-alerta__onda {
+   position: absolute;
+   top: 0;
+   left: 0;
+
+   width: 100%;
+   height: 125px;
+
+   z-index: 0;
+
+   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 700 125' preserveAspectRatio='none'%3E%3Cpath d='M0 0 H700 V80 C610 80 585 65 525 43 C465 22 420 18 350 18 C280 18 235 22 175 43 C115 65 90 80 0 80 Z' fill='%23D9EEFF'/%3E%3C/svg%3E");
+
+   background-repeat: no-repeat;
+   background-position: top center;
+   background-size: 100% 100%;
+
+   pointer-events: none;
+}
+
+/* ELIMINAR DIFUMINADOS ANTERIORES */
+
+.geri-alerta__onda::after {
+   content: none !important;
+}
+
+/* CONTENIDO Y LOGO POR ENCIMA */
+
+.geri-alerta__contenido {
+   position: relative;
+   z-index: 2;
+}
+
+.geri-alerta__logo {
+   position: relative;
+   z-index: 3;
+}
+
+/* ==========================================
+   CONTENIDO
+========================================== */
+
+.geri-alerta__contenido {
+   position: relative;
+   z-index: 2;
+
+   display: flex;
+   min-height: 265px;
+
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+
+   padding: 12px 25px 8px;
+}
+
+/* ==========================================
+   LOGO
+========================================== */
+
+.geri-alerta__logo {
+   position: relative;
+   z-index: 3;
+
+   display: block;
+
+   width: 125px;
+   height: 88px;
+
+   object-fit: contain;
+
+   margin: 0 auto 8px;
+}
+
+/* ==========================================
+   TÍTULO
+========================================== */
+.geri-alerta__titulo {
+   margin: 8px 0 10px;
+   color: #4059e8;
+   font-family: var(--font-heading-family);
+   font-size: 30px;
+   font-weight: 800 !important;
+   line-height: 1.2;
+   letter-spacing: -0.4px;
+}
+
+/* ==========================================
+   MENSAJE
+========================================== */
+
+.geri-alerta__mensaje {
+   margin: 0;
+
+   color: var(--text-secondary);
+
+   font-family: var(--font-family-base);
+   font-size: 17px;
+   font-weight: 500;
+
+   line-height: 1.4;
+}
+
+/* ==========================================
+   CHULITO DE ÉXITO
+========================================== */
+
+.geri-alerta__check {
+   display: flex;
+
+   width: 48px;
+   height: 48px;
+
+   align-items: center;
+   justify-content: center;
+
+   margin: 2px auto 5px;
+
+   border-radius: 50%;
+
+   background: #E4F5E8;
+   color: #218838;
+
+   font-size: 34px;
+   font-weight: 800;
+}
+
+/* ==========================================
+   BOTONES
+========================================== */
+
+.geri-swal-actions {
+   display: flex !important;
+
+   width: 100% !important;
+
+   gap: 14px !important;
+
+   margin: 0 !important;
+   padding: 8px 28px 22px !important;
+}
+
+
+.geri-swal-btn {
+   justify-content: center !important;
+   align-items: center !important;
+   min-width: 0 !important;
+   min-height: 54px !important;
+   flex: 1 !important;
+   border-radius: 35px !important;
+   padding: 12px 20px !important;
+   font-size: 17px !important;
+   font-weight: 700 !important;
+   cursor: pointer !important;
+   opacity: 1 !important;
+}
+
+.geri-swal-btn:hover {
+   transform: translateY(-2px);
+   box-shadow: var(--shadow-md) !important;
+}
+
+/* CANCELAR */
+
+.geri-swal-btn--cancelar {
+   background: #FFFFFF !important;
+   color: var(--color-secondary) !important;
+   border: 2px solid var(--color-secondary) !important;
+}
+
+/* AZUL PRINCIPAL */
+
+.geri-swal-btn--azul {
+   background: var(--color-primary) !important;
+   color: #FFFFFF !important;
+   border: 2px solid var(--color-primary) !important;
+}
+
+/* ROJO INSTITUCIONAL */
+
+.geri-swal-btn--rojo {
+   background: var(--color-danger) !important;
+   color: #FFFFFF !important;
+   border: 2px solid var(--color-danger) !important;
+}
+
+/* VERDE DE ÉXITO */
+
+.geri-swal-btn--verde {
+   background: #218838 !important;
+   color: #FFFFFF !important;
+   border: 2px solid #218838 !important;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 520px) {
+
+   .geri-swal-popup {
+      width: calc(100vw - 24px) !important;
+   }
+
+   .geri-alerta__contenido {
+      padding: 12px 15px 8px;
+   }
+
+   .geri-alerta__logo {
+      width: 115px;
+      height: 82px;
+   }
+
+   .geri-alerta__titulo {
+      font-size: 22px;
+   }
+
+   .geri-alerta__mensaje {
+      font-size: 15px;
+   }
+
+   .geri-swal-actions {
+      gap: 9px !important;
+      padding: 8px 14px 18px !important;
+   }
+
+   .geri-swal-btn {
+      min-height: 45px !important;
+      padding: 10px !important;
+      font-size: 15px !important;
+   }
+}
+
+/* ==========================================
+   BOTONES DE ALERTAS GERIAPP
+========================================== */
+
+.geri-swal-actions {
+   display: flex !important;
+   justify-content: center !important;
+   align-items: center !important;
+   gap: 14px !important;
+   width: 100% !important;
+   padding: 20px 35px 28px !important;
+   margin: 0 !important;
+}
+
+.geri-swal-btn {
+   display: inline-flex !important;
+   justify-content: center !important;
+   align-items: center !important;
+   min-width: 0 !important;
+   min-height: 54px !important;
+   flex: 1 !important;
+   border-radius: 35px !important;
+   padding: 12px 20px !important;
+   font-size: 17px !important;
+   font-weight: 700 !important;
+   cursor: pointer !important;
+   opacity: 1 !important;
+}
+
+.geri-swal-btn--cancelar {
+   background: #ffffff !important;
+   color: #168fd5 !important;
+   border: 2px solid #168fd5 !important;
+}
+
+.geri-swal-btn--azul {
+   background: #405be5 !important;
+   color: #ffffff !important;
+   border: 2px solid #405be5 !important;
+}
+
+.geri-swal-btn--rojo {
+   background: #dc2929 !important;
+   color: #ffffff !important;
+   border: 2px solid #dc2929 !important;
+}
+
+.geri-swal-btn--verde {
+   background: #269b38 !important;
+   color: #ffffff !important;
+   border: 2px solid #269b38 !important;
+}
+
+.geri-swal-btn--ambar {
+   background: #405be5 !important;
+   color: #ffffff !important;
+   border: 2px solid #405be5 !important;
+}
+
+.geri-swal-btn:hover {
+   filter: brightness(0.95);
+}
+
+
+/* =========================================================
+   CORRECCIÓN: BOTONES SWEETALERT2 GERIAPP
+   Evita que el botón Cancelar oculto ocupe espacio
+========================================================= */
+
+/* SweetAlert2 oculta el botón mediante display:none.
+   Esta regla evita que display:inline-flex !important
+   de .geri-swal-btn vuelva a mostrarlo. */
+.geri-swal-actions .geri-swal-btn.swal2-cancel[style*="display: none"] {
+   display: none !important;
+}
+
+/* Cuando solo existe Aceptar, mantenerlo centrado
+   y con un ancho equilibrado. */
+.geri-swal-actions:has(.swal2-cancel[style*="display: none"]) {
+   justify-content: center !important;
+}
+
+.geri-swal-actions:has(.swal2-cancel[style*="display: none"]) .swal2-confirm {
+   flex: 0 1 48% !important;
+   max-width: 320px !important;
+}
+
+/* Cuando existen dos botones, conservar la distribución original. */
+.geri-swal-actions .geri-swal-btn.swal2-cancel:not([style*="display: none"]) {
+   display: inline-flex !important;
+}
+
+/* =========================================================
+   AJUSTE FINAL SWEETALERT2 GERIAPP
+   Modal compacto, sin onda y botones estilo formulario
+========================================================= */
+
+/* Ventana más pequeña */
+.swal2-popup.geri-swal-popup {
+   width: min(480px, calc(100vw - 32px)) !important;
+   max-width: 480px !important;
+   padding: 0 !important;
+   border-radius: 16px !important;
+}
+
+/* Eliminar por completo la decoración ondulada */
+.geri-alerta__onda {
+   display: none !important;
+}
+
+/* Reducir el espacio vertical del contenido */
+.geri-alerta,
+.geri-alerta__contenido {
+   min-height: 0 !important;
+   height: auto !important;
+}
+
+.geri-alerta {
+   padding: 18px 22px 4px !important;
+}
+
+.geri-alerta__contenido {
+   display: flex !important;
+   align-items: center !important;
+   justify-content: center !important;
+   padding: 0 !important;
+}
+
+/* Logo más discreto */
+.geri-alerta__logo {
+   width: 88px !important;
+   height: 62px !important;
+   margin: 0 auto 8px !important;
+}
+
+/* Título y mensaje compactos */
+.geri-alerta__titulo {
+   margin: 3px 0 7px !important;
+   font-size: 23px !important;
+   line-height: 1.2 !important;
+}
+
+.geri-alerta__mensaje {
+   font-size: 15px !important;
+   line-height: 1.4 !important;
+}
+
+/* Icono de éxito más pequeño */
+.geri-alerta__check {
+   width: 42px !important;
+   height: 42px !important;
+   margin: 0 auto 5px !important;
+   font-size: 29px !important;
+}
+
+/* Acciones con las mismas proporciones de los formularios */
+.swal2-actions.geri-swal-actions {
+   display: flex !important;
+   justify-content: center !important;
+   align-items: center !important;
+   gap: 10px !important;
+   margin: 0 !important;
+   padding: 12px 22px 20px !important;
+}
+
+/* Botones rectangulares con esquinas suaves, no tipo píldora */
+.geri-swal-actions .geri-swal-btn {
+   display: inline-flex !important;
+   align-items: center !important;
+   justify-content: center !important;
+   min-width: 0 !important;
+   min-height: 44px !important;
+   flex: 1 1 0 !important;
+   padding: 0 16px !important;
+   border: 1px solid transparent !important;
+   border-radius: 9px !important;
+   font-family: var(--font-family-base) !important;
+   font-size: 15px !important;
+   font-weight: 700 !important;
+   line-height: 1.2 !important;
+   box-shadow: none !important;
+   transform: none !important;
+}
+
+/* Confirmar / activar: azul institucional */
+.geri-swal-actions .geri-swal-btn--azul,
+.geri-swal-actions .geri-swal-btn--ambar {
+   background: #405be5 !important;
+   color: #ffffff !important;
+   border-color: #405be5 !important;
+}
+
+/* Cancelar: rojo */
+.geri-swal-actions .geri-swal-btn--cancelar {
+   background: #dc2929 !important;
+   color: #ffffff !important;
+   border-color: #dc2929 !important;
+}
+
+/* Botones de otros tonos conservan su significado */
+.geri-swal-actions .geri-swal-btn--rojo {
+   background: #dc2929 !important;
+   color: #ffffff !important;
+   border-color: #dc2929 !important;
+}
+
+.geri-swal-actions .geri-swal-btn--verde {
+   background: #405be5 !important;
+   color: #ffffff !important;
+   border-color: #405be5 !important;
+}
+
+.geri-swal-actions .geri-swal-btn:hover {
+   filter: brightness(0.94) !important;
+   box-shadow: none !important;
+   transform: none !important;
+}
+
+/* Una sola acción (por ejemplo, Aceptar): azul y centrada */
+.swal2-actions.geri-swal-actions:has(.swal2-cancel[style*="display: none"]) .swal2-confirm,
+.swal2-actions.geri-swal-actions:not(:has(.swal2-cancel)) .swal2-confirm {
+   flex: 0 1 220px !important;
+   width: 100% !important;
+   max-width: 220px !important;
+}
+
+/* Ajuste para móviles */
+@media (max-width: 520px) {
+   .swal2-popup.geri-swal-popup {
+      width: calc(100vw - 28px) !important;
+   }
+
+   .geri-alerta {
+      padding: 16px 14px 3px !important;
+   }
+
+   .geri-alerta__logo {
+      width: 78px !important;
+      height: 56px !important;
+   }
+
+   .geri-alerta__titulo {
+      font-size: 20px !important;
+   }
+
+   .geri-alerta__mensaje {
+      font-size: 14px !important;
+   }
+
+   .swal2-actions.geri-swal-actions {
+      gap: 8px !important;
+      padding: 10px 14px 16px !important;
+   }
+
+   .geri-swal-actions .geri-swal-btn {
+      min-height: 42px !important;
+      padding: 0 10px !important;
+      font-size: 14px !important;
+   }
+}
+
+/* CANCELAR: BLANCO CON BORDE ROJO */
+.swal2-actions .swal2-cancel {
+   background: #ffffff !important;
+   color: #dc2626 !important;
+   border: 1px solid #dc2626 !important;
+   border-radius: 10px !important;
+   font-weight: 700 !important;
+}
+
+/* HOVER CANCELAR */
+.swal2-actions .swal2-cancel:hover {
+   background: #fef2f2 !important;
+}
+
+/* DESACTIVAR / ACTIVAR: AZUL Y NEGRITA */
+.swal2-actions .swal2-confirm {
+   background: #4059e8 !important;
+   color: #ffffff !important;
+   border: 1px solid #4059e8 !important;
+   border-radius: 10px !important;
+   font-weight: 700 !important;
+}
+
+/* HOVER CONFIRMAR */
+.swal2-actions .swal2-confirm:hover {
+   background: #344bd1 !important;
+}
+
+/* ==========================================
+   TIPOGRAFÍA DEFINITIVA - ALERTAS GERIAPP
+========================================== */
+
+/* SOLO LOS TÍTULOS */
+body .swal2-container .geri-alerta__titulo {
+   font-family: var(--font-heading-family);
+   font-size: 23px !important;
+   font-weight: 900 !important;
+   color: #212529 !important;
+   line-height: 1.2 !important;
+   letter-spacing: -0.4px !important;
+   -webkit-text-stroke: 0.45px currentColor !important;
+}
+
+/* MENSAJES: TEXTO NORMAL */
+body .swal2-container .geri-alerta__mensaje {
+   font-family: var(--font-family-base) !important;
+   font-size: 15px !important;
+   font-weight: 400 !important;
+   -webkit-text-stroke: 0 !important;
+}
+
+/* TÍTULOS EN MÓVIL */
+@media (max-width: 520px) {
+   body .swal2-container .geri-alerta__titulo {
+      font-size: 20px !important;
+   }
+
+   body .swal2-container .geri-alerta__mensaje {
+      font-size: 14px !important;
+   }
 }

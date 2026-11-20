@@ -1913,3 +1913,17 @@ textarea.campo-entrada {
     height: 42px;
   }
 }
+
+/* TÍTULO DE LAS ALERTAS */
+.swal2-container .geri-alerta__titulo {
+  font-family: var(--font-heading-family) !important;
+  font-weight: 700 !important;
+  color: #3B5BDB !important;
+  -webkit-text-stroke: 0 !important;
+}
+
+/* MENSAJE DE LAS ALERTAS: SIN NEGRITA */
+.swal2-container .geri-alerta__mensaje {
+  font-family: var(--font-family-base) !important;
+  font-weight: 400 !important;
+}
