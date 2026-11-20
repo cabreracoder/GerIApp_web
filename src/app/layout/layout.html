@@ -3,7 +3,10 @@
   <!-- =====================================================
        BARRA LATERAL
        ===================================================== -->
-  <aside class="layout-sidebar">
+  <aside
+    class="layout-sidebar"
+    [class.layout-sidebar-superadmin]="esSuperadministrador()"
+  >
 
     <!-- LOGOTIPO -->
     <div class="layout-logo-container">
@@ -17,18 +20,26 @@
 
       <ng-container *ngFor="let item of opcionesMenu">
 
-        <a [routerLink]="item.ruta" [fragment]="item.fragment || null" routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: !item.fragment }" class="layout-menu-button" [attr.title]="item.nombre"
-          [attr.aria-label]="item.nombre">
 
-          <span class="material-symbols-outlined">
+        <a
+          [routerLink]="item.ruta"
+          [fragment]="item.fragment || null"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: !item.fragment }"
+          class="layout-menu-button"
+          [class.layout-menu-superadmin]="esSuperadministrador()"
+          [attr.data-cy]="esSuperadministrador() ? 'superadmin-nav-' + item.fragment : null"
+          [attr.title]="item.nombre"
+          [attr.aria-label]="item.nombre"
+          >
+        
+          <span class="material-symbols-outlined menu-icon">
             {{ item.icono }}
           </span>
 
           <span class="layout-menu-tooltip">
             {{ item.nombre }}
           </span>
-
         </a>
 
       </ng-container>

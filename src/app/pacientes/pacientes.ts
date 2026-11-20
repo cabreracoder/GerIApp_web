@@ -358,6 +358,9 @@ export class Pacientes {
   camas: Cama[] = [];
   habitacionesActivas: Habitacion[] = [];
   camasActivas: Cama[] = [];
+
+  // Sede correspondiente al usuario autenticado
+private idSedeUsuario: number | null = null;
   // =====================================================
   // MODALES
   // =====================================================
@@ -383,6 +386,7 @@ export class Pacientes {
   // =====================================================
   ngOnInit(): void {
     this.listar();
+    this.cargarSedeUsuario();
     this.cargarSedes();
     this.cargarHabitaciones();
     this.cargarCamas();
@@ -402,7 +406,7 @@ export class Pacientes {
           );
 
           if (!this.editar) {
-            this.asignarSedeCentro();
+            this.asignarSedeUsuario();
           } else {
             this.actualizarHabitacionesPorSede();
           }
@@ -421,29 +425,128 @@ export class Pacientes {
         }
       });
   }
-  asignarSedeCentro(): void {
+  // =====================================================
+// CARGAR SEDE DEL ADMINISTRADOR AUTENTICADO
+// =====================================================
 
-    const sedeCentro = this.sedesActivas.find(
-      sede => ['centro', 'sede centro'].includes(
-        sede.nombre.trim().toLowerCase()
-      )
-    );
+cargarSedeUsuario(): void {
 
-    if (!sedeCentro) {
-      this.form.idSede = '';
-      this.form.sede = '';
-      this.habitacionesActivas = [];
-      this.camasActivas = [];
+  const usuarioGuardado = localStorage.getItem('usuario');
 
-      console.error('No se encontró una sede Centro activa.');
-      return;
+  if (!usuarioGuardado) {
+    console.error('No se encontró el usuario autenticado.');
+    return;
+  }
+
+  let usuarioSesion: any;
+
+  try {
+    usuarioSesion = JSON.parse(usuarioGuardado);
+  } catch (error) {
+    console.error('No fue posible leer el usuario:', error);
+    return;
+  }
+
+  const idUsuario = Number(usuarioSesion?.id_usuario);
+
+  if (!idUsuario) {
+    console.error('No se encontró el ID del usuario autenticado.');
+    return;
+  }
+
+  // Consultar el usuario directamente en el backend.
+  this.http.get<any>(
+    `${this.apiUrl}/usuarios/${idUsuario}/`
+  ).subscribe({
+
+    next: (usuario) => {
+
+      const sedeRelacionada = usuario.id_sede;
+
+      const idSede =
+        typeof sedeRelacionada === 'object' && sedeRelacionada !== null
+          ? sedeRelacionada.id_sede
+          : sedeRelacionada;
+
+      if (!idSede) {
+
+        this.idSedeUsuario = null;
+        this.form.idSede = '';
+        this.form.sede = '';
+
+        this.habitacionesActivas = [];
+        this.camasActivas = [];
+
+        console.error('El usuario no tiene una sede asignada.');
+
+        this.cdr.detectChanges();
+        return;
+      }
+
+      this.idSedeUsuario = Number(idSede);
+
+      console.log(
+        'ID SEDE DEL ADMINISTRADOR:',
+        this.idSedeUsuario
+      );
+
+      // Si las sedes ya fueron cargadas, asignarla.
+      this.asignarSedeUsuario();
+
+      this.cdr.detectChanges();
+    },
+
+    error: (error) => {
+
+      console.error(
+        'Error al consultar la sede del administrador:',
+        error
+      );
+
     }
 
-    this.form.idSede = String(sedeCentro.id_sede);
-    this.form.sede = sedeCentro.nombre;
+  });
+}
 
-    this.actualizarHabitacionesPorSede();
+
+// =====================================================
+// ASIGNAR SEDE DEL USUARIO AL FORMULARIO
+// =====================================================
+
+asignarSedeUsuario(): void {
+
+  if (!this.idSedeUsuario || this.editar) {
+    return;
   }
+
+  const sedeUsuario = this.sedesActivas.find(
+    sede => Number(sede.id_sede) === this.idSedeUsuario
+  );
+
+  if (!sedeUsuario) {
+
+    this.form.idSede = '';
+    this.form.sede = '';
+
+    this.habitacionesActivas = [];
+    this.camasActivas = [];
+
+    console.error(
+      'La sede del administrador no está disponible o está inactiva.'
+    );
+
+    return;
+  }
+
+  this.form.idSede = String(sedeUsuario.id_sede);
+  this.form.sede = sedeUsuario.nombre;
+
+  console.log('SEDE ASIGNADA:', sedeUsuario.nombre);
+
+  this.actualizarHabitacionesPorSede();
+
+  this.cdr.detectChanges();
+}
   // =====================================================
   // FORMULARIO VACÍO
   // =====================================================
@@ -848,7 +951,7 @@ export class Pacientes {
     this.modalOpen = true;
 
     if (this.sedesActivas.length > 0) {
-      this.asignarSedeCentro();
+      this.asignarSedeUsuario();
     }
   }
 

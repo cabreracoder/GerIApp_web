@@ -2,359 +2,186 @@
 <div class="superadmin-container">
 
   <!-- =====================================================
-       VISTA PRINCIPAL
+       VISTA PRINCIPAL: DASHBOARD
        ===================================================== -->
-
   <section *ngIf="vistaActiva === 'resumen'" class="dashboard-view">
 
-    <!-- BANNER INSTITUCIONAL: CONSERVAR IDENTIDAD -->
+    <!-- BANNER INSTITUCIONAL -->
     <section class="welcome-banner">
-
       <div class="welcome-image">
-        <img
-          src="/loginLogo.png"
-          alt="Adultos mayores de GeriApp"
-        />
+        <img src="/loginLogo.png" alt="Adultos mayores de GeriApp" />
       </div>
-
       <div class="welcome-content">
-        <span class="welcome-eyebrow">GeriApp</span>
-
-        <h1>¡Hola! Superadministrador</h1>
-
-        <h2>GeriApp</h2>
-
-        <p>
-          Gestión eficiente,<br />
-          para un mejor cuidado
-        </p>
-
-        <span class="welcome-decoration"></span>
+        <span class="welcome-eyebrow">GERIAPP · PANEL INSTITUCIONAL</span>
+        <h1>¡Hola, Súper Administrador!</h1>
+        <p>Consulta el estado general de la fundación, sus sedes y usuarios.</p>
       </div>
-
-    </section>
-
-
-    <!-- =================================================
-         SEDES
-         ================================================= -->
-
-    <section class="dashboard-section">
-
-      <div class="section-heading">
-        <div>
-          <span class="section-eyebrow">NUESTRA INSTITUCIÓN</span>
-          <h2>Nuestras sedes</h2>
+      <div class="period-filter">
+        <div class="period-label">
+          <span class="material-symbols-outlined">calendar_month</span>
+          <div><strong>Periodo de análisis</strong><span>Selecciona un rango de fechas</span></div>
         </div>
-
-        <button
-          class="text-link"
-          type="button"
-          (click)="cambiarVista('sedes')"
-        >
-          Gestionar sedes
-          <span class="material-symbols-outlined">arrow_forward</span>
+        <div class="period-field">
+          <span class="material-symbols-outlined">date_range</span>
+          <input type="date" aria-label="Fecha inicial" disabled />
+          <span class="period-separator">–</span>
+          <input type="date" aria-label="Fecha final" disabled />
+        </div>
+        <button class="primary-button search-button" type="button" disabled title="Se habilitará al conectar los filtros estadísticos">
+          <span class="material-symbols-outlined">search</span>Buscar
         </button>
       </div>
-
-
-      <div class="branches-grid">
-
-        <ng-container *ngIf="cargandoSedes">
-          <div class="loading-message">
-            Cargando sedes...
-          </div>
-        </ng-container>
-
-        <ng-container *ngIf="errorSedes">
-          <div class="empty-message">
-            No fue posible cargar las sedes.
-          </div>
-        </ng-container>
-
-        <ng-container *ngIf="!cargandoSedes && !errorSedes">
-
-          <article
-            class="branch-card"
-            *ngFor="let sede of sedes"
-          >
-
-            <div class="branch-image">
-
-              <img
-                *ngIf="sede.nombre.toLowerCase().includes('centro')"
-                src="/sede-centro.png"
-                [alt]="'Fotografía de ' + sede.nombre"
-              />
-
-              <img
-                *ngIf="sede.nombre.toLowerCase().includes('campestre')"
-                src="/sede-campestre.png"
-                [alt]="'Fotografía de ' + sede.nombre"
-              />
-
-              <img
-                *ngIf="sede.nombre.toLowerCase().includes('norte')"
-                src="/sede-norte.png"
-                [alt]="'Fotografía de ' + sede.nombre"
-              />
-
-              <div
-                class="branch-image-fallback"
-                *ngIf="
-                  !sede.nombre.toLowerCase().includes('centro') &&
-                  !sede.nombre.toLowerCase().includes('campestre') &&
-                  !sede.nombre.toLowerCase().includes('norte')
-                "
-              >
-                <span class="material-symbols-outlined">
-                  apartment
-                </span>
-              </div>
-
-            </div>
-
-            <div class="branch-content">
-
-              <div class="branch-label">
-                <span class="material-symbols-outlined">
-                  apartment
-                </span>
-                SEDE INSTITUCIONAL
-              </div>
-
-              <div class="branch-information">
-                <h3>{{ sede.nombre }}</h3>
-
-                <p>
-                  <span class="material-symbols-outlined">
-                    location_on
-                  </span>
-                  {{ sede.direccion || 'Dirección no registrada' }}
-                </p>
-              </div>
-
-              <span
-                class="status-indicator"
-                [class.status-inactive]="!esActivo(sede.estado)"
-              >
-                {{ esActivo(sede.estado) ? 'Activa' : 'Inactiva' }}
-              </span>
-
-            </div>
-
-          </article>
-
-          <div
-            class="empty-message"
-            *ngIf="sedes.length === 0"
-          >
-            No hay sedes registradas.
-          </div>
-
-        </ng-container>
-
-      </div>
-
     </section>
 
+    <!-- DISTRIBUCIÓN DEL DASHBOARD SEGÚN LA REFERENCIA APROBADA -->
+    <section class="dashboard-grid">
 
-    <!-- =================================================
-         PANORAMA ADMINISTRATIVO
-         ================================================= -->
+      <!-- RESUMEN INSTITUCIONAL -->
+      <section class="institutional-summary area-resumen">
+        <h2 class="section-title">Resumen institucional</h2>
+        <article class="summary-card">
+          <div class="summary-kpis">
+            <div class="summary-kpi">
+              <div class="summary-icon summary-icon-blue"><span class="material-symbols-outlined">domain</span></div>
+              <div class="summary-copy">
+                <span>Sedes registradas</span>
+                <strong>{{ cargandoSedes ? '…' : sedes.length }}</strong>
+                <em class="summary-badge" *ngIf="!cargandoSedes && !errorSedes">{{ sedesActivas }} {{ sedesActivas === 1 ? 'Activa' : 'Activas' }}</em>
+              </div>
+            </div>
+            <div class="summary-divider"></div>
+            <div class="summary-kpi">
+              <div class="summary-icon summary-icon-green"><span class="material-symbols-outlined">groups</span></div>
+              <div class="summary-copy">
+                <span>Usuarios registrados</span>
+                <strong>{{ cargandoAdministradores ? '…' : usuariosDisponibles.length }}</strong>
+                <em class="summary-badge summary-badge-neutral">Total de cuentas disponibles</em>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
 
-    <section class="dashboard-section">
-
-      <div class="section-heading">
-        <div>
-          <h2>Usuarios y administradores</h2>
+      <!-- REGISTROS EN EL TIEMPO: OCUPA LA COLUMNA DERECHA -->
+      <article class="dash-card area-registros">
+        <div class="dash-card-heading">
+          <span class="material-symbols-outlined">bar_chart</span>
+          <div><h3>Registros de usuarios en el tiempo</h3><p>Evolución de los registros durante el periodo consultado.</p></div>
         </div>
-      </div>
-
-
-      <div class="analytics-grid">
-
-        <!-- GRÁFICA DE BARRAS -->
-
-        <article class="analytics-panel">
-
-          <div class="panel-heading">
-            <div>
-              <h3>Distribución de usuarios</h3>
-              <p>Composición de las cuentas registradas.</p>
-            </div>
-
-            <span class="material-symbols-outlined">
-              bar_chart
-            </span>
+        <div class="trend-chart" *ngIf="!cargandoAdministradores && !errorAdministradores && hayRegistrosEnTendencia; else estadoTendencia">
+          <svg class="trend-svg" viewBox="0 0 600 225" role="img" aria-label="Registros mensuales de usuarios">
+            <defs>
+              <linearGradient id="trendAreaGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#8b35f5" stop-opacity="0.24" />
+                <stop offset="100%" stop-color="#8b35f5" stop-opacity="0.015" />
+              </linearGradient>
+            </defs>
+            <g class="trend-grid-lines">
+              <line x1="25" y1="35" x2="575" y2="35" />
+              <line x1="25" y1="82" x2="575" y2="82" />
+              <line x1="25" y1="129" x2="575" y2="129" />
+              <line x1="25" y1="180" x2="575" y2="180" />
+            </g>
+            <polygon [attr.points]="areaTendencia" fill="url(#trendAreaGradient)" />
+            <polyline [attr.points]="puntosTendencia" class="trend-line" />
+            <g *ngFor="let punto of tendenciaRegistros">
+              <circle [attr.cx]="punto.x" [attr.cy]="punto.y" r="5.5" class="trend-point" />
+              <text [attr.x]="punto.x" y="211" text-anchor="middle" class="trend-month">{{ punto.etiqueta }}</text>
+              <text [attr.x]="punto.x" [attr.y]="punto.y - 13" text-anchor="middle" class="trend-count">{{ punto.cantidad }}</text>
+            </g>
+          </svg>
+        </div>
+        <ng-template #estadoTendencia>
+          <div class="pending-chart-state" *ngIf="cargandoAdministradores">Consultando información...</div>
+          <div class="pending-chart-state" *ngIf="errorAdministradores">No fue posible consultar los usuarios.</div>
+          <div class="pending-chart-state" *ngIf="!cargandoAdministradores && !errorAdministradores && !hayRegistrosEnTendencia">
+            <span class="material-symbols-outlined">show_chart</span>
+            <strong>Sin registros en los últimos seis meses</strong>
+            <small>La gráfica utiliza la fecha real de ingreso de cada usuario.</small>
           </div>
+        </ng-template>
+      </article>
 
-          <div
-            class="chart-loading"
-            *ngIf="cargandoAdministradores"
-          >
-            Consultando información...
-          </div>
-
-          <div
-            class="chart-error"
-            *ngIf="errorAdministradores"
-          >
-            No fue posible consultar los usuarios.
-          </div>
-
-          <div
-            class="bar-chart-content"
-            *ngIf="!cargandoAdministradores && !errorAdministradores"
-          >
-
-            <div class="chart-summary">
-              <span>Usuarios registrados</span>
-              <strong>{{ usuariosDisponibles.length }}</strong>
-            </div>
-
-            <div class="bar-group">
-
-              <div class="bar-description">
-                <span>Usuarios</span>
-                <strong>{{ usuariosDisponibles.length }}</strong>
+      <!-- ACTIVOS E INACTIVOS POR SEDE -->
+      <article class="dash-card area-activos">
+        <div class="dash-card-heading">
+          <span class="material-symbols-outlined">groups</span>
+          <div><h3>Usuarios activos e inactivos por sede</h3><p>Comparación del estado de las cuentas por sede.</p></div>
+        </div>
+        <div class="activity-chart" *ngIf="!cargandoSedes && !cargandoAdministradores && !errorSedes && !errorAdministradores && estadisticasUsuariosPorSede.length > 0; else estadoActividad">
+          <div class="activity-y-labels"><span> {{ maximoUsuariosPorSede }} </span><span>{{ (maximoUsuariosPorSede / 2) | number:'1.0-0' }}</span><span>0</span></div>
+          <div class="activity-bars">
+            <div class="activity-group" *ngFor="let item of estadisticasUsuariosPorSede">
+              <div class="activity-bar-pair">
+                <div class="activity-bar active-bar" [style.height.%]="maximoUsuariosPorSede ? (item.activos / maximoUsuariosPorSede) * 100 : 0" [attr.title]="'Activos: ' + item.activos"><span>{{ item.activos }}</span></div>
+                <div class="activity-bar inactive-bar" [style.height.%]="maximoUsuariosPorSede ? (item.inactivos / maximoUsuariosPorSede) * 100 : 0" [attr.title]="'Inactivos: ' + item.inactivos"><span>{{ item.inactivos }}</span></div>
               </div>
-
-              <div class="bar-track">
-                <div
-                  class="bar-fill bar-users"
-                  [style.width.%]="usuariosDisponibles.length > 0 ? 100 : 0"
-                ></div>
-              </div>
-
+              <span class="activity-sede-label">{{ item.sede.nombre }}</span>
             </div>
+          </div>
+        </div>
+        <ng-template #estadoActividad>
+          <div class="pending-chart-state" *ngIf="cargandoSedes || cargandoAdministradores">Consultando información...</div>
+          <div class="pending-chart-state" *ngIf="errorSedes || errorAdministradores">No fue posible consultar la información.</div>
+          <div class="pending-chart-state" *ngIf="!cargandoSedes && !cargandoAdministradores && !errorSedes && !errorAdministradores">No hay sedes o usuarios para comparar.</div>
+        </ng-template>
+        <div class="chart-legend"><span><i class="legend-active"></i>Activos</span><span><i class="legend-inactive"></i>Inactivos</span></div>
+      </article>
 
-            <div class="bar-group">
-
-              <div class="bar-description">
-                <span>Administradores</span>
-                <strong>{{ administradores.length }}</strong>
-              </div>
-
-              <div class="bar-track">
-                <div
-                  class="bar-fill bar-admins"
-                  [style.width.%]="
-                    usuariosDisponibles.length > 0
-                      ? (administradores.length / usuariosDisponibles.length) * 100
-                      : 0
-                  "
-                ></div>
-              </div>
-
+      <!-- USUARIOS POR ROL -->
+      <article class="dash-card area-roles">
+        <div class="dash-card-heading">
+          <span class="material-symbols-outlined">groups</span>
+          <div><h3>Usuarios por rol</h3><p>Composición de las cuentas según su tipo de usuario.</p></div>
+        </div>
+        <div class="roles-content" *ngIf="!cargandoAdministradores && !errorAdministradores; else estadoRoles">
+          <div class="donut-chart" [style.background]="gradienteRoles">
+            <div class="donut-center"><strong>{{ totalUsuariosOperativos }}</strong><span>Usuarios</span></div>
+          </div>
+          <div class="roles-legend">
+            <div *ngFor="let rol of usuariosPorRol">
+              <i class="role-dot" [style.background]="rol.color"></i>
+              <span>{{ rol.nombre }} ({{ rol.porcentaje | number:'1.0-0' }}%)</span>
+              <strong>{{ rol.cantidad }}</strong>
             </div>
-
-            <div class="chart-legend">
-              <span>
-                <i class="legend-users"></i>
-                Usuarios
-              </span>
-
-              <span>
-                <i class="legend-admins"></i>
-                Administradores
-              </span>
-            </div>
-
+            <div *ngIf="usuariosPorRol.length === 0" class="roles-empty">No hay roles operativos registrados.</div>
           </div>
+        </div>
+        <ng-template #estadoRoles>
+          <div class="chart-loading" *ngIf="cargandoAdministradores">Consultando información...</div>
+          <div class="chart-error" *ngIf="errorAdministradores">No fue posible consultar los usuarios.</div>
+        </ng-template>
+      </article>
 
-        </article>
-
-
-        <!-- GRÁFICA DE PARTICIPACIÓN -->
-
-        <article class="analytics-panel">
-
-          <div class="panel-heading">
-            <div>
-              <h3>Participación administrativa</h3>
-              <p>Proporción de administradores frente a usuarios.</p>
-            </div>
-
-            <span class="material-symbols-outlined">
-              donut_small
-            </span>
-          </div>
-
-          <div
-            class="chart-loading"
-            *ngIf="cargandoAdministradores"
-          >
-            Consultando información...
-          </div>
-
-          <div
-            class="chart-error"
-            *ngIf="errorAdministradores"
-          >
-            No fue posible consultar los usuarios.
-          </div>
-
-          <div
-            class="donut-chart-content"
-            *ngIf="!cargandoAdministradores && !errorAdministradores"
-          >
-
-            <div
-              class="donut-chart"
-              [style.background]="
-                'conic-gradient(#329b96 0 ' +
-                (usuariosDisponibles.length > 0
-                  ? (administradores.length / usuariosDisponibles.length) * 100
-                  : 0) +
-                '%, #e8edf5 0)'
-              "
-            >
-              <div class="donut-center">
-                <strong>
-                  {{
-                    usuariosDisponibles.length > 0
-                      ? ((administradores.length / usuariosDisponibles.length) * 100).toFixed(1)
-                      : '0.0'
-                  }}%
-                </strong>
-                <span>Administradores</span>
+      <!-- ADMINISTRADORES POR SEDE -->
+      <article class="dash-card area-admins">
+        <div class="dash-card-heading">
+          <span class="material-symbols-outlined">admin_panel_settings</span>
+          <div><h3>Administradores por sede</h3><p>Distribución de administradores asignados a cada sede.</p></div>
+        </div>
+        <div class="chart-loading" *ngIf="cargandoSedes || cargandoAdministradores">Consultando información...</div>
+        <div class="chart-error" *ngIf="errorSedes || errorAdministradores">No fue posible consultar la información.</div>
+        <div class="lollipop-chart" *ngIf="!cargandoSedes && !cargandoAdministradores && !errorSedes && !errorAdministradores">
+          <div class="lollipop-item" *ngFor="let sede of sedes">
+            <div class="lollipop-plot">
+              <div class="lollipop-stem" [style.height.%]="maximoAdministradoresPorSede > 0 ? (administradoresDeSede(sede) / maximoAdministradoresPorSede) * 100 : 0">
+                <span class="lollipop-value">{{ administradoresDeSede(sede) }}</span><i class="lollipop-dot"></i>
               </div>
             </div>
-
-            <div class="donut-legend">
-
-              <div>
-                <i class="legend-admins"></i>
-                <span>Administradores</span>
-                <strong>{{ administradores.length }}</strong>
-              </div>
-
-              <div>
-                <i class="legend-users"></i>
-                <span>Otros usuarios</span>
-                <strong>
-                  {{ usuariosDisponibles.length - administradores.length }}
-                </strong>
-              </div>
-
-            </div>
-
+            <span class="lollipop-label">{{ sede.nombre }}</span>
           </div>
-
-        </article>
-
-      </div>
+          <div class="empty-message" *ngIf="sedes.length === 0">No hay sedes registradas.</div>
+        </div>
+      </article>
 
     </section>
-
   </section>
 
 
   <!-- =====================================================
        VISTA DE SEDES
+       CONSERVADA
        ===================================================== -->
-
   <section
     *ngIf="vistaActiva === 'sedes'"
     class="management-view"
@@ -363,9 +190,15 @@
     <div class="management-heading">
 
       <div>
-        <span class="section-eyebrow">GESTIÓN INSTITUCIONAL</span>
-        <h1>Sedes</h1>
-        <p>Consulta y administra las sedes de la institución.</p>
+        <span class="section-eyebrow">
+          GESTIÓN DE SUPERADMINISTRADOR
+        </span>
+
+        <h1>Gestión de Sedes</h1>
+
+        <p>
+          Consulta y administra las sedes de la institución.
+        </p>
       </div>
 
       <button
@@ -378,7 +211,6 @@
       </button>
 
     </div>
-
 
     <div class="management-grid">
 
@@ -412,6 +244,7 @@
         <div class="management-branch-content">
 
           <div class="branch-title-row">
+
             <h3>{{ sede.nombre }}</h3>
 
             <span
@@ -420,10 +253,14 @@
             >
               {{ esActivo(sede.estado) ? 'Activa' : 'Inactiva' }}
             </span>
+
           </div>
 
           <p>
-            <span class="material-symbols-outlined">location_on</span>
+            <span class="material-symbols-outlined">
+              location_on
+            </span>
+
             {{ sede.direccion || 'Dirección no registrada' }}
           </p>
 
@@ -459,8 +296,8 @@
 
   <!-- =====================================================
        VISTA DE ADMINISTRADORES
+       CONSERVADA
        ===================================================== -->
-
   <section
     *ngIf="vistaActiva === 'administradores'"
     class="management-view"
@@ -469,9 +306,15 @@
     <div class="management-heading">
 
       <div>
-        <span class="section-eyebrow">GESTIÓN DE CUENTAS</span>
-        <h1>Administradores</h1>
-        <p>Consulta y administra las cuentas con rol de administrador.</p>
+        <span class="section-eyebrow">
+          GESTIÓN DE SUPERADMINISTRADOR
+        </span>
+
+        <h1>Gestión de Administradores</h1>
+
+        <p>
+          Consulta y administra las cuentas con rol de administrador.
+        </p>
       </div>
 
       <div class="management-actions">
@@ -499,162 +342,247 @@
     </div>
 
 
-    <div
-      class="table-container"
-      *ngIf="!cargandoAdministradores && !errorAdministradores"
+    <!-- TABLA DE ADMINISTRADORES -->
+    <section
+      class="tarjeta-tabla"
+      aria-label="Listado de administradores"
     >
 
-      <table class="admin-table">
+      <div class="contenedor-tabla">
 
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Administrador</th>
-            <th>Correo electrónico</th>
-            <th>Sede</th>
-            <th>Teléfono</th>
-            <th>Rol</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
+        <table class="admin-table">
 
-        <tbody>
+          <thead>
+            <tr>
+              <th>Administrador</th>
+              <th>Sede</th>
+              <th>Teléfono</th>
+              <th>Rol</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
 
-          <tr *ngFor="let administrador of administradores">
+          <tbody>
 
-            <td>{{ administrador.id_usuario }}</td>
+            <tr *ngIf="cargandoAdministradores">
+              <td colspan="6" class="fila-mensaje-tabla">
+                Cargando administradores...
+              </td>
+            </tr>
 
-            <td>
-              <div class="admin-identity">
-                <div class="admin-avatar">
-                  {{
-                    (administrador.nombres || '').charAt(0).toUpperCase()
-                  }}{{
-                    (administrador.apellidos || '').charAt(0).toUpperCase()
-                  }}
+            <tr
+              *ngIf="
+                !cargandoAdministradores &&
+                errorAdministradores
+              "
+            >
+              <td
+                colspan="6"
+                class="fila-mensaje-tabla error-tabla"
+              >
+                No fue posible cargar los administradores.
+                Vuelve a ingresar a esta sección para intentar nuevamente.
+              </td>
+            </tr>
+
+            <tr
+              *ngFor="let administrador of administradores"
+              [hidden]="
+                cargandoAdministradores ||
+                errorAdministradores
+              "
+            >
+
+              <td>
+
+                <div class="celda-encargado">
+
+                  <div class="avatar-tabla">
+
+                    <ng-container
+                      *ngIf="
+                        administrador.foto;
+                        else inicialesAdministrador
+                      "
+                    >
+                      <img
+                        [src]="administrador.foto"
+                        [alt]="
+                          'Foto de ' +
+                          administrador.nombres +
+                          ' ' +
+                          administrador.apellidos
+                        "
+                      />
+                    </ng-container>
+
+                    <ng-template #inicialesAdministrador>
+                      {{
+                        (administrador.nombres || '')
+                          .charAt(0).toUpperCase()
+                      }}{{
+                        (administrador.apellidos || '')
+                          .charAt(0).toUpperCase()
+                      }}
+                    </ng-template>
+
+                  </div>
+
+                  <div class="informacion-tabla">
+
+                    <div class="nombre-tabla">
+                      {{ administrador.nombres }}
+                      {{ administrador.apellidos }}
+                    </div>
+
+                    <div class="correo-tabla">
+                      {{ administrador.correo }}
+                    </div>
+
+                  </div>
+
                 </div>
 
-                <strong>
-                  {{ administrador.nombres }}
-                  {{ administrador.apellidos }}
-                </strong>
-              </div>
-            </td>
+              </td>
 
-            <td>{{ administrador.correo }}</td>
+              <td>
 
-            <td>
-              <label
-                class="status-select-wrapper"
-                [attr.aria-label]="'Sede de ' + administrador.nombres"
-              >
-
-                <select
-                  class="status-select sede-select"
-                  [value]="administrador.id_sede ?? ''"
-                  [disabled]="actualizandoSedes.has(administrador.id_usuario)"
-                  (change)="cambiarSedeAdministrador(
-                    administrador,
-                    $any($event.target).value
-                  )"
+                <label
+                  class="status-select-wrapper sede-select-wrapper"
+                  [attr.aria-label]="
+                    'Sede de ' + administrador.nombres
+                  "
                 >
 
-                  <option value="" disabled>
-                    Sin sede asignada
-                  </option>
-
-                  <option
-                    *ngFor="let sede of sedes"
-                    [value]="sede.id_sede"
-                    [disabled]="!esActivo(sede.estado)"
+                  <select
+                    *ngIf="!cargandoSedes && sedes.length > 0"
+                    class="status-select sede-select"
+                    [value]="administrador.id_sede ?? ''"
+                    [disabled]="actualizandoSedes.has(administrador.id_usuario)"
+                    (change)="
+                      cambiarSedeAdministrador(
+                        administrador,
+                        $any($event.target).value
+                      )
+                    "
                   >
-                    {{ sede.nombre }}
-                    {{ !esActivo(sede.estado) ? '(Inactiva)' : '' }}
-                  </option>
+                    <option value="" disabled>
+                      Sin sede asignada
+                    </option>
 
-                </select>
+                    <option
+                      *ngFor="let sede of sedes"
+                      [value]="sede.id_sede"
+                      [disabled]="!esActivo(sede.estado)"
+                    >
+                      {{ sede.nombre }}
+                      {{ !esActivo(sede.estado) ? ' (Inactiva)' : '' }}
+                    </option>
+                  </select>
 
-                <span class="material-symbols-outlined">
-                  keyboard_arrow_down
-                </span>
+                  <span class="material-symbols-outlined">
+                    keyboard_arrow_down
+                  </span>
 
-              </label>
-            </td>
+                </label>
 
-            <td>
-              {{ administrador.telefono || 'No registrado' }}
-            </td>
+              </td>
 
-            <td>{{ nombreRol(administrador) }}</td>
+              <td class="telefono-tabla">
+                {{ administrador.telefono || 'No registrado' }}
+              </td>
 
-           <td>
-              <label
-                class="status-select-wrapper"
-                [attr.aria-label]="'Estado de ' + administrador.nombres"
-              >
-                <select
-                  class="status-select"
-                  [class.status-inactive]="!esActivo(administrador.estado)"
-                  [value]="esActivo(administrador.estado) ? 'true' : 'false'"
-                  [disabled]="actualizandoEstados.has(administrador.id_usuario)"
-                  (change)="cambiarEstadoAdministrador(
-                    administrador,
-                    $any($event.target).value
-                  )"
+              <td>
+                {{ nombreRol(administrador) }}
+              </td>
+
+              <td>
+
+                <label
+                  class="status-select-wrapper estado-select-wrapper"
+                  [attr.aria-label]="
+                    'Estado de ' + administrador.nombres
+                  "
                 >
-                  <option value="true">Activo</option>
-                  <option value="false">Inactivo</option>
-                </select>
 
-                <span class="material-symbols-outlined">
-                  keyboard_arrow_down
-                </span>
-              </label>
-            </td>
+                  <select
+                    class="status-select"
+                    [class.status-inactive]="
+                      !esActivo(administrador.estado)
+                    "
+                    [value]="
+                      esActivo(administrador.estado)
+                        ? 'true'
+                        : 'false'
+                    "
+                    [disabled]="
+                      actualizandoEstados.has(
+                        administrador.id_usuario
+                      )
+                    "
+                    (change)="
+                      cambiarEstadoAdministrador(
+                        administrador,
+                        $any($event.target).value
+                      )
+                    "
+                  >
 
-            <td>
-              <div class="table-actions">
+                    <option value="true">Activo</option>
+                    <option value="false">Inactivo</option>
 
-                <button
-                  class="icon-text-button"
-                  type="button"
-                  (click)="editarAdministrador(administrador)"
-                >
-                  <span class="material-symbols-outlined">edit</span>
-                  Editar
-                </button>
-              </div>
-            </td>
+                  </select>
 
-          </tr>
+                  <span class="material-symbols-outlined">
+                    keyboard_arrow_down
+                  </span>
 
-        </tbody>
+                </label>
 
-      </table>
+              </td>
 
-      <div
-        class="empty-message"
-        *ngIf="administradores.length === 0"
-      >
-        No hay administradores registrados.
+              <td>
+
+                <div class="botones-acciones">
+
+                  <button
+                    class="boton-accion"
+                    type="button"
+                    title="Editar administrador"
+                    aria-label="Editar administrador"
+                    (click)="editarAdministrador(administrador)"
+                  >
+                    <span class="material-symbols-outlined">
+                      edit
+                    </span>
+                  </button>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+            <tr
+              *ngIf="
+                !cargandoAdministradores &&
+                !errorAdministradores &&
+                administradores.length === 0
+              "
+            >
+              <td colspan="6" class="fila-mensaje-tabla">
+                No hay administradores registrados.
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
       </div>
 
-    </div>
-
-    <div
-      class="loading-message"
-      *ngIf="cargandoAdministradores"
-    >
-      Cargando administradores...
-    </div>
-
-    <div
-      class="empty-message"
-      *ngIf="errorAdministradores"
-    >
-      No fue posible cargar los administradores.
-    </div>
+    </section>
 
   </section>
 

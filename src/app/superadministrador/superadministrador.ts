@@ -34,6 +34,8 @@ interface Usuario {
   estado: boolean | number | string;
   tipo_documento?: string;
   numero_documento?: string;
+  fecha_ingreso?: string | null;
+  foto?: string | null;
 }
 
 type VistaSuperadministrador =
@@ -355,6 +357,10 @@ export class Superadministrador implements OnInit {
         this.usuariosDisponibles = listaUsuarios;
         this.roles = this.normalizarLista<Rol>(roles);
 
+        // Diagnóstico temporal: permite identificar por qué algunos usuarios
+        // aparecen como "Sin rol identificado" en la gráfica.
+        this.diagnosticarUsuariosSinRol();
+
         this.administradores = listaUsuarios
           .filter((usuario) => this.esRolAdministrador(usuario))
           .sort((a, b) =>
@@ -378,6 +384,262 @@ export class Superadministrador implements OnInit {
         this.cdr.detectChanges();
       },
     });
+  }
+
+   // ==========================================
+  // DIAGNÓSTICO TEMPORAL DE USUARIOS Y ROLES
+  // ==========================================
+
+  diagnosticarUsuariosSinRol(): void {
+    console.group('DIAGNÓSTICO GERIAPP: USUARIOS Y ROLES');
+
+    // Se muestran únicamente identificadores y datos del rol.
+    // No se imprimen nombres, correos, teléfonos ni documentos personales.
+    console.log('ROLES DEVUELTOS POR EL BACKEND');
+    console.table(
+      this.roles.map((rol: any) => ({
+        id_rol: rol?.id_rol ?? rol?.id ?? null,
+        nombre: rol?.nombre ?? rol?.nombre_rol ?? rol?.rol ?? null,
+        estructura_recibida: JSON.stringify(rol)
+      }))
+    );
+
+    const diagnostico = this.usuariosDisponibles.map((usuario: any) => {
+      const rolOriginal = usuario?.id_rol ?? null;
+      const idRol =
+        typeof rolOriginal === 'object' && rolOriginal !== null
+          ? rolOriginal.id_rol ?? rolOriginal.id ?? null
+          : rolOriginal;
+
+      const nombreRolAnidado =
+        typeof rolOriginal === 'object' && rolOriginal !== null
+          ? rolOriginal.nombre ?? rolOriginal.nombre_rol ?? rolOriginal.rol ?? null
+          : null;
+
+      const rolPorId = this.roles.find((rol: any) =>
+        idRol !== null && idRol !== undefined &&
+        Number(rol?.id_rol ?? rol?.id) === Number(idRol)
+      );
+
+      const nombreRol =
+        nombreRolAnidado ??
+        (rolPorId as any)?.nombre ??
+        (rolPorId as any)?.nombre_rol ??
+        (rolPorId as any)?.rol ??
+        null;
+
+      return {
+        id_usuario: usuario?.id_usuario ?? usuario?.id ?? null,
+        id_rol_recibido: idRol,
+        nombre_rol_recibido: nombreRol,
+        rol_encontrado_por_id: Boolean(rolPorId),
+        rol_original: typeof rolOriginal === 'object'
+          ? JSON.stringify(rolOriginal)
+          : String(rolOriginal ?? 'NULL')
+      };
+    });
+
+    console.log('USUARIOS Y RELACIÓN CON SUS ROLES');
+    console.table(diagnostico);
+
+    const sinRol = diagnostico.filter((item) =>
+      !item.rol_encontrado_por_id && !item.nombre_rol_recibido
+    );
+
+    console.log('RESUMEN DEL DIAGNÓSTICO');
+    console.table({
+      usuarios_recibidos: this.usuariosDisponibles.length,
+      roles_recibidos: this.roles.length,
+      usuarios_sin_rol_identificado: sinRol.length
+    });
+
+    if (sinRol.length > 0) {
+      console.warn('Usuarios sin relación de rol reconocible:', sinRol);
+    }
+
+    console.groupEnd();
+  }
+
+  // ==========================================
+  // ESTADÍSTICAS DEL DASHBOARD
+  // ==========================================
+
+  // Cantidad real de administradores asignados a una sede.
+  administradoresDeSede(sede: Sede): number {
+    return this.administradores.filter(
+      (administrador) =>
+        Number(administrador.id_sede) === Number(sede.id_sede)
+    ).length;
+  }
+
+  // Mayor cantidad de administradores entre las sedes.
+  get maximoAdministradoresPorSede(): number {
+    if (this.sedes.length === 0) {
+      return 0;
+    }
+
+    const cantidades = this.sedes.map(
+      (sede) => this.administradoresDeSede(sede)
+    );
+
+    return Math.max(...cantidades, 0);
+  }
+
+  // Cantidad de sedes que se encuentran activas.
+  get sedesActivas(): number {
+    return this.sedes.filter((sede) => this.esActivo(sede.estado)).length;
+  }
+
+  // Porcentaje de administradores frente al total de usuarios registrados.
+  get porcentajeAdministradores(): number {
+    if (this.usuariosDisponibles.length === 0) return 0;
+    return (this.administradores.length / this.usuariosDisponibles.length) * 100;
+  }
+
+  // Datos reales de usuarios activos e inactivos agrupados por sede.
+  get estadisticasUsuariosPorSede(): Array<{
+    sede: Sede;
+    activos: number;
+    inactivos: number;
+    total: number;
+  }> {
+    return this.sedes.map((sede) => {
+      const usuariosSede = this.usuariosDisponibles.filter(
+        (usuario) => Number(usuario.id_sede) === Number(sede.id_sede)
+      );
+      const activos = usuariosSede.filter((usuario) => this.esActivo(usuario.estado)).length;
+      const inactivos = usuariosSede.length - activos;
+      return { sede, activos, inactivos, total: usuariosSede.length };
+    });
+  }
+
+  get maximoUsuariosPorSede(): number {
+    return Math.max(...this.estadisticasUsuariosPorSede.map((item) => item.total), 0);
+  }
+
+  // Distribución de usuarios por los roles que realmente devuelve /roles/.
+  // La cuenta de Superadministrador se excluye de la distribución operativa.
+  // Si hay usuarios cuyo rol no coincide con /roles/, se muestran aparte para
+  // que la diferencia sea visible y no se atribuya a un rol inventado.
+  get usuariosPorRol(): Array<{
+    id: number;
+    nombre: string;
+    cantidad: number;
+    porcentaje: number;
+    color: string;
+  }> {
+    const colores = ['#1745e8', '#2688ed', '#70b9f4', '#f5c99e', '#9275e8', '#20a69b'];
+
+    const rolesOperativos = this.roles.filter(
+      (rol) => !this.normalizarTexto(rol.nombre).includes('superadministrador')
+    );
+
+    const total = this.totalUsuariosOperativos;
+
+    const distribucion = rolesOperativos.map((rol, indice) => {
+      const cantidad = this.usuariosDisponibles.filter((usuario) => {
+        if (this.esRolSuperadministrador(usuario)) {
+          return false;
+        }
+
+        const idRol =
+          typeof usuario.id_rol === 'object' && usuario.id_rol !== null
+            ? usuario.id_rol.id_rol
+            : usuario.id_rol;
+
+        const coincidePorId = Number(idRol) === Number(rol.id_rol);
+        const coincidePorNombre =
+          this.normalizarTexto(this.nombreRol(usuario)) ===
+          this.normalizarTexto(rol.nombre);
+
+        return coincidePorId || coincidePorNombre;
+      }).length;
+
+      return {
+        id: rol.id_rol,
+        nombre: rol.nombre,
+        cantidad,
+        porcentaje: total > 0 ? (cantidad / total) * 100 : 0,
+        color: colores[indice % colores.length],
+      };
+    });
+
+    const usuariosClasificados = distribucion.reduce(
+      (suma, rol) => suma + rol.cantidad,
+      0
+    );
+
+    const sinRolIdentificado = Math.max(0, total - usuariosClasificados);
+
+    if (sinRolIdentificado > 0) {
+      distribucion.push({
+        id: -1,
+        nombre: 'Sin rol identificado',
+        cantidad: sinRolIdentificado,
+        porcentaje: total > 0 ? (sinRolIdentificado / total) * 100 : 0,
+        color: '#20a69b',
+      });
+    }
+
+    return distribucion.filter((rol) => rol.cantidad > 0);
+  }
+
+  // Total de usuarios operativos: excluye únicamente al Superadministrador.
+  get totalUsuariosOperativos(): number {
+    return this.usuariosDisponibles.filter(
+      (usuario) => !this.esRolSuperadministrador(usuario)
+    ).length;
+  }
+
+  // Gradiente de la gráfica de dona calculado con los porcentajes anteriores.
+  get gradienteRoles(): string {
+    const datos = this.usuariosPorRol;
+
+    if (datos.length === 0) {
+      return '#e8edf5';
+    }
+
+    let acumulado = 0;
+
+    const segmentos = datos.map((rol) => {
+      const inicio = acumulado;
+      acumulado += rol.porcentaje;
+      return `${rol.color} ${inicio}% ${acumulado}%`;
+    });
+
+    return `conic-gradient(${segmentos.join(', ')})`;
+  }
+
+  // Últimos seis meses, calculados con fecha_ingreso real de cada usuario.
+  get tendenciaRegistros(): Array<{ clave: string; etiqueta: string; cantidad: number; x: number; y: number }> {
+    const hoy = new Date();
+    const meses: Array<{ clave: string; etiqueta: string; cantidad: number; x: number; y: number }> = [];
+    for (let i = 5; i >= 0; i--) {
+      const fecha = new Date(hoy.getFullYear(), hoy.getMonth() - i, 1);
+      const clave = `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}`;
+      const etiqueta = new Intl.DateTimeFormat('es-CO', { month: 'short' })
+        .format(fecha).replace('.', '');
+      const cantidad = this.usuariosDisponibles.filter((usuario) =>
+        typeof usuario.fecha_ingreso === 'string' && usuario.fecha_ingreso.slice(0, 7) === clave
+      ).length;
+      meses.push({ clave, etiqueta: etiqueta.charAt(0).toUpperCase() + etiqueta.slice(1), cantidad, x: 30 + meses.length * 108, y: 180 });
+    }
+    const maximo = Math.max(...meses.map((mes) => mes.cantidad), 1);
+    return meses.map((mes) => ({ ...mes, y: 180 - (mes.cantidad / maximo) * 145 }));
+  }
+
+  get puntosTendencia(): string {
+    return this.tendenciaRegistros.map((punto) => `${punto.x},${punto.y}`).join(' ');
+  }
+
+  get areaTendencia(): string {
+    const puntos = this.tendenciaRegistros;
+    if (puntos.length === 0) return '';
+    return `30,190 ${puntos.map((punto) => `${punto.x},${punto.y}`).join(' ')} 570,190`;
+  }
+
+  get hayRegistrosEnTendencia(): boolean {
+    return this.tendenciaRegistros.some((mes) => mes.cantidad > 0);
   }
 
   crearAdministrador(): void {
