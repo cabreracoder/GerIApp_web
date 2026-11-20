@@ -1757,3 +1757,182 @@ BARRA FINAL
     flex: 1 1 100%;
   }
 }
+
+/* =========================================================
+HISTORIA CLÍNICA PDF + RANGOS PERSONALIZADOS IA
+========================================================= */
+
+.historia-ia-bloque {
+  margin: 0 24px 24px;
+  padding: 20px;
+  border: 1px solid #e1e7ef;
+  border-radius: 12px;
+  background: #fbfcfe;
+}
+
+.historia-ia-encabezado {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.historia-ia-encabezado h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 4px;
+  color: #212529;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.historia-ia-encabezado h4 .material-symbols-outlined {
+  color: #3b5bdb;
+  font-size: 20px;
+}
+
+.historia-ia-encabezado p {
+  margin: 0;
+  color: #6c757d;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.historia-ia-controles {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.historia-ia-controles .deshabilitado {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.historia-ia-archivo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid #dbe6ff;
+  border-radius: 8px;
+  background: #f4f7ff;
+  color: #364fc7;
+  font-size: 12px;
+  font-weight: 600;
+  max-width: 100%;
+  word-break: break-all;
+}
+
+.historia-ia-archivo .material-symbols-outlined {
+  font-size: 17px;
+}
+
+.historia-ia-cargando {
+  margin-top: 14px;
+  margin-bottom: 0;
+}
+
+.historia-pdf-confirmacion {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 9px 13px;
+  border: 1px solid #c9ecd6;
+  border-radius: 10px;
+  background: #eaf8ef;
+  color: #198754;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.historia-pdf-confirmacion .material-symbols-outlined {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.historia-ia-resultados {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #e9ecef;
+}
+
+.historia-ia-resumen {
+  padding: 13px 15px;
+  margin-bottom: 14px;
+  border: 1px solid #dbe6ff;
+  border-radius: 10px;
+  background: #f4f7ff;
+}
+
+.historia-ia-resumen p {
+  margin: 6px 0 0;
+  color: #343a40;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.historia-ia-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.historia-ia-tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 13px 15px;
+  border: 1px solid #e1e7ef;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.historia-ia-tarjeta-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.historia-ia-tarjeta-cabecera .material-symbols-outlined {
+  color: #3b5bdb;
+  font-size: 17px;
+}
+
+.historia-ia-valor {
+  margin-top: 4px;
+  color: #212529;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.historia-ia-unidad {
+  color: #6c757d;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .historia-ia-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .historia-ia-bloque {
+    margin: 0 14px 16px;
+    padding: 14px;
+  }
+
+  .historia-ia-encabezado {
+    flex-direction: column;
+  }
+
+  .historia-ia-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -577,6 +577,22 @@ interface Recomendacion {
 // HISTORIA CLÍNICA
 // ============================================================
 
+interface RangosVitalesPersonalizados {
+  sistolica_min: number;
+  sistolica_max: number;
+  diastolica_min: number;
+  diastolica_max: number;
+  fc_min: number;
+  fc_max: number;
+  fr_min: number;
+  fr_max: number;
+  temp_min: number;
+  temp_max: number;
+  sat_min: number;
+  sat_max: number;
+  resumen_condicion: string;
+}
+
 interface HistoriaClinica {
 
   id_historia_clinica: number;
@@ -597,6 +613,8 @@ interface HistoriaClinica {
     id_paciente?: number;
   } |
   null;
+
+  rangos_vitales_json?: RangosVitalesPersonalizados | null;
 
 }
 
@@ -881,10 +899,15 @@ export class ElementosPaciente implements OnInit {
     alergias: '',
     observaciones: '',
     estado: true,
-    id_paciente: 0
+    id_paciente: 0,
+    rangos_vitales_json: null
   };
 
   mostrarFormularioHistoria = false;
+  archivoPdfSeleccionado: File | null = null;
+  nombrePdfSeleccionado = '';
+  subiendoPdfHistoria = false;
+  urlDocumentoPdfSubido = '';
 
   // ============================================================
   // CONSTRUCTOR
@@ -5697,7 +5720,10 @@ export class ElementosPaciente implements OnInit {
                 registro.estado ?? true,
 
               id_paciente:
-                this.idPaciente
+                this.idPaciente,
+
+              rangos_vitales_json:
+                registro.rangos_vitales_json ?? null
 
             };
 
@@ -5770,9 +5796,158 @@ export class ElementosPaciente implements OnInit {
       estado: true,
 
       id_paciente:
-        this.idPaciente
+        this.idPaciente,
+
+      rangos_vitales_json: null
 
     };
+  }
+
+  get tarjetasRangosVitales(): Array<{
+    etiqueta: string;
+    rango: string;
+    unidad: string;
+    icono: string;
+  }> {
+    const r = this.historiaClinica?.rangos_vitales_json;
+    if (!r) return [];
+
+    return [
+      {
+        etiqueta: 'Presión sistólica',
+        rango: `${r.sistolica_min} – ${r.sistolica_max}`,
+        unidad: 'mmHg',
+        icono: 'favorite'
+      },
+      {
+        etiqueta: 'Presión diastólica',
+        rango: `${r.diastolica_min} – ${r.diastolica_max}`,
+        unidad: 'mmHg',
+        icono: 'monitor_heart'
+      },
+      {
+        etiqueta: 'Frecuencia cardíaca',
+        rango: `${r.fc_min} – ${r.fc_max}`,
+        unidad: 'lpm',
+        icono: 'ecg_heart'
+      },
+      {
+        etiqueta: 'Frecuencia respiratoria',
+        rango: `${r.fr_min} – ${r.fr_max}`,
+        unidad: 'rpm',
+        icono: 'air'
+      },
+      {
+        etiqueta: 'Temperatura',
+        rango: `${r.temp_min} – ${r.temp_max}`,
+        unidad: '°C',
+        icono: 'device_thermostat'
+      },
+      {
+        etiqueta: 'Saturación de oxígeno',
+        rango: `${r.sat_min} – ${r.sat_max}`,
+        unidad: '% SpO₂',
+        icono: 'water_drop'
+      }
+    ];
+  }
+
+  seleccionarPdfHistoria(event: Event): void {
+    const input = event.target as HTMLInputElement | null;
+    const archivo = input?.files?.[0] ?? null;
+
+    if (!archivo) {
+      return;
+    }
+
+    const esPdf =
+      archivo.type === 'application/pdf' ||
+      archivo.name.toLowerCase().endsWith('.pdf');
+
+    if (!esPdf) {
+      alertaAdvertencia(
+        'Archivo no válido',
+        'Por favor selecciona un documento clínico en formato PDF (.pdf).'
+      );
+      if (input) input.value = '';
+      return;
+    }
+
+    this.archivoPdfSeleccionado = archivo;
+    this.nombrePdfSeleccionado = archivo.name;
+
+    if (input) input.value = '';
+    this.cdr.detectChanges();
+  }
+
+  subirYAnalizarPdfHistoria(): void {
+    if (!this.idPaciente || this.idPaciente <= 0) {
+      alertaAdvertencia('Paciente inválido', 'No se pudo identificar el paciente.');
+      return;
+    }
+
+    if (!this.archivoPdfSeleccionado || this.subiendoPdfHistoria) {
+      return;
+    }
+
+    const datos = new FormData();
+    datos.append('id_paciente', String(this.idPaciente));
+    datos.append(
+      'archivo',
+      this.archivoPdfSeleccionado,
+      this.archivoPdfSeleccionado.name
+    );
+    datos.append('nombre_archivo', this.archivoPdfSeleccionado.name);
+    datos.append('estado', 'true');
+
+    this.subiendoPdfHistoria = true;
+    this.cdr.detectChanges();
+
+    this.http
+      .post<any>(`${this.apiUrl}/documentos_historia_clinica/`, datos)
+      .subscribe({
+        next: (respuesta) => {
+          this.subiendoPdfHistoria = false;
+
+          if (typeof respuesta?.archivo === 'string' && respuesta.archivo) {
+            this.urlDocumentoPdfSubido = respuesta.archivo;
+          }
+
+          if (respuesta?.rangos_vitales_json) {
+            this.historiaClinica = {
+              ...this.historiaClinica,
+              rangos_vitales_json: respuesta.rangos_vitales_json
+            };
+            this.cargarHistoriaClinica();
+            alertaExito(
+              'Documento cargado',
+              'El documento PDF se subió y procesó correctamente.'
+            );
+          } else if (respuesta?.ia_error) {
+            alertaAdvertencia(
+              'Documento guardado',
+              'El documento PDF se guardó, pero no fue posible procesarlo completamente.'
+            );
+          } else {
+            alertaExito(
+              'Documento guardado',
+              'El documento PDF se subió correctamente.'
+            );
+          }
+
+          this.archivoPdfSeleccionado = null;
+          this.nombrePdfSeleccionado = '';
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          this.subiendoPdfHistoria = false;
+          this.mostrarErrorApi(
+            error,
+            'No fue posible subir el documento de historia clínica.'
+          );
+          this.cdr.detectChanges();
+        }
+      });
   }
 
 
