@@ -81,7 +81,8 @@
       search
     </span>
 
-    <input type="text" id="buscadorEncargados" placeholder="Buscar por documento o nombre..." autocomplete="off">
+    <input type="text" id="buscadorEncargados" placeholder="Buscar por documento o nombre..." autocomplete="off"
+      [(ngModel)]="busqueda" (ngModelChange)="filtrarEncargados()" />
 
     <span class="contador-resultados">
       <!-- Tu contador actual -->

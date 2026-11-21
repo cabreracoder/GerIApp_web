@@ -5003,248 +5003,40 @@ export class Encargados implements OnInit {
 
   filtrarEncargados(): void {
 
+    const normalizar = (valor: unknown): string =>
+      String(valor ?? '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
 
-
-
-
-
-
-    const termino =
-
-
-
-      this.busqueda.trim().toLowerCase();
-
-
-
-
-
-
-
-
-
-
+    const termino = normalizar(this.busqueda);
 
     if (!termino) {
-
-
-
-
-
-
-
-      this.encargadosFiltrados =
-
-
-
-        [...this.encargados];
-
-
-
-
-
-
-
-      this.paginaActual = 1;
-
-
-
-
-
-
-
-      this.actualizarPaginacion();
-
-
-
-
-
-
-
-      this.cdr.detectChanges();
-
-
-
-
-
-
-
-      return;
-
-
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-    this.encargadosFiltrados =
-
-
-
-      this.encargados.filter((encargado) => {
-
-
-
-
-
-
-
-        return (
-
-
-
-
-
-
-
-          encargado.documento
-
-
-
-            .toLowerCase()
-
-
-
-            .includes(termino)
-
-
-
-
-
-
-
-          ||
-
-
-
-
-
-
-
-          encargado.nombres
-
-
-
-            .toLowerCase()
-
-
-
-            .includes(termino)
-
-
-
-
-
-
-
-          ||
-
-
-
-
-
-
-
-          encargado.apellidos
-
-
-
-            .toLowerCase()
-
-
-
-            .includes(termino)
-
-
-
-
-
-
-
-          ||
-
-
-
-
-
-
-
-          encargado.email
-
-
-
-            .toLowerCase()
-
-
-
-            .includes(termino)
-
-
-
-
-
-
-
-          ||
-
-
-
-
-
-
-
-          encargado.telefono
-
-
-
-            .toLowerCase()
-
-
-
-            .includes(termino)
-
-
-
+      this.encargadosFiltrados = [...this.encargados];
+    } else {
+      this.encargadosFiltrados = this.encargados.filter((encargado) => {
+
+        const nombreCompleto = normalizar(
+          `${encargado.nombres ?? ''} ${encargado.apellidos ?? ''}`
         );
 
-
+        return [
+          encargado.documento,
+          encargado.tipoDocumento,
+          encargado.nombres,
+          encargado.apellidos,
+          nombreCompleto,
+          encargado.email,
+          encargado.telefono
+        ].some(valor => normalizar(valor).includes(termino));
 
       });
-
-
-
-
-
-
-
-
-
-
-
-    this.cdr.detectChanges();
-
-
+    }
 
     this.paginaActual = 1;
-
-
-
     this.actualizarPaginacion();
-
-
-
-
-
-
-
+    this.cdr.detectChanges();
   }
 
 

@@ -379,7 +379,7 @@ export class Pacientes {
   camasActivas: Cama[] = [];
 
   // Sede correspondiente al usuario autenticado
-private idSedeUsuario: number | null = null;
+  private idSedeUsuario: number | null = null;
   // =====================================================
   // MODALES
   // =====================================================
@@ -391,6 +391,11 @@ private idSedeUsuario: number | null = null;
   // FORMULARIO
   // =====================================================
   form: PatientForm = this.formularioVacio();
+
+  // Las validaciones visuales solo aparecen después de intentar guardar.
+  mostrarErroresPaciente = false;
+  mostrarErroresFamiliar = false;
+  mostrarErroresUbicacion = false;
   fotoPreview: string | null = null;
   nombreFoto: string | null = null;
   eliminarFotoPendiente = false;
@@ -445,127 +450,127 @@ private idSedeUsuario: number | null = null;
       });
   }
   // =====================================================
-// CARGAR SEDE DEL ADMINISTRADOR AUTENTICADO
-// =====================================================
+  // CARGAR SEDE DEL ADMINISTRADOR AUTENTICADO
+  // =====================================================
 
-cargarSedeUsuario(): void {
+  cargarSedeUsuario(): void {
 
-  const usuarioGuardado = localStorage.getItem('usuario');
+    const usuarioGuardado = localStorage.getItem('usuario');
 
-  if (!usuarioGuardado) {
-    console.error('No se encontró el usuario autenticado.');
-    return;
-  }
-
-  let usuarioSesion: any;
-
-  try {
-    usuarioSesion = JSON.parse(usuarioGuardado);
-  } catch (error) {
-    console.error('No fue posible leer el usuario:', error);
-    return;
-  }
-
-  const idUsuario = Number(usuarioSesion?.id_usuario);
-
-  if (!idUsuario) {
-    console.error('No se encontró el ID del usuario autenticado.');
-    return;
-  }
-
-  // Consultar el usuario directamente en el backend.
-  this.http.get<any>(
-    `${this.apiUrl}/usuarios/${idUsuario}/`
-  ).subscribe({
-
-    next: (usuario) => {
-
-      const sedeRelacionada = usuario.id_sede;
-
-      const idSede =
-        typeof sedeRelacionada === 'object' && sedeRelacionada !== null
-          ? sedeRelacionada.id_sede
-          : sedeRelacionada;
-
-      if (!idSede) {
-
-        this.idSedeUsuario = null;
-        this.form.idSede = '';
-        this.form.sede = '';
-
-        this.habitacionesActivas = [];
-        this.camasActivas = [];
-
-        console.error('El usuario no tiene una sede asignada.');
-
-        this.cdr.detectChanges();
-        return;
-      }
-
-      this.idSedeUsuario = Number(idSede);
-
-      console.log(
-        'ID SEDE DEL ADMINISTRADOR:',
-        this.idSedeUsuario
-      );
-
-      // Si las sedes ya fueron cargadas, asignarla.
-      this.asignarSedeUsuario();
-
-      this.cdr.detectChanges();
-    },
-
-    error: (error) => {
-
-      console.error(
-        'Error al consultar la sede del administrador:',
-        error
-      );
-
+    if (!usuarioGuardado) {
+      console.error('No se encontró el usuario autenticado.');
+      return;
     }
 
-  });
-}
+    let usuarioSesion: any;
 
+    try {
+      usuarioSesion = JSON.parse(usuarioGuardado);
+    } catch (error) {
+      console.error('No fue posible leer el usuario:', error);
+      return;
+    }
 
-// =====================================================
-// ASIGNAR SEDE DEL USUARIO AL FORMULARIO
-// =====================================================
+    const idUsuario = Number(usuarioSesion?.id_usuario);
 
-asignarSedeUsuario(): void {
+    if (!idUsuario) {
+      console.error('No se encontró el ID del usuario autenticado.');
+      return;
+    }
 
-  if (!this.idSedeUsuario || this.editar) {
-    return;
+    // Consultar el usuario directamente en el backend.
+    this.http.get<any>(
+      `${this.apiUrl}/usuarios/${idUsuario}/`
+    ).subscribe({
+
+      next: (usuario) => {
+
+        const sedeRelacionada = usuario.id_sede;
+
+        const idSede =
+          typeof sedeRelacionada === 'object' && sedeRelacionada !== null
+            ? sedeRelacionada.id_sede
+            : sedeRelacionada;
+
+        if (!idSede) {
+
+          this.idSedeUsuario = null;
+          this.form.idSede = '';
+          this.form.sede = '';
+
+          this.habitacionesActivas = [];
+          this.camasActivas = [];
+
+          console.error('El usuario no tiene una sede asignada.');
+
+          this.cdr.detectChanges();
+          return;
+        }
+
+        this.idSedeUsuario = Number(idSede);
+
+        console.log(
+          'ID SEDE DEL ADMINISTRADOR:',
+          this.idSedeUsuario
+        );
+
+        // Si las sedes ya fueron cargadas, asignarla.
+        this.asignarSedeUsuario();
+
+        this.cdr.detectChanges();
+      },
+
+      error: (error) => {
+
+        console.error(
+          'Error al consultar la sede del administrador:',
+          error
+        );
+
+      }
+
+    });
   }
 
-  const sedeUsuario = this.sedesActivas.find(
-    sede => Number(sede.id_sede) === this.idSedeUsuario
-  );
 
-  if (!sedeUsuario) {
+  // =====================================================
+  // ASIGNAR SEDE DEL USUARIO AL FORMULARIO
+  // =====================================================
 
-    this.form.idSede = '';
-    this.form.sede = '';
+  asignarSedeUsuario(): void {
 
-    this.habitacionesActivas = [];
-    this.camasActivas = [];
+    if (!this.idSedeUsuario || this.editar) {
+      return;
+    }
 
-    console.error(
-      'La sede del administrador no está disponible o está inactiva.'
+    const sedeUsuario = this.sedesActivas.find(
+      sede => Number(sede.id_sede) === this.idSedeUsuario
     );
 
-    return;
+    if (!sedeUsuario) {
+
+      this.form.idSede = '';
+      this.form.sede = '';
+
+      this.habitacionesActivas = [];
+      this.camasActivas = [];
+
+      console.error(
+        'La sede del administrador no está disponible o está inactiva.'
+      );
+
+      return;
+    }
+
+    this.form.idSede = String(sedeUsuario.id_sede);
+    this.form.sede = sedeUsuario.nombre;
+
+    console.log('SEDE ASIGNADA:', sedeUsuario.nombre);
+
+    this.actualizarHabitacionesPorSede();
+
+    this.cdr.detectChanges();
   }
-
-  this.form.idSede = String(sedeUsuario.id_sede);
-  this.form.sede = sedeUsuario.nombre;
-
-  console.log('SEDE ASIGNADA:', sedeUsuario.nombre);
-
-  this.actualizarHabitacionesPorSede();
-
-  this.cdr.detectChanges();
-}
   // =====================================================
   // FORMULARIO VACÍO
   // =====================================================
@@ -628,7 +633,7 @@ asignarSedeUsuario(): void {
           next: (familiares) => {
             this.patients = this.patients.map(patient => {
               const familiar = familiares.find(
-                item => item.id_paciente === patient.id_paciente
+                item => Number(item.id_paciente?.id_paciente ?? item.id_paciente) === Number(patient.id_paciente)
               );
               return {
                 ...patient,
@@ -957,6 +962,9 @@ asignarSedeUsuario(): void {
   // NUEVO PACIENTE
   // =====================================================
   nuevo(): void {
+    this.mostrarErroresPaciente = false;
+    this.mostrarErroresFamiliar = false;
+    this.mostrarErroresUbicacion = false;
     this.form = this.formularioVacio();
 
     this.fotoPreview = null;
@@ -1055,6 +1063,9 @@ asignarSedeUsuario(): void {
   editarPaciente(
     patient: any
   ): void {
+    this.mostrarErroresPaciente = false;
+    this.mostrarErroresFamiliar = false;
+    this.mostrarErroresUbicacion = false;
     this.editingId =
       patient.id_paciente;
 
@@ -1152,8 +1163,8 @@ asignarSedeUsuario(): void {
           const familiar =
             familiares.find(
               item =>
-                item.id_paciente ===
-                patient.id_paciente
+                Number(item.id_paciente?.id_paciente ?? item.id_paciente) ===
+                Number(patient.id_paciente)
             );
           if (familiar) {
             this.form.familiarNombres =
@@ -1187,31 +1198,201 @@ asignarSedeUsuario(): void {
       });
   }
   // =====================================================
+  // VALIDACIONES DE FORMULARIO
+  // =====================================================
+  limpiarTexto(valor: string): string {
+    return String(valor ?? '').replace(/[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s'-]/g, '');
+  }
+
+  // Conserva el valor digitado para que la validación pueda detectar
+  // letras u otros caracteres y mostrar el mensaje correcto al guardar.
+  conservarEntrada(valor: unknown): string {
+    return String(valor ?? '');
+  }
+
+  permitirSoloDigitos(event: KeyboardEvent): void {
+    if (event.ctrlKey || event.metaKey || event.altKey) return;
+    if (event.key.length === 1 && !/^[0-9]$/.test(event.key)) {
+      event.preventDefault();
+    }
+  }
+
+  private reglaDocumento(tipo: string): { minimo: number; maximo: number; descripcion: string } | null {
+    switch (String(tipo ?? '').trim().toUpperCase()) {
+      case 'CC':
+        return { minimo: 6, maximo: 10, descripcion: 'La cédula de ciudadanía debe tener entre 6 y 10 dígitos.' };
+      case 'CE':
+        return { minimo: 6, maximo: 7, descripcion: 'La cédula de extranjería debe tener entre 6 y 7 dígitos.' };
+      case 'PPT':
+        return { minimo: 1, maximo: 7, descripcion: 'El PPT admite máximo 7 dígitos.' };
+      case 'PEP':
+        return { minimo: 15, maximo: 15, descripcion: 'El PEP debe tener exactamente 15 dígitos.' };
+      case 'PASAPORTE':
+        return { minimo: 1, maximo: 15, descripcion: 'El pasaporte admite máximo 15 caracteres numéricos en este formulario.' };
+      default:
+        return null;
+    }
+  }
+
+  longitudDocumentoMaxima(): number {
+    return this.reglaDocumento(this.form.tipoIdentificacion)?.maximo ?? 15;
+  }
+
+  private documentoValido(): boolean {
+    const valor = String(this.form.documento ?? '').trim();
+    const regla = this.reglaDocumento(this.form.tipoIdentificacion);
+    return !!regla && /^\d+$/.test(valor) && valor.length >= regla.minimo && valor.length <= regla.maximo;
+  }
+
+  private telefonoValido(valor: string): boolean {
+    return /^\d{10}$/.test(String(valor ?? '').trim());
+  }
+
+  private textoValido(valor: string): boolean {
+    return /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s'-]+$/.test(String(valor ?? '').trim());
+  }
+
+  private correoValido(valor: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(valor ?? '').trim());
+  }
+
+  campoInvalido(campo: string): boolean {
+    const f: any = this.form;
+    if (this.mostrarErroresPaciente) {
+      const requeridos = ['nombre', 'apellidos', 'tipoIdentificacion', 'documento', 'nacimiento', 'genero', 'grupoSanguineo', 'rh', 'eps', 'fechaIngreso'];
+      if (requeridos.includes(campo) && !String(f[campo] ?? '').trim()) return true;
+      if (campo === 'nombre' && f.nombre && !this.textoValido(f.nombre)) return true;
+      if (campo === 'apellidos' && f.apellidos && !this.textoValido(f.apellidos)) return true;
+      if (campo === 'documento' && f.documento && !this.documentoValido()) return true;
+      if (campo === 'nacimiento' && f.nacimiento && f.nacimiento > this.fechaActualLocal()) return true;
+    }
+    if (this.mostrarErroresFamiliar) {
+      const requeridos = ['familiarNombres', 'familiarApellidos', 'parentesco', 'telefono1', 'direccion', 'correoElectronico', 'municipio'];
+      if (requeridos.includes(campo) && !String(f[campo] ?? '').trim()) return true;
+      if (['familiarNombres', 'familiarApellidos', 'parentesco'].includes(campo) && f[campo] && !this.textoValido(f[campo])) return true;
+      if (campo === 'telefono1' && f.telefono1 && !this.telefonoValido(f.telefono1)) return true;
+      if (campo === 'telefono2' && f.telefono2 && !this.telefonoValido(f.telefono2)) return true;
+      if (campo === 'correoElectronico' && f.correoElectronico && !this.correoValido(f.correoElectronico)) return true;
+    }
+    if (this.mostrarErroresUbicacion) {
+      if (campo === 'habitacion' && !this.habitacionValida()) return true;
+      if (campo === 'cama' && !this.camaValida()) return true;
+    }
+    return false;
+  }
+
+  private fechaActualLocal(): string {
+    const hoy = new Date();
+    return `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
+  }
+
+  private validarDatosPaciente(): boolean {
+    this.mostrarErroresPaciente = true;
+    const f = this.form;
+    const faltantes: string[] = [];
+    const campos: [string, string][] = [
+      ['Nombres', f.nombre], ['Apellidos', f.apellidos],
+      ['Tipo de identificación', f.tipoIdentificacion], ['Número de documento', f.documento],
+      ['Fecha de nacimiento', f.nacimiento], ['Género', f.genero],
+      ['Grupo sanguíneo', f.grupoSanguineo], ['RH', f.rh],
+      ['EPS', f.eps], ['Fecha de ingreso', f.fechaIngreso]
+    ];
+    campos.forEach(([nombre, valor]) => { if (!String(valor ?? '').trim()) faltantes.push(nombre); });
+    if (faltantes.length) {
+      alertaAdvertencia('Datos del paciente incompletos', `Completa los siguientes campos: ${faltantes.join(', ')}.`);
+      return false;
+    }
+    if (!this.textoValido(f.nombre) || !this.textoValido(f.apellidos)) {
+      alertaAdvertencia('Nombre no válido', 'Los nombres y apellidos solo pueden contener letras, tildes, espacios y guiones.');
+      return false;
+    }
+    const reglaDocumento = this.reglaDocumento(f.tipoIdentificacion);
+    if (!/^\d+$/.test(String(f.documento ?? '').trim())) {
+      alertaAdvertencia('Número de documento no válido', 'El número de documento solamente debe contener números.');
+      return false;
+    }
+    if (!reglaDocumento || !this.documentoValido()) {
+      alertaAdvertencia(
+        'Número de documento no válido',
+        reglaDocumento?.descripcion ?? 'Selecciona un tipo de identificación válido y verifica la longitud del documento.'
+      );
+      return false;
+    }
+    if (f.nacimiento > this.fechaActualLocal()) {
+      alertaAdvertencia('Fecha no válida', 'La fecha de nacimiento no puede ser futura.');
+      return false;
+    }
+    return true;
+  }
+
+  private validarFamiliarResponsable(): boolean {
+    this.mostrarErroresFamiliar = true;
+    const f = this.form;
+    const faltantes: string[] = [];
+    const campos: [string, string][] = [
+      ['Nombres', f.familiarNombres], ['Apellidos', f.familiarApellidos],
+      ['Parentesco', f.parentesco], ['Teléfono principal', f.telefono1],
+      ['Dirección', f.direccion], ['Correo electrónico', f.correoElectronico],
+      ['Municipio', f.municipio]
+    ];
+    campos.forEach(([nombre, valor]) => { if (!String(valor ?? '').trim()) faltantes.push(nombre); });
+    if (faltantes.length) {
+      alertaAdvertencia('Datos del familiar incompletos', `Completa los siguientes campos: ${faltantes.join(', ')}.`);
+      return false;
+    }
+    if (![f.familiarNombres, f.familiarApellidos, f.parentesco].every(v => this.textoValido(v))) {
+      alertaAdvertencia('Datos del familiar no válidos', 'Nombres, apellidos y parentesco solo deben contener letras, tildes, espacios y guiones.');
+      return false;
+    }
+    if (!this.telefonoValido(f.telefono1)) {
+      alertaAdvertencia('Teléfono no válido', 'El teléfono principal debe contener exactamente 10 dígitos y no puede incluir letras ni otros caracteres.');
+      return false;
+    }
+    if (f.telefono2 && !this.telefonoValido(f.telefono2)) {
+      alertaAdvertencia('Teléfono no válido', 'El teléfono secundario debe contener exactamente 10 dígitos y no puede incluir letras ni otros caracteres.');
+      return false;
+    }
+    if (!this.correoValido(f.correoElectronico)) {
+      alertaAdvertencia('Correo electrónico no válido', 'Ingresa un correo electrónico con un formato válido.');
+      return false;
+    }
+    return true;
+  }
+
+  private habitacionValida(): boolean {
+    const id = Number(this.form.habitacion);
+    return !!id && this.habitacionesActivas.some(h => Number(h.id_habitacion) === id && Number(h.id_sede) === Number(this.form.idSede));
+  }
+
+  private camaValida(): boolean {
+    const id = Number(this.form.cama);
+    return !!id && this.camasActivas.some(c => Number(c.id_cama) === id && Number(c.id_habitacion) === Number(this.form.habitacion));
+  }
+
+  private validarUbicacion(): boolean {
+    this.mostrarErroresUbicacion = true;
+    const faltantes: string[] = [];
+    if (!this.habitacionValida()) faltantes.push('Habitación');
+    if (!this.camaValida()) faltantes.push('Cama disponible');
+    if (faltantes.length) {
+      alertaAdvertencia('Ubicación incompleta', `Selecciona una ${faltantes.join(' y una ')} correspondiente a la sede asignada.`);
+      return false;
+    }
+    return true;
+  }
+
+  // =====================================================
   // GUARDAR
   // =====================================================
   guardar(): void {
+    // Las etapas se validan únicamente al presionar Guardar.
+    // Mientras se diligencia el formulario se puede avanzar libremente.
+    if (!this.validarDatosPaciente()) return;
+    if (!this.validarFamiliarResponsable()) return;
+    if (!this.validarUbicacion()) return;
 
-    if (!this.form.idSede) {
-      alertaAdvertencia(
-        'Sede requerida',
-        'Debes seleccionar una sede para el paciente.'
-      );
-      return;
-    }
-
-    if (!this.form.habitacion || !this.form.cama) {
-      alertaAdvertencia(
-        'Ubicación incompleta',
-        'Debes seleccionar una habitación y una cama.'
-      );
-      return;
-    }
-
-    if (this.editar) {
-      this.actualizar();
-    } else {
-      this.crear();
-    }
+    if (this.editar) this.actualizar();
+    else this.crear();
   }
 
   // =====================================================
@@ -1419,8 +1600,7 @@ asignarSedeUsuario(): void {
     );
 
     const familiar = (familiares || []).find(
-      item =>
-        Number(item.id_paciente) === Number(idPaciente)
+      item => Number(item.id_paciente?.id_paciente ?? item.id_paciente) === Number(idPaciente)
     );
 
     const datosFamiliar = {
@@ -1455,12 +1635,22 @@ asignarSedeUsuario(): void {
   /**
    * Convierte los errores de la API en un mensaje legible.
    */
+  private traducirErrorApi(mensaje: string): string {
+    const texto = String(mensaje ?? '');
+    if (/This field may not be blank/i.test(texto)) return 'Este campo es obligatorio.';
+    if (/A valid number is required/i.test(texto)) return 'Ingresa un número válido.';
+    if (/Enter a valid email address/i.test(texto)) return 'Ingresa un correo electrónico válido.';
+    if (/Ensure this field has no more than/i.test(texto)) return 'El valor supera la longitud permitida.';
+    if (/Ensure this field has at least/i.test(texto)) return 'El valor no alcanza la longitud mínima requerida.';
+    return texto;
+  }
+
   private detalleErrorApi(
     error: any,
     mensajePredeterminado: string
   ): string {
     if (typeof error?.error === 'string') {
-      return error.error;
+      return this.traducirErrorApi(error.error);
     }
 
     if (
@@ -1468,10 +1658,18 @@ asignarSedeUsuario(): void {
       typeof error.error === 'object'
     ) {
       const mensajes = Object.entries(error.error).map(
-        ([campo, valor]: [string, any]) =>
-          Array.isArray(valor)
-            ? `${campo}: ${valor.join(', ')}`
-            : `${campo}: ${valor}`
+        ([campo, valor]: [string, any]) => {
+          const etiquetas: Record<string, string> = {
+            nombres: 'Nombres', apellidos: 'Apellidos', parentesco: 'Parentesco',
+            telefono_uno: 'Teléfono principal', telefono_dos: 'Teléfono secundario',
+            direccion: 'Dirección', correo: 'Correo electrónico', municipio: 'Municipio',
+            id_paciente: 'Paciente'
+          };
+          const detalle = Array.isArray(valor)
+            ? valor.map((item: any) => this.traducirErrorApi(String(item))).join(', ')
+            : this.traducirErrorApi(String(valor));
+          return `${etiquetas[campo] ?? campo}: ${detalle}`;
+        }
       );
 
       if (mensajes.length > 0) {
@@ -1589,7 +1787,7 @@ asignarSedeUsuario(): void {
       this.listar();
       this.closeModal();
 
-      if (errorAsignacion || errorFamiliar) {
+      if (errorAsignacion) {
         const observaciones: string[] = [];
 
         if (errorAsignacion) {
@@ -1686,6 +1884,19 @@ asignarSedeUsuario(): void {
       datosPaciente.append('eliminar_foto', 'true');
     }
 
+    // Guardar primero el familiar. Si el backend rechaza sus datos,
+    // no se modifica el registro principal del paciente.
+    try {
+      await this.guardarFamiliarResponsable(idPaciente);
+    } catch (error: any) {
+      console.error('Error al guardar familiar responsable:', error);
+      alertaError(
+        'No se pudo guardar el familiar responsable',
+        this.detalleErrorApi(error, 'Verifica los datos del familiar e inténtalo nuevamente.')
+      );
+      return;
+    }
+
     try {
       // 1. Actualizar los datos principales del paciente.
       await firstValueFrom(
@@ -1711,7 +1922,6 @@ asignarSedeUsuario(): void {
     }
 
     let errorAsignacion: any = null;
-    let errorFamiliar: any = null;
 
     // 2. Sincronizar la asignación.
     // Si no existe una asignación vigente, se recupera usando la fecha de ingreso.
@@ -1732,21 +1942,10 @@ asignarSedeUsuario(): void {
       );
     }
 
-    // 3. Mantener el comportamiento actual del familiar responsable.
-    try {
-      await this.guardarFamiliarResponsable(idPaciente);
-    } catch (error) {
-      errorFamiliar = error;
-      console.error(
-        'Error al guardar familiar responsable:',
-        error
-      );
-    }
-
     this.listar();
     this.closeModal();
 
-    if (errorAsignacion || errorFamiliar) {
+    if (errorAsignacion) {
       const observaciones: string[] = [];
 
       if (errorAsignacion) {
@@ -1754,16 +1953,6 @@ asignarSedeUsuario(): void {
           `No se pudo actualizar el historial de habitación: ${this.detalleErrorApi(
             errorAsignacion,
             'Error al registrar la asignación.'
-          )
-          }`
-        );
-      }
-
-      if (errorFamiliar) {
-        observaciones.push(
-          `No se pudo guardar el familiar responsable: ${this.detalleErrorApi(
-            errorFamiliar,
-            'Error al guardar los datos del familiar.'
           )
           }`
         );
@@ -1908,6 +2097,9 @@ asignarSedeUsuario(): void {
   // CERRAR MODAL
   // =====================================================
   closeModal(): void {
+    this.mostrarErroresPaciente = false;
+    this.mostrarErroresFamiliar = false;
+    this.mostrarErroresUbicacion = false;
     this.modalOpen = false;
     this.editingId = null;
     this.form = this.formularioVacio();
@@ -1978,7 +2170,7 @@ asignarSedeUsuario(): void {
           const familiar =
             familiares.find(
               item =>
-                item.id_paciente === id
+                Number(item.id_paciente?.id_paciente ?? item.id_paciente) === Number(id)
             );
           if (familiar) {
             this.selectedPatient.familiarNombres =

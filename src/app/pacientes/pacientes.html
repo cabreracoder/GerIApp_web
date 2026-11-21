@@ -203,7 +203,12 @@
                         <!-- DOCUMENTO -->
 
                         <td class="px-5 py-4 text-sm text-[#495057]">
-                            {{ patient.numero_documento }}
+                            {{
+                            (patient.tipo_documento || patient.tipoDocumento)
+                            ? (patient.tipo_documento || patient.tipoDocumento) + ' - '
+                            : ''
+                            }}
+                            {{ patient.numero_documento || 'No registrado' }}
                         </td>
 
                         <!-- EDAD -->
@@ -396,7 +401,9 @@
                             <span class="text-red-500 text-xs">*</span>
                         </label>
 
-                        <input class="campo-entrada" type="text" [(ngModel)]="form.nombre" placeholder="Nombres">
+                        <input class="campo-entrada" type="text" [(ngModel)]="form.nombre"
+                            (ngModelChange)="form.nombre = limpiarTexto($event)"
+                            [style.border-color]="campoInvalido('nombre') ? '#ef4444' : null" placeholder="Nombres">
 
                     </div>
 
@@ -409,7 +416,10 @@
                             <span class="text-red-500 text-xs">*</span>
                         </label>
 
-                        <input class="campo-entrada" type="text" [(ngModel)]="form.apellidos" placeholder="Apellidos">
+                        <input class="campo-entrada" type="text" [(ngModel)]="form.apellidos"
+                            (ngModelChange)="form.apellidos = limpiarTexto($event)"
+                            [style.border-color]="campoInvalido('apellidos') ? '#ef4444' : null"
+                            placeholder="Apellidos">
 
                     </div>
 
@@ -422,7 +432,9 @@
                             <span class="text-red-500 text-xs">*</span>
                         </label>
 
-                        <select class="campo-entrada" [(ngModel)]="form.tipoIdentificacion">
+                        <select class="campo-entrada"
+                            [style.border-color]="campoInvalido('tipoIdentificacion') ? '#ef4444' : null"
+                            [(ngModel)]="form.tipoIdentificacion">
 
                             <option value="">
                                 Seleccione
@@ -434,6 +446,14 @@
 
                             <option value="CE">
                                 C. Extranjería
+                            </option>
+
+                            <option value="PPT">
+                                Permiso por Protección Temporal (PPT)
+                            </option>
+
+                            <option value="PEP">
+                                Permiso Especial de Permanencia (PEP)
                             </option>
 
                             <option value="Pasaporte">
@@ -453,7 +473,9 @@
                             <span class="text-red-500 text-xs">*</span>
                         </label>
 
-                        <input class="campo-entrada" type="text" [(ngModel)]="form.documento"
+                        <input class="campo-entrada" type="text" inputmode="numeric" [(ngModel)]="form.documento"
+                            (keydown)="permitirSoloDigitos($event)" [attr.maxlength]="longitudDocumentoMaxima()"
+                            [style.border-color]="campoInvalido('documento') ? '#ef4444' : null"
                             placeholder="Número de documento">
 
                     </div>
@@ -467,8 +489,9 @@
                             <span class="text-red-500 text-xs">*</span>
                         </label>
 
-                        <input class="campo-entrada" type="date" [(ngModel)]="form.nacimiento"
-                            (change)="calcularEdad()">
+                        <input class="campo-entrada" type="date"
+                            [style.border-color]="campoInvalido('nacimiento') ? '#ef4444' : null"
+                            [(ngModel)]="form.nacimiento" (change)="calcularEdad()">
 
                     </div>
 
@@ -493,7 +516,8 @@
                             <span class="text-red-500 text-xs">*</span>
                         </label>
 
-                        <select class="campo-entrada" [(ngModel)]="form.genero">
+                        <select class="campo-entrada" [style.border-color]="campoInvalido('genero') ? '#ef4444' : null"
+                            [(ngModel)]="form.genero">
 
                             <option value="">
                                 Seleccione
@@ -524,7 +548,9 @@
                             <span class="text-red-500 text-xs">*</span>
                         </label>
 
-                        <select class="campo-entrada" [(ngModel)]="form.grupoSanguineo">
+                        <select class="campo-entrada"
+                            [style.border-color]="campoInvalido('grupoSanguineo') ? '#ef4444' : null"
+                            [(ngModel)]="form.grupoSanguineo">
 
                             <option value="">
                                 Seleccione
@@ -559,7 +585,8 @@
                             <span class="text-red-500 text-xs">*</span>
                         </label>
 
-                        <select class="campo-entrada" [(ngModel)]="form.rh">
+                        <select class="campo-entrada" [style.border-color]="campoInvalido('rh') ? '#ef4444' : null"
+                            [(ngModel)]="form.rh">
 
                             <option value="">
                                 Seleccione
@@ -586,7 +613,9 @@
                             <span class="text-red-500 text-xs">*</span>
                         </label>
 
-                        <input class="campo-entrada" type="text" [(ngModel)]="form.eps" placeholder="EPS">
+                        <input class="campo-entrada" type="text"
+                            [style.border-color]="campoInvalido('eps') ? '#ef4444' : null" [(ngModel)]="form.eps"
+                            placeholder="EPS">
 
                     </div>
 
@@ -599,7 +628,9 @@
                             <span class="text-red-500 text-xs">*</span>
                         </label>
 
-                        <input class="campo-entrada" type="date" [(ngModel)]="form.fechaIngreso">
+                        <input class="campo-entrada" type="date"
+                            [style.border-color]="campoInvalido('fechaIngreso') ? '#ef4444' : null"
+                            [(ngModel)]="form.fechaIngreso">
 
                     </div>
 
@@ -682,6 +713,8 @@
                         </label>
 
                         <input class="campo-entrada" type="text" [(ngModel)]="form.familiarNombres"
+                            (ngModelChange)="form.familiarNombres = limpiarTexto($event)"
+                            [style.border-color]="campoInvalido('familiarNombres') ? '#ef4444' : null"
                             placeholder="Nombres">
 
                     </div>
@@ -694,6 +727,8 @@
                         </label>
 
                         <input class="campo-entrada" type="text" [(ngModel)]="form.familiarApellidos"
+                            (ngModelChange)="form.familiarApellidos = limpiarTexto($event)"
+                            [style.border-color]="campoInvalido('familiarApellidos') ? '#ef4444' : null"
                             placeholder="Apellidos">
 
                     </div>
@@ -705,7 +740,10 @@
                             <span class="text-red-500 text-xs">*</span>
                         </label>
 
-                        <input class="campo-entrada" type="text" [(ngModel)]="form.parentesco" placeholder="Parentesco">
+                        <input class="campo-entrada" type="text" [(ngModel)]="form.parentesco"
+                            (ngModelChange)="form.parentesco = limpiarTexto($event)"
+                            [style.border-color]="campoInvalido('parentesco') ? '#ef4444' : null"
+                            placeholder="Parentesco">
 
                     </div>
 
@@ -716,7 +754,10 @@
                             <span class="text-red-500 text-xs">*</span>
                         </label>
 
-                        <input class="campo-entrada" type="tel" [(ngModel)]="form.telefono1" placeholder="Teléfono">
+                        <input class="campo-entrada" type="text" inputmode="numeric" maxlength="10" pattern="[0-9]*"
+                            [(ngModel)]="form.telefono1" (keydown)="permitirSoloDigitos($event)"
+                            [style.border-color]="campoInvalido('telefono1') ? '#ef4444' : null"
+                            placeholder="10 dígitos">
 
                     </div>
 
@@ -726,7 +767,10 @@
                             Teléfono 2
                         </label>
 
-                        <input class="campo-entrada" type="tel" [(ngModel)]="form.telefono2" placeholder="Teléfono">
+                        <input class="campo-entrada" type="text" inputmode="numeric" maxlength="10" pattern="[0-9]*"
+                            [(ngModel)]="form.telefono2" (keydown)="permitirSoloDigitos($event)"
+                            [style.border-color]="campoInvalido('telefono2') ? '#ef4444' : null"
+                            placeholder="10 dígitos">
 
                     </div>
 
@@ -737,7 +781,9 @@
                             <span class="text-red-500 text-xs">*</span>
                         </label>
 
-                        <input class="campo-entrada" type="text" [(ngModel)]="form.direccion" placeholder="Dirección">
+                        <input class="campo-entrada" type="text" [(ngModel)]="form.direccion"
+                            [style.border-color]="campoInvalido('direccion') ? '#ef4444' : null"
+                            placeholder="Dirección">
 
                     </div>
 
@@ -749,6 +795,7 @@
                         </label>
 
                         <input class="campo-entrada" type="email" [(ngModel)]="form.correoElectronico"
+                            [style.border-color]="campoInvalido('correoElectronico') ? '#ef4444' : null"
                             placeholder="correo@ejemplo.com">
 
                     </div>
@@ -760,7 +807,9 @@
                             <span class="text-red-500 text-xs">*</span>
                         </label>
 
-                        <input class="campo-entrada" type="text" [(ngModel)]="form.municipio" placeholder="Municipio">
+                        <input class="campo-entrada" type="text" [(ngModel)]="form.municipio"
+                            [style.border-color]="campoInvalido('municipio') ? '#ef4444' : null"
+                            placeholder="Municipio">
 
                     </div>
 
@@ -792,8 +841,10 @@
                             Habitación
                         </label>
 
-                        <select class="campo-entrada" [(ngModel)]="form.habitacion"
-                            (ngModelChange)="actualizarCamasPorHabitacion()" [disabled]="!form.idSede">
+                        <select class="campo-entrada"
+                            [style.border-color]="campoInvalido('habitacion') ? '#ef4444' : null"
+                            [(ngModel)]="form.habitacion" (ngModelChange)="actualizarCamasPorHabitacion()"
+                            [disabled]="!form.idSede">
 
                             <option value="">
                                 {{
@@ -819,7 +870,8 @@
                             Cama
                         </label>
 
-                        <select class="campo-entrada" [(ngModel)]="form.cama" [disabled]="!form.habitacion">
+                        <select class="campo-entrada" [style.border-color]="campoInvalido('cama') ? '#ef4444' : null"
+                            [(ngModel)]="form.cama" [disabled]="!form.habitacion">
 
                             <option value="">
                                 {{
