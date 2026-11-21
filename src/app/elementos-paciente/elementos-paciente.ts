@@ -8,209 +8,144 @@ import { forkJoin } from 'rxjs';
 import Swal from 'sweetalert2';
 import { InventarioPaciente } from '../inventario-paciente/inventario-paciente';
 
-// =====================================================
-// ALERTAS (SweetAlert2 + Tailwind)
-// =====================================================
+// ============================================================
+// ALERTAS GERIAPP - SWEETALERT2
+// Mismo diseño institucional utilizado en el módulo Cuidadores.
+// Utiliza las clases globales geri-swal-* y geri-alerta-*.
+// ============================================================
 
-type Tono = 'rojo' | 'ambar' | 'azul' | 'verde';
+type TonoAlerta = 'azul' | 'verde' | 'rojo';
 
-const TONOS: Record<Tono, { panel: string; boton: string }> = {
-  rojo: { panel: 'bg-linear-to-b from-red-500 to-red-700', boton: 'bg-red-600 hover:bg-red-700' },
-  ambar: { panel: 'bg-linear-to-b from-amber-500 to-amber-700', boton: 'bg-amber-600 hover:bg-amber-700' },
-  azul: { panel: 'bg-linear-to-b from-blue-500 to-blue-700', boton: 'bg-blue-600 hover:bg-blue-700' },
-  verde: { panel: 'bg-linear-to-b from-emerald-500 to-emerald-700', boton: 'bg-emerald-600 hover:bg-emerald-700' },
-};
-
-// Iconos blancos del panel (papelera, prohibido, lápiz, check, equis, alerta)
-const svgIcono = (trazos: string): string =>
-  `<svg class="h-11 w-11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${trazos}</svg>`;
-
-const ICONOS = {
-  papelera: svgIcono('<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/>'),
-  prohibido: svgIcono('<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/>'),
-  lapiz: svgIcono('<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>'),
-  check: svgIcono('<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>'),
-  equis: svgIcono('<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>'),
-  alerta: svgIcono('<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>'),
-};
-
-// Evita que un nombre del backend inyecte HTML
 function escaparHtml(texto: string): string {
   return String(texto ?? '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
-function inicialesAlerta(nombre: string): string {
-  const partes = nombre.trim().split(/\s+/).filter(Boolean);
-  if (partes.length === 0) return '?';
-  if (partes.length === 1) return partes[0].slice(0, 2).toUpperCase();
-  return (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
-}
-
-interface ConfigAlerta {
-  tono: Tono;
-  icono: 'warning' | 'question' | 'success' | 'error';
-  iconoSvg: string;
-  titulo: string;
-  html?: string;
-  confirmar: string;
-  cancelar?: string;
-  confirmarIzquierda?: boolean;   // true = "Sí, ..." a la izquierda (como en Editar)
-  enfocarCancelar?: boolean;
-  autoCerrar?: boolean;           // true = sin botones, se cierra a los 1,8 s
-}
-
-// Motor único: todas las alertas pasan por aquí.
-// Las clases con "!" ganan sobre el CSS que SweetAlert2 trae por defecto.
-function mostrarAlerta(c: ConfigAlerta) {
-
-  const tono = TONOS[c.tono];
-  const conBotones = !c.autoCerrar;
-  const conCancelar = !!c.cancelar;
-  const botonSolo = conBotones && !conCancelar;
-  const tituloSinPie = !conBotones && !c.html;
-
-  return Swal.fire({
-    icon: c.icono,
-    iconHtml: c.iconoSvg,
-    title: escaparHtml(c.titulo),
-    html: c.html,
-
-    showConfirmButton: conBotones,
-    showCancelButton: conCancelar,
-    confirmButtonText: c.confirmar,
-    cancelButtonText: c.cancelar,
-    reverseButtons: !c.confirmarIzquierda,
-    focusCancel: !!c.enfocarCancelar,
-    timer: c.autoCerrar ? 1800 : undefined,
-
-    buttonsStyling: false,
-    backdrop: 'rgba(15, 23, 42, 0.65)',
-
-    customClass: {
-      popup: '!grid-cols-[26%_1fr] !w-[34rem] !max-w-[92vw] !p-0 !rounded-[2.2rem] !overflow-hidden !bg-white',
-      icon: `col-start-1 row-start-1 row-span-3 !m-0 !flex !h-auto !w-auto !items-center !justify-center !rounded-none !border-0 !animate-none ${tono.panel}`,
-      title: `col-start-2 row-start-1 !m-0 !px-7 !pt-8 ${tituloSinPie ? '!pb-8' : '!pb-0'} !text-left !text-[1.6rem] !leading-tight !font-extrabold !text-slate-900`,
-      htmlContainer: `col-start-2 row-start-2 !m-0 !px-7 !pt-0 ${conBotones ? '!pb-0' : '!pb-8'} !justify-start !overflow-visible !text-left !text-base !font-normal`,
-      actions: `col-start-2 row-start-3 !m-0 !w-auto !flex-nowrap !gap-3 !px-7 !pt-6 !pb-8 ${botonSolo ? '!justify-end' : '!justify-stretch'}`,
-      confirmButton: `${botonSolo ? 'w-[calc(50%-0.375rem)]' : 'flex-1'} cursor-pointer rounded-2xl px-4 py-3 text-[1.1rem] font-bold text-white transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-slate-300 ${tono.boton}`,
-      cancelButton: 'flex-1 cursor-pointer rounded-2xl bg-slate-100 px-4 py-3 text-[1.1rem] font-bold text-slate-600 transition-colors hover:bg-slate-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-slate-300',
-    },
-  });
-}
-
-// ---- Confirmaciones: subtítulo gris + avatar con iniciales + pregunta ----
-
-function alertaConfirmar(c: {
-  tono: Tono;
-  icono: 'warning' | 'question';
-  iconoSvg: string;
-  verbo: string;
-  entidad: string;
-  nombre: string;
-  subtitulo: string;
-  confirmar: string;
-  confirmarIzquierda?: boolean;
-  enfocarCancelar?: boolean;
-}) {
-
-  const html = `
-    <p class="m-0 text-[1.1rem] leading-snug text-slate-400">${escaparHtml(c.subtitulo)}</p>
-    <div class="mt-4 flex items-center gap-3.5">
-      <span class="flex h-[2.4rem] w-[2.4rem] shrink-0 items-center justify-center rounded-xl bg-slate-100 text-sm font-bold text-slate-600">${escaparHtml(inicialesAlerta(c.nombre))}</span>
-      <p class="m-0 text-[1.15rem] leading-snug text-slate-700">¿${c.verbo} a <strong class="font-bold">${escaparHtml(c.nombre)}</strong>?</p>
+function contenidoAlerta(titulo: string, mensaje: string, mostrarCheck = false): string {
+  return `
+    <div class="geri-alerta">
+      <div class="geri-alerta__onda"></div>
+      <div class="geri-alerta__contenido">
+        <img src="/Logo-GerIApp.png" class="geri-alerta__logo" alt="GeriApp"
+             onerror="this.style.display='none'">
+        ${mostrarCheck ? '<div class="geri-alerta__check">✓</div>' : ''}
+        <h2 class="geri-alerta__titulo">${escaparHtml(titulo)}</h2>
+        <p class="geri-alerta__mensaje">${escaparHtml(mensaje)}</p>
+      </div>
     </div>
   `;
+}
 
+function mostrarAlerta(config: {
+  titulo: string;
+  mensaje: string;
+  tono: TonoAlerta;
+  confirmar: string;
+  cancelar?: string;
+  mostrarCheck?: boolean;
+}) {
+  return Swal.fire({
+    html: contenidoAlerta(config.titulo, config.mensaje, config.mostrarCheck),
+    width: 520,
+    padding: 0,
+    showCancelButton: !!config.cancelar,
+    showConfirmButton: true,
+    confirmButtonText: config.confirmar,
+    cancelButtonText: config.cancelar || 'Cancelar',
+    reverseButtons: true,
+    buttonsStyling: false,
+    allowOutsideClick: false,
+    allowEscapeKey: true,
+    heightAuto: false,
+    scrollbarPadding: false,
+    backdrop: 'rgba(33, 37, 41, 0.48)',
+    customClass: {
+      popup: 'geri-swal-popup',
+      htmlContainer: 'geri-swal-html',
+      actions: 'geri-swal-actions',
+      confirmButton: `geri-swal-btn geri-swal-btn--${config.tono}`,
+      cancelButton: 'geri-swal-btn geri-swal-btn--cancelar'
+    },
+    // Los modales propios del componente usan z-index: 2000.
+    // SweetAlert2 usa un z-index menor por defecto y queda detrás del formulario.
+    // Se eleva el contenedor completo para que la alerta siempre quede visible.
+    didOpen: () => {
+      const contenedor = Swal.getContainer();
+      contenedor?.style.setProperty('z-index', '3001', 'important');
+    }
+  });
+}
+
+// Confirmaciones de operaciones sobre los registros del paciente.
+function alertaEliminar(nombre: string, entidad = 'registro') {
   return mostrarAlerta({
-    tono: c.tono,
-    icono: c.icono,
-    iconoSvg: c.iconoSvg,
-    titulo: `${c.verbo} ${c.entidad}`,
-    html,
-    confirmar: c.confirmar,
-    cancelar: 'Cancelar',
-    confirmarIzquierda: c.confirmarIzquierda,
-    enfocarCancelar: c.enfocarCancelar,
+    titulo: `¿Eliminar ${entidad}?`,
+    mensaje: `Se eliminará ${nombre}. Esta acción no se puede deshacer.`,
+    tono: 'rojo', confirmar: 'Eliminar', cancelar: 'Cancelar'
   });
 }
 
-// Imagen 1: rojo
-function alertaEliminar(nombre: string, entidad = 'encargado') {
-  return alertaConfirmar({
-    tono: 'rojo', icono: 'warning', iconoSvg: ICONOS.papelera,
-    verbo: 'Eliminar', entidad, nombre,
-    subtitulo: 'Acción permanente · no se puede deshacer',
-    confirmar: 'Sí, eliminar',
-    enfocarCancelar: true,
-  });
-}
-
-// Imagen 2: ámbar
-function alertaDesactivar(nombre: string, entidad = 'encargado') {
-  return alertaConfirmar({
-    tono: 'ambar', icono: 'warning', iconoSvg: ICONOS.prohibido,
-    verbo: 'Desactivar', entidad, nombre,
-    subtitulo: 'Cambio reversible · puedes reactivarlo luego',
-    confirmar: 'Sí, desactivar',
-  });
-}
-
-// Imagen 3: azul ("Sí, editar" va a la izquierda)
-function alertaEditar(nombre: string, entidad = 'encargado') {
-  return alertaConfirmar({
-    tono: 'azul', icono: 'question', iconoSvg: ICONOS.lapiz,
-    verbo: 'Editar', entidad, nombre,
-    subtitulo: 'Se abrirá el formulario de edición',
-    confirmar: 'Sí, editar',
-    confirmarIzquierda: true,
-  });
-}
-
-// Misma forma que Editar, en verde
-function alertaActivar(nombre: string, entidad = 'encargado') {
-  return alertaConfirmar({
-    tono: 'verde', icono: 'question', iconoSvg: ICONOS.check,
-    verbo: 'Activar', entidad, nombre,
-    subtitulo: 'Volverá a estar activo · puedes desactivarlo luego',
-    confirmar: 'Sí, activar',
-    confirmarIzquierda: true,
-  });
-}
-
-// ---- Avisos: mismo panel, título y texto; un solo botón a la derecha ----
-
-function htmlMensaje(mensaje?: string): string | undefined {
-  return mensaje
-    ? `<p class="m-0 text-[1.15rem] leading-snug text-slate-700">${escaparHtml(mensaje)}</p>`
-    : undefined;
-}
-
-// Se cierra solo a los 1,8 s (sin botones)
-function alertaExito(titulo: string, mensaje?: string) {
+function alertaEditar(nombre: string, entidad = 'registro') {
   return mostrarAlerta({
-    tono: 'verde', icono: 'success', iconoSvg: ICONOS.check,
-    titulo, html: htmlMensaje(mensaje), confirmar: 'Aceptar', autoCerrar: true,
+    titulo: `¿Editar ${entidad}?`,
+    mensaje: `Se abrirá el formulario para modificar ${nombre}.`,
+    tono: 'azul', confirmar: 'Continuar', cancelar: 'Cancelar'
   });
 }
 
-// Siempre lleva botón, para que no se pierda
-function alertaError(titulo: string, mensaje?: string) {
+function alertaDesactivar(nombre: string, entidad = 'registro') {
   return mostrarAlerta({
-    tono: 'rojo', icono: 'error', iconoSvg: ICONOS.equis,
-    titulo, html: htmlMensaje(mensaje), confirmar: 'Aceptar',
+    titulo: `¿Desactivar ${entidad}?`,
+    mensaje: `${nombre} dejará de estar activo hasta que se reactive.`,
+    tono: 'rojo', confirmar: 'Sí, desactivar', cancelar: 'Cancelar'
   });
 }
 
-function alertaAdvertencia(titulo: string, mensaje?: string) {
+function alertaActivar(nombre: string, entidad = 'registro') {
   return mostrarAlerta({
-    tono: 'ambar', icono: 'warning', iconoSvg: ICONOS.alerta,
-    titulo, html: htmlMensaje(mensaje), confirmar: 'Aceptar',
+    titulo: `¿Activar ${entidad}?`,
+    mensaje: `${nombre} volverá a estar activo en el sistema.`,
+    tono: 'azul', confirmar: 'Sí, activar', cancelar: 'Cancelar'
   });
 }
+
+// Confirmación previa al envío de formularios. Mantiene el mismo diseño GeriApp.
+function alertaConfirmarFormulario(titulo: string, mensaje: string, confirmar = 'Continuar') {
+  return mostrarAlerta({
+    titulo,
+    mensaje,
+    tono: 'azul',
+    confirmar,
+    cancelar: 'Cancelar'
+  });
+}
+
+// Respuestas del sistema: mismo panel, logo, tipografía y botones de Cuidadores.
+function alertaExito(titulo: string, mensaje = 'El registro se actualizó correctamente.') {
+  return mostrarAlerta({
+    titulo, mensaje, tono: 'verde', confirmar: 'Aceptar', mostrarCheck: true
+  });
+}
+
+function alertaError(titulo: string, mensaje = 'Ocurrió un error al realizar la operación.') {
+  return mostrarAlerta({
+    titulo, mensaje, tono: 'rojo', confirmar: 'Aceptar'
+  });
+}
+
+function alertaAdvertencia(titulo: string, mensaje = 'Revisa la información e inténtalo nuevamente.') {
+  return mostrarAlerta({
+    titulo, mensaje, tono: 'azul', confirmar: 'Aceptar'
+  });
+}
+
+// ============================================================
+// FIN ALERTAS GERIAPP
+// ============================================================
 
 // ============================================================
 // INTERFAZ RESPUESTA PAGINADA
@@ -1763,6 +1698,17 @@ export class ElementosPaciente implements OnInit {
   // ============================================================
 
   guardarFormulacion(): void {
+    const accion = this.formulacionEditando ? '¿Actualizar formulación?' : '¿Registrar formulación?';
+    const mensaje = this.formulacionEditando
+      ? 'Confirma que deseas actualizar la formulación de medicamentos del paciente.'
+      : 'Confirma que deseas guardar la nueva formulación de medicamentos del paciente.';
+    alertaConfirmarFormulario(accion, mensaje, this.formulacionEditando ? 'Actualizar' : 'Guardar')
+      .then(resultado => {
+        if (resultado.isConfirmed) this.ejecutarGuardarFormulacion();
+      });
+  }
+
+  private ejecutarGuardarFormulacion(): void {
     if (!this.idPaciente || this.idPaciente <= 0) {
       alertaError(
         'Error',
@@ -1942,7 +1888,14 @@ export class ElementosPaciente implements OnInit {
   // EDITAR FORMULACIÓN
   // ============================================================
 
-  editarFormulacion(
+  editarFormulacion(formulacion: FormulacionMedicamento): void {
+    const nombre = this.obtenerNombreMedicamentoFormulacion(formulacion);
+    alertaEditar(nombre, 'formulación').then(resultado => {
+      if (resultado.isConfirmed) this.ejecutarEditarFormulacion(formulacion);
+    });
+  }
+
+  private ejecutarEditarFormulacion(
     formulacion: FormulacionMedicamento
   ): void {
 
@@ -1984,15 +1937,10 @@ export class ElementosPaciente implements OnInit {
     formulacion: FormulacionMedicamento
   ): void {
 
-    Swal.fire({
-      title: '¿Eliminar formulación?',
-      text: 'Esta formulación será eliminada permanentemente.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar',
-      reverseButtons: true
-    }).then((resultado) => {
+    alertaEliminar(
+      this.obtenerNombreMedicamentoFormulacion(formulacion),
+      'formulación'
+    ).then((resultado) => {
 
       if (!resultado.isConfirmed) {
         return;
@@ -3345,7 +3293,13 @@ export class ElementosPaciente implements OnInit {
   // EDITAR ELEMENTO
   // ============================================================
 
-  editarElemento(
+  editarElemento(elemento: ElementoPaciente): void {
+    alertaEditar(this.obtenerNombreElemento(elemento), 'elemento del paciente').then(resultado => {
+      if (resultado.isConfirmed) this.ejecutarEditarElemento(elemento);
+    });
+  }
+
+  private ejecutarEditarElemento(
     elemento: ElementoPaciente
   ): void {
 
@@ -4092,6 +4046,17 @@ export class ElementosPaciente implements OnInit {
   // ============================================================
 
   guardarElemento(): void {
+    const accion = this.elementoEditando ? '¿Actualizar elemento?' : '¿Guardar elementos del paciente?';
+    const mensaje = this.elementoEditando
+      ? 'Confirma que deseas actualizar la información del elemento.'
+      : 'Se registrarán los medicamentos o insumos que agregaste para este paciente.';
+    alertaConfirmarFormulario(accion, mensaje, this.elementoEditando ? 'Actualizar' : 'Guardar')
+      .then(resultado => {
+        if (resultado.isConfirmed) this.ejecutarGuardarElemento();
+      });
+  }
+
+  private ejecutarGuardarElemento(): void {
 
     if (this.guardandoElementos) {
       return;
@@ -4921,6 +4886,19 @@ export class ElementosPaciente implements OnInit {
   // ============================================================
 
   guardarCuidados(): void {
+    const actualizar = this.cuidados.id_cuidado > 0;
+    alertaConfirmarFormulario(
+      actualizar ? '¿Actualizar cuidados de enfermería?' : '¿Registrar cuidados de enfermería?',
+      actualizar
+        ? 'Confirma que deseas guardar los cambios realizados en los cuidados del paciente.'
+        : 'Confirma que deseas registrar los cuidados de enfermería para este paciente.',
+      actualizar ? 'Actualizar' : 'Guardar'
+    ).then(resultado => {
+      if (resultado.isConfirmed) this.ejecutarGuardarCuidados();
+    });
+  }
+
+  private ejecutarGuardarCuidados(): void {
 
     if (!this.idPaciente || this.idPaciente <= 0) {
 
@@ -5145,6 +5123,13 @@ export class ElementosPaciente implements OnInit {
   // ============================================================
 
   editarCuidados(): void {
+    const nombre = `${this.paciente?.nombre || ''} ${this.paciente?.apellido || ''}`.trim() || 'este paciente';
+    alertaEditar(nombre, 'cuidados de enfermería').then(resultado => {
+      if (resultado.isConfirmed) this.ejecutarEditarCuidados();
+    });
+  }
+
+  private ejecutarEditarCuidados(): void {
 
     if (!this.cuidados.id_cuidado) {
 
@@ -5366,6 +5351,19 @@ export class ElementosPaciente implements OnInit {
   // ============================================================
 
   guardarRecomendaciones(): void {
+    const actualizar = this.recomendaciones.id_recomendacion > 0;
+    alertaConfirmarFormulario(
+      actualizar ? '¿Actualizar recomendaciones?' : '¿Registrar recomendaciones?',
+      actualizar
+        ? 'Confirma que deseas guardar los cambios en las recomendaciones del paciente.'
+        : 'Confirma que deseas registrar las recomendaciones para este paciente.',
+      actualizar ? 'Actualizar' : 'Guardar'
+    ).then(resultado => {
+      if (resultado.isConfirmed) this.ejecutarGuardarRecomendaciones();
+    });
+  }
+
+  private ejecutarGuardarRecomendaciones(): void {
 
     if (
       this.recomendaciones.id_recomendacion > 0 &&
@@ -5596,6 +5594,13 @@ export class ElementosPaciente implements OnInit {
   // ============================================================
 
   editarRecomendaciones(): void {
+    const nombre = `${this.paciente?.nombre || ''} ${this.paciente?.apellido || ''}`.trim() || 'este paciente';
+    alertaEditar(nombre, 'recomendaciones').then(resultado => {
+      if (resultado.isConfirmed) this.ejecutarEditarRecomendaciones();
+    });
+  }
+
+  private ejecutarEditarRecomendaciones(): void {
 
     if (!this.recomendaciones.id_recomendacion || this.recomendaciones.id_recomendacion <= 0) {
       alertaAdvertencia('Sin recomendaciones', 'Primero debe registrar las recomendaciones.');
@@ -5881,6 +5886,17 @@ export class ElementosPaciente implements OnInit {
   }
 
   subirYAnalizarPdfHistoria(): void {
+    if (!this.archivoPdfSeleccionado || this.subiendoPdfHistoria) return;
+    alertaConfirmarFormulario(
+      '¿Subir documento de historia clínica?',
+      'El PDF seleccionado se enviará para guardarlo en el registro del paciente.',
+      'Subir documento'
+    ).then(resultado => {
+      if (resultado.isConfirmed) this.ejecutarSubirYAnalizarPdfHistoria();
+    });
+  }
+
+  private ejecutarSubirYAnalizarPdfHistoria(): void {
     if (!this.idPaciente || this.idPaciente <= 0) {
       alertaAdvertencia('Paciente inválido', 'No se pudo identificar el paciente.');
       return;
@@ -5972,6 +5988,13 @@ export class ElementosPaciente implements OnInit {
   // ============================================================
 
   editarHistoriaClinica(): void {
+    const nombre = `${this.paciente?.nombre || ''} ${this.paciente?.apellido || ''}`.trim() || 'este paciente';
+    alertaEditar(nombre, 'historia clínica').then(resultado => {
+      if (resultado.isConfirmed) this.ejecutarEditarHistoriaClinica();
+    });
+  }
+
+  private ejecutarEditarHistoriaClinica(): void {
 
     if (!this.historiaClinica.id_historia_clinica || this.historiaClinica.id_historia_clinica <= 0) {
       alertaAdvertencia('Sin historia clínica', 'Primero debe registrar la historia clínica.');
@@ -5988,6 +6011,19 @@ export class ElementosPaciente implements OnInit {
   // ============================================================
 
   guardarHistoriaClinica(): void {
+    const actualizar = this.historiaClinica.id_historia_clinica > 0;
+    alertaConfirmarFormulario(
+      actualizar ? '¿Actualizar historia clínica?' : '¿Registrar historia clínica?',
+      actualizar
+        ? 'Confirma que deseas guardar los cambios de la historia clínica.'
+        : 'Confirma que deseas registrar la historia clínica de este paciente.',
+      actualizar ? 'Actualizar' : 'Guardar'
+    ).then(resultado => {
+      if (resultado.isConfirmed) this.ejecutarGuardarHistoriaClinica();
+    });
+  }
+
+  private ejecutarGuardarHistoriaClinica(): void {
 
     if (
       this.historiaClinica.id_historia_clinica > 0 &&
@@ -6321,12 +6357,10 @@ export class ElementosPaciente implements OnInit {
     }
 
     if (faltantes.length > 0) {
-      mostrarAlerta({
-        tono: 'ambar', icono: 'warning', iconoSvg: ICONOS.alerta,
-        titulo: 'Registro incompleto',
-        html: `<p class="m-0 text-[1.15rem] leading-snug text-slate-700">Aún faltan apartados por completar:</p><ul class="mt-2 ml-5 list-disc text-[1.05rem] text-slate-700">${faltantes.map(item => `<li>${item}</li>`).join('')}</ul>`,
-        confirmar: 'Entendido'
-      });
+      alertaAdvertencia(
+        'Registro incompleto',
+        `Aún faltan apartados por completar: ${faltantes.join(', ')}.`
+      );
       return;
     }
 
@@ -6335,12 +6369,11 @@ export class ElementosPaciente implements OnInit {
       return;
     }
 
-    mostrarAlerta({
-      tono: 'azul', icono: 'question', iconoSvg: ICONOS.check,
-      titulo: '¿Finalizar registro?',
-      html: `<p class="m-0 text-[1.15rem] leading-snug text-slate-700">Se guardarán las fotografías faciales del paciente junto con la información registrada.</p>`,
-      confirmar: 'Sí, finalizar', cancelar: 'Cancelar', confirmarIzquierda: true
-    }).then((resultado: any) => {
+    alertaConfirmarFormulario(
+      '¿Finalizar registro?',
+      'Se guardarán las fotografías faciales del paciente junto con la información registrada.',
+      'Sí, finalizar'
+    ).then((resultado: any) => {
       if (!resultado.isConfirmed) return;
       this.guardarRegistroFacial();
     });

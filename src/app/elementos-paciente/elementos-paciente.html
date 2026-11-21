@@ -826,7 +826,7 @@
 
             <div class="formulario-acciones">
 
-              <button type="button" class="btn-secundario" (click)="cancelarElemento()">
+              <button type="button" class="btn-secundario" (click)="cancelarElemento()" [disabled]="guardandoElementos">
 
                 Cancelar
 
@@ -835,10 +835,12 @@
               <button type="button" class="btn-primary" (click)="guardarElemento()" *ngIf="
               tipoElemento === 'insumo' ||
               elementoEditando
-            ">
+            " [disabled]="guardandoElementos" [attr.aria-busy]="guardandoElementos">
 
                 {{
-                elementoEditando
+                guardandoElementos
+                ? 'Guardando...'
+                : elementoEditando
                 ? 'Actualizar elemento'
                 : 'Guardar insumo'
                 }}
@@ -848,9 +850,9 @@
               <button type="button" class="btn-primary" (click)="guardarElemento()" *ngIf="
               tipoElemento === 'medicamento' &&
               !elementoEditando
-            ">
+            " [disabled]="guardandoElementos" [attr.aria-busy]="guardandoElementos">
 
-                Guardar medicamentos
+                {{ guardandoElementos ? 'Guardando...' : 'Guardar medicamentos' }}
 
               </button>
 
@@ -2347,8 +2349,7 @@
           <label class="btn-secundario facial-agregar" [class.deshabilitado]="subiendoPdfHistoria">
             <span class="material-symbols-outlined">upload_file</span>
             {{ nombrePdfSeleccionado ? 'Cambiar PDF' : 'Seleccionar PDF' }}
-            <input type="file" accept="application/pdf,.pdf" hidden
-              [disabled]="subiendoPdfHistoria"
+            <input type="file" accept="application/pdf,.pdf" hidden [disabled]="subiendoPdfHistoria"
               (change)="seleccionarPdfHistoria($event)">
           </label>
 
@@ -2357,10 +2358,8 @@
             {{ nombrePdfSeleccionado }}
           </span>
 
-          <button type="button" class="btn-primary"
-            *ngIf="archivoPdfSeleccionado || subiendoPdfHistoria"
-            [disabled]="!archivoPdfSeleccionado || subiendoPdfHistoria"
-            (click)="subirYAnalizarPdfHistoria()">
+          <button type="button" class="btn-primary" *ngIf="archivoPdfSeleccionado || subiendoPdfHistoria"
+            [disabled]="!archivoPdfSeleccionado || subiendoPdfHistoria" (click)="subirYAnalizarPdfHistoria()">
 
             {{ subiendoPdfHistoria ? 'Subiendo documento...' : 'Subir documento' }}
 
@@ -2375,7 +2374,8 @@
           </p>
         </div>
 
-        <div class="historia-pdf-confirmacion" *ngIf="!subiendoPdfHistoria && (urlDocumentoPdfSubido || historiaClinica.rangos_vitales_json)">
+        <div class="historia-pdf-confirmacion"
+          *ngIf="!subiendoPdfHistoria && (urlDocumentoPdfSubido || historiaClinica.rangos_vitales_json)">
           <span class="material-symbols-outlined">check_circle</span>
           <span>Documento PDF cargado y procesado correctamente.</span>
         </div>

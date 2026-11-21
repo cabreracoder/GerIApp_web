@@ -185,6 +185,33 @@
 
       </div>
 
+      <div class="punctuality-chart-block">
+        <div class="punctuality-chart-heading">
+          <span>Puntualidad por semana</span>
+          <small>{{ mesSeleccionado }}</small>
+        </div>
+
+        <svg class="punctuality-line-chart" viewBox="0 0 340 145" role="img"
+          aria-label="Porcentaje de puntualidad por semana">
+          <g class="punctuality-grid-lines">
+            <line x1="25" y1="25" x2="315" y2="25"></line>
+            <line x1="25" y1="67" x2="315" y2="67"></line>
+            <line x1="25" y1="110" x2="315" y2="110"></line>
+          </g>
+          <path *ngIf="totalRegistrosPuntualidad > 0" class="punctuality-chart-area" [attr.d]="areaPuntualidad"></path>
+          <path *ngIf="totalRegistrosPuntualidad > 0" class="punctuality-chart-line" [attr.d]="rutaPuntualidad"></path>
+          <g *ngFor="let semana of graficaPuntualidadSemanal" class="punctuality-chart-point">
+            <circle [attr.cx]="semana.x" [attr.cy]="semana.y" r="4.2"></circle>
+            <text [attr.x]="semana.x" [attr.y]="semana.y - 10" text-anchor="middle">{{ semana.porcentaje }}%</text>
+            <text class="punctuality-week-label" [attr.x]="semana.x" y="137" text-anchor="middle">{{ semana.etiqueta
+              }}</text>
+          </g>
+        </svg>
+        <p class="punctuality-chart-empty" *ngIf="totalRegistrosPuntualidad === 0">
+          Aún no hay llegadas registradas para este mes.
+        </p>
+      </div>
+
       <div class="progress-track">
         <div class="progress-fill" [style.width.%]="porcentajePuntualidad">
         </div>
@@ -233,34 +260,52 @@
       <!-- BARRAS VERTICALES DE CUMPLIMIENTO -->
       <div class="compliance-columns">
 
+        <!-- TURNOS ASIGNADOS -->
         <div class="compliance-column">
-          <div class="compliance-column-value">{{ porcentajeTurnosFinalizados | number:'1.0-0' }}%</div>
+          <div class="compliance-column-value">
+            {{ porcentajeTurnosAsignados | number:'1.0-0' }}%
+          </div>
           <div class="compliance-column-track">
-            <div class="compliance-column-fill completed" [style.height.%]="porcentajeTurnosFinalizados">
-            </div>
+            <div class="compliance-column-fill pending" [style.height.%]="porcentajeTurnosAsignados"></div>
+          </div>
+          <strong class="compliance-column-count">{{ turnosAsignados }}</strong>
+          <span class="compliance-column-label">Asignados</span>
+        </div>
+
+        <!-- TURNOS EN CURSO -->
+        <div class="compliance-column">
+          <div class="compliance-column-value">
+            {{ porcentajeTurnosEnCurso | number:'1.0-0' }}%
+          </div>
+          <div class="compliance-column-track">
+            <div class="compliance-column-fill in-progress" [style.height.%]="porcentajeTurnosEnCurso"></div>
+          </div>
+          <strong class="compliance-column-count">{{ turnosEnCurso }}</strong>
+          <span class="compliance-column-label">En curso</span>
+        </div>
+
+        <!-- TURNOS FINALIZADOS -->
+        <div class="compliance-column">
+          <div class="compliance-column-value">
+            {{ porcentajeTurnosFinalizados | number:'1.0-0' }}%
+          </div>
+          <div class="compliance-column-track">
+            <div class="compliance-column-fill completed" [style.height.%]="porcentajeTurnosFinalizados"></div>
           </div>
           <strong class="compliance-column-count">{{ turnosFinalizados }}</strong>
           <span class="compliance-column-label">Finalizados</span>
         </div>
 
+        <!-- TURNOS NO CUMPLIDOS -->
         <div class="compliance-column">
-          <div class="compliance-column-value">{{ porcentajeTurnosEnCurso | number:'1.0-0' }}%</div>
-          <div class="compliance-column-track">
-            <div class="compliance-column-fill in-progress" [style.height.%]="porcentajeTurnosEnCurso">
-            </div>
+          <div class="compliance-column-value">
+            {{ porcentajeTurnosNoCumplidos | number:'1.0-0' }}%
           </div>
-          <strong class="compliance-column-count">{{ turnosEnCurso }}</strong>
-          <span class="compliance-column-label">Asignados y<br>en curso</span>
-        </div>
-
-        <div class="compliance-column">
-          <div class="compliance-column-value">{{ porcentajeTurnosPendientes | number:'1.0-0' }}%</div>
           <div class="compliance-column-track">
-            <div class="compliance-column-fill pending" [style.height.%]="porcentajeTurnosPendientes">
-            </div>
+            <div class="compliance-column-fill not-completed" [style.height.%]="porcentajeTurnosNoCumplidos"></div>
           </div>
-          <strong class="compliance-column-count">{{ turnosPendientesCierre }}</strong>
-          <span class="compliance-column-label">Pendientes<br>de cierre</span>
+          <strong class="compliance-column-count">{{ turnosNoCumplidos }}</strong>
+          <span class="compliance-column-label">No cumplidos</span>
         </div>
 
       </div>
@@ -281,32 +326,49 @@
         </span>
       </div>
 
-      <div class="health-grid">
+      <div class="health-chart-layout">
 
-        <div *ngFor="let estado of estadosSalud" class="health-item" [ngClass]="estado.clase">
 
-          <div class="health-icon">
-            <span class="icono-material">
-              {{ estado.icono }}
-            </span>
+        <div class="health-pie-wrap">
+          <div class="health-pie" role="img" aria-label="Distribución de pacientes por estado general de salud"
+            [style.background]="saludGrafico">
+
+            <div class="health-pie-center">
+              <strong>{{ totalPacientesEvaluados }}</strong>
+              <span>Pacientes</span>
+            </div>
+
           </div>
+        </div>
 
-          <div>
+
+        <div class="health-legend">
+          <div *ngFor="let estado of estadosSalud" class="health-legend-item" [ngClass]="estado.clase">
+
+            <span class="health-legend-dot"></span>
+
+            <span class="health-legend-name">
+              {{ estado.nombre }}
+            </span>
+
             <strong class="health-number">
               {{ estado.cantidad }}
             </strong>
 
-            <span>{{ estado.nombre }}</span>
+            <small>{{ estado.porcentaje }}%</small>
           </div>
-
         </div>
 
       </div>
 
-      <div class="card-footer-info">
-        Total de pacientes evaluados:
+      <div class="health-total">
+        <span>Total de pacientes clasificados</span>
         <strong>{{ totalPacientesEvaluados }}</strong>
       </div>
+
+      <p class="health-empty" *ngIf="totalPacientesEvaluados === 0">
+        Aún no hay una clasificación clínica disponible para mostrar.
+      </p>
 
     </article>
 
@@ -327,12 +389,23 @@
       <div class="events-summary">
 
         <div class="events-chart">
-          <div class="events-pie" [style.background]="'conic-gradient(#d65b61 0deg ' +
-                 (eventosRiesgoAlto * 360 / (eventosRiesgoAlto + eventosRiesgoMedio || 1)) +
-                 'deg, #3B5BDB ' +
-                 (eventosRiesgoAlto * 360 / (eventosRiesgoAlto + eventosRiesgoMedio || 1)) +
-                 'deg 360deg)'">
+
+          <div class="events-pie" role="img" aria-label="Distribución de eventos por nivel de riesgo"
+            [style.background]="'conic-gradient(#3858D9 0deg ' +
+      (eventosRiesgoAlto * 360 /
+      (eventosRiesgoAlto + eventosRiesgoMedio || 1)) +
+      'deg, #70B5F2 ' +
+      (eventosRiesgoAlto * 360 /
+      (eventosRiesgoAlto + eventosRiesgoMedio || 1)) +
+      'deg 360deg)'">
+
+            <div class="events-pie-center">
+              <strong>{{ totalEventosIa }}</strong>
+              <span>Eventos</span>
+            </div>
+
           </div>
+
         </div>
 
         <div class="events-legend">
