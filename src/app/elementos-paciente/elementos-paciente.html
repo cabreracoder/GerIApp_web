@@ -2320,6 +2320,68 @@
 
       </div>
 
+
+      <!-- DOCUMENTO DE HISTORIA CLÍNICA EN PDF -->
+
+      <div class="historia-ia-bloque">
+
+        <div class="historia-ia-encabezado">
+
+          <div>
+
+            <h4>
+              <span class="material-symbols-outlined">description</span>
+              Documento de historia clínica (PDF)
+            </h4>
+
+            <p>
+              Adjunta el documento de historia clínica en formato PDF para guardarlo en el registro del paciente.
+            </p>
+
+          </div>
+
+        </div>
+
+        <div class="historia-ia-controles">
+
+          <label class="btn-secundario facial-agregar" [class.deshabilitado]="subiendoPdfHistoria">
+            <span class="material-symbols-outlined">upload_file</span>
+            {{ nombrePdfSeleccionado ? 'Cambiar PDF' : 'Seleccionar PDF' }}
+            <input type="file" accept="application/pdf,.pdf" hidden
+              [disabled]="subiendoPdfHistoria"
+              (change)="seleccionarPdfHistoria($event)">
+          </label>
+
+          <span class="historia-ia-archivo" *ngIf="nombrePdfSeleccionado">
+            <span class="material-symbols-outlined">description</span>
+            {{ nombrePdfSeleccionado }}
+          </span>
+
+          <button type="button" class="btn-primary"
+            *ngIf="archivoPdfSeleccionado || subiendoPdfHistoria"
+            [disabled]="!archivoPdfSeleccionado || subiendoPdfHistoria"
+            (click)="subirYAnalizarPdfHistoria()">
+
+            {{ subiendoPdfHistoria ? 'Subiendo documento...' : 'Subir documento' }}
+
+          </button>
+
+        </div>
+
+        <div class="facial-aviso historia-ia-cargando" *ngIf="subiendoPdfHistoria">
+          <span class="material-symbols-outlined">hourglass_top</span>
+          <p>
+            Subiendo y procesando el documento PDF. Esto puede tardar unos segundos...
+          </p>
+        </div>
+
+        <div class="historia-pdf-confirmacion" *ngIf="!subiendoPdfHistoria && (urlDocumentoPdfSubido || historiaClinica.rangos_vitales_json)">
+          <span class="material-symbols-outlined">check_circle</span>
+          <span>Documento PDF cargado y procesado correctamente.</span>
+        </div>
+
+      </div>
+
     </div>
 
   </section>
