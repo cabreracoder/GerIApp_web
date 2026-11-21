@@ -6,32 +6,84 @@
        ===================================================== -->
   <section *ngIf="vistaActiva === 'resumen'" class="dashboard-view">
 
-    <!-- BANNER INSTITUCIONAL -->
-    <section class="welcome-banner">
-      <div class="welcome-image">
-        <img src="/loginLogo.png" alt="Adultos mayores de GeriApp" />
+   <!-- BANNER INSTITUCIONAL SUPERADMINISTRADOR -->
+  <section class="banner-dashboard">
+
+    <div class="banner-dashboard__contenido">
+
+      <p class="banner-dashboard__fecha">
+        21 de noviembre de 2026
+      </p>
+
+      <h1>Bienvenido, Súper Administrador</h1>
+
+      <p class="banner-dashboard__subtitulo">
+        Panel institucional de GeriApp.
+      </p>
+
+      <div class="banner-dashboard__mensaje">
+
+        <span class="material-symbols-outlined">
+          monitor_heart
+        </span>
+
+        <span>
+          Monitoreo integral de pacientes,
+          cuidadores y servicios del centro.
+        </span>
+
+        <span class="material-symbols-outlined corazon">
+          favorite
+        </span>
+
       </div>
-      <div class="welcome-content">
-        <span class="welcome-eyebrow">GERIAPP · PANEL INSTITUCIONAL</span>
-        <h1>¡Hola, Súper Administrador!</h1>
-        <p>Consulta el estado general de la fundación, sus sedes y usuarios.</p>
-      </div>
-      <div class="period-filter">
-        <div class="period-label">
-          <span class="material-symbols-outlined">calendar_month</span>
-          <div><strong>Periodo de análisis</strong><span>Selecciona un rango de fechas</span></div>
-        </div>
-        <div class="period-field">
-          <span class="material-symbols-outlined">date_range</span>
-          <input type="date" aria-label="Fecha inicial" disabled />
-          <span class="period-separator">–</span>
-          <input type="date" aria-label="Fecha final" disabled />
-        </div>
-        <button class="primary-button search-button" type="button" disabled title="Se habilitará al conectar los filtros estadísticos">
-          <span class="material-symbols-outlined">search</span>Buscar
-        </button>
-      </div>
-    </section>
+
+    </div>
+
+    <div class="banner-dashboard__decoracion">
+      <span class="dashboard-onda-superior"></span>
+      <span class="dashboard-onda-inferior"></span>
+    </div>
+
+    <div class="banner-dashboard__foto">
+      <img
+        src="/banner-dashboard.png"
+        alt="Bienvenida a GeriApp">
+    </div>
+
+  </section>
+
+  <!-- FILTRO DE PERIODO (SE CONSERVA) -->
+  <section class="welcome-filter-row">
+    <div class="period-field">
+      <span class="material-symbols-outlined">date_range</span>
+
+      <input
+        type="date"
+        aria-label="Fecha inicial"
+        [value]="fechaInicioSeleccionada"
+        (change)="fechaInicioSeleccionada = $any($event.target).value"
+      />
+
+      <span class="period-separator">–</span>
+
+      <input
+        type="date"
+        aria-label="Fecha final"
+        [value]="fechaFinSeleccionada"
+        (change)="fechaFinSeleccionada = $any($event.target).value"
+      />
+    </div>
+
+    <button
+      class="primary-button search-button"
+      type="button"
+      (click)="aplicarFiltroPeriodo()">
+
+      <span class="material-symbols-outlined">search</span>
+      Buscar
+    </button>
+  </section>
 
     <!-- DISTRIBUCIÓN DEL DASHBOARD SEGÚN LA REFERENCIA APROBADA -->
     <section class="dashboard-grid">
@@ -72,8 +124,8 @@
           <svg class="trend-svg" viewBox="0 0 600 225" role="img" aria-label="Registros mensuales de usuarios">
             <defs>
               <linearGradient id="trendAreaGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#8b35f5" stop-opacity="0.24" />
-                <stop offset="100%" stop-color="#8b35f5" stop-opacity="0.015" />
+                <stop offset="0%" stop-color="#3b5bdb" stop-opacity="0.24" />
+                <stop offset="100%" stop-color="#3b5bdb" stop-opacity="0.015" />
               </linearGradient>
             </defs>
             <g class="trend-grid-lines">

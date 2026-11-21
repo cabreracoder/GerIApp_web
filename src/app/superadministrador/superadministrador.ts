@@ -464,11 +464,13 @@ export class Superadministrador implements OnInit {
   // ESTADÍSTICAS DEL DASHBOARD
   // ==========================================
 
-  // Cantidad real de administradores asignados a una sede.
+  // Cantidad de administradores asignados a una sede
+  // según el periodo seleccionado.
   administradoresDeSede(sede: Sede): number {
-    return this.administradores.filter(
-      (administrador) =>
-        Number(administrador.id_sede) === Number(sede.id_sede)
+    return this.usuariosParaAnalisis.filter(
+      (usuario) =>
+        Number(usuario.id_sede) === Number(sede.id_sede) &&
+        this.esRolAdministrador(usuario)
     ).length;
   }
 
@@ -490,13 +492,19 @@ export class Superadministrador implements OnInit {
     return this.sedes.filter((sede) => this.esActivo(sede.estado)).length;
   }
 
-  // Porcentaje de administradores frente al total de usuarios registrados.
+  // Porcentaje de administradores dentro del periodo seleccionado.
   get porcentajeAdministradores(): number {
-    if (this.usuariosDisponibles.length === 0) return 0;
-    return (this.administradores.length / this.usuariosDisponibles.length) * 100;
+    const usuarios = this.usuariosParaAnalisis;
+    if (usuarios.length === 0) return 0;
+
+    const cantidad = usuarios.filter(
+      (usuario) => this.esRolAdministrador(usuario)
+    ).length;
+
+    return (cantidad / usuarios.length) * 100;
   }
 
-  // Datos reales de usuarios activos e inactivos agrupados por sede.
+  // Usuarios activos e inactivos agrupados por sede dentro del periodo.
   get estadisticasUsuariosPorSede(): Array<{
     sede: Sede;
     activos: number;
@@ -504,11 +512,16 @@ export class Superadministrador implements OnInit {
     total: number;
   }> {
     return this.sedes.map((sede) => {
-      const usuariosSede = this.usuariosDisponibles.filter(
-        (usuario) => Number(usuario.id_sede) === Number(sede.id_sede)
+      const usuariosSede = this.usuariosParaAnalisis.filter(
+        (usuario) =>
+          Number(usuario.id_sede) === Number(sede.id_sede)
       );
-      const activos = usuariosSede.filter((usuario) => this.esActivo(usuario.estado)).length;
+
+      const activos = usuariosSede.filter(
+        (usuario) => this.esActivo(usuario.estado)
+      ).length;
       const inactivos = usuariosSede.length - activos;
+
       return { sede, activos, inactivos, total: usuariosSede.length };
     });
   }
@@ -528,7 +541,7 @@ export class Superadministrador implements OnInit {
     porcentaje: number;
     color: string;
   }> {
-    const colores = ['#1745e8', '#2688ed', '#70b9f4', '#f5c99e', '#9275e8', '#20a69b'];
+    const colores = ['#1C2F86', '#315EDB', '#3B5BDB', '#3999ED', '#80BFF2', '#B9D6FA'];
 
     const rolesOperativos = this.roles.filter(
       (rol) => !this.normalizarTexto(rol.nombre).includes('superadministrador')
@@ -537,7 +550,7 @@ export class Superadministrador implements OnInit {
     const total = this.totalUsuariosOperativos;
 
     const distribucion = rolesOperativos.map((rol, indice) => {
-      const cantidad = this.usuariosDisponibles.filter((usuario) => {
+      const cantidad = this.usuariosParaAnalisis.filter((usuario) => {
         if (this.esRolSuperadministrador(usuario)) {
           return false;
         }
@@ -577,16 +590,17 @@ export class Superadministrador implements OnInit {
         nombre: 'Sin rol identificado',
         cantidad: sinRolIdentificado,
         porcentaje: total > 0 ? (sinRolIdentificado / total) * 100 : 0,
-        color: '#20a69b',
+        color: '#B9D6FA',
       });
     }
 
     return distribucion.filter((rol) => rol.cantidad > 0);
   }
 
-  // Total de usuarios operativos: excluye únicamente al Superadministrador.
+  // Total de usuarios operativos dentro del periodo.
+  // Excluye únicamente al Superadministrador.
   get totalUsuariosOperativos(): number {
-    return this.usuariosDisponibles.filter(
+    return this.usuariosParaAnalisis.filter(
       (usuario) => !this.esRolSuperadministrador(usuario)
     ).length;
   }
@@ -610,22 +624,60 @@ export class Superadministrador implements OnInit {
     return `conic-gradient(${segmentos.join(', ')})`;
   }
 
-  // Últimos seis meses, calculados con fecha_ingreso real de cada usuario.
-  get tendenciaRegistros(): Array<{ clave: string; etiqueta: string; cantidad: number; x: number; y: number }> {
+  // Registros agrupados por mes dentro del periodo seleccionado.
+  // Si no hay filtro aplicado, muestra los últimos seis meses.
+  get tendenciaRegistros(): Array<{
+    clave: string;
+    etiqueta: string;
+    cantidad: number;
+    x: number;
+    y: number;
+  }> {
     const hoy = new Date();
-    const meses: Array<{ clave: string; etiqueta: string; cantidad: number; x: number; y: number }> = [];
-    for (let i = 5; i >= 0; i--) {
-      const fecha = new Date(hoy.getFullYear(), hoy.getMonth() - i, 1);
-      const clave = `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}`;
+    const fechaInicial = this.fechaInicioAplicada
+      ? new Date(`${this.fechaInicioAplicada}T00:00:00`)
+      : new Date(hoy.getFullYear(), hoy.getMonth() - 5, 1);
+    const fechaFinal = this.fechaFinAplicada
+      ? new Date(`${this.fechaFinAplicada}T00:00:00`)
+      : hoy;
+
+    const meses: Array<{
+      clave: string;
+      etiqueta: string;
+      cantidad: number;
+      x: number;
+      y: number;
+    }> = [];
+
+    const cursor = new Date(fechaInicial.getFullYear(), fechaInicial.getMonth(), 1);
+    const limite = new Date(fechaFinal.getFullYear(), fechaFinal.getMonth(), 1);
+
+    while (cursor <= limite && meses.length < 120) {
+      const clave = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, '0')}`;
       const etiqueta = new Intl.DateTimeFormat('es-CO', { month: 'short' })
-        .format(fecha).replace('.', '');
-      const cantidad = this.usuariosDisponibles.filter((usuario) =>
-        typeof usuario.fecha_ingreso === 'string' && usuario.fecha_ingreso.slice(0, 7) === clave
+        .format(cursor).replace('.', '');
+      const cantidad = this.usuariosParaAnalisis.filter(
+        (usuario) =>
+          typeof usuario.fecha_ingreso === 'string' &&
+          usuario.fecha_ingreso.slice(0, 7) === clave
       ).length;
-      meses.push({ clave, etiqueta: etiqueta.charAt(0).toUpperCase() + etiqueta.slice(1), cantidad, x: 30 + meses.length * 108, y: 180 });
+
+      meses.push({
+        clave,
+        etiqueta: etiqueta.charAt(0).toUpperCase() + etiqueta.slice(1),
+        cantidad,
+        x: 0,
+        y: 180,
+      });
+      cursor.setMonth(cursor.getMonth() + 1);
     }
+
     const maximo = Math.max(...meses.map((mes) => mes.cantidad), 1);
-    return meses.map((mes) => ({ ...mes, y: 180 - (mes.cantidad / maximo) * 145 }));
+    return meses.map((mes, indice) => ({
+      ...mes,
+      x: meses.length === 1 ? 300 : 30 + indice * (540 / (meses.length - 1)),
+      y: 180 - (mes.cantidad / maximo) * 145,
+    }));
   }
 
   get puntosTendencia(): string {
@@ -849,6 +901,78 @@ export class Superadministrador implements OnInit {
       }
     });
   });
+}
+
+// ==========================================
+// FILTRO DE PERIODO DEL DASHBOARD
+// ==========================================
+
+fechaInicioSeleccionada = '';
+fechaFinSeleccionada = '';
+
+fechaInicioAplicada: string | null = null;
+fechaFinAplicada: string | null = null;
+
+// Usuarios incluidos en el periodo consultado.
+get usuariosParaAnalisis(): Usuario[] {
+  if (!this.fechaInicioAplicada && !this.fechaFinAplicada) {
+    return this.usuariosDisponibles;
+  }
+
+  return this.usuariosDisponibles.filter((usuario) => {
+    if (!usuario.fecha_ingreso) return false;
+
+    const fecha = String(usuario.fecha_ingreso).slice(0, 10);
+
+    if (this.fechaInicioAplicada && fecha < this.fechaInicioAplicada) {
+      return false;
+    }
+
+    if (this.fechaFinAplicada && fecha > this.fechaFinAplicada) {
+      return false;
+    }
+
+    return true;
+  });
+}
+
+// Aplicar búsqueda del periodo.
+aplicarFiltroPeriodo(): void {
+
+  const inicio = this.fechaInicioSeleccionada;
+  const fin = this.fechaFinSeleccionada;
+
+  if (!inicio && !fin) {
+    this.fechaInicioAplicada = null;
+    this.fechaFinAplicada = null;
+    this.cdr.detectChanges();
+    return;
+  }
+
+  if (!inicio || !fin) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Periodo incompleto',
+      text: 'Selecciona la fecha inicial y la fecha final.',
+      confirmButtonColor: '#3B5BDB'
+    });
+    return;
+  }
+
+  if (inicio > fin) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Fechas incorrectas',
+      text: 'La fecha inicial no puede ser posterior a la fecha final.',
+      confirmButtonColor: '#3B5BDB'
+    });
+    return;
+  }
+
+  this.fechaInicioAplicada = inicio;
+  this.fechaFinAplicada = fin;
+
+  this.cdr.detectChanges();
 }
 
 editarAdministrador(usuario: Usuario): void {
