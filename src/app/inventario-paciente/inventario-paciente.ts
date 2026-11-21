@@ -71,39 +71,63 @@ interface ConfigAlerta {
 // Motor único: todas las alertas pasan por aquí.
 // Las clases con "!" ganan sobre el CSS que SweetAlert2 trae por defecto.
 function mostrarAlerta(c: ConfigAlerta) {
+  const autoCerrar = !!c.autoCerrar;
 
-  const tono = TONOS[c.tono];
-  const conBotones = !c.autoCerrar;
-  const conCancelar = !!c.cancelar;
-  const botonSolo = conBotones && !conCancelar;
-  const tituloSinPie = !conBotones && !c.html;
+  // Se conserva el contenido y las opciones que ya utiliza este componente.
+  // Solo cambia la presentación para reutilizar el CSS global de GeriApp.
+  const contenido = c.html
+    ? c.html
+    : '';
+
+  const htmlAlerta = `
+    <div class="geri-alerta">
+      <div class="geri-alerta__onda"></div>
+      <div class="geri-alerta__contenido">
+        <img
+          src="/Logo-GerIApp.png"
+          class="geri-alerta__logo"
+          alt="GeriApp"
+          onerror="this.style.display='none'"
+        >
+        ${c.icono === 'success' ? '<div class="geri-alerta__check">✓</div>' : ''}
+        <h2 class="geri-alerta__titulo">${escaparHtml(c.titulo)}</h2>
+        ${contenido ? `<div class="geri-alerta__mensaje">${contenido}</div>` : ''}
+      </div>
+    </div>
+  `;
 
   return Swal.fire({
-    icon: c.icono,
-    iconHtml: c.iconoSvg,
-    title: escaparHtml(c.titulo),
-    html: c.html,
+    html: htmlAlerta,
+    width: 520,
+    padding: 0,
 
-    showConfirmButton: conBotones,
-    showCancelButton: conCancelar,
+    showConfirmButton: !autoCerrar,
+    showCancelButton: !!c.cancelar && !autoCerrar,
     confirmButtonText: c.confirmar,
-    cancelButtonText: c.cancelar,
+    cancelButtonText: c.cancelar || 'Cancelar',
+
     reverseButtons: !c.confirmarIzquierda,
     focusCancel: !!c.enfocarCancelar,
-    timer: c.autoCerrar ? 1800 : undefined,
+    timer: autoCerrar ? 1800 : undefined,
 
     buttonsStyling: false,
-    backdrop: 'rgba(15, 23, 42, 0.65)',
+    allowOutsideClick: false,
+    allowEscapeKey: true,
+    heightAuto: false,
+    scrollbarPadding: false,
+    backdrop: 'rgba(33, 37, 41, 0.48)',
+
+    didOpen: () => {
+      Swal.getContainer()?.style.setProperty('z-index', '3001', 'important');
+    },
 
     customClass: {
-      popup: '!grid-cols-[26%_1fr] !w-[34rem] !max-w-[92vw] !p-0 !rounded-[2.2rem] !overflow-hidden !bg-white',
-      icon: `col-start-1 row-start-1 row-span-3 !m-0 !flex !h-auto !w-auto !items-center !justify-center !rounded-none !border-0 !animate-none ${tono.panel}`,
-      title: `col-start-2 row-start-1 !m-0 !px-7 !pt-8 ${tituloSinPie ? '!pb-8' : '!pb-0'} !text-left !text-[1.6rem] !leading-tight !font-extrabold !text-slate-900`,
-      htmlContainer: `col-start-2 row-start-2 !m-0 !px-7 !pt-0 ${conBotones ? '!pb-0' : '!pb-8'} !justify-start !overflow-visible !text-left !text-base !font-normal`,
-      actions: `col-start-2 row-start-3 !m-0 !w-auto !flex-nowrap !gap-3 !px-7 !pt-6 !pb-8 ${botonSolo ? '!justify-end' : '!justify-stretch'}`,
-      confirmButton: `${botonSolo ? 'w-[calc(50%-0.375rem)]' : 'flex-1'} cursor-pointer rounded-2xl px-4 py-3 text-[1.1rem] font-bold text-white transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-slate-300 ${tono.boton}`,
-      cancelButton: 'flex-1 cursor-pointer rounded-2xl bg-slate-100 px-4 py-3 text-[1.1rem] font-bold text-slate-600 transition-colors hover:bg-slate-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-slate-300',
-    },
+      popup: 'geri-swal-popup',
+      htmlContainer: 'geri-swal-html',
+      actions: 'geri-swal-actions',
+      confirmButton: `geri-swal-btn geri-swal-btn--${c.tono}`,
+      cancelButton: 'geri-swal-btn geri-swal-btn--cancelar'
+    }
   });
 }
 

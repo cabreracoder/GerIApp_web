@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { ChangeDetectorRef, Component } from '@angular/core';
 import Swal from 'sweetalert2';
@@ -1212,372 +1213,573 @@ asignarSedeUsuario(): void {
       this.crear();
     }
   }
+
+  // =====================================================
+  // ASIGNACIONES DE HABITACIÓN
+  // =====================================================
+
+  /**
+   * Consulta todas las asignaciones del paciente.
+   * También contempla respuestas paginadas de Django REST Framework.
+   */
+  private async obtenerAsignacionesPaciente(
+    idPaciente: number
+  ): Promise<any[]> {
+    let url: string | null =
+      `${this.apiUrl}/asignacion_habitacion/`;
+
+    const asignaciones: any[] = [];
+
+    while (url) {
+      const respuesta: any = await firstValueFrom(
+        this.http.get<any>(url)
+      );
+
+      const resultados: any[] = Array.isArray(respuesta)
+        ? respuesta
+        : Array.isArray(respuesta?.results)
+          ? respuesta.results
+          : [];
+
+      asignaciones.push(
+        ...resultados.filter(
+          asignacion =>
+            Number(asignacion.id_paciente) === Number(idPaciente)
+        )
+      );
+
+      url = Array.isArray(respuesta)
+        ? null
+        : respuesta?.next || null;
+    }
+
+    return asignaciones;
+  }
+
+  /**
+   * Convierte la fecha de ingreso (input date) a un valor
+   * DateTime que acepta el serializer de Django REST Framework.
+   */
+  private fechaHoraAsignacion(
+    fecha?: string | null
+  ): string {
+    if (!fecha) {
+      return new Date().toISOString();
+    }
+
+    const valor = String(fecha);
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(valor)) {
+      return `${valor}T00:00:00`;
+    }
+
+    return valor;
+  }
+
+  /**
+   * Cierra una asignación vigente sin eliminar el historial.
+   */
+  private async cerrarAsignacionHabitacion(
+    asignacion: any
+  ): Promise<void> {
+    if (!asignacion?.id_asignacion) {
+      throw new Error(
+        'La asignación no contiene un identificador válido.'
+      );
+    }
+
+    await firstValueFrom(
+      this.http.patch(
+        `${this.apiUrl}/asignacion_habitacion/${asignacion.id_asignacion}/`,
+        {
+          fecha_fin: new Date().toISOString(),
+          estado: false
+        }
+      )
+    );
+  }
+
+  /**
+   * Crea una asignación activa para el paciente.
+   */
+  private async crearAsignacionHabitacion(
+    idPaciente: number,
+    idHabitacion: number,
+    idCama: number,
+    fechaInicio?: string | null
+  ): Promise<void> {
+    const asignacion = {
+      fecha_inicio: this.fechaHoraAsignacion(fechaInicio),
+      fecha_fin: null,
+      estado: true,
+      id_paciente: Number(idPaciente),
+      id_habitacion: Number(idHabitacion),
+      id_cama: Number(idCama)
+    };
+
+    await firstValueFrom(
+      this.http.post(
+        `${this.apiUrl}/asignacion_habitacion/`,
+        asignacion
+      )
+    );
+  }
+
+  /**
+   * Sincroniza la ubicación del paciente con su historial.
+   *
+   * - Si ya existe una asignación vigente en la misma ubicación,
+   *   no crea otra.
+   * - Si cambió habitación o cama, cierra la anterior y crea otra.
+   * - Si no existe una asignación vigente, crea una.
+   * - Si el paciente está inactivo, cierra las asignaciones vigentes.
+   */
+  private async sincronizarAsignacionHabitacion(
+    idPaciente: number,
+    idHabitacion: number,
+    idCama: number,
+    pacienteActivo: boolean,
+    fechaIngreso?: string | null
+  ): Promise<void> {
+    const asignaciones =
+      await this.obtenerAsignacionesPaciente(idPaciente);
+
+    const asignacionesVigentes = asignaciones.filter(
+      asignacion =>
+        (
+          asignacion.estado === true ||
+          asignacion.estado === 1 ||
+          asignacion.estado === 'true'
+        ) &&
+        (
+          asignacion.fecha_fin === null ||
+          asignacion.fecha_fin === undefined ||
+          asignacion.fecha_fin === ''
+        )
+    );
+
+    // Si el paciente se desactiva, cerrar todas sus asignaciones vigentes.
+    if (!pacienteActivo) {
+      for (const asignacion of asignacionesVigentes) {
+        await this.cerrarAsignacionHabitacion(asignacion);
+      }
+      return;
+    }
+
+    const asignacionCoincidente =
+      asignacionesVigentes.find(
+        asignacion =>
+          Number(asignacion.id_habitacion) === Number(idHabitacion) &&
+          Number(asignacion.id_cama) === Number(idCama)
+      );
+
+    // Si ya está asignado a esa habitación y cama,
+    // conservar una asignación y cerrar posibles duplicados.
+    if (asignacionCoincidente) {
+      for (const asignacion of asignacionesVigentes) {
+        if (
+          Number(asignacion.id_asignacion) !==
+          Number(asignacionCoincidente.id_asignacion)
+        ) {
+          await this.cerrarAsignacionHabitacion(asignacion);
+        }
+      }
+      return;
+    }
+
+    // Si tenía otra ubicación, cerrar primero el historial anterior.
+    for (const asignacion of asignacionesVigentes) {
+      await this.cerrarAsignacionHabitacion(asignacion);
+    }
+
+    // Si había una asignación anterior, el nuevo ingreso comienza ahora.
+    // Si no había ninguna, se utiliza la fecha de ingreso del paciente.
+    const fechaInicio = asignaciones.length > 0
+      ? new Date().toISOString()
+      : this.fechaHoraAsignacion(fechaIngreso);
+
+    await this.crearAsignacionHabitacion(
+      idPaciente,
+      idHabitacion,
+      idCama,
+      fechaInicio
+    );
+  }
+
+  /**
+   * Crea o actualiza el familiar responsable de un paciente.
+   */
+  private async guardarFamiliarResponsable(
+    idPaciente: number
+  ): Promise<void> {
+    const familiares = await firstValueFrom(
+      this.http.get<any[]>(
+        `${this.apiUrl}/familiar_responsable/`
+      )
+    );
+
+    const familiar = (familiares || []).find(
+      item =>
+        Number(item.id_paciente) === Number(idPaciente)
+    );
+
+    const datosFamiliar = {
+      nombres: this.form.familiarNombres,
+      apellidos: this.form.familiarApellidos,
+      parentesco: this.form.parentesco,
+      telefono_uno: this.form.telefono1,
+      telefono_dos: this.form.telefono2 || null,
+      direccion: this.form.direccion || null,
+      correo: this.form.correoElectronico || null,
+      municipio: this.form.municipio || null,
+      id_paciente: idPaciente
+    };
+
+    if (familiar) {
+      await firstValueFrom(
+        this.http.put(
+          `${this.apiUrl}/familiar_responsable/${familiar.id_familiar_responsable}/`,
+          datosFamiliar
+        )
+      );
+    } else {
+      await firstValueFrom(
+        this.http.post(
+          `${this.apiUrl}/familiar_responsable/`,
+          datosFamiliar
+        )
+      );
+    }
+  }
+
+  /**
+   * Convierte los errores de la API en un mensaje legible.
+   */
+  private detalleErrorApi(
+    error: any,
+    mensajePredeterminado: string
+  ): string {
+    if (typeof error?.error === 'string') {
+      return error.error;
+    }
+
+    if (
+      error?.error &&
+      typeof error.error === 'object'
+    ) {
+      const mensajes = Object.entries(error.error).map(
+        ([campo, valor]: [string, any]) =>
+          Array.isArray(valor)
+            ? `${campo}: ${valor.join(', ')}`
+            : `${campo}: ${valor}`
+      );
+
+      if (mensajes.length > 0) {
+        return mensajes.join(' | ');
+      }
+    }
+
+    return error?.message || mensajePredeterminado;
+  }
+
   // =====================================================
   // CREAR
   // =====================================================
-  crear(): void {
+  async crear(): Promise<void> {
     const paciente = {
-      nombre:
-        this.form.nombre,
-      apellido:
-        this.form.apellidos,
-      eps:
-        this.form.eps,
-      sede:
-        this.form.sede,
-      id_sede:
-        Number(this.form.idSede),
-      fecha_ingreso:
-        this.form.fechaIngreso,
-      habitacion:
-        Number(this.form.habitacion),
-      id_usuario:
-        null,
-      tipo_documento:
-        this.form.tipoIdentificacion,
-      numero_documento:
-        this.form.documento,
-      fecha_nacimiento:
-        this.form.nacimiento,
-      genero:
-        this.form.genero,
-      grupo_sanguineo:
-        this.form.grupoSanguineo || null,
-      rh:
-        this.form.rh || null,
-      cama:
-        Number(this.form.cama),
-      estado:
-        this.form.estado === 'active'
+      nombre: this.form.nombre,
+      apellido: this.form.apellidos,
+      eps: this.form.eps,
+      sede: this.form.sede,
+      id_sede: Number(this.form.idSede),
+      fecha_ingreso: this.form.fechaIngreso,
+      habitacion: Number(this.form.habitacion),
+      id_usuario: null,
+      tipo_documento: this.form.tipoIdentificacion,
+      numero_documento: this.form.documento,
+      fecha_nacimiento: this.form.nacimiento,
+      genero: this.form.genero,
+      grupo_sanguineo: this.form.grupoSanguineo || null,
+      rh: this.form.rh || null,
+      cama: Number(this.form.cama),
+      estado: this.form.estado === 'active'
     };
-    const datosPaciente =
-      new FormData();
-    Object.entries(
-      paciente
-    ).forEach(
+
+    const datosPaciente = new FormData();
+
+    Object.entries(paciente).forEach(
       ([campo, valor]) => {
-        if (
-          valor !== null &&
-          valor !== undefined
-        ) {
-          datosPaciente.append(
-            campo,
-            String(valor)
-          );
+        if (valor !== null && valor !== undefined) {
+          datosPaciente.append(campo, String(valor));
         }
       }
     );
+
     if (this.form.foto) {
-      datosPaciente.append(
-        'foto',
-        this.form.foto
-      );
+      datosPaciente.append('foto', this.form.foto);
     }
-    this.http
-      .post<any>(
-        `${this.apiUrl}/pacientes/`,
-        datosPaciente
-      )
-      .subscribe({
-        next: (respuesta) => {
-          const idPaciente =
-            respuesta.id_paciente;
-          const familiar = {
-            nombres:
-              this.form.familiarNombres,
-            apellidos:
-              this.form.familiarApellidos,
-            parentesco:
-              this.form.parentesco,
-            telefono_uno:
-              this.form.telefono1,
-            telefono_dos:
-              this.form.telefono2 || null,
-            direccion:
-              this.form.direccion || null,
-            correo:
-              this.form.correoElectronico || null,
-            municipio:
-              this.form.municipio || null,
-            id_paciente:
-              idPaciente
-          };
-          this.http
-            .post(
-              `${this.apiUrl}/familiar_responsable/`,
-              familiar
-            )
-            .subscribe({
-              next: () => {
-                alertaExito(
-                  'Paciente registrado correctamente'
-                );
-                this.listar();
-                this.closeModal();
-              },
-              error: (error) => {
-                console.error(
-                  'Error al crear familiar:',
-                  error
-                );
-                alertaAdvertencia(
-                  'Paciente creado, pero hubo un problema',
-                  'No se pudo guardar el familiar responsable.'
-                );
-                this.listar();
-              }
-            });
-        },
-        error: (error) => {
+
+    try {
+      // 1. Crear primero el registro principal del paciente.
+      const respuesta: any = await firstValueFrom(
+        this.http.post<any>(
+          `${this.apiUrl}/pacientes/`,
+          datosPaciente
+        )
+      );
+
+      const idPaciente = Number(respuesta?.id_paciente);
+
+      if (!idPaciente) {
+        throw new Error(
+          'El paciente se creó, pero la API no devolvió id_paciente.'
+        );
+      }
+
+      let errorAsignacion: any = null;
+      let errorFamiliar: any = null;
+
+      // 2. Registrar la asignación únicamente si el paciente queda activo.
+      if (paciente.estado) {
+        try {
+          await this.sincronizarAsignacionHabitacion(
+            idPaciente,
+            Number(this.form.habitacion),
+            Number(this.form.cama),
+            true,
+            this.form.fechaIngreso
+          );
+        } catch (error) {
+          errorAsignacion = error;
           console.error(
-            'Error al crear paciente:',
+            'El paciente se creó, pero falló el registro de asignación:',
             error
           );
-          let detalle =
-            'No se pudo guardar el paciente.';
-          if (
-            error.error &&
-            typeof error.error === 'object'
-          ) {
-            const mensajes =
-              Object.entries(
-                error.error
-              ).map(
-                ([campo, valor]: [string, any]) =>
-                  Array.isArray(valor)
-                    ? `${campo}: ${valor.join(', ')}`
-                    : `${campo}: ${valor}`
-              );
-            if (
-              mensajes.length > 0
-            ) {
-              detalle =
-                mensajes.join(' | ');
-            }
-          }
-          else if (
-            typeof error.error === 'string'
-          ) {
-            detalle =
-              error.error;
-          }
-          alertaError(
-            'Error al registrar el paciente',
-            detalle
+        }
+      }
+
+      // 3. Guardar el familiar aunque haya fallado la asignación.
+      const familiar = {
+        nombres: this.form.familiarNombres,
+        apellidos: this.form.familiarApellidos,
+        parentesco: this.form.parentesco,
+        telefono_uno: this.form.telefono1,
+        telefono_dos: this.form.telefono2 || null,
+        direccion: this.form.direccion || null,
+        correo: this.form.correoElectronico || null,
+        municipio: this.form.municipio || null,
+        id_paciente: idPaciente
+      };
+
+      try {
+        await firstValueFrom(
+          this.http.post(
+            `${this.apiUrl}/familiar_responsable/`,
+            familiar
+          )
+        );
+      } catch (error) {
+        errorFamiliar = error;
+        console.error(
+          'Error al crear familiar:',
+          error
+        );
+      }
+
+      this.listar();
+      this.closeModal();
+
+      if (errorAsignacion || errorFamiliar) {
+        const observaciones: string[] = [];
+
+        if (errorAsignacion) {
+          observaciones.push(
+            `No se pudo registrar la asignación: ${this.detalleErrorApi(
+              errorAsignacion,
+              'Error al guardar habitación y cama.'
+            )
+            }`
           );
         }
-      });
+
+        if (errorFamiliar) {
+          observaciones.push(
+            `No se pudo guardar el familiar responsable: ${this.detalleErrorApi(
+              errorFamiliar,
+              'Error al guardar los datos del familiar.'
+            )
+            }`
+          );
+        }
+
+        alertaAdvertencia(
+          'Paciente creado con observaciones',
+          observaciones.join(' ')
+        );
+        return;
+      }
+
+      alertaExito(
+        'Paciente registrado correctamente',
+        'Se guardaron los datos del paciente, su ubicación y la asignación de habitación.'
+      );
+
+    } catch (error: any) {
+      console.error(
+        'Error al crear paciente:',
+        error
+      );
+
+      alertaError(
+        'Error al registrar el paciente',
+        this.detalleErrorApi(
+          error,
+          'No se pudo guardar el paciente.'
+        )
+      );
+    }
   }
   // =====================================================
   // ACTUALIZAR
   // =====================================================
-  actualizar(): void {
-    if (
-      this.editingId === null
-    ) {
+  async actualizar(): Promise<void> {
+    if (this.editingId === null) {
       return;
     }
+
+    const idPaciente = Number(this.editingId);
+
     const paciente = {
-      nombre:
-        this.form.nombre,
-      apellido:
-        this.form.apellidos,
-      eps:
-        this.form.eps,
-      sede:
-        this.form.sede,
-      id_sede:
-        Number(this.form.idSede),
-      fecha_ingreso:
-        this.form.fechaIngreso,
-      habitacion:
-        Number(this.form.habitacion),
-      id_usuario:
-        null,
-      tipo_documento:
-        this.form.tipoIdentificacion,
-      numero_documento:
-        this.form.documento,
-      fecha_nacimiento:
-        this.form.nacimiento,
-      genero:
-        this.form.genero,
-      grupo_sanguineo:
-        this.form.grupoSanguineo || null,
-      rh:
-        this.form.rh || null,
-      cama:
-        Number(this.form.cama),
-      estado:
-        this.form.estado === 'active'
+      nombre: this.form.nombre,
+      apellido: this.form.apellidos,
+      eps: this.form.eps,
+      sede: this.form.sede,
+      id_sede: Number(this.form.idSede),
+      fecha_ingreso: this.form.fechaIngreso,
+      habitacion: Number(this.form.habitacion),
+      id_usuario: null,
+      tipo_documento: this.form.tipoIdentificacion,
+      numero_documento: this.form.documento,
+      fecha_nacimiento: this.form.nacimiento,
+      genero: this.form.genero,
+      grupo_sanguineo: this.form.grupoSanguineo || null,
+      rh: this.form.rh || null,
+      cama: Number(this.form.cama),
+      estado: this.form.estado === 'active'
     };
-    const datosPaciente =
-      new FormData();
-    Object.entries(
-      paciente
-    ).forEach(
+
+    const datosPaciente = new FormData();
+
+    Object.entries(paciente).forEach(
       ([campo, valor]) => {
-        if (
-          valor !== null &&
-          valor !== undefined
-        ) {
-          datosPaciente.append(
-            campo,
-            String(valor)
-          );
+        if (valor !== null && valor !== undefined) {
+          datosPaciente.append(campo, String(valor));
         }
       }
     );
+
     if (this.form.foto) {
-      datosPaciente.append(
-        'foto',
-        this.form.foto
-      );
+      datosPaciente.append('foto', this.form.foto);
     }
+
     if (this.eliminarFotoPendiente) {
       datosPaciente.append('eliminar_foto', 'true');
     }
-    this.http
-      .put(
-        `${this.apiUrl}/pacientes/${this.editingId}/`,
-        datosPaciente
-      )
-      .subscribe({
-        next: () => {
-          this.http
-            .get<any[]>(
-              `${this.apiUrl}/familiar_responsable/`
-            )
-            .subscribe({
-              next: (familiares) => {
-                const familiar =
-                  familiares.find(
-                    item =>
-                      item.id_paciente ===
-                      this.editingId
-                  );
-                if (familiar) {
-                  const familiarActualizado = {
-                    nombres:
-                      this.form.familiarNombres,
-                    apellidos:
-                      this.form.familiarApellidos,
-                    parentesco:
-                      this.form.parentesco,
-                    telefono_uno:
-                      this.form.telefono1,
-                    telefono_dos:
-                      this.form.telefono2 || null,
-                    direccion:
-                      this.form.direccion || null,
-                    correo:
-                      this.form.correoElectronico || null,
-                    municipio:
-                      this.form.municipio || null,
-                    id_paciente:
-                      this.editingId
-                  };
-                  this.http
-                    .put(
-                      `${this.apiUrl}/familiar_responsable/${familiar.id_familiar_responsable}/`,
-                      familiarActualizado
-                    )
-                    .subscribe({
-                      next: () => {
-                        alertaExito(
-                          'Paciente actualizado correctamente'
-                        );
-                        this.listar();
-                        this.closeModal();
-                      },
-                      error: (error) => {
-                        console.error(
-                          'Error al actualizar familiar:',
-                          error
-                        );
-                        alertaAdvertencia(
-                          'Paciente actualizado',
-                          'El paciente se actualizó, pero hubo un problema con el familiar responsable.'
-                        );
-                        this.listar();
-                      }
-                    });
-                } else {
-                  const nuevoFamiliar = {
-                    nombres:
-                      this.form.familiarNombres,
-                    apellidos:
-                      this.form.familiarApellidos,
-                    parentesco:
-                      this.form.parentesco,
-                    telefono_uno:
-                      this.form.telefono1,
-                    telefono_dos:
-                      this.form.telefono2 || null,
-                    direccion:
-                      this.form.direccion || null,
-                    correo:
-                      this.form.correoElectronico || null,
-                    municipio:
-                      this.form.municipio || null,
-                    id_paciente:
-                      this.editingId
-                  };
-                  this.http
-                    .post(
-                      `${this.apiUrl}/familiar_responsable/`,
-                      nuevoFamiliar
-                    )
-                    .subscribe({
-                      next: () => {
-                        alertaExito(
-                          'Paciente actualizado correctamente'
-                        );
-                        this.listar();
-                        this.closeModal();
-                      },
-                      error: (errorFamiliar) => {
-                        console.error(
-                          'Error al crear familiar:',
-                          errorFamiliar
-                        );
-                        alertaAdvertencia(
-                          'Paciente actualizado',
-                          'El paciente se actualizó, pero no se pudo guardar el familiar responsable.'
-                        );
-                        this.listar();
-                        this.closeModal();
-                      }
-                    });
-                }
-              },
-              error: (error) => {
-                console.error(
-                  'Error al obtener familiares:',
-                  error
-                );
-                alertaAdvertencia(
-                  'Paciente actualizado',
-                  'El paciente se actualizó, pero no se pudo consultar el familiar responsable.'
-                );
-                this.listar();
-              }
-            });
-        },
-        error: (error) => {
-          console.error(
-            'Error al actualizar paciente:',
-            error
-          );
-          console.error(
-            'Detalle:',
-            error.error
-          );
-          alertaError(
-            'Error al actualizar el paciente'
-          );
-        }
-      });
+
+    try {
+      // 1. Actualizar los datos principales del paciente.
+      await firstValueFrom(
+        this.http.put(
+          `${this.apiUrl}/pacientes/${idPaciente}/`,
+          datosPaciente
+        )
+      );
+    } catch (error: any) {
+      console.error(
+        'Error al actualizar paciente:',
+        error
+      );
+
+      alertaError(
+        'Error al actualizar el paciente',
+        this.detalleErrorApi(
+          error,
+          'No fue posible actualizar los datos del paciente.'
+        )
+      );
+      return;
+    }
+
+    let errorAsignacion: any = null;
+    let errorFamiliar: any = null;
+
+    // 2. Sincronizar la asignación.
+    // Si no existe una asignación vigente, se recupera usando la fecha de ingreso.
+    // Si cambió habitación o cama, se cierra la anterior y la nueva inicia ahora.
+    try {
+      await this.sincronizarAsignacionHabitacion(
+        idPaciente,
+        Number(this.form.habitacion),
+        Number(this.form.cama),
+        paciente.estado,
+        this.form.fechaIngreso
+      );
+    } catch (error) {
+      errorAsignacion = error;
+      console.error(
+        'El paciente se actualizó, pero falló la sincronización de asignación:',
+        error
+      );
+    }
+
+    // 3. Mantener el comportamiento actual del familiar responsable.
+    try {
+      await this.guardarFamiliarResponsable(idPaciente);
+    } catch (error) {
+      errorFamiliar = error;
+      console.error(
+        'Error al guardar familiar responsable:',
+        error
+      );
+    }
+
+    this.listar();
+    this.closeModal();
+
+    if (errorAsignacion || errorFamiliar) {
+      const observaciones: string[] = [];
+
+      if (errorAsignacion) {
+        observaciones.push(
+          `No se pudo actualizar el historial de habitación: ${this.detalleErrorApi(
+            errorAsignacion,
+            'Error al registrar la asignación.'
+          )
+          }`
+        );
+      }
+
+      if (errorFamiliar) {
+        observaciones.push(
+          `No se pudo guardar el familiar responsable: ${this.detalleErrorApi(
+            errorFamiliar,
+            'Error al guardar los datos del familiar.'
+          )
+          }`
+        );
+      }
+
+      alertaAdvertencia(
+        'Paciente actualizado con observaciones',
+        observaciones.join(' ')
+      );
+      return;
+    }
+
+    alertaExito(
+      'Paciente actualizado correctamente',
+      'Los datos del paciente y su asignación de habitación están actualizados.'
+    );
   }
   // =====================================================
   // CAMBIAR ESTADO
@@ -1585,60 +1787,89 @@ asignarSedeUsuario(): void {
   cambiarEstado(
     patient: any
   ): void {
-    const nuevoEstado =
-      !patient.estado;
+    const nuevoEstado = !patient.estado;
+
     const nombre =
-      `${patient.nombre} ${patient.apellido}`
-        .trim();
-    const pregunta =
-      nuevoEstado
-        ? alertaActivar(
-          nombre,
-          'paciente'
-        )
-        : alertaDesactivar(
-          nombre,
-          'paciente'
-        );
-    pregunta.then(
-      (resultado) => {
-        if (!resultado.isConfirmed) {
-          return;
-        }
-        const pacienteActualizado = {
-          ...patient,
-          estado: nuevoEstado
-        };
-        this.http
-          .put(
+      `${patient.nombre} ${patient.apellido}`.trim();
+
+    const pregunta = nuevoEstado
+      ? alertaActivar(nombre, 'paciente')
+      : alertaDesactivar(nombre, 'paciente');
+
+    pregunta.then(async (resultado) => {
+      if (!resultado.isConfirmed) {
+        return;
+      }
+
+      const pacienteActualizado = {
+        ...patient,
+        estado: nuevoEstado
+      };
+
+      try {
+        // 1. Actualizar el estado del paciente.
+        await firstValueFrom(
+          this.http.put(
             `${this.apiUrl}/pacientes/${patient.id_paciente}/`,
             pacienteActualizado
           )
-          .subscribe({
-            next: () => {
-              patient.estado =
-                nuevoEstado;
-              this.cdr.detectChanges();
-              alertaExito(
-                'Estado actualizado',
-                nuevoEstado
-                  ? 'El paciente ha sido activado.'
-                  : 'El paciente ha sido desactivado.'
-              );
-            },
-            error: (error) => {
-              console.error(
-                'Error al cambiar estado:',
-                error
-              );
-              alertaError(
-                'Error',
-                'No fue posible cambiar el estado del paciente.'
-              );
-            }
-          });
+        );
+      } catch (error) {
+        console.error(
+          'Error al cambiar estado:',
+          error
+        );
+
+        alertaError(
+          'Error',
+          'No fue posible cambiar el estado del paciente.'
+        );
+        return;
       }
-    );
+
+      // 2. Al desactivar, cerrar la asignación.
+      // Al reactivar, crear una nueva asignación desde el momento de reactivación.
+      try {
+        await this.sincronizarAsignacionHabitacion(
+          Number(patient.id_paciente),
+          Number(patient.habitacion),
+          Number(patient.cama),
+          nuevoEstado,
+          nuevoEstado ? new Date().toISOString() : null
+        );
+
+        patient.estado = nuevoEstado;
+        this.listar();
+        this.cdr.detectChanges();
+
+        alertaExito(
+          'Estado actualizado',
+          nuevoEstado
+            ? 'El paciente ha sido activado y se registró su nueva asignación.'
+            : 'El paciente ha sido desactivado y se cerró su asignación vigente.'
+        );
+
+      } catch (error) {
+        // El estado del paciente ya se actualizó; avisar que la asignación no.
+        patient.estado = nuevoEstado;
+        this.listar();
+        this.cdr.detectChanges();
+
+        console.error(
+          'El estado del paciente cambió, pero falló la actualización de asignación:',
+          error
+        );
+
+        alertaAdvertencia(
+          'Estado actualizado con observaciones',
+          `El estado del paciente cambió, pero no se pudo actualizar su historial de habitación: ${this.detalleErrorApi(
+            error,
+            'Error al registrar el movimiento de habitación.'
+          )
+          }`
+        );
+      }
+    });
   }
   // =====================================================
   // EDITANDO
