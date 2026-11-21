@@ -29,63 +29,303 @@
 
 
 /* =========================================================
-   BANNER DE BIENVENIDA
+   NUEVO BANNER SUPERADMINISTRADOR
 ========================================================= */
 
-.welcome-banner {
+.welcome-hero {
   position: relative;
-  isolation: isolate;
   width: 100%;
-  min-height: 120px;
+  min-height: 220px;
   display: grid;
-  grid-template-columns: 180px minmax(220px, 1fr) auto;
-  align-items: center;
-  gap: 20px;
+  grid-template-columns: minmax(320px, 1fr) 520px;
+  align-items: stretch;
   overflow: hidden;
-  margin-bottom: 22px;
-  padding: 0 20px 0 0;
+  margin-bottom: 18px;
   border: 1px solid #d9e4f7;
-  border-radius: 15px;
+  border-radius: 24px;
   background: linear-gradient(
-    110deg,
-    #e1ecfc 0%,
-    #edf3fd 52%,
-    #f7f9fe 100%
+    90deg,
+    #f7faff 0%,
+    #eef4ff 48%,
+    #e7f0ff 100%
   );
   box-shadow: 0 3px 12px rgba(30, 58, 100, 0.045);
 }
 
-.welcome-image {
+/* =========================================================
+   BANNER SUPERADMINISTRADOR
+   MISMO DISEÑO DEL DASHBOARD DE ADMINISTRADOR
+========================================================= */
+
+.banner-dashboard {
   position: relative;
-  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
-  height: 120px;
+  min-height: 190px;
+  margin-top: 0;
+  margin-bottom: 22px;
+  padding: 26px 34px;
   overflow: hidden;
+  isolation: isolate;
+
+  background: linear-gradient(
+    90deg,
+    #f9fbff 0%,
+    #eef4ff 60%,
+    #eaf2ff 100%
+  );
+
+  border: 1px solid #e4ecfa;
+  border-radius: 24px;
+
+  box-shadow: 0 6px 20px rgba(32, 76, 145, 0.08);
 }
 
-.welcome-image img {
+/* CONTENIDO */
+
+.banner-dashboard__contenido {
+  position: relative;
+  z-index: 3;
+  width: 44%;
+  max-width: 540px;
+}
+
+.banner-dashboard__fecha {
+  margin: 0 0 7px;
+  color: #6f84a8;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.banner-dashboard__contenido h1 {
+  margin: 0;
+  color: #102c6b;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.banner-dashboard__subtitulo {
+  margin: 9px 0 18px;
+  color: #6f84a8;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+/* MENSAJE */
+
+.banner-dashboard__mensaje {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 100%;
+  padding: 12px 18px;
+
+  background: rgba(219, 232, 255, 0.82);
+  border-radius: 14px;
+
+  color: #23498d;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.banner-dashboard__mensaje > .material-symbols-outlined {
+  flex-shrink: 0;
+  color: #2474eb;
+  font-size: 28px;
+}
+
+.banner-dashboard__mensaje .corazon {
+  color: #2474eb;
+  font-size: 20px;
+}
+
+/* DECORACIÓN */
+
+.banner-dashboard__decoracion {
   position: absolute;
   inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.dashboard-onda-superior {
+  position: absolute;
+  top: -36px;
+  left: 27%;
+  width: 310px;
+  height: 120px;
+  background: #dce9ff;
+  border-radius: 0 0 150px 150px;
+  opacity: .95;
+}
+
+.dashboard-onda-inferior {
+  position: absolute;
+  bottom: -58px;
+  left: 35%;
+  width: 390px;
+  height: 150px;
+  background: #dfeaff;
+  border-radius: 50%;
+  opacity: .9;
+}
+
+/* FOTOGRAFÍA */
+
+.banner-dashboard__foto {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  width: 44%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 0 24px 24px 0;
+}
+
+/* DIFUMINADO */
+
+.banner-dashboard__foto::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75px;
+  z-index: 2;
+  width: 170px;
+  height: 100%;
+
+  background: linear-gradient(
+    90deg,
+    #eef4ff 20%,
+    rgba(238, 244, 255, .72) 45%,
+    transparent 100%
+  );
+}
+
+.banner-dashboard__foto img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 35%;
+  object-position: center 30%;
 }
 
-.welcome-content {
-  position: relative;
-  z-index: 1;
-  min-width: 0;
+/* FILTRO DE PERIODO */
+
+.welcome-filter-row {
+  width: 100%;
+  margin-bottom: 18px;
 }
 
-.welcome-eyebrow {
-  display: block;
-  margin-bottom: 5px;
-  color: #5579bd;
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.8px;
+.welcome-filter-row .period-filter {
+  width: 100%;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1050px) {
+
+  .banner-dashboard__contenido {
+    width: 52%;
+  }
+
+  .banner-dashboard__foto {
+    width: 46%;
+  }
+
+}
+
+@media (max-width: 768px) {
+
+  .banner-dashboard {
+    min-height: 220px;
+    padding: 22px;
+    border-radius: 17px;
+  }
+
+  .banner-dashboard__contenido {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .banner-dashboard__contenido h1 {
+    font-size: 24px;
+  }
+
+  .banner-dashboard__subtitulo {
+    font-size: 14px;
+  }
+
+  .banner-dashboard__mensaje {
+    padding: 11px 15px;
+    font-size: 12px;
+    gap: 10px;
+  }
+
+  .banner-dashboard__foto {
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    border-radius: inherit;
+  }
+
+  .banner-dashboard__foto::before {
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+
+    background: linear-gradient(
+      90deg,
+      #f9fbff 0%,
+      rgba(249, 251, 255, .92) 40%,
+      rgba(249, 251, 255, .55) 100%
+    );
+  }
+
+  .banner-dashboard__foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 72% center;
+    opacity: .45;
+  }
+
+  .banner-dashboard__decoracion {
+    opacity: .55;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  .banner-dashboard {
+    padding: 18px;
+  }
+
+  .banner-dashboard__contenido h1 {
+    font-size: 22px;
+  }
+
+  .banner-dashboard__mensaje {
+    padding: 10px 14px;
+    font-size: 11px;
+    gap: 8px;
+  }
+
+  .banner-dashboard__mensaje > .material-symbols-outlined {
+    font-size: 24px;
+  }
+
+  .banner-dashboard__mensaje .corazon {
+    font-size: 18px;
+  }
+
 }
 
 .welcome-content h1 {
@@ -105,93 +345,112 @@
 }
 
 
-/* =========================================================
-   FILTRO DE PERIODO
-========================================================= */
+/* =========================================
+   FILTRO DE PERIODO - SUPERADMINISTRADOR
+========================================= */
 
-.period-filter {
-  position: relative;
-  z-index: 2;
+.welcome-filter-row {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 20px;
+}
+
+.welcome-filter-row .period-filter {
+  width: auto;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0;
+  flex-wrap: nowrap;
 }
 
 .period-label {
   display: flex;
   align-items: center;
   gap: 7px;
+  white-space: nowrap;
+}
+
+.period-label > .material-symbols-outlined {
   color: #3b5bdb;
-}
-
-.period-label .material-symbols-outlined {
-  font-size: 25px;
-}
-
-.period-label div {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.3;
+  font-size: 19px;
 }
 
 .period-label strong {
-  color: #1c2f86;
-  font-size: 12px;
-  font-weight: 750;
+  display: block;
+  color: #183b82;
+  font-size: 11px;
 }
 
-.period-label div > span {
-  color: #647796;
-  font-size: 10px;
+.period-label span:not(.material-symbols-outlined) {
+  display: block;
+  color: #8495b1;
+  font-size: 9px;
 }
 
 .period-field {
-  min-height: 39px;
+  width: 280px;
+  height: 34px;
   display: flex;
   align-items: center;
   gap: 7px;
-  padding: 0 10px;
-  border: 1px solid #d3def1;
-  border-radius: 9px;
+  padding: 0 9px;
   background: #fff;
-  color: #365bc5;
+  border: 1px solid #d8e2f3;
+  border-radius: 8px;
 }
 
 .period-field .material-symbols-outlined {
-  font-size: 17px;
+  color: #3b5bdb;
+  font-size: 16px;
 }
 
 .period-field input {
-  width: 108px;
+  width: 105px;
   min-width: 0;
-  border: 0;
-  outline: 0;
+  border: none;
+  outline: none;
   background: transparent;
-  color: #203451;
-  font: inherit;
+  color: #526789;
   font-size: 10px;
 }
 
-.period-field input:disabled {
-  cursor: not-allowed;
-}
-
 .period-separator {
-  color: #71829b;
-  font-size: 12px;
+  color: #8998b0;
+  font-size: 11px;
 }
 
 .search-button {
-  min-height: 37px;
-  padding: 7px 12px;
-  border-radius: 9px;
+  height: 34px;
+  min-width: 75px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 12px;
+  border-radius: 8px;
+  font-size: 10px;
+  white-space: nowrap;
 }
 
-.period-filter .primary-button:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
+/* RESPONSIVE */
+
+@media (max-width: 700px) {
+  .welcome-filter-row .period-filter {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .period-field {
+    width: 100%;
+  }
+
+  .period-label {
+    width: 100%;
+  }
 }
 
 
@@ -447,7 +706,11 @@
   white-space: nowrap;
 }
 
-/* GRÁFICA DE TENDENCIA MENSUAL */
+/* =========================================
+   GRÁFICA DE TENDENCIA MENSUAL
+   PALETA AZUL INSTITUCIONAL
+========================================= */
+
 .trend-chart {
   min-height: 510px;
   height: calc(100% - 55px);
@@ -457,14 +720,49 @@
   background: #fff;
 }
 
-.trend-svg { width: 100%; height: 100%; min-height: 450px; overflow: visible; }
-.trend-grid-lines line { stroke: #edf0f7; stroke-width: 1; }
-.trend-line { fill: none; stroke: #8537f3; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
-.trend-point { fill: #fff; stroke: #8537f3; stroke-width: 3.5; }
-.trend-month { fill: #27364d; font-size: 14px; font-weight: 700; }
-.trend-count { fill: #6e2ed5; font-size: 12px; font-weight: 800; }
+.trend-svg {
+  width: 100%;
+  height: 100%;
+  min-height: 450px;
+  overflow: visible;
+}
 
-.roles-empty { grid-column: 1 / -1; color: #8291a8; font-size: 11px; }
+.trend-grid-lines line {
+  stroke: #edf0f7;
+  stroke-width: 1;
+}
+
+.trend-line {
+  fill: none;
+  stroke: #3b5bdb;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.trend-point {
+  fill: #fff;
+  stroke: #3b5bdb;
+  stroke-width: 3.5;
+}
+
+.trend-month {
+  fill: #27364d;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.trend-count {
+  fill: #1c2f86;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.roles-empty {
+  grid-column: 1 / -1;
+  color: #8291a8;
+  font-size: 11px;
+}
 
 
 /* =========================================================
@@ -569,10 +867,9 @@
 }
 
 
-/* =========================================================
-   GRÁFICA 2
+/* GRÁFICA 2
    REGISTROS DE USUARIOS EN EL TIEMPO
-========================================================= */
+*/
 
 .trend-chart {
   width: 100%;
@@ -581,8 +878,8 @@
   border-radius: 10px;
   background: linear-gradient(
     180deg,
-    #fcfbff 0%,
-    #f7f5ff 100%
+    #f8faff 0%,
+    #edf3ff 100%
   );
 }
 
@@ -782,11 +1079,13 @@
   position: relative;
   width: 3px;
   min-height: 2px;
+
   background: linear-gradient(
     180deg,
-    #9c87f4 0%,
-    #c4b8ff 100%
+    #70a7ee 0%,
+    #a9c7f5 100%
   );
+
   transition: height 0.4s ease;
 }
 
