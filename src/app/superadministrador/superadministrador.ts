@@ -26,7 +26,7 @@ interface Rol {
 interface Usuario {
   id_usuario: number;
   id_sede?: number | null;
-  id_rol: number | { id_rol?: number; nombre?: string };
+  id_rol: number | null | {id_rol?: number | null;nombre?: string;};
   nombres: string;
   apellidos: string;
   correo: string;
@@ -66,8 +66,11 @@ export class Superadministrador implements OnInit {
 
   cargandoAdministradores = false;
   errorAdministradores = false;
+
   actualizandoEstados = new Set<number>();
   actualizandoSedes = new Set<number>();
+
+  usuariosSinSedeExpandido = false;
 
   constructor(
     private http: HttpClient,
@@ -76,12 +79,11 @@ export class Superadministrador implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Consultamos los datos para alimentar el resumen inicial.
     this.cargarNombreInstitucion();
     this.listarSedes();
-    this.listarAdministradores();
 
-    // Navegación desde el menú hamburguesa.
+    // La vista y sus datos se cargan según el fragmento
+    // seleccionado desde el menú de navegación.
     this.route.fragment.subscribe((fragmento) => {
       if (fragmento === 'sedes') {
         this.cambiarVista('sedes');
@@ -131,7 +133,7 @@ export class Superadministrador implements OnInit {
       this.listarSedes();
     }
 
-    if (vista === 'administradores') {
+    if (vista === 'administradores' || vista === 'resumen') {
       this.listarAdministradores();
     }
   }
@@ -530,6 +532,50 @@ export class Superadministrador implements OnInit {
     return Math.max(...this.estadisticasUsuariosPorSede.map((item) => item.total), 0);
   }
 
+  // Usuarios sin sede, excluyendo al Superadministrador.
+  get usuariosSinSede(): Usuario[] {
+    return this.usuariosParaAnalisis.filter(
+      (usuario) =>
+        !this.esRolSuperadministrador(usuario) &&
+        !this.tieneSedeAsignada(usuario) &&
+        !this.tieneRolAsignado(usuario)
+    );
+  }
+
+  // Usuarios que ya tienen sede, pero todavía no tienen rol.
+  get usuariosPendientesDeRol(): Usuario[] {
+    return this.usuariosParaAnalisis.filter(
+      (usuario) =>
+        !this.tieneRolAsignado(usuario) &&
+        this.tieneSedeAsignada(usuario)
+    );
+  }
+
+  // Verifica si el usuario tiene un rol.
+  private tieneRolAsignado(usuario: Usuario): boolean {
+    const rol = usuario.id_rol;
+
+    if (rol === null || rol === undefined) {
+      return false;
+    }
+
+    if (typeof rol === 'object') {
+      return (
+        rol.id_rol !== null && rol.id_rol !== undefined
+      ) || Boolean(rol.nombre);
+    }
+
+    return true;
+  }
+
+  // Verifica si el usuario tiene una sede.
+  private tieneSedeAsignada(usuario: Usuario): boolean {
+    return (
+      usuario.id_sede !== null &&
+      usuario.id_sede !== undefined
+    );
+  }
+
   // Distribución de usuarios por los roles que realmente devuelve /roles/.
   // La cuenta de Superadministrador se excluye de la distribución operativa.
   // Si hay usuarios cuyo rol no coincide con /roles/, se muestran aparte para
@@ -551,7 +597,10 @@ export class Superadministrador implements OnInit {
 
     const distribucion = rolesOperativos.map((rol, indice) => {
       const cantidad = this.usuariosParaAnalisis.filter((usuario) => {
-        if (this.esRolSuperadministrador(usuario)) {
+        if (
+          this.esRolSuperadministrador(usuario) ||
+          !this.tieneSedeAsignada(usuario)
+        ) {
           return false;
         }
 
@@ -582,15 +631,53 @@ export class Superadministrador implements OnInit {
       0
     );
 
-    const sinRolIdentificado = Math.max(0, total - usuariosClasificados);
+    const cantidadSinSede = this.usuariosSinSede.length;
+    const cantidadPendienteRol = this.usuariosPendientesDeRol.length;
 
-    if (sinRolIdentificado > 0) {
+    const sinRolIdentificado = Math.max(
+      0,
+      total -
+        usuariosClasificados -
+        cantidadSinSede -
+        cantidadPendienteRol
+    );
+
+    // Usuarios que todavía necesitan una sede.
+    if (cantidadSinSede > 0) {
       distribucion.push({
         id: -1,
-        nombre: 'Sin rol identificado',
-        cantidad: sinRolIdentificado,
-        porcentaje: total > 0 ? (sinRolIdentificado / total) * 100 : 0,
+        nombre: 'Sin sede',
+        cantidad: cantidadSinSede,
+        porcentaje: total > 0
+          ? (cantidadSinSede / total) * 100
+          : 0,
         color: '#B9D6FA',
+      });
+    }
+
+    // Usuarios que ya tienen sede y esperan asignación de rol.
+    if (cantidadPendienteRol > 0) {
+      distribucion.push({
+        id: -2,
+        nombre: 'Pendiente de rol',
+        cantidad: cantidadPendienteRol,
+        porcentaje: total > 0
+          ? (cantidadPendienteRol / total) * 100
+          : 0,
+        color: '#80BFF2',
+      });
+    }
+
+    // Casos cuyo rol no coincide con los roles registrados.
+    if (sinRolIdentificado > 0) {
+      distribucion.push({
+        id: -3,
+        nombre: 'Rol no identificado',
+        cantidad: sinRolIdentificado,
+        porcentaje: total > 0
+          ? (sinRolIdentificado / total) * 100
+          : 0,
+        color: '#A8B8D5',
       });
     }
 
@@ -1607,7 +1694,9 @@ nombreSede(idSede: number | null | undefined): string {
   }
 
   private obtenerMensajeError(error: any): string {
-    const detalle = error?.error?.detail;
+    const detalle =
+      error?.error?.error ??
+      error?.error?.detail;
 
     if (typeof detalle === 'string') {
       return detalle;
