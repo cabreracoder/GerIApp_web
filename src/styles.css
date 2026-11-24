@@ -1245,3 +1245,29 @@ body .swal2-container .geri-alerta__mensaje {
       font-size: 14px !important;
    }
 }
+
+
+/* ==========================================
+   FORMULARIOS SWEETALERT2 - COORDENADAS
+   SUPERADMINISTRADOR
+========================================== */
+
+.swal2-popup .sede-coordenada-label {
+  display: block !important;
+  width: 80% !important;
+  margin: 12px auto 5px !important;
+  text-align: left !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #344054 !important;
+  box-sizing: border-box !important;
+}
+
+.swal2-popup input#latitud,
+.swal2-popup input#longitud,
+.swal2-popup input#radio_verificacion {
+  display: block !important;
+  width: 80% !important;
+  margin: 0 auto 12px !important;
+  box-sizing: border-box !important;
+}

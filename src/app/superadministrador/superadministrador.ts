@@ -108,6 +108,11 @@ interface Sede {
 
   telefono: string | null;
 
+  // Datos de geolocalización
+  latitud?: number | null;
+  longitud?: number | null;
+  radio_verificacion?: number | null;
+
   estado: boolean | number | string;
 
   fecha_registro?: string;
@@ -392,6 +397,23 @@ export class Superadministrador implements OnInit {
 
           placeholder="Teléfono">
 
+        <label for="latitud" class="sede-coordenada-label">Latitud</label>
+        <input id="latitud" class="swal2-input"
+          type="number" step="any" min="-90" max="90"
+          placeholder="Ej. 2.4448">
+
+        <label for="longitud" class="sede-coordenada-label">Longitud</label>
+        <input id="longitud" class="swal2-input"
+          type="number" step="any" min="-180" max="180"
+          placeholder="Ej. -76.6147">
+
+        <label for="radio_verificacion" class="sede-coordenada-label">
+          Radio de verificación (metros)
+        </label>
+        <input id="radio_verificacion" class="swal2-input"
+          type="number" step="any" min="0.01"
+          placeholder="Ej. 100">
+
         <select id="estado" class="swal2-select">
 
           <option value="true">Activa</option>
@@ -448,7 +470,54 @@ export class Superadministrador implements OnInit {
 
         ).value;
 
+        const latitudTexto = (
+          popup?.querySelector('#latitud') as HTMLInputElement
+        ).value.trim();
 
+        const longitudTexto = (
+          popup?.querySelector('#longitud') as HTMLInputElement
+        ).value.trim();
+
+        const radioTexto = (
+          popup?.querySelector('#radio_verificacion') as HTMLInputElement
+        ).value.trim();
+
+        const latitud = latitudTexto === '' ? null : Number(latitudTexto);
+        const longitud = longitudTexto === '' ? null : Number(longitudTexto);
+        const radio_verificacion = radioTexto === '' ? null : Number(radioTexto);
+
+        if ((latitud === null) !== (longitud === null)) {
+          Swal.showValidationMessage(
+            'Debes ingresar tanto la latitud como la longitud.'
+          );
+          return;
+        }
+
+        if (
+          latitud !== null &&
+          (!Number.isFinite(latitud) || latitud < -90 || latitud > 90)
+        ) {
+          Swal.showValidationMessage('La latitud debe estar entre -90 y 90.');
+          return;
+        }
+
+        if (
+          longitud !== null &&
+          (!Number.isFinite(longitud) || longitud < -180 || longitud > 180)
+        ) {
+          Swal.showValidationMessage('La longitud debe estar entre -180 y 180.');
+          return;
+        }
+
+        if (
+          radio_verificacion !== null &&
+          (!Number.isFinite(radio_verificacion) || radio_verificacion <= 0)
+        ) {
+          Swal.showValidationMessage(
+            'El radio de verificación debe ser mayor que cero.'
+          );
+          return;
+        }
 
         if (!nombre) {
 
@@ -471,6 +540,10 @@ export class Superadministrador implements OnInit {
           direccion: direccion || null,
 
           telefono: telefono || null,
+
+          latitud,
+          longitud,
+          radio_verificacion,
 
           estado: estado === 'true',
 
@@ -546,6 +619,26 @@ export class Superadministrador implements OnInit {
 
           value="${this.escaparHtml(sede.telefono ?? '')}">
 
+        <label for="latitud" class="sede-coordenada-label">Latitud</label>
+        <input id="latitud" class="swal2-input"
+          type="number" step="any" min="-90" max="90"
+          placeholder="Ej. 2.4448"
+          value="${sede.latitud ?? ''}">
+
+        <label for="longitud" class="sede-coordenada-label">Longitud</label>
+        <input id="longitud" class="swal2-input"
+          type="number" step="any" min="-180" max="180"
+          placeholder="Ej. -76.6147"
+          value="${sede.longitud ?? ''}">
+
+        <label for="radio_verificacion" class="sede-coordenada-label">
+          Radio de verificación (metros)
+        </label>
+        <input id="radio_verificacion" class="swal2-input"
+          type="number" step="any" min="0.01"
+          placeholder="Ej. 100"
+          value="${sede.radio_verificacion ?? ''}">
+
         <select id="estado" class="swal2-select">
 
           <option value="true"
@@ -582,64 +675,86 @@ export class Superadministrador implements OnInit {
 
         const popup = Swal.getPopup();
 
-
-
         const nombre = (
-
           popup?.querySelector('#nombre') as HTMLInputElement
-
         ).value.trim();
-
-
 
         const direccion = (
-
           popup?.querySelector('#direccion') as HTMLInputElement
-
         ).value.trim();
-
-
 
         const telefono = (
-
           popup?.querySelector('#telefono') as HTMLInputElement
-
         ).value.trim();
 
-
-
         const estado = (
-
           popup?.querySelector('#estado') as HTMLSelectElement
-
         ).value;
 
+        const latitudTexto = (
+          popup?.querySelector('#latitud') as HTMLInputElement
+        ).value.trim();
 
+        const longitudTexto = (
+          popup?.querySelector('#longitud') as HTMLInputElement
+        ).value.trim();
+
+        const radioTexto = (
+          popup?.querySelector('#radio_verificacion') as HTMLInputElement
+        ).value.trim();
+
+        const latitud = latitudTexto === '' ? null : Number(latitudTexto);
+        const longitud = longitudTexto === '' ? null : Number(longitudTexto);
+        const radio_verificacion = radioTexto === '' ? null : Number(radioTexto);
 
         if (!nombre) {
-
           Swal.showValidationMessage(
-
             'El nombre de la sede es obligatorio.'
-
           );
-
           return;
-
         }
 
+        if ((latitud === null) !== (longitud === null)) {
+          Swal.showValidationMessage(
+            'Debes ingresar tanto la latitud como la longitud.'
+          );
+          return;
+        }
 
+        if (
+          latitud !== null &&
+          (!Number.isFinite(latitud) || latitud < -90 || latitud > 90)
+        ) {
+          Swal.showValidationMessage('La latitud debe estar entre -90 y 90.');
+          return;
+        }
+
+        if (
+          longitud !== null &&
+          (!Number.isFinite(longitud) || longitud < -180 || longitud > 180)
+        ) {
+          Swal.showValidationMessage('La longitud debe estar entre -180 y 180.');
+          return;
+        }
+
+        if (
+          radio_verificacion !== null &&
+          (!Number.isFinite(radio_verificacion) || radio_verificacion <= 0)
+        ) {
+          Swal.showValidationMessage(
+            'El radio de verificación debe ser mayor que cero.'
+          );
+          return;
+        }
 
         return {
-
           nombre,
-
           direccion: direccion || null,
-
           telefono: telefono || null,
-
+          latitud,
+          longitud,
+          radio_verificacion,
           estado: estado === 'true',
-
         };
 
       },
@@ -648,40 +763,20 @@ export class Superadministrador implements OnInit {
 
       if (!resultado.isConfirmed || !resultado.value) return;
 
-
-
       this.http
-
         .patch(`${this.apiUrl}/sedes/${sede.id_sede}/`, resultado.value)
-
         .subscribe({
-
           next: () => {
-
             alertaExito('Sede actualizada', 'Los cambios se guardaron correctamente.')
-
-
-
             this.listarSedes();
-
           },
-
           error: (error) => {
-
             console.error('Error al actualizar la sede:', error);
-
-
-
             alertaError('No se pudo actualizar la sede', this.obtenerMensajeError(error))
-
           },
-
         });
-
     });
-
   }
-
 
 
   // ==========================================
