@@ -1010,6 +1010,65 @@
   font-weight: 650;
 }
 
+/* SELECTOR DE SEDE PARA USUARIOS SIN SEDE */
+
+.roles-legend .pending-users-list {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-top: 5px;
+  padding-top: 9px;
+  border-top: 1px solid #e8edf5;
+}
+
+.pending-user-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(135px, 180px);
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+}
+
+.pending-user-name {
+  min-width: 0;
+  color: #40516d;
+  font-size: 11px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.pending-user-select {
+  width: 100%;
+  min-width: 0;
+  min-height: 32px;
+  padding: 5px 8px;
+  border: 1px solid #d8e2f3;
+  border-radius: 7px;
+  background: #fff;
+  color: #40516d;
+  font: inherit;
+  font-size: 11px;
+  outline: none;
+}
+
+.pending-user-select:focus {
+  border-color: #3b5bdb;
+  box-shadow: 0 0 0 2px rgba(59, 91, 219, 0.1);
+}
+
+.pending-user-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+@media (max-width: 480px) {
+  .pending-user-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 .role-dot {
   width: 13px;
   height: 13px;
@@ -1877,4 +1936,24 @@
     scroll-behavior: auto !important;
   }
 
+}
+
+.role-toggle-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.role-toggle-icon {
+  font-size: 18px;
+  flex-shrink: 0;
 }

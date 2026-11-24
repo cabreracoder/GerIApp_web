@@ -191,12 +191,94 @@
             <div class="donut-center"><strong>{{ totalUsuariosOperativos }}</strong><span>Usuarios</span></div>
           </div>
           <div class="roles-legend">
-            <div *ngFor="let rol of usuariosPorRol">
-              <i class="role-dot" [style.background]="rol.color"></i>
-              <span>{{ rol.nombre }} ({{ rol.porcentaje | number:'1.0-0' }}%)</span>
+            <div
+              *ngFor="let rol of usuariosPorRol"
+              [class.role-pending-assignment]="rol.id === -1"
+              [class.role-pending-assignment-expanded]="
+                rol.id === -1 && usuariosSinSedeExpandido
+              "
+            >
+              <i
+                class="role-dot"
+                [style.background]="rol.color"
+              ></i>
+
+              <!-- Roles normales -->
+              <span *ngIf="rol.id !== -1">
+                {{ rol.nombre }} ({{ rol.porcentaje | number:'1.0-0' }}%)
+              </span>
+
+              <!-- Sin sede: opción desplegable -->
+              <button
+                *ngIf="rol.id === -1"
+                type="button"
+                class="role-toggle-button"
+                (click)="usuariosSinSedeExpandido = !usuariosSinSedeExpandido"
+                [attr.aria-expanded]="usuariosSinSedeExpandido"
+              >
+                <span>
+                  {{ rol.nombre }} ({{ rol.porcentaje | number:'1.0-0' }}%)
+                </span>
+
+                <span class="material-symbols-outlined role-toggle-icon">
+                  {{ usuariosSinSedeExpandido ? 'expand_less' : 'expand_more' }}
+                </span>
+              </button>
+
               <strong>{{ rol.cantidad }}</strong>
+
+              <!-- Usuarios sin sede -->
+              <div
+                class="pending-users-list"
+                *ngIf="
+                  rol.id === -1 &&
+                  usuariosSinSedeExpandido &&
+                  usuariosSinSede.length > 0
+                "
+              >
+                <div
+                  class="pending-user-row"
+                  *ngFor="let usuario of usuariosSinSede"
+                >
+                  <span class="pending-user-name">
+                    {{ usuario.nombres }} {{ usuario.apellidos }}
+                  </span>
+
+                  <select
+                    class="pending-user-select"
+                    [disabled]="
+                      actualizandoSedes.has(usuario.id_usuario) ||
+                      cargandoSedes ||
+                      sedes.length === 0
+                    "
+                    (change)="cambiarSedeAdministrador(
+                      usuario,
+                      $any($event.target).value
+                    )"
+                    aria-label="Asignar sede al usuario"
+                  >
+                    <option value="" selected disabled>
+                      Seleccionar sede
+                    </option>
+
+                    <option
+                      *ngFor="let sede of sedes"
+                      [value]="sede.id_sede"
+                      [disabled]="!esActivo(sede.estado)"
+                    >
+                      {{ sede.nombre }}
+                    </option>
+                  </select>
+                </div>
+              </div>
             </div>
-            <div *ngIf="usuariosPorRol.length === 0" class="roles-empty">No hay roles operativos registrados.</div>
+
+            <div
+              *ngIf="usuariosPorRol.length === 0"
+              class="roles-empty"
+            >
+              No hay roles operativos registrados.
+            </div>
           </div>
         </div>
         <ng-template #estadoRoles>
